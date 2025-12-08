@@ -878,8 +878,8 @@
             // Load data from JSON files
             await loadData();
 
-            // Populate project filters
-            populateProjectFilters();
+            // Populate project filters from data
+            populateProjectDropdown();
 
             // Create charts and populate table
             createCharts();
@@ -896,9 +896,9 @@
                 if (prResponse.ok) {
                     prData = await prResponse.json();
                     console.log('PR Data loaded successfully:', prData.summary);
-                    filteredPRData = prData.recent_prs || [];
-                    updatePRKPIs();
-                    updatePOKPIs();
+                    console.log('Total PRs available:', (prData.all_prs || prData.recent_prs || []).length);
+                    filteredPRData = prData.all_prs || prData.recent_prs || [];
+                    updateFilteredKPIs();
                 } else {
                     console.log('PR fetch failed, using fallback data');
                     useFallbackPRData();
@@ -1504,35 +1504,142 @@
             populateVendorTable();
         }
 
+        // Current filter state
+        let currentFilters = { project: '', month: '', year: '2025', status: '' };
+
+        // Get filtered PRs based on current filters
+        function getFilteredPRs() {
+            const allPRs = prData?.all_prs || prData?.recent_prs || [];
+            return allPRs.filter(pr => {
+                // Year filter
+                if (currentFilters.year) {
+                    const dateField = pr.approved_date || pr.submission_date;
+                    if (!dateField || !dateField.startsWith(currentFilters.year)) return false;
+                }
+                // Month filter
+                if (currentFilters.month) {
+                    const dateField = pr.approved_date || pr.submission_date;
+                    if (!dateField) return false;
+                    const prMonth = new Date(dateField).getMonth() + 1;
+                    if (prMonth !== parseInt(currentFilters.month)) return false;
+                }
+                // Project filter
+                if (currentFilters.project) {
+                    if (!pr.project || !pr.project.toLowerCase().includes(currentFilters.project.toLowerCase())) return false;
+                }
+                // Status filter
+                if (currentFilters.status) {
+                    if (pr.status !== currentFilters.status) return false;
+                }
+                return true;
+            });
+        }
+
+        // Calculate stats from filtered PRs
+        function calculateFilteredStats(filteredPRs) {
+            const approved = filteredPRs.filter(pr => pr.status === 'APPROVED').length;
+            const returned = filteredPRs.filter(pr => pr.return_date).length;
+            const within2days = filteredPRs.filter(pr => {
+                if (!pr.return_date || !pr.approved_date) return false;
+                const days = Math.floor((new Date(pr.return_date) - new Date(pr.approved_date)) / 86400000);
+                return days <= 2;
+            }).length;
+            const after2days = returned - within2days;
+            const posIssued = filteredPRs.filter(pr => pr.pr_to_po_days !== null).length;
+            const within30days = filteredPRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days <= 30).length;
+            const after30days = posIssued - within30days;
+
+            return { approved, returned, within2days, after2days, posIssued, within30days, after30days };
+        }
+
+        // Update all KPIs based on filters
+        function updateFilteredKPIs() {
+            const filteredPRs = getFilteredPRs();
+            const stats = calculateFilteredStats(filteredPRs);
+
+            // PR Return KPIs
+            document.getElementById('kpi-approved').textContent = stats.approved.toLocaleString();
+            document.getElementById('kpi-returned').textContent = stats.returned.toLocaleString();
+            const returnRate = stats.approved > 0 ? ((stats.returned / stats.approved) * 100).toFixed(1) : 0;
+            document.getElementById('kpi-return-rate').textContent = returnRate + '%';
+            document.getElementById('kpi-within2').textContent = stats.within2days;
+            document.getElementById('kpi-after2').textContent = stats.after2days;
+            const within2Pct = stats.returned > 0 ? ((stats.within2days / stats.returned) * 100).toFixed(1) : 0;
+            const after2Pct = stats.returned > 0 ? ((stats.after2days / stats.returned) * 100).toFixed(1) : 0;
+            document.getElementById('kpi-within2-pct').textContent = within2Pct + '%';
+            document.getElementById('kpi-after2-pct').textContent = after2Pct + '%';
+
+            // PR to PO KPIs
+            document.getElementById('po-kpi-received-month').textContent = stats.approved.toLocaleString();
+            document.getElementById('po-kpi-issued-month').textContent = stats.posIssued.toLocaleString();
+            document.getElementById('po-kpi-within30').textContent = stats.within30days.toLocaleString();
+            document.getElementById('po-kpi-after30').textContent = stats.after30days.toLocaleString();
+            const within30Pct = stats.posIssued > 0 ? ((stats.within30days / stats.posIssued) * 100).toFixed(1) : 0;
+            const after30Pct = stats.posIssued > 0 ? ((stats.after30days / stats.posIssued) * 100).toFixed(1) : 0;
+            document.getElementById('po-kpi-within30-pct').textContent = within30Pct + '%';
+            document.getElementById('po-kpi-after30-pct').textContent = after30Pct + '%';
+
+            // Update filter label to show what's filtered
+            updateFilterLabel();
+        }
+
+        function updateFilterLabel() {
+            const monthNames = currentLang === 'ar'
+                ? ['', 'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+                : ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            let label = currentFilters.year;
+            if (currentFilters.month) label = monthNames[parseInt(currentFilters.month)] + ' ' + label;
+            if (currentFilters.project) label += ' - ' + currentFilters.project.substring(0, 30) + '...';
+        }
+
+        // Populate project dropdown from data
+        function populateProjectDropdown() {
+            const allPRs = prData?.all_prs || prData?.recent_prs || [];
+            const projects = [...new Set(allPRs.map(pr => pr.project).filter(p => p && !p.includes('ORA-01403')))];
+            projects.sort();
+
+            const select1 = document.getElementById('filterProject');
+            const select2 = document.getElementById('filterProjectPO');
+
+            const options = projects.slice(0, 50).map(p => {
+                const shortName = p.length > 60 ? p.substring(0, 60) + '...' : p;
+                return `<option value="${p}">${shortName}</option>`;
+            }).join('');
+
+            if (select1) select1.innerHTML = `<option value="" data-ar="الكل" data-en="All">${currentLang === 'ar' ? 'الكل' : 'All'}</option>` + options;
+            if (select2) select2.innerHTML = `<option value="" data-ar="الكل" data-en="All">${currentLang === 'ar' ? 'الكل' : 'All'}</option>` + options;
+        }
+
         // Filter Functions
         function applyFilters() {
-            const project = document.getElementById('filterProject').value;
-            const month = document.getElementById('filterMonth').value;
-            const year = document.getElementById('filterYear').value;
-
-            // Filter logic would go here - for now just log
-            console.log('Filters applied:', { project, month, year });
+            currentFilters.project = document.getElementById('filterProject').value;
+            currentFilters.month = document.getElementById('filterMonth').value;
+            currentFilters.year = document.getElementById('filterYear').value;
+            updateFilteredKPIs();
         }
 
         function resetFilters() {
             document.getElementById('filterProject').value = '';
             document.getElementById('filterMonth').value = '';
             document.getElementById('filterYear').value = '2025';
-            applyFilters();
+            currentFilters = { project: '', month: '', year: '2025', status: '' };
+            updateFilteredKPIs();
         }
 
         function applyPOFilters() {
-            const project = document.getElementById('filterProjectPO').value;
-            const month = document.getElementById('filterMonthPO').value;
-            const year = document.getElementById('filterYearPO').value;
-            console.log('PO Filters applied:', { project, month, year });
+            currentFilters.project = document.getElementById('filterProjectPO').value;
+            currentFilters.month = document.getElementById('filterMonthPO').value;
+            currentFilters.year = document.getElementById('filterYearPO').value;
+            updateFilteredKPIs();
         }
 
         function resetPOFilters() {
             document.getElementById('filterProjectPO').value = '';
             document.getElementById('filterMonthPO').value = '';
             document.getElementById('filterYearPO').value = '2025';
-            applyPOFilters();
+            currentFilters = { project: '', month: '', year: '2025', status: '' };
+            updateFilteredKPIs();
         }
 
         // Modal Functions
@@ -1560,37 +1667,40 @@
             const title = document.getElementById('modalTitle');
             const content = document.getElementById('modalContent');
 
-            const allPRs = prData?.recent_prs || [];
-            const currentMonth = getCurrentDisplayMonth();
+            // Use currently filtered PRs
+            const basePRs = getFilteredPRs();
             const monthNames = currentLang === 'ar'
-                ? ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
-                : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            const monthName = monthNames[currentMonth];
+                ? ['', 'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+                : ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            // Build filter description for title
+            let filterDesc = currentFilters.year;
+            if (currentFilters.month) filterDesc = monthNames[parseInt(currentFilters.month)] + ' ' + filterDesc;
+            if (currentFilters.project) filterDesc += ' - ' + currentFilters.project.substring(0, 25) + '...';
 
             let titleText = '';
-            let contentHTML = '';
             let filteredPRs = [];
 
             switch(kpiType) {
                 case 'approved':
-                    titleText = currentLang === 'ar' ? `PRs المعتمدة - ${monthName} 2025` : `Approved PRs - ${monthName} 2025`;
-                    filteredPRs = filterPRsByMonth(allPRs, currentMonth).filter(pr => pr.status === 'APPROVED');
+                    titleText = currentLang === 'ar' ? `PRs المعتمدة - ${filterDesc}` : `Approved PRs - ${filterDesc}`;
+                    filteredPRs = basePRs.filter(pr => pr.status === 'APPROVED');
                     break;
                 case 'returned':
-                    titleText = currentLang === 'ar' ? `PRs المرتجعة - ${monthName} 2025` : `Returned PRs - ${monthName} 2025`;
-                    filteredPRs = filterPRsByMonth(allPRs, currentMonth).filter(pr => pr.return_date);
+                    titleText = currentLang === 'ar' ? `PRs المرتجعة - ${filterDesc}` : `Returned PRs - ${filterDesc}`;
+                    filteredPRs = basePRs.filter(pr => pr.return_date);
                     break;
                 case 'within2days':
-                    titleText = currentLang === 'ar' ? `PRs مرتجعة خلال يومين - ${monthName}` : `PRs Returned ≤2 Days - ${monthName}`;
-                    filteredPRs = filterPRsByMonth(allPRs, currentMonth).filter(pr => {
+                    titleText = currentLang === 'ar' ? `PRs مرتجعة خلال يومين - ${filterDesc}` : `PRs Returned ≤2 Days - ${filterDesc}`;
+                    filteredPRs = basePRs.filter(pr => {
                         if (!pr.return_date || !pr.approved_date) return false;
                         const days = Math.floor((new Date(pr.return_date) - new Date(pr.approved_date)) / 86400000);
                         return days <= 2;
                     });
                     break;
                 case 'after2days':
-                    titleText = currentLang === 'ar' ? `PRs مرتجعة بعد يومين - ${monthName}` : `PRs Returned >2 Days - ${monthName}`;
-                    filteredPRs = filterPRsByMonth(allPRs, currentMonth).filter(pr => {
+                    titleText = currentLang === 'ar' ? `PRs مرتجعة بعد يومين - ${filterDesc}` : `PRs Returned >2 Days - ${filterDesc}`;
+                    filteredPRs = basePRs.filter(pr => {
                         if (!pr.return_date || !pr.approved_date) return false;
                         const days = Math.floor((new Date(pr.return_date) - new Date(pr.approved_date)) / 86400000);
                         return days > 2;

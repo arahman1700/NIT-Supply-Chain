@@ -139,7 +139,7 @@ def export_pr_data(client):
             'returned': monthly_returned,
             'return_rate': monthly_return_rate
         },
-        'recent_prs': pr_data[-50:]  # Last 50 PRs
+        'all_prs': pr_data  # All PRs for filtering
     }
 
     # Save to file
