@@ -348,11 +348,11 @@
                 <div id="tab-pr-return" class="tab-content active">
                     <!-- Filters Section -->
                     <div class="filter-section mb-6">
-                        <div class="flex flex-wrap gap-4 items-center">
+                        <div class="flex flex-wrap gap-3 items-center">
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="المشروع" data-en="Project">المشروع</label>
-                                <select id="filterProject" class="filter-select" onchange="applyFilters()">
-                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
+                                <label class="block text-xs text-gray-500 mb-1" data-ar="السنة" data-en="Year">السنة</label>
+                                <select id="filterYear" class="filter-select" onchange="applyFilters()">
+                                    <!-- Years populated dynamically -->
                                 </select>
                             </div>
                             <div>
@@ -374,14 +374,27 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="السنة" data-en="Year">السنة</label>
-                                <select id="filterYear" class="filter-select" onchange="applyFilters()">
+                                <label class="block text-xs text-gray-500 mb-1" data-ar="الحالة" data-en="Status">الحالة</label>
+                                <select id="filterStatus" class="filter-select" onchange="applyFilters()">
                                     <option value="" data-ar="الكل" data-en="All">الكل</option>
-                                    <option value="2025" selected>2025</option>
-                                    <option value="2024">2024</option>
-                                    <option value="2023">2023</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2021">2021</option>
+                                    <option value="APPROVED" data-ar="معتمد" data-en="Approved">معتمد</option>
+                                    <option value="RETURNED" data-ar="مرتجع" data-en="Returned">مرتجع</option>
+                                    <option value="REJECTED" data-ar="مرفوض" data-en="Rejected">مرفوض</option>
+                                    <option value="INCOMPLETE" data-ar="غير مكتمل" data-en="Incomplete">غير مكتمل</option>
+                                    <option value="IN PROCESS" data-ar="قيد المعالجة" data-en="In Process">قيد المعالجة</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1" data-ar="المورد" data-en="Vendor">المورد</label>
+                                <select id="filterVendor" class="filter-select" onchange="applyFilters()">
+                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
+                                    <!-- Vendors populated dynamically -->
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1" data-ar="المشروع" data-en="Project">المشروع</label>
+                                <select id="filterProject" class="filter-select" onchange="applyFilters()">
+                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
                                 </select>
                             </div>
                             <div class="flex-grow"></div>
@@ -704,6 +717,45 @@
 
                 <!-- Vendor Evaluation Tab -->
                 <div id="tab-vendor-eval" class="tab-content">
+                    <!-- Vendor Filters -->
+                    <div class="filter-section mb-6">
+                        <div class="flex flex-wrap gap-3 items-center">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1" data-ar="تصنيف المورد" data-en="Vendor Category">تصنيف المورد</label>
+                                <select id="filterVendorCategory" class="filter-select" onchange="applyVendorFilters()">
+                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
+                                    <!-- Categories populated dynamically -->
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1" data-ar="حالة التقييم" data-en="Evaluation Status">حالة التقييم</label>
+                                <select id="filterVendorEvalStatus" class="filter-select" onchange="applyVendorFilters()">
+                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
+                                    <option value="evaluated" data-ar="مُقيّم" data-en="Evaluated">مُقيّم</option>
+                                    <option value="pending" data-ar="معلق" data-en="Pending">معلق</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1" data-ar="مستوى التقييم" data-en="Score Level">مستوى التقييم</label>
+                                <select id="filterVendorScoreLevel" class="filter-select" onchange="applyVendorFilters()">
+                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
+                                    <option value="above70" data-ar="ممتاز (>70%)" data-en="Excellent (>70%)">ممتاز (>70%)</option>
+                                    <option value="60-70" data-ar="جيد جداً (60-70%)" data-en="Very Good (60-70%)">جيد جداً (60-70%)</option>
+                                    <option value="40-60" data-ar="جيد (40-60%)" data-en="Good (40-60%)">جيد (40-60%)</option>
+                                    <option value="below40" data-ar="ضعيف (<40%)" data-en="Weak (<40%)">ضعيف (<40%)</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <button onclick="applyVendorFilters()" class="btn-filter px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white text-sm rounded-lg hover:shadow-lg transition-all">
+                                    <span data-ar="تطبيق" data-en="Apply">تطبيق</span>
+                                </button>
+                                <button onclick="resetVendorFilters()" class="btn-reset px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition-all">
+                                    <span data-ar="إعادة" data-en="Reset">إعادة</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Vendor KPIs -->
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
                         <!-- Total Evaluations Requested -->
@@ -820,6 +872,46 @@
                         </div>
                     </div>
 
+                    <!-- New Vendor Analytics Charts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="أكثر 10 موردين طلباً (PRs)" data-en="Top 10 Vendors by PRs">أكثر 10 موردين طلباً (PRs)</h3>
+                            <div class="chart-container" style="height: 350px;">
+                                <canvas id="topVendorsPRChart"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="توزيع الموردين حسب التصنيف" data-en="Vendors by Category">توزيع الموردين حسب التصنيف</h3>
+                            <div class="chart-container" style="height: 350px;">
+                                <canvas id="vendorCategoryChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- More Analytics -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="قيمة PRs حسب المورد (أعلى 10)" data-en="PR Value by Vendor (Top 10)">قيمة PRs حسب المورد (أعلى 10)</h3>
+                            <div class="chart-container" style="height: 350px;">
+                                <canvas id="vendorValueChart"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="متوسط أيام PR→PO حسب المورد" data-en="Avg PR→PO Days by Vendor">متوسط أيام PR→PO حسب المورد</h3>
+                            <div class="chart-container" style="height: 350px;">
+                                <canvas id="vendorAvgDaysChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project-Vendor Matrix -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="أكثر المشاريع حسب عدد الموردين" data-en="Top Projects by Vendor Count">أكثر المشاريع حسب عدد الموردين</h3>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="projectVendorChart"></canvas>
+                        </div>
+                    </div>
+
                     <!-- Vendor Table -->
                     <div>
                         <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="تفاصيل تقييم الموردين" data-en="Vendor Evaluation Details">تفاصيل تقييم الموردين</h3>
@@ -893,9 +985,11 @@
 
             // Populate project filters from data
             populateProjectDropdown();
+            populateVendorCategoryDropdown();
 
             // Create charts and populate table
             createCharts();
+            createVendorAnalyticsCharts();
             populateVendorTable();
         });
 
@@ -1422,11 +1516,24 @@
             }
         }
 
+        function updateVendorTable() {
+            const tbody = document.getElementById('vendorTable');
+            if (!tbody) return;
+
+            const vendors = getFilteredVendors();
+            renderVendorTableRows(tbody, vendors);
+        }
+
         function populateVendorTable() {
             const tbody = document.getElementById('vendorTable');
             if (!tbody) return;
 
             const vendors = vendorData?.vendors || [];
+            renderVendorTableRows(tbody, vendors);
+        }
+
+        function renderVendorTableRows(tbody, vendors) {
+            if (!tbody) return;
             console.log('Populating vendor table with', vendors.length, 'vendors');
             if (vendors.length > 0) {
                 console.log('First vendor attachments:', vendors[0].attachments);
@@ -1656,37 +1763,69 @@
         }
 
         // Populate project dropdown from data
+        // Populate all filter dropdowns dynamically from data
+        function populateFilterDropdowns() {
+            const allPRs = prData?.all_prs || [];
+            const allLabel = currentLang === 'ar' ? 'الكل' : 'All';
+
+            // Extract unique years from data
+            const years = [...new Set(allPRs.map(pr => {
+                const date = pr.approved_date || pr.submission_date || pr.po_approved_date;
+                return date ? date.substring(0, 4) : null;
+            }).filter(y => y && y.match(/^\d{4}$/)))].sort().reverse();
+
+            const yearSelects = [document.getElementById('filterYear'), document.getElementById('filterYearPO')];
+            const yearOptions = `<option value="" data-ar="الكل" data-en="All">${allLabel}</option>` +
+                years.map(y => `<option value="${y}"${y === '2025' ? ' selected' : ''}>${y}</option>`).join('');
+            yearSelects.forEach(sel => { if (sel) sel.innerHTML = yearOptions; });
+
+            // Extract unique vendors
+            const vendors = [...new Set(allPRs.map(pr => pr.vendor).filter(v => v && v.trim() && v.length < 100))].sort();
+            const vendorSelect = document.getElementById('filterVendor');
+            if (vendorSelect) {
+                vendorSelect.innerHTML = `<option value="" data-ar="الكل" data-en="All">${allLabel}</option>` +
+                    vendors.slice(0, 200).map(v => {
+                        const shortName = v.length > 40 ? v.substring(0, 40) + '...' : v;
+                        return `<option value="${v}">${shortName}</option>`;
+                    }).join('');
+            }
+
+            // Extract unique projects
+            const projects = [...new Set(allPRs.map(pr => pr.project).filter(p => p && !p.includes('ORA-01403')))].sort();
+            const projectSelects = [document.getElementById('filterProject'), document.getElementById('filterProjectPO')];
+            const projectOptions = `<option value="" data-ar="الكل" data-en="All">${allLabel}</option>` +
+                projects.slice(0, 100).map(p => {
+                    const shortName = p.length > 50 ? p.substring(0, 50) + '...' : p;
+                    return `<option value="${p}">${shortName}</option>`;
+                }).join('');
+            projectSelects.forEach(sel => { if (sel) sel.innerHTML = projectOptions; });
+        }
+
+        // Legacy function name for compatibility
         function populateProjectDropdown() {
-            const allPRs = prData?.all_prs || prData?.recent_prs || [];
-            const projects = [...new Set(allPRs.map(pr => pr.project).filter(p => p && !p.includes('ORA-01403')))];
-            projects.sort();
-
-            const select1 = document.getElementById('filterProject');
-            const select2 = document.getElementById('filterProjectPO');
-
-            const options = projects.slice(0, 50).map(p => {
-                const shortName = p.length > 60 ? p.substring(0, 60) + '...' : p;
-                return `<option value="${p}">${shortName}</option>`;
-            }).join('');
-
-            if (select1) select1.innerHTML = `<option value="" data-ar="الكل" data-en="All">${currentLang === 'ar' ? 'الكل' : 'All'}</option>` + options;
-            if (select2) select2.innerHTML = `<option value="" data-ar="الكل" data-en="All">${currentLang === 'ar' ? 'الكل' : 'All'}</option>` + options;
+            populateFilterDropdowns();
         }
 
         // Filter Functions
         function applyFilters() {
-            currentFilters.project = document.getElementById('filterProject').value;
-            currentFilters.month = document.getElementById('filterMonth').value;
-            currentFilters.year = document.getElementById('filterYear').value;
+            currentFilters.year = document.getElementById('filterYear')?.value || '';
+            currentFilters.month = document.getElementById('filterMonth')?.value || '';
+            currentFilters.status = document.getElementById('filterStatus')?.value || '';
+            currentFilters.vendor = document.getElementById('filterVendor')?.value || '';
+            currentFilters.project = document.getElementById('filterProject')?.value || '';
             updateFilteredKPIs();
+            updateChartsWithFilteredData();
         }
 
         function resetFilters() {
-            document.getElementById('filterProject').value = '';
-            document.getElementById('filterMonth').value = '';
             document.getElementById('filterYear').value = '2025';
-            currentFilters = { project: '', month: '', year: '2025', status: '' };
+            document.getElementById('filterMonth').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterVendor').value = '';
+            document.getElementById('filterProject').value = '';
+            currentFilters = { project: '', month: '', year: '2025', status: '', vendor: '', agent: '' };
             updateFilteredKPIs();
+            updateChartsWithFilteredData();
         }
 
         function applyPOFilters() {
@@ -1702,6 +1841,474 @@
             document.getElementById('filterYearPO').value = '2025';
             currentFilters = { project: '', month: '', year: '2025', status: '' };
             updateFilteredKPIs();
+            updateChartsWithFilteredData();
+        }
+
+        // Update all charts based on current filters
+        function updateChartsWithFilteredData() {
+            const filteredPRs = getFilteredPRs();
+            const monthLabels = getMonthLabels();
+
+            // Calculate monthly data from filtered PRs
+            const monthlyStats = {};
+            for (let i = 1; i <= 12; i++) {
+                monthlyStats[i] = { approved: 0, returned: 0 };
+            }
+
+            // Count status distribution
+            const statusCounts = {
+                'APPROVED': 0,
+                'RETURNED': 0,
+                'REJECTED': 0,
+                'INCOMPLETE': 0,
+                'IN PROCESS': 0
+            };
+
+            // Count return days distribution
+            let within2Days = 0;
+            let after2Days = 0;
+
+            // Process filtered PRs
+            filteredPRs.forEach(pr => {
+                // Count by status
+                if (pr.status && statusCounts.hasOwnProperty(pr.status)) {
+                    statusCounts[pr.status]++;
+                }
+
+                // Count by month (using approved_date)
+                const dateStr = pr.approved_date || pr.submission_date;
+                if (dateStr) {
+                    try {
+                        const date = new Date(dateStr);
+                        const month = date.getMonth() + 1;
+                        if (month >= 1 && month <= 12) {
+                            monthlyStats[month].approved++;
+
+                            // Check if returned
+                            if (pr.return_date) {
+                                monthlyStats[month].returned++;
+
+                                // Calculate return days
+                                const returnDate = new Date(pr.return_date);
+                                const daysToReturn = Math.floor((returnDate - date) / (1000 * 60 * 60 * 24));
+                                if (daysToReturn <= 2) {
+                                    within2Days++;
+                                } else {
+                                    after2Days++;
+                                }
+                            }
+                        }
+                    } catch (e) {}
+                }
+            });
+
+            // Build arrays for charts
+            const approvedData = [];
+            const returnedData = [];
+            const returnRateData = [];
+
+            for (let i = 1; i <= 12; i++) {
+                approvedData.push(monthlyStats[i].approved);
+                returnedData.push(monthlyStats[i].returned);
+                const rate = monthlyStats[i].approved > 0
+                    ? ((monthlyStats[i].returned / monthlyStats[i].approved) * 100).toFixed(1)
+                    : 0;
+                returnRateData.push(parseFloat(rate));
+            }
+
+            // Update PR Monthly Bar Chart
+            if (charts.prMonthly) {
+                charts.prMonthly.data.datasets[0].data = approvedData.slice(0, 11);
+                charts.prMonthly.data.datasets[1].data = returnedData.slice(0, 11);
+                charts.prMonthly.update();
+            }
+
+            // Update Return Rate Line Chart
+            if (charts.returnRate) {
+                charts.returnRate.data.datasets[0].data = returnRateData.slice(0, 11);
+                charts.returnRate.update();
+            }
+
+            // Update PR Status Doughnut Chart
+            if (charts.prStatus) {
+                charts.prStatus.data.datasets[0].data = [
+                    statusCounts['APPROVED'],
+                    statusCounts['RETURNED'],
+                    statusCounts['REJECTED'],
+                    statusCounts['INCOMPLETE'],
+                    statusCounts['IN PROCESS']
+                ];
+                charts.prStatus.update();
+            }
+
+            // Update Return Days Doughnut Chart
+            if (charts.returnDays) {
+                charts.returnDays.data.datasets[0].data = [within2Days, after2Days];
+                charts.returnDays.update();
+            }
+
+            // Update PR to PO Bar Chart
+            if (charts.prToPO) {
+                // Calculate POs issued (PRs with pr_to_po_days)
+                const posIssuedData = [];
+                const monthlyPOs = {};
+                for (let i = 1; i <= 12; i++) monthlyPOs[i] = 0;
+
+                filteredPRs.forEach(pr => {
+                    if (pr.pr_to_po_days !== null && pr.po_approved_date) {
+                        try {
+                            const date = new Date(pr.po_approved_date);
+                            const month = date.getMonth() + 1;
+                            if (month >= 1 && month <= 12) {
+                                monthlyPOs[month]++;
+                            }
+                        } catch (e) {}
+                    }
+                });
+
+                for (let i = 1; i <= 12; i++) {
+                    posIssuedData.push(monthlyPOs[i]);
+                }
+
+                charts.prToPO.data.datasets[0].data = approvedData.slice(0, 11);
+                charts.prToPO.data.datasets[1].data = posIssuedData.slice(0, 11);
+                charts.prToPO.update();
+            }
+
+            // Update summary stats in filter info area if exists
+            const totalFiltered = filteredPRs.length;
+            const totalApproved = statusCounts['APPROVED'];
+            const totalReturned = statusCounts['RETURNED'];
+            const returnRate = totalApproved > 0 ? ((totalReturned / totalApproved) * 100).toFixed(1) : 0;
+
+            console.log(`📊 Filters applied: ${totalFiltered} PRs | Approved: ${totalApproved} | Returned: ${totalReturned} | Rate: ${returnRate}%`);
+        }
+
+        // ========================
+        // VENDOR FILTERS & CHARTS
+        // ========================
+        let vendorFilters = { category: '', evalStatus: '', scoreLevel: '' };
+
+        function populateVendorCategoryDropdown() {
+            const allLabel = currentLang === 'ar' ? 'الكل' : 'All';
+
+            // Get categories from vendor data
+            const categories = vendorData?.vendors
+                ? [...new Set(vendorData.vendors.map(v => v.category).filter(c => c))].sort()
+                : [];
+
+            const categorySelect = document.getElementById('filterVendorCategory');
+            if (categorySelect) {
+                categorySelect.innerHTML = `<option value="" data-ar="الكل" data-en="All">${allLabel}</option>` +
+                    categories.map(c => `<option value="${c}">${c}</option>`).join('');
+            }
+        }
+
+        function getFilteredVendors() {
+            if (!vendorData?.vendors) return [];
+
+            return vendorData.vendors.filter(vendor => {
+                // Category filter
+                if (vendorFilters.category && vendor.category !== vendorFilters.category) {
+                    return false;
+                }
+
+                // Evaluation status filter
+                if (vendorFilters.evalStatus === 'evaluated' && vendor.score === 0) {
+                    return false;
+                }
+                if (vendorFilters.evalStatus === 'pending' && vendor.score > 0) {
+                    return false;
+                }
+
+                // Score level filter
+                if (vendorFilters.scoreLevel) {
+                    const score = vendor.score || 0;
+                    if (vendorFilters.scoreLevel === 'above70' && score < 70) return false;
+                    if (vendorFilters.scoreLevel === '60-70' && (score < 60 || score >= 70)) return false;
+                    if (vendorFilters.scoreLevel === '40-60' && (score < 40 || score >= 60)) return false;
+                    if (vendorFilters.scoreLevel === 'below40' && score >= 40) return false;
+                }
+
+                return true;
+            });
+        }
+
+        function applyVendorFilters() {
+            vendorFilters.category = document.getElementById('filterVendorCategory')?.value || '';
+            vendorFilters.evalStatus = document.getElementById('filterVendorEvalStatus')?.value || '';
+            vendorFilters.scoreLevel = document.getElementById('filterVendorScoreLevel')?.value || '';
+
+            updateVendorKPIsFiltered();
+            updateVendorChartsWithFilteredData();
+            updateVendorTable();
+        }
+
+        function resetVendorFilters() {
+            document.getElementById('filterVendorCategory').value = '';
+            document.getElementById('filterVendorEvalStatus').value = '';
+            document.getElementById('filterVendorScoreLevel').value = '';
+            vendorFilters = { category: '', evalStatus: '', scoreLevel: '' };
+
+            updateVendorKPIsFiltered();
+            updateVendorChartsWithFilteredData();
+            updateVendorTable();
+        }
+
+        function updateVendorKPIsFiltered() {
+            const filteredVendors = getFilteredVendors();
+
+            // Calculate filtered stats
+            const totalVendors = filteredVendors.length;
+            const evaluated = filteredVendors.filter(v => v.score > 0);
+            const evaluatedCount = evaluated.length;
+            const pendingCount = totalVendors - evaluatedCount;
+            const avgScore = evaluatedCount > 0
+                ? (evaluated.reduce((sum, v) => sum + v.score, 0) / evaluatedCount).toFixed(1)
+                : 0;
+            const completionRate = totalVendors > 0
+                ? ((evaluatedCount / totalVendors) * 100).toFixed(1)
+                : 0;
+
+            // Score distribution
+            const scoreDist = { below_20: 0, '20_40': 0, '40_60': 0, '60_70': 0, above_70: 0 };
+            evaluated.forEach(v => {
+                if (v.score < 20) scoreDist.below_20++;
+                else if (v.score < 40) scoreDist['20_40']++;
+                else if (v.score < 60) scoreDist['40_60']++;
+                else if (v.score < 70) scoreDist['60_70']++;
+                else scoreDist.above_70++;
+            });
+
+            // Update KPIs
+            document.getElementById('vendor-kpi-requested').textContent = totalVendors;
+            document.getElementById('vendor-kpi-done').textContent = evaluatedCount;
+            document.getElementById('vendor-kpi-pending').textContent = pendingCount;
+            document.getElementById('vendor-kpi-avg').textContent = avgScore + '%';
+            document.getElementById('vendor-kpi-completion').textContent = completionRate + '%';
+
+            // Update score distribution
+            document.getElementById('vendor-dist-below20').textContent = scoreDist.below_20;
+            document.getElementById('vendor-dist-20-40').textContent = scoreDist['20_40'];
+            document.getElementById('vendor-dist-40-60').textContent = scoreDist['40_60'];
+            document.getElementById('vendor-dist-60-70').textContent = scoreDist['60_70'];
+            document.getElementById('vendor-dist-above70').textContent = scoreDist.above_70;
+        }
+
+        function updateVendorChartsWithFilteredData() {
+            const filteredVendors = getFilteredVendors();
+            const allPRs = prData?.all_prs || [];
+
+            // Update vendor score distribution chart
+            const evaluated = filteredVendors.filter(v => v.score > 0);
+            const scoreDist = [0, 0, 0, 0, 0];
+            evaluated.forEach(v => {
+                if (v.score < 20) scoreDist[0]++;
+                else if (v.score < 40) scoreDist[1]++;
+                else if (v.score < 60) scoreDist[2]++;
+                else if (v.score < 70) scoreDist[3]++;
+                else scoreDist[4]++;
+            });
+
+            if (charts.vendorScore) {
+                charts.vendorScore.data.datasets[0].data = scoreDist;
+                charts.vendorScore.update();
+            }
+
+            // Update evaluation status chart
+            const evaluatedCount = evaluated.length;
+            const pendingCount = filteredVendors.length - evaluatedCount;
+
+            if (charts.evalStatus) {
+                charts.evalStatus.data.datasets[0].data = [evaluatedCount, pendingCount];
+                charts.evalStatus.update();
+            }
+        }
+
+        function createVendorAnalyticsCharts() {
+            const allPRs = prData?.all_prs || [];
+
+            // 1. Top 10 Vendors by PR Count
+            const vendorPRCounts = {};
+            allPRs.forEach(pr => {
+                if (pr.vendor && pr.vendor.trim()) {
+                    const v = pr.vendor.trim();
+                    vendorPRCounts[v] = (vendorPRCounts[v] || 0) + 1;
+                }
+            });
+
+            const topVendors = Object.entries(vendorPRCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            const topVendorsPRCtx = document.getElementById('topVendorsPRChart')?.getContext('2d');
+            if (topVendorsPRCtx) {
+                charts.topVendorsPR = new Chart(topVendorsPRCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: topVendors.map(v => v[0].length > 20 ? v[0].substring(0, 20) + '...' : v[0]),
+                        datasets: [{
+                            label: currentLang === 'ar' ? 'عدد PRs' : 'PR Count',
+                            data: topVendors.map(v => v[1]),
+                            backgroundColor: '#8b5cf6',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            // 2. Vendor Category Distribution (from vendor evaluation data)
+            const categoryCounts = {};
+            if (vendorData?.vendors) {
+                vendorData.vendors.forEach(v => {
+                    if (v.category) {
+                        categoryCounts[v.category] = (categoryCounts[v.category] || 0) + 1;
+                    }
+                });
+            }
+
+            const categoryEntries = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1]);
+            const vendorCategoryCtx = document.getElementById('vendorCategoryChart')?.getContext('2d');
+            if (vendorCategoryCtx && categoryEntries.length > 0) {
+                charts.vendorCategory = new Chart(vendorCategoryCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categoryEntries.map(c => c[0]),
+                        datasets: [{
+                            data: categoryEntries.map(c => c[1]),
+                            backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'right' } }
+                    }
+                });
+            }
+
+            // 3. PR Value by Vendor (Top 10)
+            const vendorValues = {};
+            allPRs.forEach(pr => {
+                if (pr.vendor && pr.pr_value) {
+                    const v = pr.vendor.trim();
+                    vendorValues[v] = (vendorValues[v] || 0) + parseFloat(pr.pr_value) || 0;
+                }
+            });
+
+            const topValueVendors = Object.entries(vendorValues)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            const vendorValueCtx = document.getElementById('vendorValueChart')?.getContext('2d');
+            if (vendorValueCtx) {
+                charts.vendorValue = new Chart(vendorValueCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: topValueVendors.map(v => v[0].length > 18 ? v[0].substring(0, 18) + '...' : v[0]),
+                        datasets: [{
+                            label: currentLang === 'ar' ? 'قيمة PRs (SAR)' : 'PR Value (SAR)',
+                            data: topValueVendors.map(v => v[1]),
+                            backgroundColor: '#10b981',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: {
+                                ticks: { callback: v => (v / 1000000).toFixed(1) + 'M' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 4. Avg PR to PO Days by Vendor (Top 10 slowest)
+            const vendorDays = {};
+            const vendorDaysCounts = {};
+            allPRs.forEach(pr => {
+                if (pr.vendor && pr.pr_to_po_days !== null && pr.pr_to_po_days > 0) {
+                    const v = pr.vendor.trim();
+                    vendorDays[v] = (vendorDays[v] || 0) + pr.pr_to_po_days;
+                    vendorDaysCounts[v] = (vendorDaysCounts[v] || 0) + 1;
+                }
+            });
+
+            const vendorAvgDays = Object.entries(vendorDays)
+                .map(([vendor, totalDays]) => [vendor, totalDays / vendorDaysCounts[vendor]])
+                .filter(v => vendorDaysCounts[v[0]] >= 5)  // At least 5 PRs
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            const vendorAvgDaysCtx = document.getElementById('vendorAvgDaysChart')?.getContext('2d');
+            if (vendorAvgDaysCtx && vendorAvgDays.length > 0) {
+                charts.vendorAvgDays = new Chart(vendorAvgDaysCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: vendorAvgDays.map(v => v[0].length > 18 ? v[0].substring(0, 18) + '...' : v[0]),
+                        datasets: [{
+                            label: currentLang === 'ar' ? 'متوسط الأيام' : 'Avg Days',
+                            data: vendorAvgDays.map(v => v[1].toFixed(1)),
+                            backgroundColor: '#f59e0b',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            // 5. Top Projects by Vendor Count
+            const projectVendors = {};
+            allPRs.forEach(pr => {
+                if (pr.project && pr.vendor && !pr.project.includes('ORA-01403')) {
+                    if (!projectVendors[pr.project]) {
+                        projectVendors[pr.project] = new Set();
+                    }
+                    projectVendors[pr.project].add(pr.vendor);
+                }
+            });
+
+            const topProjects = Object.entries(projectVendors)
+                .map(([project, vendors]) => [project, vendors.size])
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            const projectVendorCtx = document.getElementById('projectVendorChart')?.getContext('2d');
+            if (projectVendorCtx && topProjects.length > 0) {
+                charts.projectVendor = new Chart(projectVendorCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: topProjects.map(p => p[0].length > 25 ? p[0].substring(0, 25) + '...' : p[0]),
+                        datasets: [{
+                            label: currentLang === 'ar' ? 'عدد الموردين' : 'Vendor Count',
+                            data: topProjects.map(p => p[1]),
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
         }
 
         // Modal Functions
