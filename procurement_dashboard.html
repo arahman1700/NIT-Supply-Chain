@@ -1092,7 +1092,14 @@
                     total_prs: 5671,
                     total_approved_2025: 1929,
                     total_returned_2025: 350,
-                    return_rate_2025: 18.1
+                    return_rate_2025: 18.1,
+                    status_breakdown: {
+                        'APPROVED': 4257,
+                        'RETURNED': 630,
+                        'REJECTED': 498,
+                        'INCOMPLETE': 118,
+                        'IN PROCESS': 114
+                    }
                 },
                 monthly: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -1100,9 +1107,17 @@
                     returned: [32, 23, 20, 14, 25, 11, 34, 37, 73, 46, 35, 0],
                     return_rate: [15.7, 14.9, 14.1, 11.4, 14.9, 12.5, 15.6, 18.6, 34.6, 25.6, 14.5, 0]
                 },
+                all_prs: [],
                 recent_prs: []
             };
             filteredPRData = [];
+            // Set default year options when using fallback
+            const yearSelects = [document.getElementById('filterYear'), document.getElementById('filterYearPO')];
+            const defaultYears = `<option value="" data-ar="الكل" data-en="All">${currentLang === 'ar' ? 'الكل' : 'All'}</option>
+                <option value="2025" selected>2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>`;
+            yearSelects.forEach(sel => { if (sel) sel.innerHTML = defaultYears; });
             updatePRKPIs();
             updatePOKPIs();
         }
@@ -1735,7 +1750,7 @@
 
         // Get filtered PRs based on current filters - uses NEW data structure
         function getFilteredPRs() {
-            const allPRs = prData?.all_prs || filteredPRData || [];
+            const allPRs = prData?.all_prs || prData?.recent_prs || filteredPRData || [];
             return allPRs.filter(pr => {
                 // Year filter - check all date fields
                 if (currentFilters.year) {
@@ -1753,9 +1768,10 @@
                 if (currentFilters.project) {
                     if (!pr.project || !pr.project.toLowerCase().includes(currentFilters.project.toLowerCase())) return false;
                 }
-                // Status filter - use pr_status now
+                // Status filter - check both pr_status and status fields
                 if (currentFilters.status) {
-                    if (pr.pr_status !== currentFilters.status) return false;
+                    const prStatus = pr.pr_status || pr.status;
+                    if (prStatus !== currentFilters.status) return false;
                 }
                 // Vendor filter
                 if (currentFilters.vendor) {
@@ -1772,11 +1788,11 @@
         // Calculate comprehensive stats from filtered PRs - uses NEW data structure with averages
         function calculateFilteredStats(filteredPRs) {
             const total = filteredPRs.length;
-            const approved = filteredPRs.filter(pr => pr.pr_status === 'APPROVED').length;
+            const approved = filteredPRs.filter(pr => (pr.pr_status || pr.status) === 'APPROVED').length;
             const returned = filteredPRs.filter(pr => pr.return_date).length;
-            const rejected = filteredPRs.filter(pr => pr.pr_status === 'REJECTED').length;
-            const incomplete = filteredPRs.filter(pr => pr.pr_status === 'INCOMPLETE').length;
-            const inProcess = filteredPRs.filter(pr => pr.pr_status === 'IN PROCESS').length;
+            const rejected = filteredPRs.filter(pr => (pr.pr_status || pr.status) === 'REJECTED').length;
+            const incomplete = filteredPRs.filter(pr => (pr.pr_status || pr.status) === 'INCOMPLETE').length;
+            const inProcess = filteredPRs.filter(pr => (pr.pr_status || pr.status) === 'IN PROCESS').length;
 
             const within2days = filteredPRs.filter(pr => {
                 if (!pr.return_date || !pr.approved_date) return false;
@@ -1911,14 +1927,19 @@
         // Populate project dropdown from data
         // Populate all filter dropdowns dynamically from data
         function populateFilterDropdowns() {
-            const allPRs = prData?.all_prs || [];
+            const allPRs = prData?.all_prs || prData?.recent_prs || [];
             const allLabel = currentLang === 'ar' ? 'الكل' : 'All';
 
-            // Extract unique years from data
-            const years = [...new Set(allPRs.map(pr => {
+            // Extract unique years from data or use defaults
+            let years = [...new Set(allPRs.map(pr => {
                 const date = pr.approved_date || pr.submission_date || pr.po_approved_date;
                 return date ? date.substring(0, 4) : null;
             }).filter(y => y && y.match(/^\d{4}$/)))].sort().reverse();
+
+            // If no years found, use default years
+            if (years.length === 0) {
+                years = ['2025', '2024', '2023', '2022'];
+            }
 
             const yearSelects = [document.getElementById('filterYear'), document.getElementById('filterYearPO')];
             const yearOptions = `<option value="" data-ar="الكل" data-en="All">${allLabel}</option>` +
@@ -2587,7 +2608,7 @@
             switch(kpiType) {
                 case 'approved':
                     titleText = currentLang === 'ar' ? `PRs المعتمدة - ${filterDesc}` : `Approved PRs - ${filterDesc}`;
-                    filteredPRs = basePRs.filter(pr => pr.status === 'APPROVED');
+                    filteredPRs = basePRs.filter(pr => pr.pr_status === 'APPROVED' || pr.status === 'APPROVED');
                     break;
                 case 'returned':
                     titleText = currentLang === 'ar' ? `PRs المرتجعة - ${filterDesc}` : `Returned PRs - ${filterDesc}`;
