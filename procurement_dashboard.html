@@ -9,11 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --nesma-primary: #2e3192;
-            --nesma-secondary: #80d1e9;
-            --nesma-dark: #1a1a2e;
-            --nesma-gradient: linear-gradient(135deg, #2e3192 0%, #1a1a5e 100%);
-            --procurement-gradient: linear-gradient(135deg, #059669 0%, #34d399 100%);
+            /* NIT Brand Colors */
+            --nit-primary: #2e3192;
+            --nit-secondary: #80d1e9;
+            --nit-dark: #203366;
+            --nit-gray: #b3b3b3;
+            --nit-gradient: linear-gradient(135deg, #2e3192 0%, #203366 100%);
+            --nit-light-gradient: linear-gradient(135deg, #80d1e9 0%, #2e3192 100%);
         }
 
         * { font-family: 'Cairo', 'Inter', sans-serif; }
@@ -25,8 +27,8 @@
         }
 
         .nesma-header {
-            background: var(--procurement-gradient);
-            box-shadow: 0 4px 20px rgba(5, 150, 105, 0.3);
+            background: var(--nit-gradient);
+            box-shadow: 0 4px 20px rgba(46, 49, 146, 0.3);
         }
 
         .card {
@@ -34,12 +36,127 @@
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
             transition: all 0.3s ease;
-            border: 1px solid rgba(5, 150, 105, 0.05);
+            border: 1px solid rgba(46, 49, 146, 0.05);
         }
 
         .card:hover {
-            box-shadow: 0 8px 30px rgba(5, 150, 105, 0.1);
+            box-shadow: 0 8px 30px rgba(46, 49, 146, 0.1);
             transform: translateY(-2px);
+        }
+
+        /* Visibility Toggle */
+        .section-toggle {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .card:hover .section-toggle,
+        .section-header:hover .section-toggle {
+            opacity: 1;
+        }
+
+        .toggle-btn {
+            background: rgba(46, 49, 146, 0.1);
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--nit-primary);
+            transition: all 0.2s ease;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(46, 49, 146, 0.2);
+        }
+
+        .section-hidden {
+            display: none !important;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            padding: 16px;
+            z-index: 90;
+            max-height: 70vh;
+            overflow-y: auto;
+            display: none;
+            min-width: 280px;
+        }
+
+        .settings-panel.show {
+            display: block;
+        }
+
+        [dir="ltr"] .settings-panel {
+            left: auto;
+            right: 20px;
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--nit-primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
         }
 
         .kpi-card {
@@ -76,7 +193,7 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: #059669;
+            background: var(--nit-primary);
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
@@ -86,8 +203,8 @@
         }
 
         .tab-btn.active {
-            color: #059669;
-            background: rgba(5, 150, 105, 0.05);
+            color: var(--nit-primary);
+            background: rgba(46, 49, 146, 0.05);
         }
 
         .tab-content {
@@ -119,8 +236,8 @@
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             padding: 14px 16px;
             font-weight: 600;
-            color: #059669;
-            border-bottom: 2px solid #34d399;
+            color: var(--nit-primary);
+            border-bottom: 2px solid var(--nit-secondary);
             position: sticky;
             top: 0;
         }
@@ -131,7 +248,7 @@
         }
 
         .data-table tr:hover td {
-            background: rgba(52, 211, 153, 0.1);
+            background: rgba(128, 209, 233, 0.15);
         }
 
         .scroll-container {
@@ -149,7 +266,7 @@
         }
 
         .scroll-container::-webkit-scrollbar-thumb {
-            background: #34d399;
+            background: var(--nit-secondary);
             border-radius: 10px;
         }
 
@@ -270,8 +387,8 @@
 
         .filter-select:focus {
             outline: none;
-            border-color: #059669;
-            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+            border-color: var(--nit-primary);
+            box-shadow: 0 0 0 3px rgba(46, 49, 146, 0.1);
         }
 
         @media print {
@@ -306,23 +423,50 @@
                     <div class="hidden md:block border-r border-white/30 h-8 mx-2"></div>
                     <div class="hidden md:block">
                         <h1 class="text-lg font-bold" data-ar="لوحة قياس المشتريات" data-en="Procurement Dashboard">لوحة قياس المشتريات</h1>
-                        <p class="text-xs text-emerald-100" data-ar="تقارير طلبات الشراء وتقييم الموردين" data-en="PR Reports & Vendor Evaluation">تقارير طلبات الشراء وتقييم الموردين</p>
+                        <p class="text-xs text-blue-200" data-ar="تقارير طلبات الشراء وتقييم الموردين" data-en="PR Reports & Vendor Evaluation">تقارير طلبات الشراء وتقييم الموردين</p>
                     </div>
                 </div>
 
                 <!-- Header Actions -->
                 <div class="flex items-center gap-3 lg:gap-6">
                     <div class="text-left hidden sm:block">
-                        <p class="text-xs text-emerald-100" data-ar="آخر تحديث" data-en="Last Update">آخر تحديث</p>
+                        <p class="text-xs text-blue-200" data-ar="آخر تحديث" data-en="Last Update">آخر تحديث</p>
                         <p class="text-sm font-semibold" id="lastUpdateDate">8 ديسمبر 2025</p>
                     </div>
                     <button onclick="toggleLanguage()" class="lang-toggle" id="langBtn">
                         <span id="langText">EN</span>
                     </button>
+                    <button onclick="toggleSettingsPanel()" class="lang-toggle" title="Settings">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
     </header>
+
+    <!-- Settings Panel -->
+    <div id="settingsPanel" class="settings-panel no-print">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-gray-800" data-ar="إعدادات العرض" data-en="Display Settings">إعدادات العرض</h3>
+            <button onclick="toggleSettingsPanel()" class="text-gray-500 hover:text-gray-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div class="text-xs text-gray-500 mb-3" data-ar="تحكم في إظهار/إخفاء أقسام الداش بورد" data-en="Control dashboard sections visibility">تحكم في إظهار/إخفاء أقسام الداش بورد</div>
+        <div id="settingsItems">
+            <!-- Items will be populated by JavaScript -->
+        </div>
+        <div class="mt-4 pt-3 border-t border-gray-200">
+            <button onclick="resetVisibility()" class="w-full py-2 text-sm text-center text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" data-ar="إظهار الكل" data-en="Show All">
+                إظهار الكل
+            </button>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 lg:px-6 py-6 lg:py-8">
@@ -419,10 +563,10 @@
                     <!-- PR Return KPIs -->
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
                         <!-- Total PRs Approved -->
-                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white" onclick="showKPIDetails('approved')">
+                        <div class="card kpi-card p-4 lg:p-6 text-white" style="background: linear-gradient(135deg, #2e3192 0%, #203366 100%);" onclick="showKPIDetails('approved')" data-section="kpi-approved">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-emerald-100 text-xs lg:text-sm mb-1" data-ar="PRs معتمدة" data-en="PRs Approved">PRs معتمدة</p>
+                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-ar="PRs معتمدة" data-en="PRs Approved">PRs معتمدة</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="kpi-approved">242</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -431,7 +575,7 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="text-xs text-emerald-100">
+                            <div class="text-xs text-blue-100">
                                 <span data-ar="اضغط للتفاصيل" data-en="Click for details">اضغط للتفاصيل</span>
                             </div>
                         </div>
@@ -1711,6 +1855,82 @@
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             localStorage.setItem('nesma_lang', currentLang);
             applyLanguage();
+        }
+
+        // Visibility Toggle Functions
+        const dashboardSections = [
+            { id: 'kpi-cards', nameAr: 'بطاقات KPI الرئيسية', nameEn: 'Main KPI Cards', selector: '.grid.grid-cols-2.lg\\:grid-cols-4.gap-4' },
+            { id: 'summary-kpis', nameAr: 'ملخص الإحصائيات', nameEn: 'Summary Stats', selector: '.grid.grid-cols-2.lg\\:grid-cols-5' },
+            { id: 'monthly-chart', nameAr: 'رسم بياني شهري', nameEn: 'Monthly Chart', selector: '#monthlyReturnChart' },
+            { id: 'return-pie', nameAr: 'رسم دائري للإرجاع', nameEn: 'Return Pie Chart', selector: '#returnPieChart' },
+            { id: 'pending-chart', nameAr: 'تحليل أسباب التأخير', nameEn: 'Delay Analysis', selector: '#pendingWithChart' },
+            { id: 'vendor-kpis', nameAr: 'KPIs الموردين', nameEn: 'Vendor KPIs', selector: '#tab-vendor-eval .grid' },
+            { id: 'vendor-charts', nameAr: 'رسوم الموردين', nameEn: 'Vendor Charts', selector: '#vendorScoreChart' }
+        ];
+
+        function toggleSettingsPanel() {
+            const panel = document.getElementById('settingsPanel');
+            panel.classList.toggle('show');
+            if (panel.classList.contains('show')) {
+                initSettingsPanel();
+            }
+        }
+
+        function initSettingsPanel() {
+            const container = document.getElementById('settingsItems');
+            const savedSettings = JSON.parse(localStorage.getItem('dashboard_visibility') || '{}');
+
+            container.innerHTML = dashboardSections.map(section => {
+                const isVisible = savedSettings[section.id] !== false;
+                return `
+                    <div class="settings-item">
+                        <span class="text-sm text-gray-700">${currentLang === 'ar' ? section.nameAr : section.nameEn}</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${isVisible ? 'checked' : ''} onchange="toggleSection('${section.id}', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleSection(sectionId, visible) {
+            const savedSettings = JSON.parse(localStorage.getItem('dashboard_visibility') || '{}');
+            savedSettings[sectionId] = visible;
+            localStorage.setItem('dashboard_visibility', JSON.stringify(savedSettings));
+            applyVisibility();
+        }
+
+        function applyVisibility() {
+            const savedSettings = JSON.parse(localStorage.getItem('dashboard_visibility') || '{}');
+
+            dashboardSections.forEach(section => {
+                const isVisible = savedSettings[section.id] !== false;
+                const elements = document.querySelectorAll(section.selector);
+                elements.forEach(el => {
+                    const parent = el.closest('.card') || el.closest('.grid') || el.parentElement;
+                    if (parent) {
+                        parent.style.display = isVisible ? '' : 'none';
+                    }
+                });
+            });
+        }
+
+        function resetVisibility() {
+            localStorage.removeItem('dashboard_visibility');
+            initSettingsPanel();
+            applyVisibility();
+
+            // Show all sections
+            dashboardSections.forEach(section => {
+                const elements = document.querySelectorAll(section.selector);
+                elements.forEach(el => {
+                    const parent = el.closest('.card') || el.closest('.grid') || el.parentElement;
+                    if (parent) {
+                        parent.style.display = '';
+                    }
+                });
+            });
         }
 
         function applyLanguage() {
