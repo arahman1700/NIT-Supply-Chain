@@ -533,7 +533,7 @@
                     </div>
 
                     <!-- PR Status Breakdown -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                         <div>
                             <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="حالات طلبات الشراء (الكل)" data-en="PR Status (All)">حالات طلبات الشراء (الكل)</h3>
                             <div class="chart-container">
@@ -544,6 +544,22 @@
                             <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="نسبة الإرجاع الشهرية" data-en="Monthly Return Rate">نسبة الإرجاع الشهرية</h3>
                             <div class="chart-container">
                                 <canvas id="returnRateChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delay Reasons Analysis -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="تحليل أسباب التأخير (معلق لدى)" data-en="Delay Analysis (Pending With)">تحليل أسباب التأخير (معلق لدى)</h3>
+                            <div class="chart-container">
+                                <canvas id="pendingWithChart"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="PRs المعلقة حسب الفترة" data-en="Pending PRs by Duration">PRs المعلقة حسب الفترة</h3>
+                            <div id="pendingDurationList" class="space-y-2 max-h-[300px] overflow-y-auto">
+                                <p class="text-gray-500 text-center py-4" data-ar="جاري التحميل..." data-en="Loading...">جاري التحميل...</p>
                             </div>
                         </div>
                     </div>
@@ -1384,6 +1400,49 @@
                         scales: { y: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
                     }
                 });
+            }
+
+            // Pending With Chart (Delay Analysis)
+            const pendingWithCtx = document.getElementById('pendingWithChart')?.getContext('2d');
+            if (pendingWithCtx) {
+                // Analyze pending with data from returned PRs
+                const returnedPRs = prData.all_prs.filter(pr => pr.return_date);
+                const pendingWithCounts = {};
+                returnedPRs.forEach(pr => {
+                    const pendingWith = pr.pending_with || (currentLang === 'ar' ? 'غير محدد' : 'Not Specified');
+                    pendingWithCounts[pendingWith] = (pendingWithCounts[pendingWith] || 0) + 1;
+                });
+
+                const sortedPending = Object.entries(pendingWithCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 8);
+
+                const pendingLabels = sortedPending.map(([label]) => label.substring(0, 20));
+                const pendingValues = sortedPending.map(([, value]) => value);
+                const pendingColors = ['#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#14b8a6', '#06b6d4'];
+
+                charts.pendingWith = new Chart(pendingWithCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: pendingLabels,
+                        datasets: [{
+                            label: currentLang === 'ar' ? 'عدد PRs المعلقة' : 'Pending PRs Count',
+                            data: pendingValues,
+                            backgroundColor: pendingColors,
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { x: { beginAtZero: true } }
+                    }
+                });
+
+                // Update pending duration list
+                updatePendingDurationList(returnedPRs);
             }
 
             // PR to PO Chart
@@ -2570,6 +2629,29 @@
 
             const showReturnCols = type === 'returned' || type === 'within2days' || type === 'after2days';
 
+            // Analyze delay reasons for summary
+            let delayAnalysis = '';
+            if (showReturnCols) {
+                const pendingWithCounts = {};
+                prs.forEach(pr => {
+                    const reason = pr.pending_with || (currentLang === 'ar' ? 'غير محدد' : 'Not Specified');
+                    pendingWithCounts[reason] = (pendingWithCounts[reason] || 0) + 1;
+                });
+
+                const sortedReasons = Object.entries(pendingWithCounts).sort((a, b) => b[1] - a[1]);
+                if (sortedReasons.length > 0) {
+                    delayAnalysis = `
+                    <div class="mb-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                        <h4 class="font-medium text-amber-800 mb-2">${currentLang === 'ar' ? '📊 تحليل أسباب التأخير (معلق لدى):' : '📊 Delay Analysis (Pending With):'}</h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${sortedReasons.slice(0, 5).map(([reason, cnt]) =>
+                                `<span class="px-2 py-1 bg-white rounded text-sm border border-amber-300">${reason}: <strong>${cnt}</strong></span>`
+                            ).join('')}
+                        </div>
+                    </div>`;
+                }
+            }
+
             return `
                 <div class="mb-4 flex flex-wrap gap-3 items-center justify-between">
                     <span class="text-sm font-medium text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">${countLabel}</span>
@@ -2582,6 +2664,7 @@
                         </button>
                     </div>
                 </div>
+                ${delayAnalysis}
                 <div class="scroll-container" style="max-height: 400px;">
                     <table class="data-table text-sm w-full" id="modalTable">
                         <thead>
@@ -2593,7 +2676,13 @@
                                 <th>${currentLang === 'ar' ? 'المورد' : 'Vendor'}</th>
                                 <th>${currentLang === 'ar' ? 'القيمة' : 'Value'}</th>
                                 <th>${currentLang === 'ar' ? 'تاريخ الاعتماد' : 'Approved'}</th>
-                                ${showReturnCols ? `<th>${currentLang === 'ar' ? 'تاريخ الإرجاع' : 'Returned'}</th><th>${currentLang === 'ar' ? 'أيام' : 'Days'}</th>` : ''}
+                                ${showReturnCols ? `
+                                    <th>${currentLang === 'ar' ? 'تاريخ الإرجاع' : 'Returned'}</th>
+                                    <th>${currentLang === 'ar' ? 'أيام' : 'Days'}</th>
+                                    <th>${currentLang === 'ar' ? 'معلق لدى' : 'Pending With'}</th>
+                                    <th>${currentLang === 'ar' ? 'معلق منذ' : 'Since'}</th>
+                                    <th>${currentLang === 'ar' ? 'ملاحظة' : 'Note'}</th>
+                                ` : ''}
                                 <th>${currentLang === 'ar' ? 'الحالة' : 'Status'}</th>
                             </tr>
                         </thead>
@@ -2604,11 +2693,17 @@
                                     <td class="text-center text-gray-500">${i + 1}</td>
                                     <td class="font-medium">${pr.pr_num || '-'}</td>
                                     <td class="max-w-[120px] truncate" title="${pr.project || ''}">${pr.project || '-'}</td>
-                                    <td class="max-w-[180px] truncate" title="${pr.description || ''}">${pr.description || '-'}</td>
-                                    <td class="max-w-[120px] truncate" title="${pr.vendor || ''}">${pr.vendor || '-'}</td>
+                                    <td class="max-w-[150px] truncate" title="${pr.description || ''}">${pr.description || '-'}</td>
+                                    <td class="max-w-[100px] truncate" title="${pr.vendor || ''}">${pr.vendor || '-'}</td>
                                     <td>${pr.pr_value ? Number(pr.pr_value).toLocaleString() + ' SAR' : '-'}</td>
                                     <td>${pr.approved_date || '-'}</td>
-                                    ${showReturnCols ? `<td>${pr.return_date || '-'}</td><td class="text-center font-medium ${days > 2 ? 'text-amber-600' : 'text-blue-600'}">${days}</td>` : ''}
+                                    ${showReturnCols ? `
+                                        <td>${pr.return_date || '-'}</td>
+                                        <td class="text-center font-medium ${days > 2 ? 'text-amber-600' : 'text-blue-600'}">${days}</td>
+                                        <td class="max-w-[100px] truncate text-orange-700 font-medium" title="${pr.pending_with || ''}">${pr.pending_with || '-'}</td>
+                                        <td class="text-sm">${pr.pending_since || '-'}</td>
+                                        <td class="max-w-[150px] truncate text-gray-600" title="${pr.pr_note || ''}">${pr.pr_note || '-'}</td>
+                                    ` : ''}
                                     <td><span class="px-2 py-1 rounded text-xs ${pr.status === 'APPROVED' ? 'bg-green-100 text-green-800' : pr.status === 'RETURNED' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}">${pr.status || '-'}</span></td>
                                 </tr>`;
                             }).join('')}
@@ -2629,10 +2724,82 @@
             }
         }
 
+        // Update pending duration list
+        function updatePendingDurationList(returnedPRs) {
+            const listContainer = document.getElementById('pendingDurationList');
+            if (!listContainer) return;
+
+            // Group by pending duration
+            const today = new Date();
+            const durations = {
+                'critical': { label: currentLang === 'ar' ? 'معلق أكثر من 30 يوم' : 'Pending >30 days', prs: [], color: 'red' },
+                'high': { label: currentLang === 'ar' ? 'معلق 15-30 يوم' : 'Pending 15-30 days', prs: [], color: 'orange' },
+                'medium': { label: currentLang === 'ar' ? 'معلق 7-14 يوم' : 'Pending 7-14 days', prs: [], color: 'yellow' },
+                'low': { label: currentLang === 'ar' ? 'معلق أقل من 7 أيام' : 'Pending <7 days', prs: [], color: 'green' }
+            };
+
+            returnedPRs.forEach(pr => {
+                if (!pr.pending_since) return;
+                const pendingDate = new Date(pr.pending_since);
+                const daysPending = Math.floor((today - pendingDate) / 86400000);
+
+                if (daysPending > 30) durations.critical.prs.push({ ...pr, daysPending });
+                else if (daysPending > 14) durations.high.prs.push({ ...pr, daysPending });
+                else if (daysPending > 6) durations.medium.prs.push({ ...pr, daysPending });
+                else durations.low.prs.push({ ...pr, daysPending });
+            });
+
+            let html = '';
+            Object.values(durations).forEach(group => {
+                if (group.prs.length === 0) return;
+                const colorClasses = {
+                    'red': 'bg-red-50 border-red-200 text-red-800',
+                    'orange': 'bg-orange-50 border-orange-200 text-orange-800',
+                    'yellow': 'bg-yellow-50 border-yellow-200 text-yellow-800',
+                    'green': 'bg-green-50 border-green-200 text-green-800'
+                };
+                html += `
+                    <div class="p-3 rounded-lg border ${colorClasses[group.color]}">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-medium text-sm">${group.label}</span>
+                            <span class="text-xs font-bold px-2 py-1 rounded-full bg-white">${group.prs.length}</span>
+                        </div>
+                        <div class="space-y-1 text-xs">
+                            ${group.prs.slice(0, 5).map(pr => `
+                                <div class="flex justify-between items-center py-1 border-t border-current border-opacity-20">
+                                    <span class="truncate max-w-[150px]" title="${pr.pr_num}: ${pr.project || ''}">${pr.pr_num}</span>
+                                    <span class="font-medium">${pr.daysPending} ${currentLang === 'ar' ? 'يوم' : 'days'}</span>
+                                </div>
+                            `).join('')}
+                            ${group.prs.length > 5 ? `<div class="text-center opacity-75">+${group.prs.length - 5} ${currentLang === 'ar' ? 'آخرين' : 'more'}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (!html) {
+                html = `<p class="text-gray-500 text-center py-4">${currentLang === 'ar' ? 'لا توجد بيانات معلقة' : 'No pending data available'}</p>`;
+            }
+
+            listContainer.innerHTML = html;
+        }
+
         function exportToCSV() {
             if (!currentModalData || currentModalData.length === 0) return;
-            const headers = ['PR #', 'Project', 'Description', 'Vendor', 'Value', 'Approved Date', 'Return Date', 'Status'];
-            const rows = currentModalData.map(pr => [pr.pr_num || '', pr.project || '', pr.description || '', pr.vendor || '', pr.pr_value || '', pr.approved_date || '', pr.return_date || '', pr.status || '']);
+            const headers = ['PR #', 'Project', 'Description', 'Vendor', 'Value', 'Approved Date', 'Return Date', 'Pending With', 'Pending Since', 'PR Note', 'Status'];
+            const rows = currentModalData.map(pr => [
+                pr.pr_num || '',
+                pr.project || '',
+                pr.description || '',
+                pr.vendor || '',
+                pr.pr_value || '',
+                pr.approved_date || '',
+                pr.return_date || '',
+                pr.pending_with || '',
+                pr.pending_since || '',
+                pr.pr_note || '',
+                pr.status || ''
+            ]);
             let csv = '\uFEFF' + headers.join(',') + '\n';
             rows.forEach(r => { csv += r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',') + '\n'; });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });

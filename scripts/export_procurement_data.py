@@ -92,6 +92,11 @@ def export_pr_data(client):
             except Exception as e:
                 pass
 
+        # Get additional columns for delay reasons
+        pr_note = get_cell_value(row, col_map, 'PR Note')
+        pending_with = get_cell_value(row, col_map, 'Pending With')
+        pending_since = get_cell_value(row, col_map, 'Pending Since')
+
         # Store row data
         pr_data.append({
             'pr_num': get_cell_value(row, col_map, 'Pr Num'),
@@ -104,7 +109,10 @@ def export_pr_data(client):
             'vendor': get_cell_value(row, col_map, 'Vendor Name'),
             'pr_value': get_cell_value(row, col_map, 'PR Value'),
             'po_value': get_cell_value(row, col_map, 'PO Value'),
-            'pr_to_po_days': pr_to_po_days
+            'pr_to_po_days': pr_to_po_days,
+            'pr_note': pr_note,
+            'pending_with': pending_with,
+            'pending_since': str(pending_since)[:10] if pending_since else None
         })
 
     # Build monthly arrays for charts
