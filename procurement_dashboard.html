@@ -376,8 +376,12 @@
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1" data-ar="السنة" data-en="Year">السنة</label>
                                 <select id="filterYear" class="filter-select" onchange="applyFilters()">
-                                    <option value="2025">2025</option>
+                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
+                                    <option value="2025" selected>2025</option>
                                     <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
                                 </select>
                             </div>
                             <div class="flex-grow"></div>
@@ -462,23 +466,28 @@
                         </div>
                     </div>
 
-                    <!-- 2025 Summary KPIs -->
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6">
+                    <!-- Summary KPIs (Dynamic based on filters) -->
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4 mb-6">
                         <div class="card p-3 lg:p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="إجمالي PRs 2025" data-en="Total PRs 2025">إجمالي PRs 2025</p>
-                            <p class="text-xl lg:text-2xl font-bold text-gray-800" id="kpi-total-2025">1,929</p>
+                            <p class="text-gray-500 text-xs mb-1" id="kpi-total-label" data-ar="إجمالي PRs" data-en="Total PRs">إجمالي PRs</p>
+                            <p class="text-xl lg:text-2xl font-bold text-gray-800" id="kpi-total-filtered">1,929</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="إجمالي المرتجعة 2025" data-en="Total Returned 2025">إجمالي المرتجعة 2025</p>
-                            <p class="text-xl lg:text-2xl font-bold text-red-600" id="kpi-returned-2025">350</p>
+                            <p class="text-gray-500 text-xs mb-1" data-ar="مرفوضة" data-en="Rejected">مرفوضة</p>
+                            <p class="text-xl lg:text-2xl font-bold text-rose-600" id="kpi-rejected">498</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="نسبة الإرجاع 2025" data-en="Return Rate 2025">نسبة الإرجاع 2025</p>
-                            <p class="text-xl lg:text-2xl font-bold text-amber-600" id="kpi-rate-2025">18.1%</p>
+                            <p class="text-gray-500 text-xs mb-1" data-ar="غير مكتملة" data-en="Incomplete">غير مكتملة</p>
+                            <p class="text-xl lg:text-2xl font-bold text-orange-600" id="kpi-incomplete">118</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="متوسط أيام الإرجاع" data-en="Avg Days to Return">متوسط أيام الإرجاع</p>
-                            <p class="text-xl lg:text-2xl font-bold text-blue-600">37.5</p>
+                            <p class="text-gray-500 text-xs mb-1" data-ar="قيد المعالجة" data-en="In Process">قيد المعالجة</p>
+                            <p class="text-xl lg:text-2xl font-bold text-cyan-600" id="kpi-in-process">114</p>
+                        </div>
+                        <div class="card p-3 lg:p-4 text-center">
+                            <p class="text-gray-500 text-xs mb-1" data-ar="متوسط PR→PO" data-en="Avg PR→PO Days">متوسط PR→PO</p>
+                            <p class="text-xl lg:text-2xl font-bold text-blue-600" id="kpi-avg-pr-to-po">42.9</p>
+                            <p class="text-xs text-gray-400" data-ar="يوم" data-en="days">يوم</p>
                         </div>
                     </div>
 
@@ -549,6 +558,10 @@
                                 <select id="filterYearPO" class="filter-select" onchange="applyPOFilters()">
                                     <option value="2025">2025</option>
                                     <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="">الكل</option>
                                 </select>
                             </div>
                             <div class="flex-grow"></div>
@@ -1032,12 +1045,22 @@
             document.getElementById('kpi-within2-pct').textContent = within2Pct + '%';
             document.getElementById('kpi-after2-pct').textContent = after2Pct + '%';
 
-            // 2025 totals
-            const totalApproved = prData.summary.total_approved_2025 || 0;
-            const totalReturned = prData.summary.total_returned_2025 || 0;
-            document.getElementById('kpi-total-2025').textContent = totalApproved.toLocaleString();
-            document.getElementById('kpi-returned-2025').textContent = totalReturned.toLocaleString();
-            document.getElementById('kpi-rate-2025').textContent = prData.summary.return_rate_2025 + '%';
+            // Update summary KPIs (using filtered data for dynamic updates)
+            const allPRs = prData?.all_prs || [];
+            const stats = {
+                total: allPRs.length,
+                rejected: allPRs.filter(pr => pr.pr_status === 'REJECTED').length,
+                incomplete: allPRs.filter(pr => pr.pr_status === 'INCOMPLETE').length,
+                inProcess: allPRs.filter(pr => pr.pr_status === 'IN PROCESS').length,
+            };
+            const prToPoDays = allPRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days !== undefined).map(pr => pr.pr_to_po_days);
+            const avgPrToPo = prToPoDays.length > 0 ? (prToPoDays.reduce((a, b) => a + b, 0) / prToPoDays.length).toFixed(1) : 0;
+
+            document.getElementById('kpi-total-filtered').textContent = stats.total.toLocaleString();
+            document.getElementById('kpi-rejected').textContent = stats.rejected.toLocaleString();
+            document.getElementById('kpi-incomplete').textContent = stats.incomplete.toLocaleString();
+            document.getElementById('kpi-in-process').textContent = stats.inProcess.toLocaleString();
+            document.getElementById('kpi-avg-pr-to-po').textContent = avgPrToPo;
         }
 
         // Update PR to PO KPIs
@@ -1505,15 +1528,15 @@
         }
 
         // Current filter state
-        let currentFilters = { project: '', month: '', year: '2025', status: '' };
+        let currentFilters = { project: '', month: '', year: '2025', status: '', vendor: '', agent: '' };
 
-        // Get filtered PRs based on current filters
+        // Get filtered PRs based on current filters - uses NEW data structure
         function getFilteredPRs() {
-            const allPRs = prData?.all_prs || prData?.recent_prs || [];
+            const allPRs = prData?.all_prs || [];
             return allPRs.filter(pr => {
-                // Year filter
+                // Year filter - check all date fields
                 if (currentFilters.year) {
-                    const dateField = pr.approved_date || pr.submission_date;
+                    const dateField = pr.approved_date || pr.submission_date || pr.po_approved_date;
                     if (!dateField || !dateField.startsWith(currentFilters.year)) return false;
                 }
                 // Month filter
@@ -1527,29 +1550,61 @@
                 if (currentFilters.project) {
                     if (!pr.project || !pr.project.toLowerCase().includes(currentFilters.project.toLowerCase())) return false;
                 }
-                // Status filter
+                // Status filter - use pr_status now
                 if (currentFilters.status) {
-                    if (pr.status !== currentFilters.status) return false;
+                    if (pr.pr_status !== currentFilters.status) return false;
+                }
+                // Vendor filter
+                if (currentFilters.vendor) {
+                    if (!pr.vendor || !pr.vendor.toLowerCase().includes(currentFilters.vendor.toLowerCase())) return false;
+                }
+                // Agent filter
+                if (currentFilters.agent) {
+                    if (!pr.agent || pr.agent !== currentFilters.agent) return false;
                 }
                 return true;
             });
         }
 
-        // Calculate stats from filtered PRs
+        // Calculate comprehensive stats from filtered PRs - uses NEW data structure with averages
         function calculateFilteredStats(filteredPRs) {
-            const approved = filteredPRs.filter(pr => pr.status === 'APPROVED').length;
+            const total = filteredPRs.length;
+            const approved = filteredPRs.filter(pr => pr.pr_status === 'APPROVED').length;
             const returned = filteredPRs.filter(pr => pr.return_date).length;
+            const rejected = filteredPRs.filter(pr => pr.pr_status === 'REJECTED').length;
+            const incomplete = filteredPRs.filter(pr => pr.pr_status === 'INCOMPLETE').length;
+            const inProcess = filteredPRs.filter(pr => pr.pr_status === 'IN PROCESS').length;
+
             const within2days = filteredPRs.filter(pr => {
                 if (!pr.return_date || !pr.approved_date) return false;
                 const days = Math.floor((new Date(pr.return_date) - new Date(pr.approved_date)) / 86400000);
                 return days <= 2;
             }).length;
             const after2days = returned - within2days;
-            const posIssued = filteredPRs.filter(pr => pr.pr_to_po_days !== null).length;
+
+            const posIssued = filteredPRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days !== undefined).length;
             const within30days = filteredPRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days <= 30).length;
             const after30days = posIssued - within30days;
 
-            return { approved, returned, within2days, after2days, posIssued, within30days, after30days };
+            // Calculate averages
+            const prToPoDays = filteredPRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days !== undefined).map(pr => pr.pr_to_po_days);
+            const avgPrToPo = prToPoDays.length > 0 ? (prToPoDays.reduce((a, b) => a + b, 0) / prToPoDays.length).toFixed(1) : 0;
+
+            // Calculate PR values
+            const prValues = filteredPRs.filter(pr => pr.pr_value).map(pr => parseFloat(pr.pr_value) || 0);
+            const totalPrValue = prValues.reduce((a, b) => a + b, 0);
+
+            const poValues = filteredPRs.filter(pr => pr.po_value).map(pr => parseFloat(pr.po_value) || 0);
+            const totalPoValue = poValues.reduce((a, b) => a + b, 0);
+
+            const savingValues = filteredPRs.filter(pr => pr.saving_amount).map(pr => parseFloat(pr.saving_amount) || 0);
+            const totalSavings = savingValues.reduce((a, b) => a + b, 0);
+
+            return {
+                total, approved, returned, rejected, incomplete, inProcess,
+                within2days, after2days, posIssued, within30days, after30days,
+                avgPrToPo, totalPrValue, totalPoValue, totalSavings
+            };
         }
 
         // Update all KPIs based on filters
@@ -1557,7 +1612,7 @@
             const filteredPRs = getFilteredPRs();
             const stats = calculateFilteredStats(filteredPRs);
 
-            // PR Return KPIs
+            // PR Return KPIs (Top Row)
             document.getElementById('kpi-approved').textContent = stats.approved.toLocaleString();
             document.getElementById('kpi-returned').textContent = stats.returned.toLocaleString();
             const returnRate = stats.approved > 0 ? ((stats.returned / stats.approved) * 100).toFixed(1) : 0;
@@ -1568,6 +1623,13 @@
             const after2Pct = stats.returned > 0 ? ((stats.after2days / stats.returned) * 100).toFixed(1) : 0;
             document.getElementById('kpi-within2-pct').textContent = within2Pct + '%';
             document.getElementById('kpi-after2-pct').textContent = after2Pct + '%';
+
+            // Summary KPIs (Second Row - Dynamic)
+            document.getElementById('kpi-total-filtered').textContent = stats.total.toLocaleString();
+            document.getElementById('kpi-rejected').textContent = stats.rejected.toLocaleString();
+            document.getElementById('kpi-incomplete').textContent = stats.incomplete.toLocaleString();
+            document.getElementById('kpi-in-process').textContent = stats.inProcess.toLocaleString();
+            document.getElementById('kpi-avg-pr-to-po').textContent = stats.avgPrToPo;
 
             // PR to PO KPIs
             document.getElementById('po-kpi-received-month').textContent = stats.approved.toLocaleString();
