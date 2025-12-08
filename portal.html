@@ -332,6 +332,11 @@
 
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('nesma_lang', currentLang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
             document.documentElement.lang = currentLang;
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
             document.getElementById('langText').textContent = currentLang === 'ar' ? 'EN' : 'عربي';
@@ -341,6 +346,12 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Load saved language
+            const savedLang = localStorage.getItem('nesma_lang');
+            if (savedLang) {
+                currentLang = savedLang;
+                applyLanguage();
+            }
             createParticles();
             updateTime();
             setInterval(updateTime, 1000);
