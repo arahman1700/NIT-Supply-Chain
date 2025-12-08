@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NESMA | Procurement Dashboard - لوحة قياس المشتريات</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -1096,15 +1096,44 @@
     </div>
 
     <script>
-        let currentLang = 'ar';
-        let prData = null;
-        let vendorData = null;
-        let charts = {};
-        let filteredPRData = [];
-        let previousPeriodStats = null; // For comparison
+        // ========== GLOBAL VARIABLES ==========
+        window.currentLang = 'ar';
+        window.prData = null;
+        window.vendorData = null;
+        window.charts = {};
+        window.filteredPRData = [];
+        window.previousPeriodStats = null;
 
-        // Chart.js Config
-        Chart.defaults.font.family = 'Cairo';
+        // Shorthand references
+        let currentLang = window.currentLang;
+        let prData = window.prData;
+        let vendorData = window.vendorData;
+        let charts = window.charts;
+        let filteredPRData = window.filteredPRData;
+        let previousPeriodStats = window.previousPeriodStats;
+
+        // ========== CHART.JS VERIFICATION ==========
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js failed to load!');
+            document.addEventListener('DOMContentLoaded', () => {
+                document.body.innerHTML = `
+                    <div style="padding:50px;text-align:center;direction:rtl;font-family:Cairo,sans-serif;">
+                        <h1 style="color:#ef4444;">خطأ في تحميل المكتبات</h1>
+                        <p>فشل تحميل Chart.js. الرجاء:</p>
+                        <ul style="text-align:right;max-width:400px;margin:20px auto;">
+                            <li>التأكد من اتصال الإنترنت</li>
+                            <li>إعادة تحميل الصفحة</li>
+                            <li>تجربة متصفح آخر</li>
+                        </ul>
+                        <button onclick="location.reload()" style="padding:10px 30px;background:#2e3192;color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;">إعادة تحميل</button>
+                    </div>`;
+            });
+            throw new Error('Chart.js is required but not loaded');
+        }
+
+        // Chart.js Config (only if Chart is available)
+        console.log('Chart.js loaded successfully, version:', Chart.version);
+        Chart.defaults.font.family = 'Cairo, Arial, sans-serif';
         Chart.defaults.font.size = 12;
 
         // Loading Overlay Functions
@@ -1231,41 +1260,80 @@
             if (el30plus) el30plus.textContent = count30plus;
         }
 
-        // Initialize Dashboard
+        // ========== ERROR DISPLAY FUNCTION ==========
+        function showDashboardError(message, details) {
+            console.error('Dashboard Error:', message, details);
+            const errorContainer = document.createElement('div');
+            errorContainer.className = 'fixed top-4 left-4 right-4 z-50 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg';
+            errorContainer.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <strong>خطأ:</strong> ${message}
+                        ${details ? `<br><small class="text-red-500">${details}</small>` : ''}
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-red-700 hover:text-red-900 font-bold text-xl">&times;</button>
+                </div>
+            `;
+            document.body.appendChild(errorContainer);
+            setTimeout(() => errorContainer.remove(), 10000);
+        }
+
+        // ========== INITIALIZE DASHBOARD ==========
         document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Dashboard initialization starting...');
+
+            // 1. Load saved language
             const savedLang = localStorage.getItem('nesma_lang');
             if (savedLang) {
                 currentLang = savedLang;
-                applyLanguage();
+                window.currentLang = savedLang;
+                if (typeof applyLanguage === 'function') applyLanguage();
             }
+            console.log('✅ Language set:', currentLang);
 
-            // Show loading overlay
+            // 2. Show loading overlay
             showLoading(currentLang === 'ar' ? 'جاري تحميل البيانات...' : 'Loading data...');
 
             try {
-                // Load data from JSON files
+                // 3. Load data from JSON files
+                console.log('📥 Loading data...');
                 await loadData();
+                console.log('✅ Data loaded - PRs:', prData?.all_prs?.length || 0, ', Vendors:', vendorData?.vendors?.length || 0);
 
-                // Populate project filters from data
-                populateProjectDropdown();
-                populateVendorCategoryDropdown();
+                // 4. Populate dropdowns
+                console.log('📋 Populating dropdowns...');
+                if (typeof populateProjectDropdown === 'function') populateProjectDropdown();
+                if (typeof populateVendorCategoryDropdown === 'function') populateVendorCategoryDropdown();
+                console.log('✅ Dropdowns populated');
 
-                // Create charts and populate table
-                createCharts();
-                createVendorAnalyticsCharts();
-                populateVendorTable();
+                // 5. Create charts
+                console.log('📊 Creating charts...');
+                if (typeof createCharts === 'function') createCharts();
+                if (typeof createVendorAnalyticsCharts === 'function') createVendorAnalyticsCharts();
+                console.log('✅ Charts created:', Object.keys(charts).length);
 
-                // Update pending duration summary
-                updatePendingDurationSummary();
+                // 6. Populate tables
+                console.log('📋 Populating tables...');
+                if (typeof populateVendorTable === 'function') populateVendorTable();
+                console.log('✅ Tables populated');
 
-                // Update last refresh time
-                updateLastRefreshTime();
+                // 7. Update summaries
+                if (typeof updatePendingDurationSummary === 'function') updatePendingDurationSummary();
+                if (typeof updateLastRefreshTime === 'function') updateLastRefreshTime();
+                console.log('✅ Summaries updated');
 
-                // Start auto-refresh
-                startAutoRefresh();
+                // 8. Start auto-refresh
+                if (typeof startAutoRefresh === 'function') startAutoRefresh();
+                console.log('✅ Auto-refresh started');
+
+                console.log('🎉 Dashboard initialization complete!');
 
             } catch (error) {
-                console.error('Dashboard initialization error:', error);
+                console.error('❌ Dashboard initialization error:', error);
+                showDashboardError(
+                    currentLang === 'ar' ? 'فشل تحميل الداشبورد' : 'Dashboard failed to load',
+                    error.message
+                );
             } finally {
                 // Hide loading overlay
                 hideLoading();
@@ -1341,10 +1409,12 @@
                 if (prResponse.ok) {
                     let rawData = await prResponse.json();
                     prData = transformPRData(rawData);
+                    window.prData = prData; // Sync to window
                     console.log('PR Data loaded and transformed:', prData.summary);
                     console.log('Total PRs available:', (prData.all_prs || prData.recent_prs || []).length);
                     filteredPRData = prData.all_prs || prData.recent_prs || [];
-                    updateFilteredKPIs();
+                    window.filteredPRData = filteredPRData; // Sync to window
+                    if (typeof updateFilteredKPIs === 'function') updateFilteredKPIs();
                 } else {
                     console.log('PR fetch failed, using fallback data');
                     useFallbackPRData();
@@ -1359,8 +1429,9 @@
                 const vendorResponse = await fetch('data/vendor_data.json' + cacheBuster);
                 if (vendorResponse.ok) {
                     vendorData = await vendorResponse.json();
+                    window.vendorData = vendorData; // Sync to window
                     console.log('Vendor Data loaded successfully:', vendorData.summary);
-                    updateVendorKPIs();
+                    if (typeof updateVendorKPIs === 'function') updateVendorKPIs();
                 } else {
                     console.log('Vendor fetch failed, using fallback');
                     useFallbackVendorData();
