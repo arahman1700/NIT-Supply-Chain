@@ -6,9 +6,23 @@ This script is run by GitHub Actions to keep the dashboard updated
 
 import os
 import json
+import re
 import requests
 from datetime import datetime
 from collections import Counter
+
+def parse_cost(value):
+    """Parse cost value that may contain currency symbols and formatting"""
+    if value is None:
+        return 0
+    if isinstance(value, (int, float)):
+        return float(value)
+    # Remove currency symbols, commas, and whitespace
+    cleaned = re.sub(r'[^\d.]', '', str(value))
+    try:
+        return float(cleaned) if cleaned else 0
+    except ValueError:
+        return 0
 
 # Configuration
 SMARTSHEET_TOKEN = os.environ.get('SMARTSHEET_TOKEN')
@@ -94,7 +108,7 @@ def calculate_kpis(orders):
     on_time_rate = (on_time / len(completion_times) * 100) if completion_times else 0
 
     # Total cost
-    total_amount = sum(float(o.get('cost', 0)) for o in orders if o.get('cost'))
+    total_amount = sum(parse_cost(o.get('cost')) for o in orders if o.get('cost'))
 
     # Open orders (not completed)
     open_orders = sum(1 for o in orders if not o.get('completion_date'))
@@ -107,7 +121,7 @@ def calculate_kpis(orders):
     projects = {}
     for o in orders:
         proj = o.get('project', 'Unknown')
-        cost = float(o.get('cost', 0)) if o.get('cost') else 0
+        cost = parse_cost(o.get('cost'))
         projects[proj] = projects.get(proj, 0) + cost
     top_projects = dict(sorted(projects.items(), key=lambda x: x[1], reverse=True)[:10])
 
@@ -128,7 +142,7 @@ def calculate_kpis(orders):
                 if month not in monthly:
                     monthly[month] = {'orders': 0, 'amount': 0}
                 monthly[month]['orders'] += 1
-                monthly[month]['amount'] += float(o.get('cost', 0)) if o.get('cost') else 0
+                monthly[month]['amount'] += parse_cost(o.get('cost'))
             except:
                 pass
 
