@@ -1047,6 +1047,65 @@
         });
 
         // Load data from JSON files with cache-busting
+        // Transform data from Smartsheet export format to dashboard format
+        function transformPRData(data) {
+            // Create status_breakdown from pr_status_breakdown
+            if (data.summary && data.summary.pr_status_breakdown && !data.summary.status_breakdown) {
+                data.summary.status_breakdown = data.summary.pr_status_breakdown;
+            }
+
+            // Transform monthly data from dict format to array format for charts
+            if (data.monthly && typeof data.monthly === 'object' && !Array.isArray(data.monthly.labels)) {
+                const currentYear = new Date().getFullYear();
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const approved = [];
+                const returned = [];
+                const rejected = [];
+                const submitted = [];
+
+                for (let m = 1; m <= 12; m++) {
+                    const key = `${currentYear}-${String(m).padStart(2, '0')}`;
+                    const monthData = data.monthly[key] || {};
+                    approved.push(monthData.approved || 0);
+                    returned.push(monthData.returned || 0);
+                    rejected.push(monthData.rejected || 0);
+                    submitted.push(monthData.submitted || 0);
+                }
+
+                // Calculate return rate
+                const return_rate = approved.map((a, i) => a > 0 ? Math.round((returned[i] / a * 100) * 10) / 10 : 0);
+
+                data.monthly = {
+                    labels: months,
+                    approved: approved,
+                    returned: returned,
+                    rejected: rejected,
+                    submitted: submitted,
+                    return_rate: return_rate
+                };
+            }
+
+            // Calculate 2025 totals from all_prs if not present
+            if (data.all_prs && data.all_prs.length > 0) {
+                const prs2025 = data.all_prs.filter(pr => {
+                    const date = pr.approved_date || pr.submission_date;
+                    return date && date.startsWith('2025');
+                });
+
+                if (!data.summary.total_approved_2025) {
+                    data.summary.total_approved_2025 = prs2025.filter(pr => pr.pr_status === 'APPROVED').length;
+                }
+                if (!data.summary.total_returned_2025) {
+                    data.summary.total_returned_2025 = prs2025.filter(pr => pr.return_date).length;
+                }
+                if (!data.summary.return_rate_2025 && data.summary.total_approved_2025 > 0) {
+                    data.summary.return_rate_2025 = Math.round((data.summary.total_returned_2025 / data.summary.total_approved_2025 * 100) * 10) / 10;
+                }
+            }
+
+            return data;
+        }
+
         async function loadData() {
             const cacheBuster = '?v=' + Date.now();
 
@@ -1054,8 +1113,9 @@
                 // Load PR data with cache-busting
                 const prResponse = await fetch('data/pr_data.json' + cacheBuster);
                 if (prResponse.ok) {
-                    prData = await prResponse.json();
-                    console.log('PR Data loaded successfully:', prData.summary);
+                    let rawData = await prResponse.json();
+                    prData = transformPRData(rawData);
+                    console.log('PR Data loaded and transformed:', prData.summary);
                     console.log('Total PRs available:', (prData.all_prs || prData.recent_prs || []).length);
                     filteredPRData = prData.all_prs || prData.recent_prs || [];
                     updateFilteredKPIs();
@@ -1147,9 +1207,10 @@
 
         // Populate project filters
         function populateProjectFilters() {
-            if (!prData || !prData.recent_prs) return;
+            const allPRs = prData?.all_prs || prData?.recent_prs || [];
+            if (allPRs.length === 0) return;
 
-            const projects = [...new Set(prData.recent_prs.map(pr => pr.project).filter(p => p && !p.includes('ORA-')))];
+            const projects = [...new Set(allPRs.map(pr => pr.project).filter(p => p && !p.includes('ORA-')))];
             projects.sort();
 
             const filterProject = document.getElementById('filterProject');
@@ -1239,7 +1300,7 @@
             const monthApproved = prData.monthly.approved[currentMonth] || 0;
 
             // Calculate POs issued (PRs with pr_to_po_days value)
-            const allPRs = prData.recent_prs || [];
+            const allPRs = prData.all_prs || prData.recent_prs || [];
             const currentMonthPRs = allPRs.filter(pr => {
                 if (!pr.approved_date) return false;
                 const date = new Date(pr.approved_date);
