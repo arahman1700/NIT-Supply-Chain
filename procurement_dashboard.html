@@ -886,31 +886,88 @@
             populateVendorTable();
         });
 
-        // Load data from JSON files
+        // Load data from JSON files with cache-busting
         async function loadData() {
+            const cacheBuster = '?v=' + Date.now();
+
             try {
-                // Load PR data
-                const prResponse = await fetch('data/pr_data.json');
+                // Load PR data with cache-busting
+                const prResponse = await fetch('data/pr_data.json' + cacheBuster);
                 if (prResponse.ok) {
                     prData = await prResponse.json();
+                    console.log('PR Data loaded successfully:', prData.summary);
                     filteredPRData = prData.recent_prs || [];
                     updatePRKPIs();
                     updatePOKPIs();
+                } else {
+                    console.log('PR fetch failed, using fallback data');
+                    useFallbackPRData();
                 }
             } catch (e) {
-                console.log('PR data not available, using defaults');
+                console.log('PR data error:', e.message, '- using fallback');
+                useFallbackPRData();
             }
 
             try {
-                // Load Vendor data
-                const vendorResponse = await fetch('data/vendor_data.json');
+                // Load Vendor data with cache-busting
+                const vendorResponse = await fetch('data/vendor_data.json' + cacheBuster);
                 if (vendorResponse.ok) {
                     vendorData = await vendorResponse.json();
+                    console.log('Vendor Data loaded successfully:', vendorData.summary);
                     updateVendorKPIs();
+                } else {
+                    console.log('Vendor fetch failed, using fallback');
+                    useFallbackVendorData();
                 }
             } catch (e) {
-                console.log('Vendor data not available, using defaults');
+                console.log('Vendor data error:', e.message, '- using fallback');
+                useFallbackVendorData();
             }
+        }
+
+        // Fallback PR data (updated from Smartsheet export)
+        function useFallbackPRData() {
+            prData = {
+                summary: {
+                    total_prs: 5671,
+                    total_approved_2025: 1929,
+                    total_returned_2025: 350,
+                    return_rate_2025: 18.1
+                },
+                monthly: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    approved: [204, 154, 142, 123, 168, 88, 218, 199, 211, 180, 242, 0],
+                    returned: [32, 23, 20, 14, 25, 11, 34, 37, 73, 46, 35, 0],
+                    return_rate: [15.7, 14.9, 14.1, 11.4, 14.9, 12.5, 15.6, 18.6, 34.6, 25.6, 14.5, 0]
+                },
+                recent_prs: []
+            };
+            filteredPRData = [];
+            updatePRKPIs();
+            updatePOKPIs();
+        }
+
+        // Fallback Vendor data
+        function useFallbackVendorData() {
+            vendorData = {
+                summary: {
+                    total_vendors: 95,
+                    evaluations_requested: 95,
+                    evaluations_done: 71,
+                    evaluations_pending: 24,
+                    average_score: 46.3,
+                    completion_rate: 74.7
+                },
+                score_distribution: {
+                    below_20: 8,
+                    '20_40': 18,
+                    '40_60': 26,
+                    '60_70': 12,
+                    above_70: 7
+                },
+                vendors: []
+            };
+            updateVendorKPIs();
         }
 
         // Populate project filters
