@@ -404,6 +404,18 @@
                         </div>
                     </div>
 
+                    <!-- Export Buttons -->
+                    <div class="flex justify-end gap-2 mb-4">
+                        <button onclick="exportSectionToPDF('pr-return')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12V6h-4V2H4v16zm8-16l4 4h-4V2z"/></svg>
+                            <span data-ar="تصدير PDF" data-en="Export PDF">تصدير PDF</span>
+                        </button>
+                        <button onclick="exportSectionToExcel('pr-return')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 3h14v14H3V3zm2 2v10h10V5H5z"/></svg>
+                            <span data-ar="تصدير Excel" data-en="Export Excel">تصدير Excel</span>
+                        </button>
+                    </div>
+
                     <!-- PR Return KPIs -->
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
                         <!-- Total PRs Approved -->
@@ -584,6 +596,18 @@
                         </div>
                     </div>
 
+                    <!-- Export Buttons -->
+                    <div class="flex justify-end gap-2 mb-4">
+                        <button onclick="exportSectionToPDF('pr-to-po')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12V6h-4V2H4v16zm8-16l4 4h-4V2z"/></svg>
+                            <span data-ar="تصدير PDF" data-en="Export PDF">تصدير PDF</span>
+                        </button>
+                        <button onclick="exportSectionToExcel('pr-to-po')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 3h14v14H3V3zm2 2v10h10V5H5z"/></svg>
+                            <span data-ar="تصدير Excel" data-en="Export Excel">تصدير Excel</span>
+                        </button>
+                    </div>
+
                     <!-- PR to PO KPIs - Current Month -->
                     <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="الشهر الحالي" data-en="Current Month">الشهر الحالي</h3>
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
@@ -754,6 +778,18 @@
                                 </button>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Export Buttons -->
+                    <div class="flex justify-end gap-2 mb-4">
+                        <button onclick="exportSectionToPDF('vendor-eval')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12V6h-4V2H4v16zm8-16l4 4h-4V2z"/></svg>
+                            <span data-ar="تصدير PDF" data-en="Export PDF">تصدير PDF</span>
+                        </button>
+                        <button onclick="exportSectionToExcel('vendor-eval')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 3h14v14H3V3zm2 2v10h10V5H5z"/></svg>
+                            <span data-ar="تصدير Excel" data-en="Export Excel">تصدير Excel</span>
+                        </button>
                     </div>
 
                     <!-- Vendor KPIs -->
@@ -1594,7 +1630,7 @@
                     <tr>
                         <td>${i + 1}</td>
                         <td class="font-medium">${v.name}</td>
-                        <td>${v.category}</td>
+                        <td>${v.category || (currentLang === 'ar' ? 'غير مصنف' : 'Unclassified')}</td>
                         <td class="font-bold ${v.score >= 70 ? 'text-emerald-600' : v.score >= 60 ? 'text-blue-600' : v.score >= 40 ? 'text-amber-600' : v.score > 0 ? 'text-red-600' : 'text-gray-400'}">${v.score > 0 ? v.score.toFixed(1) + '%' : '-'}</td>
                         <td><span class="${statusClass} px-2 py-1 rounded text-xs font-semibold">${statusText}</span></td>
                         <td class="text-center">${attachmentsHtml}</td>
@@ -1750,8 +1786,18 @@
 
             // PR to PO YTD KPIs (based on filtered year and project, not month)
             const allPRs = prData?.all_prs || filteredPRData || [];
-            const ytdYear = currentFilters.year || '2025';
-            const ytdProject = currentFilters.project || '';
+
+            // Detect active tab and read from correct filters
+            const activeTab = document.querySelector('.tab-content.active')?.id;
+            let ytdYear, ytdProject;
+
+            if (activeTab === 'tab-pr-to-po') {
+                ytdYear = document.getElementById('filterYearPO')?.value || '2025';
+                ytdProject = document.getElementById('filterProjectPO')?.value || '';
+            } else {
+                ytdYear = currentFilters.year || '2025';
+                ytdProject = currentFilters.project || '';
+            }
 
             const ytdPRs = allPRs.filter(pr => {
                 // Year filter - check all date fields
@@ -2120,9 +2166,9 @@
         function populateVendorCategoryDropdown() {
             const allLabel = currentLang === 'ar' ? 'الكل' : 'All';
 
-            // Get categories from vendor data
+            // Get categories from vendor data (exclude null, empty, and 'null' string)
             const categories = vendorData?.vendors
-                ? [...new Set(vendorData.vendors.map(v => v.category).filter(c => c))].sort()
+                ? [...new Set(vendorData.vendors.map(v => v.category).filter(c => c && c !== 'null' && c.trim() !== ''))].sort()
                 : [];
 
             const categorySelect = document.getElementById('filterVendorCategory');
@@ -2747,6 +2793,135 @@
                 closeModal();
             }
         });
+
+        // Export Section to PDF using browser print
+        function exportSectionToPDF(section) {
+            const sectionEl = document.getElementById('tab-' + section);
+            if (!sectionEl) return;
+
+            const sectionNames = {
+                'pr-return': currentLang === 'ar' ? 'تقرير إرجاع PR' : 'PR Return Report',
+                'pr-to-po': currentLang === 'ar' ? 'تقرير PR to PO' : 'PR to PO Report',
+                'vendor-evaluation': currentLang === 'ar' ? 'تقرير تقييم الموردين' : 'Vendor Evaluation Report'
+            };
+
+            const printContent = sectionEl.cloneNode(true);
+
+            // Remove export buttons from print
+            const exportBtns = printContent.querySelectorAll('.flex.justify-end.gap-2');
+            exportBtns.forEach(btn => btn.remove());
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html dir="${currentLang === 'ar' ? 'rtl' : 'ltr'}">
+                <head>
+                    <title>${sectionNames[section] || 'NESMA Report'}</title>
+                    <script src="https://cdn.tailwindcss.com"><\/script>
+                    <style>
+                        @media print {
+                            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                            .no-print { display: none !important; }
+                        }
+                        body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 20px; }
+                        .kpi-card { break-inside: avoid; }
+                        canvas { max-width: 100%; height: auto !important; }
+                    </style>
+                </head>
+                <body class="bg-white">
+                    <div class="text-center mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800">${sectionNames[section] || 'NESMA Report'}</h1>
+                        <p class="text-gray-500">${currentLang === 'ar' ? 'تاريخ التصدير:' : 'Export Date:'} ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    ${printContent.innerHTML}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        }
+
+        // Export Section to Excel/CSV
+        function exportSectionToExcel(section) {
+            let data = [];
+            let filename = 'NESMA_Report';
+            const now = new Date().toISOString().slice(0, 10);
+
+            if (section === 'pr-return') {
+                filename = `PR_Return_Report_${now}`;
+                const filteredPRs = getFilteredPRs();
+                data = filteredPRs.map(pr => ({
+                    'PR #': pr.pr_num || '',
+                    'Project': pr.project || '',
+                    'Description': pr.description || '',
+                    'Vendor': pr.vendor || '',
+                    'PR Value': pr.pr_value || '',
+                    'Submission Date': pr.submission_date || '',
+                    'Approved Date': pr.approved_date || '',
+                    'Return Date': pr.return_date || '',
+                    'Status': pr.status || ''
+                }));
+            } else if (section === 'pr-to-po') {
+                filename = `PR_to_PO_Report_${now}`;
+                const allPRs = prData?.all_prs || [];
+                const yearFilter = document.getElementById('filterYearPO')?.value || '2025';
+                const monthFilter = document.getElementById('filterMonthPO')?.value || '';
+                const projectFilter = document.getElementById('filterProjectPO')?.value || '';
+
+                let filtered = allPRs.filter(pr => {
+                    if (!pr.approved_date) return false;
+                    const date = new Date(pr.approved_date);
+                    if (date.getFullYear() !== parseInt(yearFilter)) return false;
+                    if (monthFilter && (date.getMonth() + 1) !== parseInt(monthFilter)) return false;
+                    if (projectFilter && pr.project !== projectFilter) return false;
+                    return true;
+                });
+
+                data = filtered.map(pr => ({
+                    'PR #': pr.pr_num || '',
+                    'Project': pr.project || '',
+                    'Description': pr.description || '',
+                    'Vendor': pr.vendor || '',
+                    'PR Value': pr.pr_value || '',
+                    'PO Value': pr.po_value || '',
+                    'Submission Date': pr.submission_date || '',
+                    'Approved Date': pr.approved_date || '',
+                    'PR to PO Days': pr.pr_to_po_days || '',
+                    'Status': pr.status || ''
+                }));
+            } else if (section === 'vendor-evaluation') {
+                filename = `Vendor_Evaluation_Report_${now}`;
+                const filteredVendors = getFilteredVendors();
+                data = filteredVendors.map(v => ({
+                    'Vendor Name': v.name || '',
+                    'Category': v.category || (currentLang === 'ar' ? 'غير مصنف' : 'Unclassified'),
+                    'Score (%)': v.score || 0,
+                    'Status': v.score > 0 ? (currentLang === 'ar' ? 'تم التقييم' : 'Evaluated') : (currentLang === 'ar' ? 'معلق' : 'Pending')
+                }));
+            }
+
+            if (data.length === 0) {
+                alert(currentLang === 'ar' ? 'لا توجد بيانات للتصدير' : 'No data to export');
+                return;
+            }
+
+            // Convert to CSV
+            const headers = Object.keys(data[0]);
+            let csv = '\uFEFF' + headers.join(',') + '\n';
+            data.forEach(row => {
+                csv += headers.map(h => `"${String(row[h]).replace(/"/g, '""')}"`).join(',') + '\n';
+            });
+
+            // Download
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename + '.csv';
+            link.click();
+        }
     </script>
 </body>
 </html>
