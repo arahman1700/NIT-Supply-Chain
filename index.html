@@ -383,8 +383,14 @@
         // Language toggle
         function toggleLang() {
             currentLang = currentLang === 'en' ? 'ar' : 'en';
+            localStorage.setItem('nesma_lang', currentLang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
             document.getElementById('langBtn').textContent = currentLang === 'en' ? 'AR' : 'EN';
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLang;
         }
 
         // Export to Excel
@@ -422,7 +428,14 @@
         }
 
         // Initialize on load
-        document.addEventListener('DOMContentLoaded', initDashboard);
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('nesma_lang');
+            if (savedLang) {
+                currentLang = savedLang;
+                applyLanguage();
+            }
+            initDashboard();
+        });
     </script>
 </body>
 </html>
