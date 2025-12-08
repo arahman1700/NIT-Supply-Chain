@@ -934,16 +934,29 @@
 
         // Update PR Return KPIs
         function updatePRKPIs() {
-            if (!prData) return;
-
-            // Find the latest month with data (not necessarily current month)
-            let currentMonth = new Date().getMonth();
-            // If current month has no data, use previous month
-            if (prData.monthly.approved[currentMonth] === 0 && currentMonth > 0) {
-                currentMonth = currentMonth - 1;
+            if (!prData || !prData.monthly) {
+                console.log('PR data not loaded:', prData);
+                return;
             }
+
+            // Find the latest month with actual data
+            let currentMonth = new Date().getMonth(); // December = 11
+            console.log('Current calendar month:', currentMonth);
+            console.log('Monthly approved array:', prData.monthly.approved);
+
+            // Check from current month backwards to find month with data
+            while (currentMonth >= 0 && prData.monthly.approved[currentMonth] === 0) {
+                currentMonth--;
+            }
+            // Fallback to November if nothing found
+            if (currentMonth < 0) currentMonth = 10;
+
+            console.log('Using month index:', currentMonth);
+
             const monthApproved = prData.monthly.approved[currentMonth] || 0;
             const monthReturned = prData.monthly.returned[currentMonth] || 0;
+
+            console.log('Month approved:', monthApproved, 'Month returned:', monthReturned);
 
             document.getElementById('kpi-approved').textContent = monthApproved.toLocaleString();
             document.getElementById('kpi-returned').textContent = monthReturned.toLocaleString();
@@ -972,14 +985,15 @@
 
         // Update PR to PO KPIs
         function updatePOKPIs() {
-            if (!prData) return;
+            if (!prData || !prData.monthly) return;
 
-            // Find the latest month with data (not necessarily current month)
+            // Find the latest month with actual data
             let currentMonth = new Date().getMonth();
-            // If current month has no data, use previous month
-            if (prData.monthly.approved[currentMonth] === 0 && currentMonth > 0) {
-                currentMonth = currentMonth - 1;
+            while (currentMonth >= 0 && prData.monthly.approved[currentMonth] === 0) {
+                currentMonth--;
             }
+            if (currentMonth < 0) currentMonth = 10;
+
             const monthApproved = prData.monthly.approved[currentMonth] || 0;
 
             // Calculate POs issued (PRs with pr_to_po_days value)
