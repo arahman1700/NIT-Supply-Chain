@@ -510,6 +510,7 @@
                                         <th data-ar="التصنيف" data-en="Category">التصنيف</th>
                                         <th data-ar="التقييم %" data-en="Score %">التقييم %</th>
                                         <th data-ar="الحالة" data-en="Status">الحالة</th>
+                                        <th data-ar="المرفقات" data-en="Attachments">المرفقات</th>
                                     </tr>
                                 </thead>
                                 <tbody id="vendorTable">
@@ -533,89 +534,99 @@
 
     <script>
         let currentLang = 'ar';
+        let prData = null;
+        let vendorData = null;
+        let charts = {};
 
         // Chart.js Config
         Chart.defaults.font.family = 'Cairo';
         Chart.defaults.font.size = 12;
 
-        // Vendor Data
-        const vendorData = [
-            { name: "Salem Agencies & Services Co Ltd", category: "Electromechnical", score: 84.7 },
-            { name: "Equipment & Technical Services Co.(ETECHS)", category: "Electromechnical", score: 80.0 },
-            { name: "Construction Expertise Est.", category: "Electromechnical", score: 78.7 },
-            { name: "Eastern Reaymix Concrete Company", category: "Civil", score: 78.7 },
-            { name: "Al Jabal Al Arabia Contracting Co", category: "Civil", score: 78.0 },
-            { name: "Alfanar Engineering Services", category: "Electromechnical", score: 77.3 },
-            { name: "Future Vision Company", category: "Civil", score: 72.0 },
-            { name: "Smart Line Industrial & Service Company", category: "Civil", score: 72.0 },
-            { name: "Eram Power Electronics Company", category: "Electromechnical", score: 71.3 },
-            { name: "Reda Trading & Development Co.", category: "Electromechnical", score: 71.3 },
-            { name: "Hussain Ali Hussain Contracting Company", category: "Electromechnical", score: 71.0 },
-            { name: "SIEMENS LIMITED", category: "Electromechnical", score: 70.7 },
-            { name: "Hitachi Energy Ltd", category: "Electromechnical", score: 69.3 },
-            { name: "Future Achievement Limited Co", category: "Civil", score: 69.3 },
-            { name: "Maseerat Al Nama Cont.Est", category: "Electromechnical", score: 68.0 },
-            { name: "Suliman ahmad khader General Contracting Est", category: "Civil", score: 66.7 },
-            { name: "Alfanar Co", category: "Electromechnical", score: 66.7 },
-            { name: "Ramz Alataa Company for Trading", category: "Civil", score: 66.0 },
-            { name: "Hamad Fahad Al Awad for Contracting Est", category: "Electromechnical", score: 64.0 },
-            { name: "Conexus Contracting Company", category: "Civil", score: 64.0 },
-            { name: "Equipment & Technical Services Co.(ETECHS)", category: "Electromechnical", score: 62.7 },
-            { name: "Advanced Elements Co.", category: "Electromechnical", score: 62.7 },
-            { name: "Marine Services Co Ltd", category: "Electromechnical", score: 62.7 },
-            { name: "City Crown General Contracting", category: "Civil", score: 61.3 },
-            { name: "Cegelce Network And Securtiy Systems", category: "Electromechnical", score: 60.0 },
-            { name: "Ramat United International", category: "Civil", score: 60.0 },
-            { name: "MAINTENANCE OF AIRCONDITION (MARCO)", category: "Electromechnical", score: 54.7 },
-            { name: "Magna Contracting Co", category: "Electromechnical", score: 54.7 },
-            { name: "Nscon New Contracting", category: "Civil", score: 53.3 },
-            { name: "Factory of Ideal Precast Concrete System", category: "Civil", score: 50.7 },
-            { name: "Al Rawy Al Arabia", category: "Civil", score: 49.3 },
-            { name: "Giant Foundation Contracting Co", category: "Civil", score: 48.0 },
-            { name: "Intelligent System General Contracting", category: "Civil", score: 44.0 },
-            { name: "Al Majal Group Four S for Security", category: "Electromechnical", score: 44.0 },
-            { name: "BRANCH OF COGELECX", category: "Electromechnical", score: 42.7 },
-            { name: "Siemens Energy Ltd", category: "Electromechnical", score: 42.7 },
-            { name: "Riyadh Cables Group Company", category: "Electromechnical", score: 38.7 },
-            { name: "Liwa Al sharq Contracting Company", category: "Civil", score: 26.7 },
-            { name: "Ektbarat Engineering Co", category: "Civil", score: 26.7 },
-            { name: "Alfotohat Alomranyeh for Contracting CO", category: "Civil", score: 22.7 },
-            { name: "Factory of Ideal Precast (Jafurah)", category: "Civil", score: 0 },
-            { name: "Kifah Precast Company", category: "Civil", score: 0 },
-            { name: "Factory of Qanbar Dywidag Precast", category: "Civil", score: 0 },
-            { name: "4D Imension for contracting Company", category: "Civil", score: 0 },
-            { name: "Hesham Helal Elsewedy & Partners", category: "Civil", score: 0 }
-        ];
-
-        // Initialize Charts
-        document.addEventListener('DOMContentLoaded', () => {
+        // Initialize Dashboard
+        document.addEventListener('DOMContentLoaded', async () => {
             const savedLang = localStorage.getItem('nesma_lang');
             if (savedLang) {
                 currentLang = savedLang;
                 applyLanguage();
             }
+
+            // Load data from JSON files
+            await loadData();
+
+            // Create charts and populate table
             createCharts();
             populateVendorTable();
         });
 
+        // Load data from JSON files
+        async function loadData() {
+            try {
+                // Load PR data
+                const prResponse = await fetch('data/pr_data.json');
+                if (prResponse.ok) {
+                    prData = await prResponse.json();
+                    updatePRKPIs();
+                }
+            } catch (e) {
+                console.log('PR data not available, using defaults');
+            }
+
+            try {
+                // Load Vendor data
+                const vendorResponse = await fetch('data/vendor_data.json');
+                if (vendorResponse.ok) {
+                    vendorData = await vendorResponse.json();
+                    updateVendorKPIs();
+                }
+            } catch (e) {
+                console.log('Vendor data not available, using defaults');
+            }
+        }
+
+        // Update PR KPIs from loaded data
+        function updatePRKPIs() {
+            if (!prData) return;
+
+            // Get current month data (November = index 10)
+            const currentMonth = new Date().getMonth();
+            const monthApproved = prData.monthly.approved[currentMonth] || 0;
+            const monthReturned = prData.monthly.returned[currentMonth] || 0;
+
+            // Update KPI cards if elements exist
+            const kpiElements = document.querySelectorAll('.kpi-card .text-2xl, .kpi-card .text-3xl');
+            // KPIs are updated via charts
+        }
+
+        // Update Vendor KPIs from loaded data
+        function updateVendorKPIs() {
+            if (!vendorData) return;
+            // KPIs are updated dynamically
+        }
+
         function createCharts() {
+            // Get data from loaded JSON or use defaults
+            const monthLabelsAr = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+            const monthLabelsEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            const approvedData = prData?.monthly?.approved || [204, 154, 142, 123, 168, 88, 218, 199, 211, 180, 242, 0];
+            const returnedData = prData?.monthly?.returned || [32, 23, 20, 14, 25, 11, 34, 37, 73, 46, 35, 0];
+            const returnRateData = prData?.monthly?.return_rate || [15.7, 14.9, 14.1, 11.4, 14.9, 12.5, 15.6, 18.6, 34.6, 25.6, 14.5, 0];
+
             // PR Monthly Chart
             const prMonthlyCtx = document.getElementById('prMonthlyChart')?.getContext('2d');
             if (prMonthlyCtx) {
-                new Chart(prMonthlyCtx, {
+                charts.prMonthly = new Chart(prMonthlyCtx, {
                     type: 'bar',
                     data: {
-                        labels: currentLang === 'ar'
-                            ? ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر']
-                            : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+                        labels: currentLang === 'ar' ? monthLabelsAr.slice(0, 11) : monthLabelsEn.slice(0, 11),
                         datasets: [{
                             label: currentLang === 'ar' ? 'معتمدة' : 'Approved',
-                            data: [204, 154, 142, 123, 168, 88, 218, 199, 211, 180, 242],
+                            data: approvedData.slice(0, 11),
                             backgroundColor: '#10b981',
                             borderRadius: 4
                         }, {
                             label: currentLang === 'ar' ? 'مرتجعة' : 'Returned',
-                            data: [32, 23, 20, 14, 25, 11, 34, 37, 73, 46, 35],
+                            data: returnedData.slice(0, 11),
                             backgroundColor: '#ef4444',
                             borderRadius: 4
                         }]
@@ -756,7 +767,10 @@
             const tbody = document.getElementById('vendorTable');
             if (!tbody) return;
 
-            tbody.innerHTML = vendorData.map((v, i) => {
+            // Use vendorData.vendors from JSON or fall back to empty array
+            const vendors = vendorData?.vendors || [];
+
+            tbody.innerHTML = vendors.map((v, i) => {
                 let statusClass, statusText;
                 if (v.score === 0) {
                     statusClass = 'score-critical';
@@ -775,6 +789,22 @@
                     statusText = currentLang === 'ar' ? 'ممتاز' : 'Excellent';
                 }
 
+                // Generate attachments HTML
+                let attachmentsHtml = '-';
+                if (v.attachments && v.attachments.length > 0) {
+                    attachmentsHtml = v.attachments.map(att => `
+                        <a href="https://app.smartsheet.com/sheets/1185309157969796/rows/${v.row_id}"
+                           target="_blank"
+                           class="inline-flex items-center gap-1 text-emerald-600 hover:text-emerald-800 text-xs"
+                           title="${att.name}">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+                            </svg>
+                            PDF
+                        </a>
+                    `).join(' ');
+                }
+
                 return `
                     <tr>
                         <td>${i + 1}</td>
@@ -782,6 +812,7 @@
                         <td>${v.category}</td>
                         <td class="font-bold ${v.score >= 70 ? 'text-emerald-600' : v.score >= 60 ? 'text-blue-600' : v.score >= 40 ? 'text-amber-600' : v.score > 0 ? 'text-red-600' : 'text-gray-400'}">${v.score > 0 ? v.score.toFixed(1) + '%' : '-'}</td>
                         <td><span class="${statusClass} px-2 py-1 rounded text-xs font-semibold">${statusText}</span></td>
+                        <td class="text-center">${attachmentsHtml}</td>
                     </tr>
                 `;
             }).join('');

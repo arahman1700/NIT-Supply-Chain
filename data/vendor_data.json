@@ -1,0 +1,657 @@
+{
+  "last_updated": "2025-12-08T11:47:01.317519",
+  "summary": {
+    "total_vendors": 45,
+    "evaluations_requested": 45,
+    "evaluations_done": 40,
+    "evaluations_pending": 5,
+    "average_score": 60.2,
+    "completion_rate": 88.9
+  },
+  "score_distribution": {
+    "below_20": 0,
+    "20_40": 4,
+    "40_60": 10,
+    "60_70": 14,
+    "above_70": 12
+  },
+  "vendors": [
+    {
+      "name": "Salem Agencies & Services Co Ltd",
+      "category": "Electromechnical",
+      "score": 84.7,
+      "attachments": [
+        {
+          "id": 4929065937047428,
+          "name": "Salem Agencies & Services Co.Ltd.pdf",
+          "mime_type": "application/pdf",
+          "size": 672
+        }
+      ],
+      "row_id": 6885366411759492
+    },
+    {
+      "name": "Equipment & Technical Services Co.(ETECHS)",
+      "category": "Electromechnical",
+      "score": 80.0,
+      "attachments": [
+        {
+          "id": 8225381731569540,
+          "name": "Equipment & Technical Services Co.(ETECHS).pdf",
+          "mime_type": "application/pdf",
+          "size": 678
+        }
+      ],
+      "row_id": 4633566598074244
+    },
+    {
+      "name": "Construction Expertise Est.",
+      "category": "Electromechnical",
+      "score": 78.7,
+      "attachments": [
+        {
+          "id": 2580785303424900,
+          "name": "Construction Expertise Est.pdf",
+          "mime_type": "application/pdf",
+          "size": 671
+        }
+      ],
+      "row_id": 6674260179226500
+    },
+    {
+      "name": "Eastern Reaymix Concrete Company",
+      "category": null,
+      "score": 78.7,
+      "attachments": [
+        {
+          "id": 1581175688695684,
+          "name": "Eastarn Readymix Concerte Comoany.pdf",
+          "mime_type": "application/pdf",
+          "size": 96
+        }
+      ],
+      "row_id": 6040941481627524
+    },
+    {
+      "name": "Al Jabal Al Arabia Contracting Co",
+      "category": "Civil",
+      "score": 78.0,
+      "attachments": [
+        {
+          "id": 7695080978681732,
+          "name": "MASEERAT AL NAMA CONT.EST..pdf",
+          "mime_type": "application/pdf",
+          "size": 669
+        },
+        {
+          "id": 1287462202675076,
+          "name": "Al Jabal Al Arabia Contracting Co.pdf",
+          "mime_type": "application/pdf",
+          "size": 677
+        }
+      ],
+      "row_id": 8363110039490436
+    },
+    {
+      "name": "Alfanar Engineering Services",
+      "category": "Electromechnical",
+      "score": 77.3,
+      "attachments": [
+        {
+          "id": 7341855066853252,
+          "name": "Alfanar Engineering Services.pdf",
+          "mime_type": "application/pdf",
+          "size": 690
+        }
+      ],
+      "row_id": 5196516551495556
+    },
+    {
+      "name": "Future Vision Company",
+      "category": "Civil",
+      "score": 72.0,
+      "attachments": [
+        {
+          "id": 2272624621162372,
+          "name": "Future Vision Company.pdf",
+          "mime_type": "application/pdf",
+          "size": 682
+        }
+      ],
+      "row_id": 4422460365541252
+    },
+    {
+      "name": "Smart Line Industrial & Service Company",
+      "category": null,
+      "score": 72.0,
+      "attachments": [
+        {
+          "id": 4179776931663748,
+          "name": "Smart Lines Industrial & Services Company.pdf",
+          "mime_type": "application/pdf",
+          "size": 680
+        }
+      ],
+      "row_id": 8926059992911748
+    },
+    {
+      "name": "Eram Power Electronics Company",
+      "category": "Electromechnical",
+      "score": 71.3,
+      "attachments": [
+        {
+          "id": 2591787935895428,
+          "name": "Eram Power Company Contracting.pdf",
+          "mime_type": "application/pdf",
+          "size": 695
+        }
+      ],
+      "row_id": 1607710598434692
+    },
+    {
+      "name": "Reda Trading & Development Co. for Machinery & Equipment Ltd(S)",
+      "category": null,
+      "score": 71.3,
+      "attachments": [
+        {
+          "id": 3597318783799172,
+          "name": "Reda Trading & Development Co for Machinery & Equipment.pdf",
+          "mime_type": "application/pdf",
+          "size": 675
+        }
+      ],
+      "row_id": 2381766784388996
+    },
+    {
+      "name": "Hussain Ali Hussain Contracting Company",
+      "category": "Electromechnical",
+      "score": 71.0,
+      "attachments": [
+        {
+          "id": 3898455231598468,
+          "name": "Hussain Ali Hussain Contracting Company.pdf",
+          "mime_type": "application/pdf",
+          "size": 541
+        },
+        {
+          "id": 396756852445060,
+          "name": "Hussain Ali Hussain Contracting Co.pdf",
+          "mime_type": "application/pdf",
+          "size": 104
+        }
+      ],
+      "row_id": 4070616644652932
+    },
+    {
+      "name": "SIEMENS LIMITED",
+      "category": "Electromechnical",
+      "score": 70.7,
+      "attachments": [
+        {
+          "id": 6442454555332484,
+          "name": "Siemens Limited.pdf",
+          "mime_type": "application/pdf",
+          "size": 689
+        }
+      ],
+      "row_id": 6603891435048836
+    },
+    {
+      "name": "Future Achievement Limited Co",
+      "category": "Civil",
+      "score": 69.3,
+      "attachments": [
+        {
+          "id": 7705594773409668,
+          "name": "Future Achievement Limited Co.pdf",
+          "mime_type": "application/pdf",
+          "size": 679
+        }
+      ],
+      "row_id": 3859510412119940
+    },
+    {
+      "name": "Hitachi Energy Ltd",
+      "category": "Electromechnical",
+      "score": 69.3,
+      "attachments": [
+        {
+          "id": 8167870978625412,
+          "name": "Hitachi Energy Ltd.pdf",
+          "mime_type": "application/pdf",
+          "size": 693
+        }
+      ],
+      "row_id": 7729791341891460
+    },
+    {
+      "name": "Maseerat Al Nama Cont.Est",
+      "category": "Electromechnical",
+      "score": 68.0,
+      "attachments": [
+        {
+          "id": 2870502406262660,
+          "name": "MASEERAT AL NAMA CONT.EST..pdf",
+          "mime_type": "application/pdf",
+          "size": 669
+        }
+      ],
+      "row_id": 4915041574784900
+    },
+    {
+      "name": "Suliman ahmad khader General Contracting Est (SAK)",
+      "category": null,
+      "score": 66.7,
+      "attachments": [
+        {
+          "id": 5137206746320772,
+          "name": "Suliman ahmad khader General Contracting Est (SAK).pdf",
+          "mime_type": "application/pdf",
+          "size": 676
+        }
+      ],
+      "row_id": 3296560458698628
+    },
+    {
+      "name": "Alfanar Co",
+      "category": "Electromechnical",
+      "score": 66.7,
+      "attachments": [
+        {
+          "id": 3805008839610244,
+          "name": "Alfanar Co.pdf",
+          "mime_type": "application/pdf",
+          "size": 101
+        }
+      ],
+      "row_id": 2944716737810308
+    },
+    {
+      "name": "Ramz Alataa Company for Trading",
+      "category": "Civil",
+      "score": 66.0,
+      "attachments": [
+        {
+          "id": 6154136890412932,
+          "name": "Ramz Alataa Company for Trading.pdf",
+          "mime_type": "application/pdf",
+          "size": 688
+        }
+      ],
+      "row_id": 8011266318602116
+    },
+    {
+      "name": "Hamad Fahad Al Awad for Contracting Est",
+      "category": "Electromechnical",
+      "score": 64.0,
+      "attachments": [
+        {
+          "id": 2659426154614660,
+          "name": "Hamad Fahad Al Awad for Contracting Est.pdf",
+          "mime_type": "application/pdf",
+          "size": 679
+        }
+      ],
+      "row_id": 5759466504916868
+    },
+    {
+      "name": "Conexus Contracting Company",
+      "category": null,
+      "score": 64.0,
+      "attachments": [
+        {
+          "id": 2465919171334020,
+          "name": "Conexus Contracting Company.pdf",
+          "mime_type": "application/pdf",
+          "size": 750
+        }
+      ],
+      "row_id": 3789141667942276
+    },
+    {
+      "name": "Equipment & Technical Services Co.(ETECHS)",
+      "category": "Electromechnical",
+      "score": 62.7,
+      "attachments": [
+        {
+          "id": 710348252417924,
+          "name": "Salem Agencies & Services Co.Ltd.pdf",
+          "mime_type": "application/pdf",
+          "size": 672
+        },
+        {
+          "id": 4777480418267012,
+          "name": "Reda Trading & Development Co for Machinery & Equipment.pdf",
+          "mime_type": "application/pdf",
+          "size": 675
+        },
+        {
+          "id": 5916071164940164,
+          "name": "Equipment & Technical Services Co.(ETECHS).pdf",
+          "mime_type": "application/pdf",
+          "size": 678
+        }
+      ],
+      "row_id": 411441947414404
+    },
+    {
+      "name": "Advanced Elements Co.",
+      "category": "Electromechnical",
+      "score": 62.7,
+      "attachments": [],
+      "row_id": 7166841388470148
+    },
+    {
+      "name": "Marine Services Co Ltd",
+      "category": "Electromechnical",
+      "score": 62.7,
+      "attachments": [],
+      "row_id": 1537341854257028
+    },
+    {
+      "name": "City Crown General Contracting",
+      "category": "Civil",
+      "score": 61.3,
+      "attachments": [
+        {
+          "id": 4216052309331844,
+          "name": "City Crown General Contracting Co.pdf",
+          "mime_type": "application/pdf",
+          "size": 674
+        }
+      ],
+      "row_id": 2170660551856004
+    },
+    {
+      "name": "Cegelce Network And Securtiy Systems",
+      "category": "Electromechnical",
+      "score": 60.0,
+      "attachments": [
+        {
+          "id": 8585275211026308,
+          "name": "Cegelec Network and Security Systems.pdf",
+          "mime_type": "application/pdf",
+          "size": 692
+        }
+      ],
+      "row_id": 7448316365180804
+    },
+    {
+      "name": "Ramat United International",
+      "category": null,
+      "score": 60.0,
+      "attachments": [
+        {
+          "id": 6215955160010628,
+          "name": "Ramat United International.pdf",
+          "mime_type": "application/pdf",
+          "size": 440
+        }
+      ],
+      "row_id": 974391900835716
+    },
+    {
+      "name": "MAINTENANCE OF AIRCONDITION AND REFRIGERATION COMPANY LTD.(MARCO)",
+      "category": "Electromechnical",
+      "score": 54.7,
+      "attachments": [
+        {
+          "id": 4032164358295428,
+          "name": "Maintenance of Aircondition and Refrigeration Company.pdf",
+          "mime_type": "application/pdf",
+          "size": 687
+        }
+      ],
+      "row_id": 1255866877546372
+    },
+    {
+      "name": "Magna Contracting Co",
+      "category": "Electromechnical",
+      "score": 54.7,
+      "attachments": [
+        {
+          "id": 3221606235148164,
+          "name": "Conexus Contracting Company.pdf",
+          "mime_type": "application/pdf",
+          "size": 750
+        },
+        {
+          "id": 2772555324755844,
+          "name": "Magna Contracting Co.pdf",
+          "mime_type": "application/pdf",
+          "size": 684
+        },
+        {
+          "id": 5650324341690244,
+          "name": "Nscon Neu Contracting.pdf",
+          "mime_type": "application/pdf",
+          "size": 657
+        }
+      ],
+      "row_id": 3507666691231620
+    },
+    {
+      "name": "Nscon New Contracting",
+      "category": null,
+      "score": 53.3,
+      "attachments": [
+        {
+          "id": 8569190642388868,
+          "name": "Nscon Neu Contracting.pdf",
+          "mime_type": "application/pdf",
+          "size": 657
+        }
+      ],
+      "row_id": 6322416458338180
+    },
+    {
+      "name": "Factory of Ideal Precast Concrete System Company",
+      "category": "Civil",
+      "score": 50.7,
+      "attachments": [
+        {
+          "id": 8719651936702340,
+          "name": "Factroy of Ideal Precast concrete System Company.pdf",
+          "mime_type": "application/pdf",
+          "size": 687
+        }
+      ],
+      "row_id": 7800160086069124
+    },
+    {
+      "name": "Al Rawy Al Arabia",
+      "category": "Civil",
+      "score": 49.3,
+      "attachments": [
+        {
+          "id": 4327895052881796,
+          "name": "Al Rawy Al Arabia.pdf",
+          "mime_type": "application/pdf",
+          "size": 673
+        }
+      ],
+      "row_id": 1044760645013380
+    },
+    {
+      "name": "Giant Foundation Contracting Co",
+      "category": null,
+      "score": 48.0,
+      "attachments": [
+        {
+          "id": 5593774654787460,
+          "name": "Giant Foundation Contracting.pdf",
+          "mime_type": "application/pdf",
+          "size": 442
+        }
+      ],
+      "row_id": 8292741295312772
+    },
+    {
+      "name": "Intelligent System General Contracting Company",
+      "category": "Civil",
+      "score": 44.0,
+      "attachments": [
+        {
+          "id": 5090055253168004,
+          "name": "Intelligent System.pdf",
+          "mime_type": "application/pdf",
+          "size": 682
+        }
+      ],
+      "row_id": 6111310225805188
+    },
+    {
+      "name": "Al Majal Group Four S for Security & Safety",
+      "category": "Electromechnical",
+      "score": 44.0,
+      "attachments": [
+        {
+          "id": 7873705162084228,
+          "name": "Al Majal Group Four S for Security & Safety.pdf",
+          "mime_type": "application/pdf",
+          "size": 683
+        }
+      ],
+      "row_id": 129966970703748
+    },
+    {
+      "name": "BRANCH OF COGELECX",
+      "category": "Electromechnical",
+      "score": 42.7,
+      "attachments": [
+        {
+          "id": 4389528102014852,
+          "name": "Cogelex Saudi Branch.pdf",
+          "mime_type": "application/pdf",
+          "size": 691
+        }
+      ],
+      "row_id": 4352091621363588
+    },
+    {
+      "name": "Siemens Energy Ltd",
+      "category": "Electromechnical",
+      "score": 42.7,
+      "attachments": [
+        {
+          "id": 5281175207710596,
+          "name": "Siemens Limited.pdf",
+          "mime_type": "application/pdf",
+          "size": 689
+        }
+      ],
+      "row_id": 8855691248734084
+    },
+    {
+      "name": "Riyadh Cables Group Company",
+      "category": "Electromechnical",
+      "score": 38.7,
+      "attachments": [
+        {
+          "id": 5776897833209732,
+          "name": "Riyadh Cables Group Company.pdf",
+          "mime_type": "application/pdf",
+          "size": 691
+        }
+      ],
+      "row_id": 2100291807678340
+    },
+    {
+      "name": "Liwa Al sharq Contracting Company",
+      "category": "Civil",
+      "score": 26.7,
+      "attachments": [
+        {
+          "id": 2504003904638852,
+          "name": "Liwa Al sharq Contracting Company.pdf",
+          "mime_type": "application/pdf",
+          "size": 678
+        }
+      ],
+      "row_id": 5548360272383876
+    },
+    {
+      "name": "Ektbarat Engineering Co",
+      "category": null,
+      "score": 26.7,
+      "attachments": [
+        {
+          "id": 6776224248532868,
+          "name": "Ektbarat Engineering Co.pdf",
+          "mime_type": "application/pdf",
+          "size": 690
+        }
+      ],
+      "row_id": 692916924125060
+    },
+    {
+      "name": "Alfotohat Alomranyeh for Contracting CO",
+      "category": "Civil",
+      "score": 22.7,
+      "attachments": [
+        {
+          "id": 3370105534713732,
+          "name": "Alfotohat Alomranyeh For Contracting CO.pdf",
+          "mime_type": "application/pdf",
+          "size": 668
+        }
+      ],
+      "row_id": 5477991528206212
+    },
+    {
+      "name": "Factory of Ideal Precast Concrete System Company",
+      "category": "Civil",
+      "score": 0,
+      "attachments": [
+        {
+          "id": 407626340929412,
+          "name": "Maintenance of Aircondition and Refrigeration Company.pdf",
+          "mime_type": "application/pdf",
+          "size": 687
+        },
+        {
+          "id": 5958485023952772,
+          "name": "Factroy of Ideal Precast concrete System Company.pdf",
+          "mime_type": "application/pdf",
+          "size": 687
+        }
+      ],
+      "row_id": 1818816830967684
+    },
+    {
+      "name": "Kifah Precast Company",
+      "category": "Civil",
+      "score": 0,
+      "attachments": [],
+      "row_id": 8574216272023428
+    },
+    {
+      "name": "Factory of Qanbar Dywidag Precast Concrete Co.Ltd",
+      "category": null,
+      "score": 0,
+      "attachments": [
+        {
+          "id": 8929894545264516,
+          "name": "Factroy of Ideal Precast concrete System Company.pdf",
+          "mime_type": "application/pdf",
+          "size": 687
+        }
+      ],
+      "row_id": 2663241761099652
+    },
+    {
+      "name": "4D Imension for contracting Company",
+      "category": null,
+      "score": 0,
+      "attachments": [],
+      "row_id": 3226191714520964
+    },
+    {
+      "name": "Hesham Helal Elsewedy & Partners for Construction Co., Ltd.",
+      "category": null,
+      "score": 0,
+      "attachments": [],
+      "row_id": 270704459059076
+    }
+  ]
+}
