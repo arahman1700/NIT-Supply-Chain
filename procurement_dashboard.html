@@ -3691,7 +3691,7 @@
             } else if (currentTableType === 'po-table' && currentModalData.length > 0) {
                 const content = document.getElementById('modalContent');
                 const currentType = content?.dataset?.kpiType || 'prs-received-month';
-                content.innerHTML = generatePODetailTable(currentModalData, currentType);
+                content.innerHTML = generateDetailedPOTable(currentModalData, currentType);
                 setupModalSearch();
             }
         }
