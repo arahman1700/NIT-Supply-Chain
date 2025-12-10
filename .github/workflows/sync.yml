@@ -32,17 +32,9 @@ jobs:
           SMARTSHEET_TOKEN: ${{ secrets.SMARTSHEET_TOKEN }}
         run: python sync_smartsheet.py
 
-      - name: Check for changes
-        id: git-check
-        run: |
-          git diff --exit-code data.js || echo "changes=true" >> $GITHUB_OUTPUT
-
       - name: Commit and push if changed
-        if: steps.git-check.outputs.changes == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add data.js
-          git commit -m "Auto-sync from Smartsheet"
-          git pull --rebase origin main
-          git push
+          git add data.js transportation_full_data.json payments_full_data.json
+          git diff --staged --quiet || (git commit -m "Auto-sync from Smartsheet" && git push)
