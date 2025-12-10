@@ -353,8 +353,8 @@
                     <img src="assets/logo-white.svg" alt="NESMA" class="h-8 lg:h-10">
                     <div class="hidden md:block border-r border-white/30 h-8 mx-2"></div>
                     <div class="hidden md:block">
-                        <h1 class="text-lg font-bold" data-ar="لوحة قياس المشتريات" data-en="Procurement Dashboard">لوحة قياس المشتريات</h1>
-                        <p class="text-xs text-blue-100" data-ar="تقارير طلبات الشراء وتقييم الموردين" data-en="PR Reports & Vendor Evaluation">تقارير طلبات الشراء وتقييم الموردين</p>
+                        <h1 class="text-lg font-bold" id="main-title" data-editable="true" data-label-id="main-title" data-ar="لوحة قياس المشتريات" data-en="Procurement Dashboard">لوحة قياس المشتريات</h1>
+                        <p class="text-xs text-blue-100" id="main-subtitle" data-editable="true" data-label-id="main-subtitle" data-ar="تقارير طلبات الشراء وتقييم الموردين" data-en="PR Reports & Vendor Evaluation">تقارير طلبات الشراء وتقييم الموردين</p>
                     </div>
                 </div>
 
@@ -482,7 +482,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-blue-600 to-blue-700 text-white" onclick="showKPIDetails('approved')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-ar="PRs معتمدة" data-en="PRs Approved">PRs معتمدة</p>
+                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-editable="true" data-label-id="kpi-approved-label" data-ar="PRs معتمدة" data-en="PRs Approved">PRs معتمدة</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="kpi-approved">242</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -500,7 +500,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-red-500 to-red-600 text-white" onclick="showKPIDetails('returned')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-red-100 text-xs lg:text-sm mb-1" data-ar="PRs مرتجعة" data-en="PRs Returned">PRs مرتجعة</p>
+                                    <p class="text-red-100 text-xs lg:text-sm mb-1" data-editable="true" data-label-id="kpi-returned-label" data-ar="PRs مرتجعة" data-en="PRs Returned">PRs مرتجعة</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="kpi-returned">35</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -518,7 +518,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white" onclick="showKPIDetails('within2days')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-ar="إرجاع خلال يومين" data-en="Returned ≤2 Days">إرجاع خلال يومين</p>
+                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-editable="true" data-label-id="kpi-within2-label" data-ar="إرجاع خلال يومين" data-en="Returned ≤2 Days">إرجاع خلال يومين</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="kpi-within2">25</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -536,7 +536,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-amber-500 to-amber-600 text-white" onclick="showKPIDetails('after2days')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-amber-100 text-xs lg:text-sm mb-1" data-ar="إرجاع بعد يومين" data-en="Returned >2 Days">إرجاع بعد يومين</p>
+                                    <p class="text-amber-100 text-xs lg:text-sm mb-1" data-editable="true" data-label-id="kpi-after2-label" data-ar="إرجاع بعد يومين" data-en="Returned >2 Days">إرجاع بعد يومين</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="kpi-after2">10</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -1137,8 +1137,16 @@
 
                         <h4 class="font-semibold text-gray-700 mt-4 mb-2" data-ar="تقييم الموردين" data-en="Vendor Evaluation">Vendor Evaluation</h4>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="vendor-filters" checked onchange="toggleSectionSetting(this)">
+                            <span data-ar="الفلاتر" data-en="Filters">Filters</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="vendor-kpi-cards" checked onchange="toggleSectionSetting(this)">
                             <span data-ar="بطاقات KPI" data-en="KPI Cards">KPI Cards</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="vendor-distribution" checked onchange="toggleSectionSetting(this)">
+                            <span data-ar="توزيع التقييمات" data-en="Score Distribution">Score Distribution</span>
                         </label>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="vendor-table" checked onchange="toggleSectionSetting(this)">
@@ -1165,6 +1173,12 @@
                         <div>
                             <h4 class="font-semibold text-gray-700 mb-2" data-ar="جدول PR to PO" data-en="PR to PO Table">PR to PO Table</h4>
                             <div id="po-table-columns" class="grid grid-cols-2 gap-2">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2" data-ar="جدول الموردين" data-en="Vendor Table">Vendor Table</h4>
+                            <div id="vendor-table-columns" class="grid grid-cols-2 gap-2">
                                 <!-- Populated by JS -->
                             </div>
                         </div>
@@ -1428,6 +1442,7 @@
             // Populate column checkboxes
             populateColumnCheckboxes('pr-table', 'pr-table-columns');
             populateColumnCheckboxes('po-table', 'po-table-columns');
+            populateColumnCheckboxes('vendor-table', 'vendor-table-columns');
         }
 
         // Populate column checkboxes for a table
@@ -1518,7 +1533,11 @@
                 { id: 'name', ar: 'اسم المورد', en: 'Vendor Name' },
                 { id: 'category', ar: 'التصنيف', en: 'Category' },
                 { id: 'score', ar: 'النتيجة', en: 'Score' },
-                { id: 'status', ar: 'الحالة', en: 'Status' }
+                { id: 'status', ar: 'الحالة', en: 'Status' },
+                { id: 'attachments', ar: 'المرفقات', en: 'Attachments' },
+                { id: 'eval_date', ar: 'تاريخ التقييم', en: 'Eval Date' },
+                { id: 'projects', ar: 'المشاريع', en: 'Projects' },
+                { id: 'pr_count', ar: 'عدد PRs', en: 'PR Count' }
             ]
         };
 
@@ -3185,7 +3204,33 @@
                 return `<p class="text-gray-500 text-center py-8">${currentLang === 'ar' ? 'لا توجد بيانات متاحة' : 'No data available'}</p>`;
             }
 
+            // Get selected columns from settings
+            const selectedColumns = dashboardSettings.columns['pr-table'] || ['pr_num', 'project', 'description', 'vendor', 'pr_value', 'approved_date', 'status'];
             const showReturnCols = type === 'returned' || type === 'within2days' || type === 'after2days';
+
+            // All available columns with their definitions
+            const allColumns = {
+                'pr_num': { ar: 'رقم PR', en: 'PR #', getValue: (pr) => pr.pr_num || '-', class: 'font-medium' },
+                'project': { ar: 'المشروع', en: 'Project', getValue: (pr) => pr.project || '-', class: 'max-w-[120px] truncate' },
+                'description': { ar: 'الوصف', en: 'Description', getValue: (pr) => pr.description || '-', class: 'max-w-[150px] truncate' },
+                'vendor': { ar: 'المورد', en: 'Vendor', getValue: (pr) => pr.vendor || '-', class: 'max-w-[100px] truncate' },
+                'pr_value': { ar: 'القيمة', en: 'Value', getValue: (pr) => pr.pr_value ? Number(pr.pr_value).toLocaleString() + ' SAR' : '-' },
+                'status': { ar: 'الحالة', en: 'Status', getValue: (pr) => pr.status || '-', isStatus: true },
+                'submission_date': { ar: 'تاريخ التقديم', en: 'Submitted', getValue: (pr) => pr.submission_date || '-' },
+                'approved_date': { ar: 'تاريخ الاعتماد', en: 'Approved', getValue: (pr) => pr.approved_date || '-' },
+                'return_date': { ar: 'تاريخ الإرجاع', en: 'Returned', getValue: (pr) => pr.return_date || '-' },
+                'pending_with': { ar: 'معلق لدى', en: 'Pending With', getValue: (pr) => pr.pending_with || '-', class: 'text-orange-700 font-medium' },
+                'pending_since': { ar: 'معلق منذ', en: 'Since', getValue: (pr) => pr.pending_since || '-' },
+                'pr_note': { ar: 'ملاحظة', en: 'Note', getValue: (pr) => pr.pr_note || '-', class: 'max-w-[150px] truncate text-gray-600' }
+            };
+
+            // If showing return type, ensure return columns are included
+            let columnsToShow = [...selectedColumns];
+            if (showReturnCols) {
+                ['return_date', 'pending_with', 'pending_since', 'pr_note'].forEach(col => {
+                    if (!columnsToShow.includes(col)) columnsToShow.push(col);
+                });
+            }
 
             // Analyze delay reasons for summary
             let delayAnalysis = '';
@@ -3210,15 +3255,47 @@
                 }
             }
 
+            // Generate table headers
+            const headers = columnsToShow.map(colId => {
+                const col = allColumns[colId];
+                return col ? `<th>${col[currentLang]}</th>` : '';
+            }).join('');
+
+            // Generate table rows
+            const rows = prs.map((pr, i) => {
+                const cells = columnsToShow.map(colId => {
+                    const col = allColumns[colId];
+                    if (!col) return '';
+
+                    const value = col.getValue(pr);
+                    const className = col.class || '';
+
+                    if (col.isStatus) {
+                        return `<td><span class="px-2 py-1 rounded text-xs ${pr.status === 'APPROVED' ? 'bg-green-100 text-green-800' : pr.status === 'RETURNED' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}">${value}</span></td>`;
+                    }
+
+                    return `<td class="${className}" title="${value}">${value}</td>`;
+                }).join('');
+
+                return `<tr class="modal-row"><td class="text-center text-gray-500">${i + 1}</td>${cells}</tr>`;
+            }).join('');
+
             return `
                 <div class="mb-4 flex flex-wrap gap-3 items-center justify-between">
                     <span class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">${countLabel}</span>
                     <div class="flex items-center gap-2">
                         <input type="text" id="modalSearch" placeholder="${currentLang === 'ar' ? 'بحث...' : 'Search...'}"
                             class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-48">
-                        <button onclick="exportToCSV()" class="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 flex items-center gap-1">
+                        <button onclick="openColumnSelector('pr-table')" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 flex items-center gap-1" title="${currentLang === 'ar' ? 'اختيار الأعمدة' : 'Select Columns'}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        </button>
+                        <button onclick="exportModalToPDF()" class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12V6h-4V2H4v16zm8-16l4 4h-4V2z"/></svg>
+                            PDF
+                        </button>
+                        <button onclick="exportToCSV()" class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 flex items-center gap-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                            ${currentLang === 'ar' ? 'تصدير' : 'Export'}
+                            CSV
                         </button>
                     </div>
                 </div>
@@ -3228,43 +3305,11 @@
                         <thead>
                             <tr>
                                 <th class="text-center">#</th>
-                                <th>PR #</th>
-                                <th>${currentLang === 'ar' ? 'المشروع' : 'Project'}</th>
-                                <th>${currentLang === 'ar' ? 'الوصف' : 'Description'}</th>
-                                <th>${currentLang === 'ar' ? 'المورد' : 'Vendor'}</th>
-                                <th>${currentLang === 'ar' ? 'القيمة' : 'Value'}</th>
-                                <th>${currentLang === 'ar' ? 'تاريخ الاعتماد' : 'Approved'}</th>
-                                ${showReturnCols ? `
-                                    <th>${currentLang === 'ar' ? 'تاريخ الإرجاع' : 'Returned'}</th>
-                                    <th>${currentLang === 'ar' ? 'أيام' : 'Days'}</th>
-                                    <th>${currentLang === 'ar' ? 'معلق لدى' : 'Pending With'}</th>
-                                    <th>${currentLang === 'ar' ? 'معلق منذ' : 'Since'}</th>
-                                    <th>${currentLang === 'ar' ? 'ملاحظة' : 'Note'}</th>
-                                ` : ''}
-                                <th>${currentLang === 'ar' ? 'الحالة' : 'Status'}</th>
+                                ${headers}
                             </tr>
                         </thead>
                         <tbody>
-                            ${prs.map((pr, i) => {
-                                const days = pr.return_date && pr.approved_date ? Math.floor((new Date(pr.return_date) - new Date(pr.approved_date)) / 86400000) : '-';
-                                return `<tr class="modal-row">
-                                    <td class="text-center text-gray-500">${i + 1}</td>
-                                    <td class="font-medium">${pr.pr_num || '-'}</td>
-                                    <td class="max-w-[120px] truncate" title="${pr.project || ''}">${pr.project || '-'}</td>
-                                    <td class="max-w-[150px] truncate" title="${pr.description || ''}">${pr.description || '-'}</td>
-                                    <td class="max-w-[100px] truncate" title="${pr.vendor || ''}">${pr.vendor || '-'}</td>
-                                    <td>${pr.pr_value ? Number(pr.pr_value).toLocaleString() + ' SAR' : '-'}</td>
-                                    <td>${pr.approved_date || '-'}</td>
-                                    ${showReturnCols ? `
-                                        <td>${pr.return_date || '-'}</td>
-                                        <td class="text-center font-medium ${days > 2 ? 'text-amber-600' : 'text-blue-600'}">${days}</td>
-                                        <td class="max-w-[100px] truncate text-orange-700 font-medium" title="${pr.pending_with || ''}">${pr.pending_with || '-'}</td>
-                                        <td class="text-sm">${pr.pending_since || '-'}</td>
-                                        <td class="max-w-[150px] truncate text-gray-600" title="${pr.pr_note || ''}">${pr.pr_note || '-'}</td>
-                                    ` : ''}
-                                    <td><span class="px-2 py-1 rounded text-xs ${pr.status === 'APPROVED' ? 'bg-green-100 text-green-800' : pr.status === 'RETURNED' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}">${pr.status || '-'}</span></td>
-                                </tr>`;
-                            }).join('')}
+                            ${rows}
                         </tbody>
                     </table>
                 </div>`;
@@ -3367,6 +3412,215 @@
             link.click();
         }
 
+        // ==========================================
+        // PDF Export with Nesma Logo
+        // ==========================================
+        function exportModalToPDF() {
+            const modalTitle = document.getElementById('modalTitle')?.textContent || 'Report';
+            const table = document.getElementById('modalTable');
+            if (!table) {
+                alert(currentLang === 'ar' ? 'لا يوجد جدول للتصدير' : 'No table to export');
+                return;
+            }
+
+            // Create print window with Nesma branding
+            const printWindow = window.open('', '_blank');
+            const today = new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-SA' : 'en-US');
+
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html dir="${currentLang === 'ar' ? 'rtl' : 'ltr'}">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${modalTitle}</title>
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body { font-family: 'Cairo', Arial, sans-serif; padding: 20px; direction: ${currentLang === 'ar' ? 'rtl' : 'ltr'}; }
+                        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 3px solid #2e3192; margin-bottom: 20px; }
+                        .logo { height: 50px; }
+                        .title-section { text-align: ${currentLang === 'ar' ? 'left' : 'right'}; }
+                        .title { font-size: 24px; color: #2e3192; font-weight: bold; margin-bottom: 5px; }
+                        .subtitle { color: #666; font-size: 14px; }
+                        .date { color: #888; font-size: 12px; margin-top: 5px; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 11px; }
+                        th { background: #2e3192; color: white; padding: 10px 8px; text-align: ${currentLang === 'ar' ? 'right' : 'left'}; font-weight: 600; }
+                        td { padding: 8px; border-bottom: 1px solid #ddd; }
+                        tr:nth-child(even) { background: #f8f9fa; }
+                        tr:hover { background: #e3f2fd; }
+                        .footer { margin-top: 30px; padding-top: 15px; border-top: 2px solid #2e3192; text-align: center; color: #666; font-size: 11px; }
+                        .status-approved { background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; }
+                        .status-returned { background: #f8d7da; color: #721c24; padding: 3px 8px; border-radius: 4px; }
+                        .status-other { background: #e9ecef; color: #495057; padding: 3px 8px; border-radius: 4px; }
+                        @media print {
+                            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                            .no-print { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <img src="assets/logo.svg" class="logo" alt="NESMA" onerror="this.style.display='none'">
+                        <div class="title-section">
+                            <div class="title">${modalTitle}</div>
+                            <div class="subtitle">${currentLang === 'ar' ? 'لوحة قياس المشتريات - نسما' : 'NESMA Procurement Dashboard'}</div>
+                            <div class="date">${currentLang === 'ar' ? 'تاريخ التقرير:' : 'Report Date:'} ${today}</div>
+                        </div>
+                    </div>
+                    ${table.outerHTML.replace(/class="[^"]*"/g, '').replace(/<span[^>]*>([^<]*)<\/span>/g, '<span class="status-other">$1</span>')}
+                    <div class="footer">
+                        <p>${currentLang === 'ar' ? 'هذا التقرير تم إنشاؤه تلقائياً من لوحة قياس المشتريات' : 'This report was auto-generated from the Procurement Dashboard'}</p>
+                        <p style="margin-top: 5px;">© ${new Date().getFullYear()} NESMA Holding - All Rights Reserved</p>
+                    </div>
+                </body>
+                </html>
+            `);
+
+            printWindow.document.close();
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        }
+
+        // ==========================================
+        // Column Selector Popup
+        // ==========================================
+        let currentTableType = null;
+
+        function openColumnSelector(tableType) {
+            currentTableType = tableType;
+            const columns = columnDefinitions[tableType];
+            const selectedCols = dashboardSettings.columns[tableType] || [];
+
+            const popup = document.createElement('div');
+            popup.id = 'columnSelectorPopup';
+            popup.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]';
+            popup.innerHTML = `
+                <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4" onclick="event.stopPropagation()">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-gray-800">${currentLang === 'ar' ? 'اختيار الأعمدة' : 'Select Columns'}</h3>
+                        <button onclick="closeColumnSelector()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                    </div>
+                    <div class="space-y-2 max-h-64 overflow-y-auto">
+                        ${columns.map(col => `
+                            <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 text-blue-600 rounded"
+                                    data-col="${col.id}" ${selectedCols.includes(col.id) ? 'checked' : ''}>
+                                <span>${col[currentLang]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="applyColumnSelection()" class="flex-1 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            ${currentLang === 'ar' ? 'تطبيق' : 'Apply'}
+                        </button>
+                        <button onclick="selectAllColumns()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+                            ${currentLang === 'ar' ? 'الكل' : 'All'}
+                        </button>
+                        <button onclick="closeColumnSelector()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">
+                            ${currentLang === 'ar' ? 'إلغاء' : 'Cancel'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            popup.onclick = () => closeColumnSelector();
+            document.body.appendChild(popup);
+        }
+
+        function closeColumnSelector() {
+            const popup = document.getElementById('columnSelectorPopup');
+            if (popup) popup.remove();
+        }
+
+        function selectAllColumns() {
+            const checkboxes = document.querySelectorAll('#columnSelectorPopup input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = true);
+        }
+
+        function applyColumnSelection() {
+            const checkboxes = document.querySelectorAll('#columnSelectorPopup input[type="checkbox"]:checked');
+            const selectedCols = Array.from(checkboxes).map(cb => cb.dataset.col);
+
+            if (selectedCols.length === 0) {
+                alert(currentLang === 'ar' ? 'اختر عمود واحد على الأقل' : 'Select at least one column');
+                return;
+            }
+
+            dashboardSettings.columns[currentTableType] = selectedCols;
+            saveSettings();
+            closeColumnSelector();
+
+            // Refresh the modal content
+            if (currentTableType === 'pr-table' && currentModalData.length > 0) {
+                const content = document.getElementById('modalContent');
+                const currentType = content?.dataset?.kpiType || 'approved';
+                content.innerHTML = generateDetailedPRTable(currentModalData, currentType);
+                setupModalSearch();
+            } else if (currentTableType === 'po-table' && currentModalData.length > 0) {
+                const content = document.getElementById('modalContent');
+                const currentType = content?.dataset?.kpiType || 'prs-received-month';
+                content.innerHTML = generatePODetailTable(currentModalData, currentType);
+                setupModalSearch();
+            }
+        }
+
+        // ==========================================
+        // Editable Labels System
+        // ==========================================
+        function makeLabelsEditable() {
+            // Find all elements that can be renamed
+            document.querySelectorAll('[data-editable="true"]').forEach(el => {
+                el.style.cursor = 'pointer';
+                el.title = currentLang === 'ar' ? 'انقر للتعديل' : 'Click to edit';
+
+                el.addEventListener('dblclick', function() {
+                    const currentText = this.textContent;
+                    const elementId = this.id || this.dataset.labelId;
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = currentText;
+                    input.className = 'border-2 border-blue-500 rounded px-2 py-1 text-sm w-full';
+                    input.style.minWidth = '100px';
+
+                    const saveEdit = () => {
+                        const newText = input.value.trim();
+                        if (newText && newText !== currentText) {
+                            this.textContent = newText;
+                            // Save to settings
+                            if (!dashboardSettings.customLabels[elementId]) {
+                                dashboardSettings.customLabels[elementId] = {};
+                            }
+                            dashboardSettings.customLabels[elementId][currentLang] = newText;
+                            saveSettings();
+                        } else {
+                            this.textContent = currentText;
+                        }
+                        this.style.display = '';
+                    };
+
+                    input.addEventListener('blur', saveEdit);
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') saveEdit();
+                        if (e.key === 'Escape') {
+                            this.textContent = currentText;
+                            this.style.display = '';
+                        }
+                    });
+
+                    this.style.display = 'none';
+                    this.parentNode.insertBefore(input, this.nextSibling);
+                    input.focus();
+                    input.select();
+                });
+            });
+        }
+
+        // Initialize editable labels after DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(makeLabelsEditable, 1000);
+        });
+
         function showPOKPIDetails(kpiType) {
             try {
                 const modal = document.getElementById('kpiModal');
@@ -3439,7 +3693,58 @@
                 return `<p class="text-gray-500 text-center py-8">${currentLang === 'ar' ? 'لا توجد بيانات متاحة' : 'No data available'}</p>`;
             }
 
-            const isPOType = type === 'pos-issued-month' || type === 'within30days' || type === 'after30days';
+            // Get selected columns from settings
+            const selectedColumns = dashboardSettings.columns['po-table'] || ['pr_num', 'project', 'vendor', 'pr_value', 'po_value', 'pr_to_po_days', 'status'];
+            const isPOType = type.includes('pos-issued') || type.includes('30days') || type.includes('30-ytd');
+
+            // All available columns with their definitions
+            const allColumns = {
+                'pr_num': { ar: 'رقم PR', en: 'PR #', getValue: (pr) => pr.pr_num || '-', class: 'font-medium' },
+                'project': { ar: 'المشروع', en: 'Project', getValue: (pr) => pr.project || '-', class: 'max-w-[100px] truncate' },
+                'po_num': { ar: 'رقم PO', en: 'PO #', getValue: (pr) => pr.po_num || '-', class: 'font-medium text-blue-600' },
+                'vendor': { ar: 'المورد', en: 'Vendor', getValue: (pr) => pr.vendor || '-', class: 'max-w-[100px] truncate' },
+                'pr_value': { ar: 'قيمة PR', en: 'PR Value', getValue: (pr) => pr.pr_value ? Number(pr.pr_value).toLocaleString() + ' SAR' : '-' },
+                'po_value': { ar: 'قيمة PO', en: 'PO Value', getValue: (pr) => pr.po_value ? Number(pr.po_value).toLocaleString() + ' SAR' : '-' },
+                'pr_to_po_days': { ar: 'أيام PR→PO', en: 'PR→PO Days', getValue: (pr) => pr.pr_to_po_days !== null ? pr.pr_to_po_days : '-', isDays: true },
+                'status': { ar: 'الحالة', en: 'Status', getValue: (pr) => pr.status || '-', isStatus: true },
+                'po_approved_date': { ar: 'تاريخ اعتماد PO', en: 'PO Approved', getValue: (pr) => pr.po_approved_date || '-' }
+            };
+
+            // If PO type, ensure PO columns are included
+            let columnsToShow = [...selectedColumns];
+            if (isPOType && !columnsToShow.includes('pr_to_po_days')) {
+                columnsToShow.push('pr_to_po_days');
+            }
+
+            // Generate table headers
+            const headers = columnsToShow.map(colId => {
+                const col = allColumns[colId];
+                return col ? `<th>${col[currentLang]}</th>` : '';
+            }).join('');
+
+            // Generate table rows
+            const rows = prs.map((pr, i) => {
+                const cells = columnsToShow.map(colId => {
+                    const col = allColumns[colId];
+                    if (!col) return '';
+
+                    const value = col.getValue(pr);
+                    const className = col.class || '';
+
+                    if (col.isStatus) {
+                        return `<td><span class="px-2 py-1 rounded text-xs ${pr.status === 'APPROVED' ? 'bg-green-100 text-green-800' : pr.status === 'RETURNED' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}">${value}</span></td>`;
+                    }
+
+                    if (col.isDays) {
+                        const days = pr.pr_to_po_days;
+                        return `<td class="text-center"><span class="px-2 py-1 rounded text-xs font-medium ${days !== null && days <= 30 ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">${days !== null ? days + (currentLang === 'ar' ? ' يوم' : ' days') : '-'}</span></td>`;
+                    }
+
+                    return `<td class="${className}" title="${value}">${value}</td>`;
+                }).join('');
+
+                return `<tr class="modal-row"><td class="text-center text-gray-500">${i + 1}</td>${cells}</tr>`;
+            }).join('');
 
             return `
                 <div class="mb-4 flex flex-wrap gap-3 items-center justify-between">
@@ -3447,9 +3752,16 @@
                     <div class="flex items-center gap-2">
                         <input type="text" id="modalSearch" placeholder="${currentLang === 'ar' ? 'بحث...' : 'Search...'}"
                             class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-48">
-                        <button onclick="exportPOToCSV('${type}')" class="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 flex items-center gap-1">
+                        <button onclick="openColumnSelector('po-table')" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 flex items-center gap-1" title="${currentLang === 'ar' ? 'اختيار الأعمدة' : 'Select Columns'}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        </button>
+                        <button onclick="exportModalToPDF()" class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12V6h-4V2H4v16zm8-16l4 4h-4V2z"/></svg>
+                            PDF
+                        </button>
+                        <button onclick="exportPOToCSV('${type}')" class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 flex items-center gap-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                            ${currentLang === 'ar' ? 'تصدير' : 'Export'}
+                            CSV
                         </button>
                     </div>
                 </div>
@@ -3458,35 +3770,11 @@
                         <thead>
                             <tr>
                                 <th class="text-center">#</th>
-                                <th>PR #</th>
-                                <th>${currentLang === 'ar' ? 'المشروع' : 'Project'}</th>
-                                <th>${currentLang === 'ar' ? 'الوصف' : 'Description'}</th>
-                                <th>${currentLang === 'ar' ? 'المورد' : 'Vendor'}</th>
-                                <th>${currentLang === 'ar' ? 'قيمة PR' : 'PR Value'}</th>
-                                ${isPOType ? `<th>${currentLang === 'ar' ? 'قيمة PO' : 'PO Value'}</th>` : ''}
-                                <th>${currentLang === 'ar' ? 'تاريخ الإرسال' : 'Submitted'}</th>
-                                <th>${currentLang === 'ar' ? 'تاريخ الاعتماد' : 'Approved'}</th>
-                                ${isPOType ? `<th>${currentLang === 'ar' ? 'أيام PR→PO' : 'PR→PO Days'}</th>` : ''}
-                                <th>${currentLang === 'ar' ? 'الحالة' : 'Status'}</th>
+                                ${headers}
                             </tr>
                         </thead>
                         <tbody>
-                            ${prs.map((pr, i) => {
-                                const prToPoDays = pr.pr_to_po_days;
-                                return `<tr class="modal-row">
-                                    <td class="text-center text-gray-500">${i + 1}</td>
-                                    <td class="font-medium">${pr.pr_num || '-'}</td>
-                                    <td class="max-w-[100px] truncate" title="${pr.project || ''}">${pr.project || '-'}</td>
-                                    <td class="max-w-[150px] truncate" title="${pr.description || ''}">${pr.description || '-'}</td>
-                                    <td class="max-w-[100px] truncate" title="${pr.vendor || ''}">${pr.vendor || '-'}</td>
-                                    <td>${pr.pr_value ? Number(pr.pr_value).toLocaleString() + ' SAR' : '-'}</td>
-                                    ${isPOType ? `<td>${pr.po_value ? Number(pr.po_value).toLocaleString() + ' SAR' : '-'}</td>` : ''}
-                                    <td>${pr.submission_date || '-'}</td>
-                                    <td>${pr.approved_date || '-'}</td>
-                                    ${isPOType ? `<td class="text-center"><span class="px-2 py-1 rounded text-xs font-medium ${prToPoDays !== null && prToPoDays <= 30 ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">${prToPoDays !== null ? prToPoDays + (currentLang === 'ar' ? ' يوم' : ' days') : '-'}</span></td>` : ''}
-                                    <td><span class="px-2 py-1 rounded text-xs ${pr.status === 'APPROVED' ? 'bg-green-100 text-green-800' : pr.status === 'RETURNED' ? 'bg-red-100 text-red-800' : pr.status === 'REJECTED' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}">${pr.status || '-'}</span></td>
-                                </tr>`;
-                            }).join('')}
+                            ${rows}
                         </tbody>
                     </table>
                 </div>`;
@@ -3540,13 +3828,14 @@
             const sectionNames = {
                 'pr-return': currentLang === 'ar' ? 'تقرير إرجاع PR' : 'PR Return Report',
                 'pr-to-po': currentLang === 'ar' ? 'تقرير PR to PO' : 'PR to PO Report',
-                'vendor-evaluation': currentLang === 'ar' ? 'تقرير تقييم الموردين' : 'Vendor Evaluation Report'
+                'vendor-eval': currentLang === 'ar' ? 'تقرير تقييم الموردين' : 'Vendor Evaluation Report'
             };
 
             const printContent = sectionEl.cloneNode(true);
+            const today = new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-SA' : 'en-US');
 
-            // Remove export buttons from print
-            const exportBtns = printContent.querySelectorAll('.flex.justify-end.gap-2');
+            // Remove export buttons and filters from print
+            const exportBtns = printContent.querySelectorAll('.flex.justify-end.gap-2, .filter-section, button');
             exportBtns.forEach(btn => btn.remove());
 
             const printWindow = window.open('', '_blank');
@@ -3554,24 +3843,42 @@
                 <!DOCTYPE html>
                 <html dir="${currentLang === 'ar' ? 'rtl' : 'ltr'}">
                 <head>
+                    <meta charset="UTF-8">
                     <title>${sectionNames[section] || 'NESMA Report'}</title>
                     <script src="https://cdn.tailwindcss.com"><\/script>
+                    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
                     <style>
                         @media print {
                             body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
                             .no-print { display: none !important; }
                         }
-                        body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 20px; }
-                        .kpi-card { break-inside: avoid; }
+                        * { font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; }
+                        body { padding: 30px; background: white; }
+                        .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 3px solid #2e3192; margin-bottom: 30px; }
+                        .logo { height: 60px; }
+                        .title-section { text-align: ${currentLang === 'ar' ? 'left' : 'right'}; }
+                        .title { font-size: 28px; color: #2e3192; font-weight: bold; }
+                        .subtitle { color: #666; font-size: 16px; margin-top: 5px; }
+                        .date { color: #888; font-size: 14px; margin-top: 8px; }
+                        .kpi-card { break-inside: avoid; margin-bottom: 15px; }
                         canvas { max-width: 100%; height: auto !important; }
+                        .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #2e3192; text-align: center; color: #666; font-size: 12px; }
                     </style>
                 </head>
-                <body class="bg-white">
-                    <div class="text-center mb-6">
-                        <h1 class="text-2xl font-bold text-gray-800">${sectionNames[section] || 'NESMA Report'}</h1>
-                        <p class="text-gray-500">${currentLang === 'ar' ? 'تاريخ التصدير:' : 'Export Date:'} ${new Date().toLocaleDateString()}</p>
+                <body>
+                    <div class="header">
+                        <img src="assets/logo.svg" class="logo" alt="NESMA" onerror="this.style.display='none'">
+                        <div class="title-section">
+                            <div class="title">${sectionNames[section] || 'NESMA Report'}</div>
+                            <div class="subtitle">${currentLang === 'ar' ? 'لوحة قياس المشتريات - نسما' : 'NESMA Procurement Dashboard'}</div>
+                            <div class="date">${currentLang === 'ar' ? 'تاريخ التقرير:' : 'Report Date:'} ${today}</div>
+                        </div>
                     </div>
                     ${printContent.innerHTML}
+                    <div class="footer">
+                        <p>${currentLang === 'ar' ? 'هذا التقرير تم إنشاؤه تلقائياً من لوحة قياس المشتريات' : 'This report was auto-generated from the Procurement Dashboard'}</p>
+                        <p style="margin-top: 5px;">© ${new Date().getFullYear()} NESMA Holding - All Rights Reserved</p>
+                    </div>
                 </body>
                 </html>
             `);
