@@ -1380,7 +1380,6 @@
             if (modal) {
                 modal.classList.add('show');
                 populateSettingsUI();
-                applyLanguage(); // Apply language to modal content
             }
         }
 
@@ -1535,12 +1534,6 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // Load dashboard settings first
             loadSettings();
-
-            const savedLang = localStorage.getItem('nesma_lang');
-            if (savedLang) {
-                currentLang = savedLang;
-                applyLanguage();
-            }
 
             // Load data from JSON files
             await loadData();
