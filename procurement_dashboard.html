@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>NESMA | Procurement Dashboard - لوحة قياس المشتريات</title>
+    <title>NESMA | Procurement Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -336,22 +336,22 @@
                         <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
-                        <span class="text-sm hidden sm:inline" data-ar="الرئيسية" data-en="Home">الرئيسية</span>
+                        <span class="text-sm hidden sm:inline">Home</span>
                     </a>
                     <div class="h-6 w-px bg-white/30 hidden sm:block"></div>
                     <img src="assets/logo-white.svg" alt="NESMA" class="h-8 lg:h-10">
                     <div class="hidden md:block border-r border-white/30 h-8 mx-2"></div>
                     <div class="hidden md:block">
-                        <h1 class="text-lg font-bold" id="main-title" data-editable="true" data-label-id="main-title" data-ar="لوحة قياس المشتريات" data-en="Procurement Dashboard">لوحة قياس المشتريات</h1>
-                        <p class="text-xs text-blue-100" id="main-subtitle" data-editable="true" data-label-id="main-subtitle" data-ar="تقارير طلبات الشراء وتقييم الموردين" data-en="PR Reports & Vendor Evaluation">تقارير طلبات الشراء وتقييم الموردين</p>
+                        <h1 class="text-lg font-bold" id="main-title" data-editable="true" data-label-id="main-title">Procurement Dashboard</h1>
+                        <p class="text-xs text-blue-100" id="main-subtitle" data-editable="true" data-label-id="main-subtitle">PR Reports & Vendor Evaluation</p>
                     </div>
                 </div>
 
                 <!-- Header Actions -->
                 <div class="flex items-center gap-3 lg:gap-6">
                     <div class="text-left hidden sm:block">
-                        <p class="text-xs text-blue-100" data-ar="آخر تحديث" data-en="Last Update">آخر تحديث</p>
-                        <p class="text-sm font-semibold" id="lastUpdateDate">8 ديسمبر 2025</p>
+                        <p class="text-xs text-blue-100">Last Update</p>
+                        <p class="text-sm font-semibold" id="lastUpdateDate">December 8, 2025</p>
                     </div>
                     <!-- Settings Button -->
                     <button onclick="openSettingsModal()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Settings">
@@ -372,14 +372,14 @@
         <div class="card mb-6 lg:mb-8">
             <div class="border-b border-gray-200 no-print">
                 <div class="flex overflow-x-auto">
-                    <button class="tab-btn active px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('pr-return')" data-ar="تقرير إرجاع الطلبات" data-en="PR Return Report">
-                        تقرير إرجاع الطلبات
+                    <button class="tab-btn active px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('pr-return')">
+                        PR Return Report
                     </button>
-                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('pr-to-po')" data-ar="تقرير PR إلى PO" data-en="PR to PO Report">
-                        تقرير PR إلى PO
+                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('pr-to-po')">
+                        PR to PO Report
                     </button>
-                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('vendor-eval')" data-ar="تقييم الموردين" data-en="Vendor Evaluation">
-                        تقييم الموردين
+                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('vendor-eval')">
+                        Vendor Evaluation
                     </button>
                 </div>
             </div>
@@ -391,9 +391,9 @@
                     <div id="pr-filters" class="filter-section mb-6">
                         <div class="flex flex-wrap gap-3 items-center">
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="السنة" data-en="Year">السنة</label>
+                                <label class="block text-xs text-gray-500 mb-1">Year</label>
                                 <select id="filterYear" class="filter-select" onchange="applyFilters()">
-                                    <option value="" data-ar="الكل" data-en="All">All</option>
+                                    <option value="">All</option>
                                     <option value="2025" selected>2025</option>
                                     <option value="2024">2024</option>
                                     <option value="2023">2023</option>
@@ -402,50 +402,50 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="الشهر" data-en="Month">الشهر</label>
+                                <label class="block text-xs text-gray-500 mb-1">Month</label>
                                 <select id="filterMonth" class="filter-select" onchange="applyFilters()">
-                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
-                                    <option value="1" data-ar="يناير" data-en="January">يناير</option>
-                                    <option value="2" data-ar="فبراير" data-en="February">فبراير</option>
-                                    <option value="3" data-ar="مارس" data-en="March">مارس</option>
-                                    <option value="4" data-ar="أبريل" data-en="April">أبريل</option>
-                                    <option value="5" data-ar="مايو" data-en="May">مايو</option>
-                                    <option value="6" data-ar="يونيو" data-en="June">يونيو</option>
-                                    <option value="7" data-ar="يوليو" data-en="July">يوليو</option>
-                                    <option value="8" data-ar="أغسطس" data-en="August">أغسطس</option>
-                                    <option value="9" data-ar="سبتمبر" data-en="September">سبتمبر</option>
-                                    <option value="10" data-ar="أكتوبر" data-en="October">أكتوبر</option>
-                                    <option value="11" data-ar="نوفمبر" data-en="November">نوفمبر</option>
-                                    <option value="12" data-ar="ديسمبر" data-en="December">ديسمبر</option>
+                                    <option value="">All</option>
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="الحالة" data-en="Status">الحالة</label>
+                                <label class="block text-xs text-gray-500 mb-1">Status</label>
                                 <select id="filterStatus" class="filter-select" onchange="applyFilters()">
-                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
-                                    <option value="APPROVED" data-ar="معتمد" data-en="Approved">معتمد</option>
-                                    <option value="RETURNED" data-ar="مرتجع" data-en="Returned">مرتجع</option>
-                                    <option value="REJECTED" data-ar="مرفوض" data-en="Rejected">مرفوض</option>
-                                    <option value="INCOMPLETE" data-ar="غير مكتمل" data-en="Incomplete">غير مكتمل</option>
-                                    <option value="IN PROCESS" data-ar="قيد المعالجة" data-en="In Process">قيد المعالجة</option>
+                                    <option value="">All</option>
+                                    <option value="APPROVED">Approved</option>
+                                    <option value="RETURNED">Returned</option>
+                                    <option value="REJECTED">Rejected</option>
+                                    <option value="INCOMPLETE">Incomplete</option>
+                                    <option value="IN PROCESS">In Process</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="المورد" data-en="Vendor">المورد</label>
+                                <label class="block text-xs text-gray-500 mb-1">Vendor</label>
                                 <select id="filterVendor" class="filter-select" onchange="applyFilters()">
-                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
+                                    <option value="">All</option>
                                     <!-- Vendors populated dynamically -->
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="المشروع" data-en="Project">المشروع</label>
+                                <label class="block text-xs text-gray-500 mb-1">Project</label>
                                 <select id="filterProject" class="filter-select" onchange="applyFilters()">
-                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
+                                    <option value="">All</option>
                                 </select>
                             </div>
                             <div class="flex-grow"></div>
-                            <button onclick="resetFilters()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium transition-colors" data-ar="إعادة تعيين" data-en="Reset">
-                                إعادة تعيين
+                            <button onclick="resetFilters()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium transition-colors">
+                                Reset
                             </button>
                         </div>
                     </div>
@@ -454,11 +454,11 @@
                     <div class="flex justify-end gap-2 mb-4">
                         <button onclick="exportSectionToPDF('pr-return')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12V6h-4V2H4v16zm8-16l4 4h-4V2z"/></svg>
-                            <span data-ar="تصدير PDF" data-en="Export PDF">تصدير PDF</span>
+                            <span>Export PDF</span>
                         </button>
                         <button onclick="exportSectionToExcel('pr-return')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 3h14v14H3V3zm2 2v10h10V5H5z"/></svg>
-                            <span data-ar="تصدير Excel" data-en="Export Excel">تصدير Excel</span>
+                            <span>Export Excel</span>
                         </button>
                     </div>
 
@@ -468,7 +468,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-blue-600 to-blue-700 text-white" onclick="showKPIDetails('approved')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-editable="true" data-label-id="kpi-approved-label" data-ar="PRs معتمدة" data-en="PRs Approved">PRs معتمدة</p>
+                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-editable="true" data-label-id="kpi-approved-label">PRs Approved</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="kpi-approved">242</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -478,7 +478,7 @@
                                 </div>
                             </div>
                             <div class="text-xs text-blue-100">
-                                <span data-ar="اضغط للتفاصيل" data-en="Click for details">اضغط للتفاصيل</span>
+                                <span>Click for details</span>
                             </div>
                         </div>
 
@@ -486,7 +486,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-red-500 to-red-600 text-white" onclick="showKPIDetails('returned')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-red-100 text-xs lg:text-sm mb-1" data-editable="true" data-label-id="kpi-returned-label" data-ar="PRs مرتجعة" data-en="PRs Returned">PRs مرتجعة</p>
+                                    <p class="text-red-100 text-xs lg:text-sm mb-1" data-editable="true" data-label-id="kpi-returned-label">PRs Returned</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="kpi-returned">35</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -496,7 +496,7 @@
                                 </div>
                             </div>
                             <div class="text-xs text-red-100">
-                                <span id="kpi-return-rate">14.5%</span> <span data-ar="من المعتمدة" data-en="of approved">من المعتمدة</span>
+                                <span id="kpi-return-rate">14.5%</span> <span>of approved</span>
                             </div>
                         </div>
 
@@ -504,7 +504,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white" onclick="showKPIDetails('within2days')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-editable="true" data-label-id="kpi-within2-label" data-ar="إرجاع خلال يومين" data-en="Returned ≤2 Days">إرجاع خلال يومين</p>
+                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-editable="true" data-label-id="kpi-within2-label">Returned ≤2 Days</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="kpi-within2">25</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -514,7 +514,7 @@
                                 </div>
                             </div>
                             <div class="text-xs text-blue-100">
-                                <span id="kpi-within2-pct">71.4%</span> <span data-ar="من المرتجعة" data-en="of returned">من المرتجعة</span>
+                                <span id="kpi-within2-pct">71.4%</span> <span>of returned</span>
                             </div>
                         </div>
 
@@ -522,7 +522,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-amber-500 to-amber-600 text-white" onclick="showKPIDetails('after2days')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-amber-100 text-xs lg:text-sm mb-1" data-editable="true" data-label-id="kpi-after2-label" data-ar="إرجاع بعد يومين" data-en="Returned >2 Days">إرجاع بعد يومين</p>
+                                    <p class="text-amber-100 text-xs lg:text-sm mb-1" data-editable="true" data-label-id="kpi-after2-label">Returned >2 Days</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="kpi-after2">10</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -532,7 +532,7 @@
                                 </div>
                             </div>
                             <div class="text-xs text-amber-100">
-                                <span id="kpi-after2-pct">28.6%</span> <span data-ar="من المرتجعة" data-en="of returned">من المرتجعة</span>
+                                <span id="kpi-after2-pct">28.6%</span> <span>of returned</span>
                             </div>
                         </div>
                     </div>
@@ -540,38 +540,38 @@
                     <!-- Summary KPIs (Dynamic based on filters) -->
                     <div id="pr-kpi-summary" class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4 mb-6">
                         <div class="card p-3 lg:p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1" id="kpi-total-label" data-ar="إجمالي PRs" data-en="Total PRs">إجمالي PRs</p>
+                            <p class="text-gray-500 text-xs mb-1" id="kpi-total-label">Total PRs</p>
                             <p class="text-xl lg:text-2xl font-bold text-gray-800" id="kpi-total-filtered">1,929</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="مرفوضة" data-en="Rejected">مرفوضة</p>
+                            <p class="text-gray-500 text-xs mb-1">Rejected</p>
                             <p class="text-xl lg:text-2xl font-bold text-rose-600" id="kpi-rejected">498</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="غير مكتملة" data-en="Incomplete">غير مكتملة</p>
+                            <p class="text-gray-500 text-xs mb-1">Incomplete</p>
                             <p class="text-xl lg:text-2xl font-bold text-orange-600" id="kpi-incomplete">118</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="قيد المعالجة" data-en="In Process">قيد المعالجة</p>
+                            <p class="text-gray-500 text-xs mb-1">In Process</p>
                             <p class="text-xl lg:text-2xl font-bold text-cyan-600" id="kpi-in-process">114</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="متوسط PR→PO" data-en="Avg PR→PO Days">متوسط PR→PO</p>
+                            <p class="text-gray-500 text-xs mb-1">Avg PR→PO</p>
                             <p class="text-xl lg:text-2xl font-bold text-blue-600" id="kpi-avg-pr-to-po">42.9</p>
-                            <p class="text-xs text-gray-400" data-ar="يوم" data-en="days">يوم</p>
+                            <p class="text-xs text-gray-400">days</p>
                         </div>
                     </div>
 
                     <!-- Charts -->
                     <div id="pr-charts" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="PRs معتمدة vs مرتجعة (2025)" data-en="PRs Approved vs Returned (2025)">PRs معتمدة vs مرتجعة (2025)</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">PRs Approved vs Returned (2025)</h3>
                             <div class="chart-container" style="height: 350px;">
                                 <canvas id="prMonthlyChart"></canvas>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="توزيع أيام الإرجاع" data-en="Return Days Distribution">توزيع أيام الإرجاع</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Return Days Distribution</h3>
                             <div class="chart-container" style="height: 350px;">
                                 <canvas id="returnDaysChart"></canvas>
                             </div>
@@ -581,13 +581,13 @@
                     <!-- PR Status Breakdown -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="حالات طلبات الشراء (الكل)" data-en="PR Status (All)">حالات طلبات الشراء (الكل)</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">PR Status (All)</h3>
                             <div class="chart-container">
                                 <canvas id="prStatusChart"></canvas>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="نسبة الإرجاع الشهرية" data-en="Monthly Return Rate">نسبة الإرجاع الشهرية</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Monthly Return Rate</h3>
                             <div class="chart-container">
                                 <canvas id="returnRateChart"></canvas>
                             </div>
@@ -597,15 +597,15 @@
                     <!-- Delay Reasons Analysis -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="تحليل أسباب التأخير (معلق لدى)" data-en="Delay Analysis (Pending With)">تحليل أسباب التأخير (معلق لدى)</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Delay Analysis (Pending With)</h3>
                             <div class="chart-container">
                                 <canvas id="pendingWithChart"></canvas>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="PRs المعلقة حسب الفترة" data-en="Pending PRs by Duration">PRs المعلقة حسب الفترة</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Pending PRs by Duration</h3>
                             <div id="pendingDurationList" class="space-y-2 max-h-[300px] overflow-y-auto">
-                                <p class="text-gray-500 text-center py-4" data-ar="جاري التحميل..." data-en="Loading...">جاري التحميل...</p>
+                                <p class="text-gray-500 text-center py-4">Loading...</p>
                             </div>
                         </div>
                     </div>
@@ -617,43 +617,43 @@
                     <div id="po-filters" class="filter-section mb-6">
                         <div class="flex flex-wrap gap-4 items-center">
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="المشروع" data-en="Project">المشروع</label>
+                                <label class="block text-xs text-gray-500 mb-1">Project</label>
                                 <select id="filterProjectPO" class="filter-select" onchange="applyPOFilters()">
-                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
+                                    <option value="">All</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="الشهر" data-en="Month">الشهر</label>
+                                <label class="block text-xs text-gray-500 mb-1">Month</label>
                                 <select id="filterMonthPO" class="filter-select" onchange="applyPOFilters()">
-                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
-                                    <option value="1" data-ar="يناير" data-en="January">يناير</option>
-                                    <option value="2" data-ar="فبراير" data-en="February">فبراير</option>
-                                    <option value="3" data-ar="مارس" data-en="March">مارس</option>
-                                    <option value="4" data-ar="أبريل" data-en="April">أبريل</option>
-                                    <option value="5" data-ar="مايو" data-en="May">مايو</option>
-                                    <option value="6" data-ar="يونيو" data-en="June">يونيو</option>
-                                    <option value="7" data-ar="يوليو" data-en="July">يوليو</option>
-                                    <option value="8" data-ar="أغسطس" data-en="August">أغسطس</option>
-                                    <option value="9" data-ar="سبتمبر" data-en="September">سبتمبر</option>
-                                    <option value="10" data-ar="أكتوبر" data-en="October">أكتوبر</option>
-                                    <option value="11" data-ar="نوفمبر" data-en="November">نوفمبر</option>
-                                    <option value="12" data-ar="ديسمبر" data-en="December">ديسمبر</option>
+                                    <option value="">All</option>
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="السنة" data-en="Year">السنة</label>
+                                <label class="block text-xs text-gray-500 mb-1">Year</label>
                                 <select id="filterYearPO" class="filter-select" onchange="applyPOFilters()">
                                     <option value="2025">2025</option>
                                     <option value="2024">2024</option>
                                     <option value="2023">2023</option>
                                     <option value="2022">2022</option>
                                     <option value="2021">2021</option>
-                                    <option value="">الكل</option>
+                                    <option value="">All</option>
                                 </select>
                             </div>
                             <div class="flex-grow"></div>
-                            <button onclick="resetPOFilters()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium transition-colors" data-ar="إعادة تعيين" data-en="Reset">
-                                إعادة تعيين
+                            <button onclick="resetPOFilters()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium transition-colors">
+                                Reset
                             </button>
                         </div>
                     </div>
@@ -662,22 +662,22 @@
                     <div class="flex justify-end gap-2 mb-4">
                         <button onclick="exportSectionToPDF('pr-to-po')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12V6h-4V2H4v16zm8-16l4 4h-4V2z"/></svg>
-                            <span data-ar="تصدير PDF" data-en="Export PDF">تصدير PDF</span>
+                            <span>Export PDF</span>
                         </button>
                         <button onclick="exportSectionToExcel('pr-to-po')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 3h14v14H3V3zm2 2v10h10V5H5z"/></svg>
-                            <span data-ar="تصدير Excel" data-en="Export Excel">تصدير Excel</span>
+                            <span>Export Excel</span>
                         </button>
                     </div>
 
                     <!-- PR to PO KPIs - Current Month -->
-                    <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="الشهر الحالي" data-en="Current Month">الشهر الحالي</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Current Month</h3>
                     <div id="po-kpi-cards" class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
                         <!-- PRs Received (Month) -->
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-purple-500 to-purple-600 text-white" onclick="showPOKPIDetails('prs-received-month')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-purple-100 text-xs lg:text-sm mb-1" data-ar="PRs مستلمة" data-en="PRs Received">PRs مستلمة</p>
+                                    <p class="text-purple-100 text-xs lg:text-sm mb-1">PRs Received</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="po-kpi-received-month">242</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -688,7 +688,7 @@
                                 </div>
                             </div>
                             <div class="text-xs text-purple-100">
-                                <span data-ar="اضغط للتفاصيل" data-en="Click for details">اضغط للتفاصيل</span>
+                                <span>Click for details</span>
                             </div>
                         </div>
 
@@ -696,7 +696,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-blue-600 to-blue-700 text-white" onclick="showPOKPIDetails('pos-issued-month')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-ar="POs صادرة" data-en="POs Issued">POs صادرة</p>
+                                    <p class="text-blue-100 text-xs lg:text-sm mb-1">POs Issued</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="po-kpi-issued-month">198</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -706,7 +706,7 @@
                                 </div>
                             </div>
                             <div class="text-xs text-blue-100">
-                                <span data-ar="اضغط للتفاصيل" data-en="Click for details">اضغط للتفاصيل</span>
+                                <span>Click for details</span>
                             </div>
                         </div>
 
@@ -714,7 +714,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white" onclick="showPOKPIDetails('within30days')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-ar="PO خلال 30 يوم" data-en="PO ≤30 Days">PO خلال 30 يوم</p>
+                                    <p class="text-blue-100 text-xs lg:text-sm mb-1">PO ≤30 Days</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="po-kpi-within30">165</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -724,7 +724,7 @@
                                 </div>
                             </div>
                             <div class="text-xs text-blue-100">
-                                <span id="po-kpi-within30-pct">83.3%</span> <span data-ar="من الصادرة" data-en="of issued">من الصادرة</span>
+                                <span id="po-kpi-within30-pct">83.3%</span> <span>of issued</span>
                             </div>
                         </div>
 
@@ -732,7 +732,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-amber-500 to-amber-600 text-white" onclick="showPOKPIDetails('after30days')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-amber-100 text-xs lg:text-sm mb-1" data-ar="PO بعد 30 يوم" data-en="PO >30 Days">PO بعد 30 يوم</p>
+                                    <p class="text-amber-100 text-xs lg:text-sm mb-1">PO >30 Days</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="po-kpi-after30">33</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -742,28 +742,28 @@
                                 </div>
                             </div>
                             <div class="text-xs text-amber-100">
-                                <span id="po-kpi-after30-pct">16.7%</span> <span data-ar="من الصادرة" data-en="of issued">من الصادرة</span>
+                                <span id="po-kpi-after30-pct">16.7%</span> <span>of issued</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- YTD Summary KPIs -->
-                    <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="منذ بداية العام (YTD)" data-en="Year to Date (YTD)">منذ بداية العام (YTD)</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Year to Date (YTD)</h3>
                     <div id="po-kpi-ytd" class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6">
                         <div class="card p-3 lg:p-4 text-center cursor-pointer hover:shadow-lg transition-shadow" onclick="showPOKPIDetails('prs-received-ytd')">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="PRs مستلمة YTD" data-en="PRs Received YTD">PRs مستلمة YTD</p>
+                            <p class="text-gray-500 text-xs mb-1">PRs Received YTD</p>
                             <p class="text-xl lg:text-2xl font-bold text-purple-600" id="po-kpi-received-ytd">1,929</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center cursor-pointer hover:shadow-lg transition-shadow" onclick="showPOKPIDetails('pos-issued-ytd')">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="POs صادرة YTD" data-en="POs Issued YTD">POs صادرة YTD</p>
+                            <p class="text-gray-500 text-xs mb-1">POs Issued YTD</p>
                             <p class="text-xl lg:text-2xl font-bold text-blue-600" id="po-kpi-issued-ytd">1,650</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center cursor-pointer hover:shadow-lg transition-shadow" onclick="showPOKPIDetails('within30-ytd')">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="خلال 30 يوم YTD" data-en="≤30 Days YTD">خلال 30 يوم YTD</p>
+                            <p class="text-gray-500 text-xs mb-1">≤30 Days YTD</p>
                             <p class="text-xl lg:text-2xl font-bold text-blue-600" id="po-kpi-within30-ytd">1,320</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center cursor-pointer hover:shadow-lg transition-shadow" onclick="showPOKPIDetails('after30-ytd')">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="بعد 30 يوم YTD" data-en=">30 Days YTD">بعد 30 يوم YTD</p>
+                            <p class="text-gray-500 text-xs mb-1">>30 Days YTD</p>
                             <p class="text-xl lg:text-2xl font-bold text-amber-600" id="po-kpi-after30-ytd">330</p>
                         </div>
                     </div>
@@ -771,13 +771,13 @@
                     <!-- Charts -->
                     <div id="po-charts" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="PRs مستلمة vs POs صادرة (2025)" data-en="PRs Received vs POs Issued (2025)">PRs مستلمة vs POs صادرة (2025)</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">PRs Received vs POs Issued (2025)</h3>
                             <div class="chart-container" style="height: 350px;">
                                 <canvas id="prToPOChart"></canvas>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="توزيع أيام إصدار PO" data-en="PO Issuance Days Distribution">توزيع أيام إصدار PO</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">PO Issuance Days Distribution</h3>
                             <div class="chart-container" style="height: 350px;">
                                 <canvas id="poTimeChart"></canvas>
                             </div>
@@ -787,13 +787,13 @@
                     <!-- Additional Charts -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="متوسط أيام PR إلى PO شهرياً" data-en="Avg PR to PO Days Monthly">متوسط أيام PR إلى PO شهرياً</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Avg PR to PO Days Monthly</h3>
                             <div class="chart-container">
                                 <canvas id="avgPRtoPOChart"></canvas>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="نسبة الالتزام بـ 30 يوم" data-en="30 Days Compliance Rate">نسبة الالتزام بـ 30 يوم</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">30 Days Compliance Rate</h3>
                             <div class="chart-container">
                                 <canvas id="complianceChart"></canvas>
                             </div>
@@ -807,36 +807,36 @@
                     <div id="vendor-filters" class="filter-section mb-6">
                         <div class="flex flex-wrap gap-3 items-center">
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="تصنيف المورد" data-en="Vendor Category">تصنيف المورد</label>
+                                <label class="block text-xs text-gray-500 mb-1">Vendor Category</label>
                                 <select id="filterVendorCategory" class="filter-select" onchange="applyVendorFilters()">
-                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
+                                    <option value="">All</option>
                                     <!-- Categories populated dynamically -->
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="حالة التقييم" data-en="Evaluation Status">حالة التقييم</label>
+                                <label class="block text-xs text-gray-500 mb-1">Evaluation Status</label>
                                 <select id="filterVendorEvalStatus" class="filter-select" onchange="applyVendorFilters()">
-                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
-                                    <option value="evaluated" data-ar="مُقيّم" data-en="Evaluated">مُقيّم</option>
-                                    <option value="pending" data-ar="معلق" data-en="Pending">معلق</option>
+                                    <option value="">All</option>
+                                    <option value="evaluated">Evaluated</option>
+                                    <option value="pending">Pending</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-500 mb-1" data-ar="مستوى التقييم" data-en="Score Level">مستوى التقييم</label>
+                                <label class="block text-xs text-gray-500 mb-1">Score Level</label>
                                 <select id="filterVendorScoreLevel" class="filter-select" onchange="applyVendorFilters()">
-                                    <option value="" data-ar="الكل" data-en="All">الكل</option>
-                                    <option value="above70" data-ar="ممتاز (>70%)" data-en="Excellent (>70%)">ممتاز (>70%)</option>
-                                    <option value="60-70" data-ar="جيد جداً (60-70%)" data-en="Very Good (60-70%)">جيد جداً (60-70%)</option>
-                                    <option value="40-60" data-ar="جيد (40-60%)" data-en="Good (40-60%)">جيد (40-60%)</option>
-                                    <option value="below40" data-ar="ضعيف (<40%)" data-en="Weak (<40%)">ضعيف (<40%)</option>
+                                    <option value="">All</option>
+                                    <option value="above70">Excellent (>70%)</option>
+                                    <option value="60-70">Very Good (60-70%)</option>
+                                    <option value="40-60">Good (40-60%)</option>
+                                    <option value="below40">Weak (<40%)</option>
                                 </select>
                             </div>
                             <div class="flex items-end gap-2">
                                 <button onclick="applyVendorFilters()" class="btn-filter px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white text-sm rounded-lg hover:shadow-lg transition-all">
-                                    <span data-ar="تطبيق" data-en="Apply">تطبيق</span>
+                                    <span>Apply</span>
                                 </button>
                                 <button onclick="resetVendorFilters()" class="btn-reset px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition-all">
-                                    <span data-ar="إعادة" data-en="Reset">إعادة</span>
+                                    <span>Reset</span>
                                 </button>
                             </div>
                         </div>
@@ -846,11 +846,11 @@
                     <div class="flex justify-end gap-2 mb-4">
                         <button onclick="exportSectionToPDF('vendor-eval')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12V6h-4V2H4v16zm8-16l4 4h-4V2z"/></svg>
-                            <span data-ar="تصدير PDF" data-en="Export PDF">تصدير PDF</span>
+                            <span>Export PDF</span>
                         </button>
                         <button onclick="exportSectionToExcel('vendor-eval')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 3h14v14H3V3zm2 2v10h10V5H5z"/></svg>
-                            <span data-ar="تصدير Excel" data-en="Export Excel">تصدير Excel</span>
+                            <span>Export Excel</span>
                         </button>
                     </div>
 
@@ -860,7 +860,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-purple-500 to-purple-600 text-white">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-purple-100 text-xs lg:text-sm mb-1" data-ar="تقييمات مطلوبة" data-en="Evaluations Requested">تقييمات مطلوبة</p>
+                                    <p class="text-purple-100 text-xs lg:text-sm mb-1">Evaluations Requested</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="vendor-kpi-requested">45</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -871,7 +871,7 @@
                                 </div>
                             </div>
                             <div class="text-xs text-purple-100">
-                                <span data-ar="إجمالي الموردين" data-en="Total Vendors">إجمالي الموردين</span>
+                                <span>Total Vendors</span>
                             </div>
                         </div>
 
@@ -879,7 +879,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-blue-600 to-blue-700 text-white">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-ar="تقييمات مكتملة" data-en="Evaluations Done">تقييمات مكتملة</p>
+                                    <p class="text-blue-100 text-xs lg:text-sm mb-1">Evaluations Done</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="vendor-kpi-done">40</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -889,7 +889,7 @@
                                 </div>
                             </div>
                             <div class="text-xs text-blue-100">
-                                <span id="vendor-kpi-completion">88.9%</span> <span data-ar="نسبة الإنجاز" data-en="completion rate">نسبة الإنجاز</span>
+                                <span id="vendor-kpi-completion">88.9%</span> <span>completion rate</span>
                             </div>
                         </div>
 
@@ -897,7 +897,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-red-500 to-red-600 text-white">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-red-100 text-xs lg:text-sm mb-1" data-ar="تقييمات معلقة" data-en="Evaluations Pending">تقييمات معلقة</p>
+                                    <p class="text-red-100 text-xs lg:text-sm mb-1">Evaluations Pending</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="vendor-kpi-pending">5</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -907,7 +907,7 @@
                                 </div>
                             </div>
                             <div class="text-xs text-red-100">
-                                <span data-ar="بانتظار التقييم" data-en="Awaiting evaluation">بانتظار التقييم</span>
+                                <span>Awaiting evaluation</span>
                             </div>
                         </div>
 
@@ -915,7 +915,7 @@
                         <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-blue-100 text-xs lg:text-sm mb-1" data-ar="متوسط التقييم" data-en="Average Score">متوسط التقييم</p>
+                                    <p class="text-blue-100 text-xs lg:text-sm mb-1">Average Score</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="vendor-kpi-avg">58.7%</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -925,7 +925,7 @@
                                 </div>
                             </div>
                             <div class="text-xs text-blue-100">
-                                <span data-ar="للموردين المقيّمين" data-en="for evaluated vendors">للموردين المقيّمين</span>
+                                <span>for evaluated vendors</span>
                             </div>
                         </div>
                     </div>
@@ -933,23 +933,23 @@
                     <!-- Score Distribution KPIs -->
                     <div id="vendor-distribution" class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4 mb-6">
                         <div class="card p-3 lg:p-4 text-center border-r-4 border-red-500">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="أقل من 20%" data-en="Below 20%">أقل من 20%</p>
+                            <p class="text-gray-500 text-xs mb-1">Below 20%</p>
                             <p class="text-xl lg:text-2xl font-bold text-red-600" id="vendor-dist-below20">0</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center border-r-4 border-orange-500">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="20% - 40%" data-en="20% - 40%">20% - 40%</p>
+                            <p class="text-gray-500 text-xs mb-1">20% - 40%</p>
                             <p class="text-xl lg:text-2xl font-bold text-orange-600" id="vendor-dist-20-40">4</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center border-r-4 border-amber-500">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="40% - 60%" data-en="40% - 60%">40% - 60%</p>
+                            <p class="text-gray-500 text-xs mb-1">40% - 60%</p>
                             <p class="text-xl lg:text-2xl font-bold text-amber-600" id="vendor-dist-40-60">10</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center border-r-4 border-blue-500">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="60% - 70%" data-en="60% - 70%">60% - 70%</p>
+                            <p class="text-gray-500 text-xs mb-1">60% - 70%</p>
                             <p class="text-xl lg:text-2xl font-bold text-blue-600" id="vendor-dist-60-70">14</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center border-r-4 border-blue-500">
-                            <p class="text-gray-500 text-xs mb-1" data-ar="أعلى من 70%" data-en="Above 70%">أعلى من 70%</p>
+                            <p class="text-gray-500 text-xs mb-1">Above 70%</p>
                             <p class="text-xl lg:text-2xl font-bold text-blue-600" id="vendor-dist-above70">12</p>
                         </div>
                     </div>
@@ -957,13 +957,13 @@
                     <!-- Charts -->
                     <div id="vendor-charts" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="توزيع تقييمات الموردين" data-en="Vendor Score Distribution">توزيع تقييمات الموردين</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Vendor Score Distribution</h3>
                             <div class="chart-container">
                                 <canvas id="vendorScoreChart"></canvas>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="حالة التقييمات" data-en="Evaluation Status">حالة التقييمات</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Evaluation Status</h3>
                             <div class="chart-container">
                                 <canvas id="evalStatusChart"></canvas>
                             </div>
@@ -973,13 +973,13 @@
                     <!-- New Vendor Analytics Charts -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="أكثر 10 موردين طلباً (PRs)" data-en="Top 10 Vendors by PRs">أكثر 10 موردين طلباً (PRs)</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Top 10 Vendors by PRs</h3>
                             <div class="chart-container" style="height: 350px;">
                                 <canvas id="topVendorsPRChart"></canvas>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="توزيع الموردين حسب التصنيف" data-en="Vendors by Category">توزيع الموردين حسب التصنيف</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Vendors by Category</h3>
                             <div class="chart-container" style="height: 350px;">
                                 <canvas id="vendorCategoryChart"></canvas>
                             </div>
@@ -989,13 +989,13 @@
                     <!-- More Analytics -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="قيمة PRs حسب المورد (أعلى 10)" data-en="PR Value by Vendor (Top 10)">قيمة PRs حسب المورد (أعلى 10)</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">PR Value by Vendor (Top 10)</h3>
                             <div class="chart-container" style="height: 350px;">
                                 <canvas id="vendorValueChart"></canvas>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="متوسط أيام PR→PO حسب المورد" data-en="Avg PR→PO Days by Vendor">متوسط أيام PR→PO حسب المورد</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Avg PR→PO Days by Vendor</h3>
                             <div class="chart-container" style="height: 350px;">
                                 <canvas id="vendorAvgDaysChart"></canvas>
                             </div>
@@ -1004,7 +1004,7 @@
 
                     <!-- Project-Vendor Matrix -->
                     <div class="mb-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="أكثر المشاريع حسب عدد الموردين" data-en="Top Projects by Vendor Count">أكثر المشاريع حسب عدد الموردين</h3>
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Top Projects by Vendor Count</h3>
                         <div class="chart-container" style="height: 300px;">
                             <canvas id="projectVendorChart"></canvas>
                         </div>
@@ -1012,17 +1012,17 @@
 
                     <!-- Vendor Table -->
                     <div id="vendor-table">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="تفاصيل تقييم الموردين" data-en="Vendor Evaluation Details">تفاصيل تقييم الموردين</h3>
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Vendor Evaluation Details</h3>
                         <div class="scroll-container" style="max-height: 500px;">
                             <table class="data-table">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th data-ar="اسم المورد" data-en="Vendor Name">اسم المورد</th>
-                                        <th data-ar="التصنيف" data-en="Category">التصنيف</th>
-                                        <th data-ar="التقييم %" data-en="Score %">التقييم %</th>
-                                        <th data-ar="الحالة" data-en="Status">الحالة</th>
-                                        <th data-ar="المرفقات" data-en="Attachments">المرفقات</th>
+                                        <th>Vendor Name</th>
+                                        <th>Category</th>
+                                        <th>Score %</th>
+                                        <th>Status</th>
+                                        <th>Attachments</th>
                                     </tr>
                                 </thead>
                                 <tbody id="vendorTable">
@@ -1037,8 +1037,8 @@
 
         <!-- Footer -->
         <footer class="text-center py-6 text-gray-500 text-sm">
-            <p class="mb-2" data-ar="نظام إدارة المشتريات - شركة نسما للبنية التحتية والتكنولوجيا" data-en="Procurement Management System - NESMA Infrastructure & Technology">
-                نظام إدارة المشتريات - شركة نسما للبنية التحتية والتكنولوجيا
+            <p class="mb-2">
+                Procurement Management System - NESMA Infrastructure & Technology
             </p>
             <p class="text-xs">Version 2.0 | December 2025</p>
         </footer>
@@ -1063,107 +1063,107 @@
     <div id="settingsModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
             <div class="modal-header bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-2xl">
-                <h3 class="text-lg font-bold" data-ar="إعدادات لوحة التحكم" data-en="Dashboard Settings">Dashboard Settings</h3>
+                <h3 class="text-lg font-bold">Dashboard Settings</h3>
                 <button class="close-btn text-white hover:bg-white/20" onclick="closeSettingsModal()">&times;</button>
             </div>
             <div class="modal-body p-0">
                 <!-- Settings Tabs -->
                 <div class="flex border-b bg-gray-50">
                     <button onclick="switchSettingsTab('sections')" class="settings-tab active flex-1 py-3 text-sm font-medium" data-tab="sections">
-                        <span data-ar="الأقسام" data-en="Sections">Sections</span>
+                        <span>Sections</span>
                     </button>
                     <button onclick="switchSettingsTab('columns')" class="settings-tab flex-1 py-3 text-sm font-medium" data-tab="columns">
-                        <span data-ar="الأعمدة" data-en="Columns">Columns</span>
+                        <span>Columns</span>
                     </button>
                     <button onclick="switchSettingsTab('export')" class="settings-tab flex-1 py-3 text-sm font-medium" data-tab="export">
-                        <span data-ar="تصدير/استيراد" data-en="Export/Import">Export/Import</span>
+                        <span>Export/Import</span>
                     </button>
                 </div>
 
                 <!-- Sections Tab -->
                 <div id="settings-sections" class="settings-tab-content p-4">
-                    <p class="text-sm text-gray-500 mb-4" data-ar="اختر الأقسام التي تريد إظهارها" data-en="Choose which sections to display">Choose which sections to display</p>
+                    <p class="text-sm text-gray-500 mb-4">Choose which sections to display</p>
 
                     <div class="space-y-3">
-                        <h4 class="font-semibold text-gray-700 mt-4 mb-2" data-ar="تقرير إرجاع PR" data-en="PR Return Report">PR Return Report</h4>
+                        <h4 class="font-semibold text-gray-700 mt-4 mb-2">PR Return Report</h4>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="pr-filters" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="الفلاتر" data-en="Filters">Filters</span>
+                            <span>Filters</span>
                         </label>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="pr-kpi-cards" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="بطاقات KPI الرئيسية" data-en="Main KPI Cards">Main KPI Cards</span>
+                            <span>Main KPI Cards</span>
                         </label>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="pr-kpi-summary" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="ملخص الإحصائيات" data-en="Summary Stats">Summary Stats</span>
+                            <span>Summary Stats</span>
                         </label>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="pr-charts" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="الرسوم البيانية" data-en="Charts">Charts</span>
+                            <span>Charts</span>
                         </label>
 
-                        <h4 class="font-semibold text-gray-700 mt-4 mb-2" data-ar="تقرير PR إلى PO" data-en="PR to PO Report">PR to PO Report</h4>
+                        <h4 class="font-semibold text-gray-700 mt-4 mb-2">PR to PO Report</h4>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="po-filters" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="الفلاتر" data-en="Filters">Filters</span>
+                            <span>Filters</span>
                         </label>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="po-kpi-cards" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="بطاقات KPI" data-en="KPI Cards">KPI Cards</span>
+                            <span>KPI Cards</span>
                         </label>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="po-kpi-ytd" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="إحصائيات YTD" data-en="YTD Stats">YTD Stats</span>
+                            <span>YTD Stats</span>
                         </label>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="po-charts" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="الرسوم البيانية" data-en="Charts">Charts</span>
+                            <span>Charts</span>
                         </label>
 
-                        <h4 class="font-semibold text-gray-700 mt-4 mb-2" data-ar="تقييم الموردين" data-en="Vendor Evaluation">Vendor Evaluation</h4>
+                        <h4 class="font-semibold text-gray-700 mt-4 mb-2">Vendor Evaluation</h4>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="vendor-filters" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="الفلاتر" data-en="Filters">Filters</span>
+                            <span>Filters</span>
                         </label>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="vendor-kpi-cards" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="بطاقات KPI" data-en="KPI Cards">KPI Cards</span>
+                            <span>KPI Cards</span>
                         </label>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="vendor-distribution" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="توزيع التقييمات" data-en="Score Distribution">Score Distribution</span>
+                            <span>Score Distribution</span>
                         </label>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="vendor-table" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="جدول الموردين" data-en="Vendor Table">Vendor Table</span>
+                            <span>Vendor Table</span>
                         </label>
                         <label class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" data-section="vendor-charts" checked onchange="toggleSectionSetting(this)">
-                            <span data-ar="الرسوم البيانية" data-en="Charts">Charts</span>
+                            <span>Charts</span>
                         </label>
                     </div>
                 </div>
 
                 <!-- Columns Tab -->
                 <div id="settings-columns" class="settings-tab-content p-4 hidden">
-                    <p class="text-sm text-gray-500 mb-4" data-ar="اختر الأعمدة التي تظهر في الجداول" data-en="Choose which columns appear in tables">Choose which columns appear in tables</p>
+                    <p class="text-sm text-gray-500 mb-4">Choose which columns appear in tables</p>
 
                     <div class="space-y-4">
                         <div>
-                            <h4 class="font-semibold text-gray-700 mb-2" data-ar="جدول PR Return" data-en="PR Return Table">PR Return Table</h4>
+                            <h4 class="font-semibold text-gray-700 mb-2">PR Return Table</h4>
                             <div id="pr-table-columns" class="grid grid-cols-2 gap-2">
                                 <!-- Populated by JS -->
                             </div>
                         </div>
                         <div>
-                            <h4 class="font-semibold text-gray-700 mb-2" data-ar="جدول PR to PO" data-en="PR to PO Table">PR to PO Table</h4>
+                            <h4 class="font-semibold text-gray-700 mb-2">PR to PO Table</h4>
                             <div id="po-table-columns" class="grid grid-cols-2 gap-2">
                                 <!-- Populated by JS -->
                             </div>
                         </div>
                         <div>
-                            <h4 class="font-semibold text-gray-700 mb-2" data-ar="جدول الموردين" data-en="Vendor Table">Vendor Table</h4>
+                            <h4 class="font-semibold text-gray-700 mb-2">Vendor Table</h4>
                             <div id="vendor-table-columns" class="grid grid-cols-2 gap-2">
                                 <!-- Populated by JS -->
                             </div>
@@ -1173,19 +1173,19 @@
 
                 <!-- Export/Import Tab -->
                 <div id="settings-export" class="settings-tab-content p-4 hidden">
-                    <p class="text-sm text-gray-500 mb-4" data-ar="تصدير أو استيراد إعدادات لوحة التحكم" data-en="Export or import dashboard settings">Export or import dashboard settings</p>
+                    <p class="text-sm text-gray-500 mb-4">Export or import dashboard settings</p>
 
                     <div class="space-y-4">
                         <button onclick="exportSettings()" class="w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                            <span data-ar="تصدير الإعدادات" data-en="Export Settings">Export Settings</span>
+                            <span>Export Settings</span>
                         </button>
 
                         <div class="relative">
                             <input type="file" id="importFile" accept=".json" class="hidden" onchange="importSettings(this.files[0])">
                             <button onclick="document.getElementById('importFile').click()" class="w-full py-3 px-4 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 flex items-center justify-center gap-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                                <span data-ar="استيراد الإعدادات" data-en="Import Settings">Import Settings</span>
+                                <span>Import Settings</span>
                             </button>
                         </div>
 
@@ -1193,7 +1193,7 @@
 
                         <button onclick="resetSettings()" class="w-full py-3 px-4 border-2 border-red-500 text-red-500 rounded-lg hover:bg-red-50 flex items-center justify-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                            <span data-ar="إعادة تعيين الإعدادات" data-en="Reset to Defaults">Reset to Defaults</span>
+                            <span>Reset to Defaults</span>
                         </button>
                     </div>
                 </div>
@@ -1351,10 +1351,10 @@
                     dashboardSettings = { ...defaultSettings, ...imported };
                     saveSettings();
                     applySettings();
-                    alert(currentLang === 'ar' ? 'تم استيراد الإعدادات بنجاح!' : 'Settings imported successfully!');
+                    alert('Settings imported successfully!');
                     location.reload();
                 } catch (err) {
-                    alert(currentLang === 'ar' ? 'خطأ في ملف الإعدادات' : 'Invalid settings file');
+                    alert('Invalid settings file');
                 }
             };
             reader.readAsText(file);
@@ -1362,7 +1362,7 @@
 
         // Reset settings to defaults
         function resetSettings() {
-            if (confirm(currentLang === 'ar' ? 'هل تريد إعادة الإعدادات للوضع الافتراضي؟' : 'Reset all settings to defaults?')) {
+            if (confirm('Reset all settings to defaults?')) {
                 dashboardSettings = JSON.parse(JSON.stringify(defaultSettings));
                 saveSettings();
                 applySettings();
@@ -1491,39 +1491,39 @@
         // Column definitions for tables
         const columnDefinitions = {
             'pr-table': [
-                { id: 'pr_num', ar: 'رقم PR', en: 'PR #' },
-                { id: 'project', ar: 'المشروع', en: 'Project' },
-                { id: 'description', ar: 'الوصف', en: 'Description' },
-                { id: 'vendor', ar: 'المورد', en: 'Vendor' },
-                { id: 'pr_value', ar: 'القيمة', en: 'Value' },
-                { id: 'status', ar: 'الحالة', en: 'Status' },
-                { id: 'submission_date', ar: 'تاريخ التقديم', en: 'Submitted' },
-                { id: 'approved_date', ar: 'تاريخ الاعتماد', en: 'Approved' },
-                { id: 'return_date', ar: 'تاريخ الإرجاع', en: 'Returned' },
-                { id: 'pending_with', ar: 'معلق لدى', en: 'Pending With' },
-                { id: 'pending_since', ar: 'معلق منذ', en: 'Since' },
-                { id: 'pr_note', ar: 'ملاحظة', en: 'Note' }
+                { id: 'pr_num', label: 'PR #' },
+                { id: 'project', label: 'Project' },
+                { id: 'description', label: 'Description' },
+                { id: 'vendor', label: 'Vendor' },
+                { id: 'pr_value', label: 'Value' },
+                { id: 'status', label: 'Status' },
+                { id: 'submission_date', label: 'Submitted' },
+                { id: 'approved_date', label: 'Approved' },
+                { id: 'return_date', label: 'Returned' },
+                { id: 'pending_with', label: 'Pending With' },
+                { id: 'pending_since', label: 'Since' },
+                { id: 'pr_note', label: 'Note' }
             ],
             'po-table': [
-                { id: 'pr_num', ar: 'رقم PR', en: 'PR #' },
-                { id: 'project', ar: 'المشروع', en: 'Project' },
-                { id: 'po_num', ar: 'رقم PO', en: 'PO #' },
-                { id: 'vendor', ar: 'المورد', en: 'Vendor' },
-                { id: 'pr_value', ar: 'قيمة PR', en: 'PR Value' },
-                { id: 'po_value', ar: 'قيمة PO', en: 'PO Value' },
-                { id: 'pr_to_po_days', ar: 'أيام PR→PO', en: 'PR→PO Days' },
-                { id: 'status', ar: 'الحالة', en: 'Status' },
-                { id: 'po_approved_date', ar: 'تاريخ PO', en: 'PO Date' }
+                { id: 'pr_num', label: 'PR #' },
+                { id: 'project', label: 'Project' },
+                { id: 'po_num', label: 'PO #' },
+                { id: 'vendor', label: 'Vendor' },
+                { id: 'pr_value', label: 'PR Value' },
+                { id: 'po_value', label: 'PO Value' },
+                { id: 'pr_to_po_days', label: 'PR→PO Days' },
+                { id: 'status', label: 'Status' },
+                { id: 'po_approved_date', label: 'PO Date' }
             ],
             'vendor-table': [
-                { id: 'name', ar: 'اسم المورد', en: 'Vendor Name' },
-                { id: 'category', ar: 'التصنيف', en: 'Category' },
-                { id: 'score', ar: 'النتيجة', en: 'Score' },
-                { id: 'status', ar: 'الحالة', en: 'Status' },
-                { id: 'attachments', ar: 'المرفقات', en: 'Attachments' },
-                { id: 'eval_date', ar: 'تاريخ التقييم', en: 'Eval Date' },
-                { id: 'projects', ar: 'المشاريع', en: 'Projects' },
-                { id: 'pr_count', ar: 'عدد PRs', en: 'PR Count' }
+                { id: 'name', label: 'Vendor Name' },
+                { id: 'category', label: 'Category' },
+                { id: 'score', label: 'Score' },
+                { id: 'status', label: 'Status' },
+                { id: 'attachments', label: 'Attachments' },
+                { id: 'eval_date', label: 'Eval Date' },
+                { id: 'projects', label: 'Projects' },
+                { id: 'pr_count', label: 'PR Count' }
             ]
         };
 
@@ -1638,7 +1638,7 @@
             filteredPRData = [];
             // Set default year options when using fallback
             const yearSelects = [document.getElementById('filterYear'), document.getElementById('filterYearPO')];
-            const defaultYears = `<option value="" data-ar="الكل" data-en="All">${currentLang === 'ar' ? 'الكل' : 'All'}</option>
+            const defaultYears = `<option value="">${'All'}</option>
                 <option value="2025" selected>2025</option>
                 <option value="2024">2024</option>
                 <option value="2023">2023</option>`;
@@ -1818,9 +1818,7 @@
         }
 
         function getMonthLabels() {
-            return currentLang === 'ar'
-                ? ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
-                : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         }
 
         function createCharts() {
@@ -1845,12 +1843,12 @@
                     data: {
                         labels: monthLabels.slice(0, 11),
                         datasets: [{
-                            label: currentLang === 'ar' ? 'معتمدة' : 'Approved',
+                            label: 'Approved',
                             data: approvedData.slice(0, 11),
                             backgroundColor: '#2e3192',
                             borderRadius: 4
                         }, {
-                            label: currentLang === 'ar' ? 'مرتجعة' : 'Returned',
+                            label: 'Returned',
                             data: returnedData.slice(0, 11),
                             backgroundColor: '#ef4444',
                             borderRadius: 4
@@ -1871,9 +1869,7 @@
                 charts.returnDays = new Chart(returnDaysCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: currentLang === 'ar'
-                            ? ['خلال يومين', 'بعد يومين']
-                            : ['Within 2 Days', 'After 2 Days'],
+                        labels: ['Within 2 Days', 'After 2 Days'],
                         datasets: [{
                             data: [25, 10],
                             backgroundColor: ['#3b82f6', '#f59e0b'],
@@ -1894,9 +1890,7 @@
                 charts.prStatus = new Chart(prStatusCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: currentLang === 'ar'
-                            ? ['معتمدة', 'مرتجعة', 'مرفوضة', 'غير مكتملة', 'قيد المعالجة']
-                            : ['Approved', 'Returned', 'Rejected', 'Incomplete', 'In Process'],
+                        labels: ['Approved', 'Returned', 'Rejected', 'Incomplete', 'In Process'],
                         datasets: [{
                             data: [
                                 prData?.summary?.status_breakdown?.APPROVED || 4257,
@@ -1925,7 +1919,7 @@
                     data: {
                         labels: monthLabels.slice(0, 11),
                         datasets: [{
-                            label: currentLang === 'ar' ? 'نسبة الإرجاع %' : 'Return Rate %',
+                            label: 'Return Rate %',
                             data: returnRateData.slice(0, 11),
                             borderColor: '#2e3192',
                             backgroundColor: 'rgba(46, 49, 146, 0.1)',
@@ -1950,7 +1944,7 @@
                 const returnedPRs = prData.all_prs.filter(pr => pr.return_date);
                 const pendingWithCounts = {};
                 returnedPRs.forEach(pr => {
-                    const pendingWith = pr.pending_with || (currentLang === 'ar' ? 'غير محدد' : 'Not Specified');
+                    const pendingWith = pr.pending_with || ('Not Specified');
                     pendingWithCounts[pendingWith] = (pendingWithCounts[pendingWith] || 0) + 1;
                 });
 
@@ -1967,7 +1961,7 @@
                     data: {
                         labels: pendingLabels,
                         datasets: [{
-                            label: currentLang === 'ar' ? 'عدد PRs المعلقة' : 'Pending PRs Count',
+                            label: 'Pending PRs Count',
                             data: pendingValues,
                             backgroundColor: pendingColors,
                             borderRadius: 4
@@ -1994,12 +1988,12 @@
                     data: {
                         labels: monthLabels.slice(0, 11),
                         datasets: [{
-                            label: currentLang === 'ar' ? 'PRs مستلمة' : 'PRs Received',
+                            label: 'PRs Received',
                             data: approvedData.slice(0, 11),
                             backgroundColor: '#8b5cf6',
                             borderRadius: 4
                         }, {
-                            label: currentLang === 'ar' ? 'POs صادرة' : 'POs Issued',
+                            label: 'POs Issued',
                             data: approvedData.slice(0, 11).map(v => Math.round(v * 0.85)),
                             backgroundColor: '#2e3192',
                             borderRadius: 4
@@ -2020,9 +2014,7 @@
                 charts.poTime = new Chart(poTimeCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: currentLang === 'ar'
-                            ? ['خلال 30 يوم', 'بعد 30 يوم']
-                            : ['Within 30 Days', 'After 30 Days'],
+                        labels: ['Within 30 Days', 'After 30 Days'],
                         datasets: [{
                             data: [165, 33],
                             backgroundColor: ['#3b82f6', '#f59e0b'],
@@ -2045,7 +2037,7 @@
                     data: {
                         labels: monthLabels.slice(0, 11),
                         datasets: [{
-                            label: currentLang === 'ar' ? 'متوسط الأيام' : 'Average Days',
+                            label: 'Average Days',
                             data: [12, 15, 10, 18, 14, 11, 16, 13, 19, 15, 12],
                             borderColor: '#8b5cf6',
                             backgroundColor: 'rgba(139, 92, 246, 0.1)',
@@ -2053,7 +2045,7 @@
                             borderWidth: 3,
                             fill: true
                         }, {
-                            label: currentLang === 'ar' ? 'الهدف (30 يوم)' : 'Target (30 Days)',
+                            label: 'Target (30 Days)',
                             data: [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30],
                             borderColor: '#ef4444',
                             borderDash: [5, 5],
@@ -2079,7 +2071,7 @@
                     data: {
                         labels: monthLabels.slice(0, 11),
                         datasets: [{
-                            label: currentLang === 'ar' ? 'نسبة الالتزام %' : 'Compliance Rate %',
+                            label: 'Compliance Rate %',
                             data: [85, 82, 88, 79, 84, 90, 81, 86, 78, 83, 85],
                             backgroundColor: '#2e3192',
                             borderRadius: 4
@@ -2100,11 +2092,9 @@
                 charts.vendorScore = new Chart(vendorScoreCtx, {
                     type: 'bar',
                     data: {
-                        labels: currentLang === 'ar'
-                            ? ['أقل من 20%', '20-40%', '40-60%', '60-70%', 'أعلى من 70%']
-                            : ['Below 20%', '20-40%', '40-60%', '60-70%', 'Above 70%'],
+                        labels: ['Below 20%', '20-40%', '40-60%', '60-70%', 'Above 70%'],
                         datasets: [{
-                            label: currentLang === 'ar' ? 'عدد الموردين' : 'Number of Vendors',
+                            label: 'Number of Vendors',
                             data: [
                                 vendorData?.score_distribution?.below_20 || 0,
                                 vendorData?.score_distribution?.['20_40'] || 4,
@@ -2131,9 +2121,7 @@
                 charts.evalStatus = new Chart(evalStatusCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: currentLang === 'ar'
-                            ? ['مكتملة', 'معلقة']
-                            : ['Completed', 'Pending'],
+                        labels: ['Complete', 'Pending'],
                         datasets: [{
                             data: [
                                 vendorData?.summary?.evaluations_done || 40,
@@ -2179,19 +2167,19 @@
                 let statusClass, statusText;
                 if (v.score === 0) {
                     statusClass = 'score-critical';
-                    statusText = currentLang === 'ar' ? 'لم يُقيّم' : 'Not Evaluated';
+                    statusText = 'Not Evaluated';
                 } else if (v.score < 40) {
                     statusClass = 'score-poor';
-                    statusText = currentLang === 'ar' ? 'ضعيف' : 'Poor';
+                    statusText = 'Poor';
                 } else if (v.score < 60) {
                     statusClass = 'score-fair';
-                    statusText = currentLang === 'ar' ? 'مقبول' : 'Fair';
+                    statusText = 'Fair';
                 } else if (v.score < 70) {
                     statusClass = 'score-good';
-                    statusText = currentLang === 'ar' ? 'جيد' : 'Good';
+                    statusText = 'Good';
                 } else {
                     statusClass = 'score-excellent';
-                    statusText = currentLang === 'ar' ? 'ممتاز' : 'Excellent';
+                    statusText = 'Excellent';
                 }
 
                 // Generate attachments HTML - prioritize local PDF files
@@ -2202,7 +2190,7 @@
                         <a href="${v.local_pdf}"
                            target="_blank"
                            class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-xs cursor-pointer"
-                           title="${currentLang === 'ar' ? 'عرض التقييم' : 'View Evaluation'}">
+                           title="${'View Evaluation'}">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
                             </svg>
@@ -2217,7 +2205,7 @@
                         <a href="${smartsheetUrl}"
                            target="_blank"
                            class="inline-flex items-center gap-1 text-amber-600 hover:text-amber-800 text-xs cursor-pointer"
-                           title="${currentLang === 'ar' ? 'عرض في Smartsheet' : 'View in Smartsheet'}">
+                           title="${'View in Smartsheet'}">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
                             </svg>
@@ -2230,7 +2218,7 @@
                     <tr>
                         <td>${i + 1}</td>
                         <td class="font-medium">${v.name}</td>
-                        <td>${v.category || (currentLang === 'ar' ? 'غير مصنف' : 'Unclassified')}</td>
+                        <td>${v.category || ('Unclassified')}</td>
                         <td class="font-bold ${v.score >= 70 ? 'text-blue-600' : v.score >= 60 ? 'text-blue-600' : v.score >= 40 ? 'text-amber-600' : v.score > 0 ? 'text-red-600' : 'text-gray-400'}">${v.score > 0 ? v.score.toFixed(1) + '%' : '-'}</td>
                         <td><span class="${statusClass} px-2 py-1 rounded text-xs font-semibold">${statusText}</span></td>
                         <td class="text-center">${attachmentsHtml}</td>
@@ -2418,9 +2406,7 @@
         }
 
         function updateFilterLabel() {
-            const monthNames = currentLang === 'ar'
-                ? ['', 'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
-                : ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
             let label = currentFilters.year;
             if (currentFilters.month) label = monthNames[parseInt(currentFilters.month)] + ' ' + label;
@@ -2431,7 +2417,7 @@
         // Populate all filter dropdowns dynamically from data
         function populateFilterDropdowns() {
             const allPRs = prData?.all_prs || prData?.recent_prs || [];
-            const allLabel = currentLang === 'ar' ? 'الكل' : 'All';
+            const allLabel = 'All';
 
             // Extract unique years from data or use defaults
             let years = [...new Set(allPRs.map(pr => {
@@ -2445,7 +2431,7 @@
             }
 
             const yearSelects = [document.getElementById('filterYear'), document.getElementById('filterYearPO')];
-            const yearOptions = `<option value="" data-ar="الكل" data-en="All">${allLabel}</option>` +
+            const yearOptions = `<option value="">${allLabel}</option>` +
                 years.map(y => `<option value="${y}"${y === '2025' ? ' selected' : ''}>${y}</option>`).join('');
             yearSelects.forEach(sel => { if (sel) sel.innerHTML = yearOptions; });
 
@@ -2453,7 +2439,7 @@
             const vendors = [...new Set(allPRs.map(pr => pr.vendor).filter(v => v && v.trim() && v.length < 100))].sort();
             const vendorSelect = document.getElementById('filterVendor');
             if (vendorSelect) {
-                vendorSelect.innerHTML = `<option value="" data-ar="الكل" data-en="All">${allLabel}</option>` +
+                vendorSelect.innerHTML = `<option value="">${allLabel}</option>` +
                     vendors.slice(0, 200).map(v => {
                         const shortName = v.length > 40 ? v.substring(0, 40) + '...' : v;
                         return `<option value="${v}">${shortName}</option>`;
@@ -2463,7 +2449,7 @@
             // Extract unique projects
             const projects = [...new Set(allPRs.map(pr => pr.project).filter(p => p && !p.includes('ORA-01403')))].sort();
             const projectSelects = [document.getElementById('filterProject'), document.getElementById('filterProjectPO')];
-            const projectOptions = `<option value="" data-ar="الكل" data-en="All">${allLabel}</option>` +
+            const projectOptions = `<option value="">${allLabel}</option>` +
                 projects.slice(0, 100).map(p => {
                     const shortName = p.length > 50 ? p.substring(0, 50) + '...' : p;
                     return `<option value="${p}">${shortName}</option>`;
@@ -2748,7 +2734,7 @@
         let vendorFilters = { category: '', evalStatus: '', scoreLevel: '' };
 
         function populateVendorCategoryDropdown() {
-            const allLabel = currentLang === 'ar' ? 'الكل' : 'All';
+            const allLabel = 'All';
 
             // Get categories from vendor data (exclude null, empty, and 'null' string)
             const categories = vendorData?.vendors
@@ -2757,7 +2743,7 @@
 
             const categorySelect = document.getElementById('filterVendorCategory');
             if (categorySelect) {
-                categorySelect.innerHTML = `<option value="" data-ar="الكل" data-en="All">${allLabel}</option>` +
+                categorySelect.innerHTML = `<option value="">${allLabel}</option>` +
                     categories.map(c => `<option value="${c}">${c}</option>`).join('');
             }
         }
@@ -2906,7 +2892,7 @@
                     data: {
                         labels: topVendors.map(v => v[0].length > 20 ? v[0].substring(0, 20) + '...' : v[0]),
                         datasets: [{
-                            label: currentLang === 'ar' ? 'عدد PRs' : 'PR Count',
+                            label: 'PR Count',
                             data: topVendors.map(v => v[1]),
                             backgroundColor: '#8b5cf6',
                             borderRadius: 4
@@ -2972,7 +2958,7 @@
                     data: {
                         labels: topValueVendors.map(v => v[0].length > 18 ? v[0].substring(0, 18) + '...' : v[0]),
                         datasets: [{
-                            label: currentLang === 'ar' ? 'قيمة PRs (SAR)' : 'PR Value (SAR)',
+                            label: 'PR Value (SAR)',
                             data: topValueVendors.map(v => v[1]),
                             backgroundColor: '#2e3192',
                             borderRadius: 4
@@ -3016,7 +3002,7 @@
                     data: {
                         labels: vendorAvgDays.map(v => v[0].length > 18 ? v[0].substring(0, 18) + '...' : v[0]),
                         datasets: [{
-                            label: currentLang === 'ar' ? 'متوسط الأيام' : 'Avg Days',
+                            label: 'Avg Days',
                             data: vendorAvgDays.map(v => v[1].toFixed(1)),
                             backgroundColor: '#f59e0b',
                             borderRadius: 4
@@ -3054,7 +3040,7 @@
                     data: {
                         labels: topProjects.map(p => p[0].length > 25 ? p[0].substring(0, 25) + '...' : p[0]),
                         datasets: [{
-                            label: currentLang === 'ar' ? 'عدد الموردين' : 'Vendor Count',
+                            label: 'Vendor Count',
                             data: topProjects.map(p => p[1]),
                             backgroundColor: '#3b82f6',
                             borderRadius: 4
@@ -3108,9 +3094,7 @@
 
                 // Use currently filtered PRs
                 const basePRs = getFilteredPRs();
-            const monthNames = currentLang === 'ar'
-                ? ['', 'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
-                : ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
             // Build filter description for title
             let filterDesc = currentFilters.year;
@@ -3122,15 +3106,15 @@
 
             switch(kpiType) {
                 case 'approved':
-                    titleText = currentLang === 'ar' ? `PRs المعتمدة - ${filterDesc}` : `Approved PRs - ${filterDesc}`;
+                    titleText = `Approved PRs - ${filterDesc}`;
                     filteredPRs = basePRs.filter(pr => pr.pr_status === 'APPROVED' || pr.status === 'APPROVED');
                     break;
                 case 'returned':
-                    titleText = currentLang === 'ar' ? `PRs المرتجعة - ${filterDesc}` : `Returned PRs - ${filterDesc}`;
+                    titleText = `Returned PRs - ${filterDesc}`;
                     filteredPRs = basePRs.filter(pr => pr.return_date);
                     break;
                 case 'within2days':
-                    titleText = currentLang === 'ar' ? `PRs مرتجعة خلال يومين - ${filterDesc}` : `PRs Returned ≤2 Days - ${filterDesc}`;
+                    titleText = `PRs Returned ≤2 Days - ${filterDesc}`;
                     filteredPRs = basePRs.filter(pr => {
                         if (!pr.return_date || !pr.approved_date) return false;
                         const days = Math.floor((new Date(pr.return_date) - new Date(pr.approved_date)) / 86400000);
@@ -3138,7 +3122,7 @@
                     });
                     break;
                 case 'after2days':
-                    titleText = currentLang === 'ar' ? `PRs مرتجعة بعد يومين - ${filterDesc}` : `PRs Returned >2 Days - ${filterDesc}`;
+                    titleText = `PRs Returned >2 Days - ${filterDesc}`;
                     filteredPRs = basePRs.filter(pr => {
                         if (!pr.return_date || !pr.approved_date) return false;
                         const days = Math.floor((new Date(pr.return_date) - new Date(pr.approved_date)) / 86400000);
@@ -3162,10 +3146,10 @@
 
         function generateDetailedPRTable(prs, type) {
             const count = prs.length;
-            const countLabel = currentLang === 'ar' ? `إجمالي: ${count} طلب` : `Total: ${count} PRs`;
+            const countLabel = `Total: ${count} PRs`;
 
             if (count === 0) {
-                return `<p class="text-gray-500 text-center py-8">${currentLang === 'ar' ? 'لا توجد بيانات متاحة' : 'No data available'}</p>`;
+                return `<p class="text-gray-500 text-center py-8">${'No data available'}</p>`;
             }
 
             // Get selected columns from settings
@@ -3173,18 +3157,18 @@
 
             // All available columns with their definitions
             const allColumns = {
-                'pr_num': { ar: 'رقم PR', en: 'PR #', getValue: (pr) => pr.pr_num || '-', class: 'font-medium' },
-                'project': { ar: 'المشروع', en: 'Project', getValue: (pr) => pr.project || '-', class: 'max-w-[120px] truncate' },
-                'description': { ar: 'الوصف', en: 'Description', getValue: (pr) => pr.description || '-', class: 'max-w-[150px] truncate' },
-                'vendor': { ar: 'المورد', en: 'Vendor', getValue: (pr) => pr.vendor || '-', class: 'max-w-[100px] truncate' },
-                'pr_value': { ar: 'القيمة', en: 'Value', getValue: (pr) => pr.pr_value ? Number(pr.pr_value).toLocaleString() + ' SAR' : '-' },
-                'status': { ar: 'الحالة', en: 'Status', getValue: (pr) => pr.status || '-', isStatus: true },
-                'submission_date': { ar: 'تاريخ التقديم', en: 'Submitted', getValue: (pr) => pr.submission_date || '-' },
-                'approved_date': { ar: 'تاريخ الاعتماد', en: 'Approved', getValue: (pr) => pr.approved_date || '-' },
-                'return_date': { ar: 'تاريخ الإرجاع', en: 'Returned', getValue: (pr) => pr.return_date || '-' },
-                'pending_with': { ar: 'معلق لدى', en: 'Pending With', getValue: (pr) => pr.pending_with || '-', class: 'text-orange-700 font-medium' },
-                'pending_since': { ar: 'معلق منذ', en: 'Since', getValue: (pr) => pr.pending_since || '-' },
-                'pr_note': { ar: 'ملاحظة', en: 'Note', getValue: (pr) => pr.pr_note || '-', class: 'max-w-[150px] truncate text-gray-600' }
+                'pr_num': { label: 'PR #', getValue: (pr) => pr.pr_num || '-', class: 'font-medium' },
+                'project': { label: 'Project', getValue: (pr) => pr.project || '-', class: 'max-w-[120px] truncate' },
+                'description': { label: 'Description', getValue: (pr) => pr.description || '-', class: 'max-w-[150px] truncate' },
+                'vendor': { label: 'Vendor', getValue: (pr) => pr.vendor || '-', class: 'max-w-[100px] truncate' },
+                'pr_value': { label: 'Value', getValue: (pr) => pr.pr_value ? Number(pr.pr_value).toLocaleString() + ' SAR' : '-' },
+                'status': { label: 'Status', getValue: (pr) => pr.status || '-', isStatus: true },
+                'submission_date': { label: 'Submitted', getValue: (pr) => pr.submission_date || '-' },
+                'approved_date': { label: 'Approved', getValue: (pr) => pr.approved_date || '-' },
+                'return_date': { label: 'Returned', getValue: (pr) => pr.return_date || '-' },
+                'pending_with': { label: 'Pending With', getValue: (pr) => pr.pending_with || '-', class: 'text-orange-700 font-medium' },
+                'pending_since': { label: 'Since', getValue: (pr) => pr.pending_since || '-' },
+                'pr_note': { label: 'Note', getValue: (pr) => pr.pr_note || '-', class: 'max-w-[150px] truncate text-gray-600' }
             };
 
             let columnsToShow = [...selectedColumns];
@@ -3227,9 +3211,9 @@
                 <div class="mb-3 flex flex-wrap gap-3 items-center justify-between">
                     <span class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full" id="modalCountLabel">${countLabel}</span>
                     <div class="flex items-center gap-2 flex-wrap">
-                        <input type="text" id="modalSearch" placeholder="${currentLang === 'ar' ? 'بحث...' : 'Search...'}"
+                        <input type="text" id="modalSearch" placeholder="${'Search...'}"
                             class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-40">
-                        <button onclick="openColumnSelector('pr-table')" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300" title="${currentLang === 'ar' ? 'اختيار الأعمدة' : 'Select Columns'}">
+                        <button onclick="openColumnSelector('pr-table')" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300" title="${'Select Columns'}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                         </button>
                         <button onclick="exportModalToPDF()" class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">PDF</button>
@@ -3239,18 +3223,18 @@
                 <!-- Inline Filters -->
                 <div class="mb-3 flex flex-wrap gap-2 p-2 bg-gray-50 rounded-lg border" id="modalFilters">
                     <select id="modalFilterProject" class="px-2 py-1 border rounded text-sm" onchange="applyModalFilters()">
-                        <option value="">${currentLang === 'ar' ? 'كل المشاريع' : 'All Projects'}</option>
+                        <option value="">${'All Projects'}</option>
                         ${uniqueProjects.slice(0, 50).map(p => `<option value="${p}">${p.substring(0, 30)}${p.length > 30 ? '...' : ''}</option>`).join('')}
                     </select>
                     <select id="modalFilterVendor" class="px-2 py-1 border rounded text-sm" onchange="applyModalFilters()">
-                        <option value="">${currentLang === 'ar' ? 'كل الموردين' : 'All Vendors'}</option>
+                        <option value="">${'All Vendors'}</option>
                         ${uniqueVendors.slice(0, 50).map(v => `<option value="${v}">${v.substring(0, 25)}${v.length > 25 ? '...' : ''}</option>`).join('')}
                     </select>
                     <select id="modalFilterStatus" class="px-2 py-1 border rounded text-sm" onchange="applyModalFilters()">
-                        <option value="">${currentLang === 'ar' ? 'كل الحالات' : 'All Statuses'}</option>
+                        <option value="">${'All Statuses'}</option>
                         ${uniqueStatuses.map(s => `<option value="${s}">${s}</option>`).join('')}
                     </select>
-                    <button onclick="resetModalFilters()" class="px-2 py-1 text-sm text-gray-600 hover:text-gray-800">${currentLang === 'ar' ? 'إعادة' : 'Reset'}</button>
+                    <button onclick="resetModalFilters()" class="px-2 py-1 text-sm text-gray-600 hover:text-gray-800">${'Reset'}</button>
                 </div>
                 <div class="scroll-container" style="max-height: 350px;">
                     <table class="data-table text-sm w-full" id="modalTable">
@@ -3265,7 +3249,7 @@
                         </tbody>
                     </table>
                 </div>
-                <p class="text-xs text-gray-400 mt-2">${currentLang === 'ar' ? '💡 اسحب رؤوس الأعمدة لإعادة ترتيبها • انقر مرتين لتعديل العنوان' : '💡 Drag column headers to reorder • Double-click to edit header'}</p>`;
+                <p class="text-xs text-gray-400 mt-2">${'💡 Drag column headers to reorder • Double-click to edit header'}</p>`;
         }
 
         function setupModalSearch() {
@@ -3317,7 +3301,7 @@
             const visible = document.querySelectorAll('#modalTable tbody tr:not([style*="display: none"])').length;
             const label = document.getElementById('modalCountLabel');
             if (label) {
-                label.textContent = currentLang === 'ar' ? `إجمالي: ${visible} طلب` : `Total: ${visible} PRs`;
+                label.textContent = `Total: ${visible} PRs`;
             }
         }
 
@@ -3426,10 +3410,10 @@
             // Group by pending duration
             const today = new Date();
             const durations = {
-                'critical': { label: currentLang === 'ar' ? 'معلق أكثر من 30 يوم' : 'Pending >30 days', prs: [], color: 'red' },
-                'high': { label: currentLang === 'ar' ? 'معلق 15-30 يوم' : 'Pending 15-30 days', prs: [], color: 'orange' },
-                'medium': { label: currentLang === 'ar' ? 'معلق 7-14 يوم' : 'Pending 7-14 days', prs: [], color: 'yellow' },
-                'low': { label: currentLang === 'ar' ? 'معلق أقل من 7 أيام' : 'Pending <7 days', prs: [], color: 'green' }
+                'critical': { label: 'Pending >30 days', prs: [], color: 'red' },
+                'high': { label: 'Pending 15-30 days', prs: [], color: 'orange' },
+                'medium': { label: 'Pending 7-14 days', prs: [], color: 'yellow' },
+                'low': { label: 'Pending <7 days', prs: [], color: 'green' }
             };
 
             returnedPRs.forEach(pr => {
@@ -3462,17 +3446,17 @@
                             ${group.prs.slice(0, 5).map(pr => `
                                 <div class="flex justify-between items-center py-1 border-t border-current border-opacity-20">
                                     <span class="truncate max-w-[150px]" title="${pr.pr_num}: ${pr.project || ''}">${pr.pr_num}</span>
-                                    <span class="font-medium">${pr.daysPending} ${currentLang === 'ar' ? 'يوم' : 'days'}</span>
+                                    <span class="font-medium">${pr.daysPending} ${'days'}</span>
                                 </div>
                             `).join('')}
-                            ${group.prs.length > 5 ? `<div class="text-center opacity-75">+${group.prs.length - 5} ${currentLang === 'ar' ? 'آخرين' : 'more'}</div>` : ''}
+                            ${group.prs.length > 5 ? `<div class="text-center opacity-75">+${group.prs.length - 5} ${'more'}</div>` : ''}
                         </div>
                     </div>
                 `;
             });
 
             if (!html) {
-                html = `<p class="text-gray-500 text-center py-4">${currentLang === 'ar' ? 'لا توجد بيانات معلقة' : 'No pending data available'}</p>`;
+                html = `<p class="text-gray-500 text-center py-4">${'No pending data available'}</p>`;
             }
 
             listContainer.innerHTML = html;
@@ -3513,7 +3497,7 @@
             const modalTitle = document.getElementById('modalTitle')?.textContent || 'Report';
             const table = document.getElementById('modalTable');
             if (!table) {
-                alert(currentLang === 'ar' ? 'لا يوجد جدول للتصدير' : 'No table to export');
+                alert('No table to export');
                 return;
             }
 
@@ -3559,13 +3543,13 @@
                         <img src="${NESMA_LOGO_BASE64}" class="logo" alt="NESMA">
                         <div class="title-section">
                             <div class="title">${modalTitle}</div>
-                            <div class="subtitle">${currentLang === 'ar' ? 'لوحة قياس المشتريات - نسما' : 'NESMA Procurement Dashboard'}</div>
-                            <div class="date">${currentLang === 'ar' ? 'تاريخ التقرير:' : 'Report Date:'} ${today}</div>
+                            <div class="subtitle">${'NESMA Procurement Dashboard'}</div>
+                            <div class="date">${'Report Date:'} ${today}</div>
                         </div>
                     </div>
                     ${tableHTML}
                     <div class="footer">
-                        <p>${currentLang === 'ar' ? 'هذا التقرير تم إنشاؤه تلقائياً من لوحة قياس المشتريات' : 'This report was auto-generated from the Procurement Dashboard'}</p>
+                        <p>${'This report was auto-generated from the Procurement Dashboard'}</p>
                         <p style="margin-top: 5px;">© ${new Date().getFullYear()} NESMA Holding - All Rights Reserved</p>
                     </div>
                 </body>
@@ -3608,7 +3592,7 @@
             popup.innerHTML = `
                 <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4" onclick="event.stopPropagation()">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold text-gray-800">${currentLang === 'ar' ? 'اختيار الأعمدة' : 'Select Columns'}</h3>
+                        <h3 class="text-lg font-bold text-gray-800">${'Select Columns'}</h3>
                         <button onclick="closeColumnSelector()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
                     </div>
                     <div class="space-y-2 max-h-64 overflow-y-auto">
@@ -3622,13 +3606,13 @@
                     </div>
                     <div class="flex gap-3 mt-4">
                         <button onclick="applyColumnSelection()" class="flex-1 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                            ${currentLang === 'ar' ? 'تطبيق' : 'Apply'}
+                            ${'Apply'}
                         </button>
                         <button onclick="selectAllColumns()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
-                            ${currentLang === 'ar' ? 'الكل' : 'All'}
+                            ${'All'}
                         </button>
                         <button onclick="closeColumnSelector()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">
-                            ${currentLang === 'ar' ? 'إلغاء' : 'Cancel'}
+                            ${'Cancel'}
                         </button>
                     </div>
                 </div>
@@ -3652,7 +3636,7 @@
             const selectedCols = Array.from(checkboxes).map(cb => cb.dataset.col);
 
             if (selectedCols.length === 0) {
-                alert(currentLang === 'ar' ? 'اختر عمود واحد على الأقل' : 'Select at least one column');
+                alert('Select at least one column');
                 return;
             }
 
@@ -3681,7 +3665,7 @@
             // Find all elements that can be renamed
             document.querySelectorAll('[data-editable="true"]').forEach(el => {
                 el.style.cursor = 'pointer';
-                el.title = currentLang === 'ar' ? 'انقر للتعديل' : 'Click to edit';
+                el.title = 'Click to edit';
 
                 el.addEventListener('dblclick', function() {
                     const currentText = this.textContent;
@@ -3749,9 +3733,7 @@
                 const basePRs = getFilteredPRs();
 
                 // Build filter description
-                const monthNames = currentLang === 'ar'
-                    ? ['', 'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
-                    : ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                const monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
                 let filterDesc = currentFilters.year || '2025';
                 if (currentFilters.month) filterDesc = monthNames[parseInt(currentFilters.month)] + ' ' + filterDesc;
@@ -3760,26 +3742,26 @@
                 switch(kpiType) {
                     case 'prs-received-month':
                     case 'prs-received-ytd':
-                        titleText = currentLang === 'ar' ? `PRs المستلمة - ${filterDesc}` : `PRs Received - ${filterDesc}`;
+                        titleText = `PRs Received - ${filterDesc}`;
                         filteredPRs = basePRs.filter(pr => (pr.status === 'APPROVED' || pr.pr_status === 'APPROVED'));
                         break;
                     case 'pos-issued-month':
                     case 'pos-issued-ytd':
-                        titleText = currentLang === 'ar' ? `POs الصادرة - ${filterDesc}` : `POs Issued - ${filterDesc}`;
+                        titleText = `POs Issued - ${filterDesc}`;
                         filteredPRs = basePRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days !== undefined);
                         break;
                     case 'within30days':
                     case 'within30-ytd':
-                        titleText = currentLang === 'ar' ? `POs صادرة خلال 30 يوم - ${filterDesc}` : `POs Within 30 Days - ${filterDesc}`;
+                        titleText = `POs Within 30 Days - ${filterDesc}`;
                         filteredPRs = basePRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days !== undefined && pr.pr_to_po_days <= 30);
                         break;
                     case 'after30days':
                     case 'after30-ytd':
-                        titleText = currentLang === 'ar' ? `POs صادرة بعد 30 يوم - ${filterDesc}` : `POs After 30 Days - ${filterDesc}`;
+                        titleText = `POs After 30 Days - ${filterDesc}`;
                         filteredPRs = basePRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days !== undefined && pr.pr_to_po_days > 30);
                         break;
                     default:
-                        titleText = currentLang === 'ar' ? 'التفاصيل' : 'Details';
+                        titleText = 'Details';
                         filteredPRs = basePRs;
                 }
 
@@ -3797,10 +3779,10 @@
 
         function generateDetailedPOTable(prs, type) {
             const count = prs.length;
-            const countLabel = currentLang === 'ar' ? `إجمالي: ${count} طلب` : `Total: ${count} records`;
+            const countLabel = `Total: ${count} records`;
 
             if (count === 0) {
-                return `<p class="text-gray-500 text-center py-8">${currentLang === 'ar' ? 'لا توجد بيانات متاحة' : 'No data available'}</p>`;
+                return `<p class="text-gray-500 text-center py-8">${'No data available'}</p>`;
             }
 
             // Get selected columns from settings
@@ -3809,15 +3791,15 @@
 
             // All available columns with their definitions
             const allColumns = {
-                'pr_num': { ar: 'رقم PR', en: 'PR #', getValue: (pr) => pr.pr_num || '-', class: 'font-medium' },
-                'project': { ar: 'المشروع', en: 'Project', getValue: (pr) => pr.project || '-', class: 'max-w-[100px] truncate' },
-                'po_num': { ar: 'رقم PO', en: 'PO #', getValue: (pr) => pr.po_num || '-', class: 'font-medium text-blue-600' },
-                'vendor': { ar: 'المورد', en: 'Vendor', getValue: (pr) => pr.vendor || '-', class: 'max-w-[100px] truncate' },
-                'pr_value': { ar: 'قيمة PR', en: 'PR Value', getValue: (pr) => pr.pr_value ? Number(pr.pr_value).toLocaleString() + ' SAR' : '-' },
-                'po_value': { ar: 'قيمة PO', en: 'PO Value', getValue: (pr) => pr.po_value ? Number(pr.po_value).toLocaleString() + ' SAR' : '-' },
-                'pr_to_po_days': { ar: 'أيام PR→PO', en: 'PR→PO Days', getValue: (pr) => pr.pr_to_po_days !== null ? pr.pr_to_po_days : '-', isDays: true },
-                'status': { ar: 'الحالة', en: 'Status', getValue: (pr) => pr.status || '-', isStatus: true },
-                'po_approved_date': { ar: 'تاريخ اعتماد PO', en: 'PO Approved', getValue: (pr) => pr.po_approved_date || '-' }
+                'pr_num': { label: 'PR #', getValue: (pr) => pr.pr_num || '-', class: 'font-medium' },
+                'project': { label: 'Project', getValue: (pr) => pr.project || '-', class: 'max-w-[100px] truncate' },
+                'po_num': { label: 'PO #', getValue: (pr) => pr.po_num || '-', class: 'font-medium text-blue-600' },
+                'vendor': { label: 'Vendor', getValue: (pr) => pr.vendor || '-', class: 'max-w-[100px] truncate' },
+                'pr_value': { label: 'PR Value', getValue: (pr) => pr.pr_value ? Number(pr.pr_value).toLocaleString() + ' SAR' : '-' },
+                'po_value': { label: 'PO Value', getValue: (pr) => pr.po_value ? Number(pr.po_value).toLocaleString() + ' SAR' : '-' },
+                'pr_to_po_days': { label: 'PR→PO Days', getValue: (pr) => pr.pr_to_po_days !== null ? pr.pr_to_po_days : '-', isDays: true },
+                'status': { label: 'Status', getValue: (pr) => pr.status || '-', isStatus: true },
+                'po_approved_date': { label: 'PO Approved', getValue: (pr) => pr.po_approved_date || '-' }
             };
 
             // If PO type, ensure PO columns are included
@@ -3847,7 +3829,7 @@
 
                     if (col.isDays) {
                         const days = pr.pr_to_po_days;
-                        return `<td class="text-center"><span class="px-2 py-1 rounded text-xs font-medium ${days !== null && days <= 30 ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">${days !== null ? days + (currentLang === 'ar' ? ' يوم' : ' days') : '-'}</span></td>`;
+                        return `<td class="text-center"><span class="px-2 py-1 rounded text-xs font-medium ${days !== null && days <= 30 ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">${days !== null ? days + + ' days' : '-'}</span></td>`;
                     }
 
                     return `<td class="${className}" title="${value}">${value}</td>`;
@@ -3860,9 +3842,9 @@
                 <div class="mb-4 flex flex-wrap gap-3 items-center justify-between">
                     <span class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">${countLabel}</span>
                     <div class="flex items-center gap-2">
-                        <input type="text" id="modalSearch" placeholder="${currentLang === 'ar' ? 'بحث...' : 'Search...'}"
+                        <input type="text" id="modalSearch" placeholder="${'Search...'}"
                             class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-48">
-                        <button onclick="openColumnSelector('po-table')" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 flex items-center gap-1" title="${currentLang === 'ar' ? 'اختيار الأعمدة' : 'Select Columns'}">
+                        <button onclick="openColumnSelector('po-table')" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 flex items-center gap-1" title="${'Select Columns'}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                         </button>
                         <button onclick="exportModalToPDF()" class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 flex items-center gap-1">
@@ -3936,9 +3918,9 @@
             if (!sectionEl) return;
 
             const sectionNames = {
-                'pr-return': currentLang === 'ar' ? 'تقرير إرجاع PR' : 'PR Return Report',
-                'pr-to-po': currentLang === 'ar' ? 'تقرير PR to PO' : 'PR to PO Report',
-                'vendor-eval': currentLang === 'ar' ? 'تقرير تقييم الموردين' : 'Vendor Evaluation Report'
+                'pr-return': 'PR Return Report',
+                'pr-to-po': 'PR to PO Report',
+                'vendor-eval': 'Vendor Evaluation Report'
             };
 
             const printContent = sectionEl.cloneNode(true);
@@ -3980,13 +3962,13 @@
                         <img src="${NESMA_LOGO_BASE64}" class="logo" alt="NESMA">
                         <div class="title-section">
                             <div class="title">${sectionNames[section] || 'NESMA Report'}</div>
-                            <div class="subtitle">${currentLang === 'ar' ? 'لوحة قياس المشتريات - نسما' : 'NESMA Procurement Dashboard'}</div>
-                            <div class="date">${currentLang === 'ar' ? 'تاريخ التقرير:' : 'Report Date:'} ${today}</div>
+                            <div class="subtitle">${'NESMA Procurement Dashboard'}</div>
+                            <div class="date">${'Report Date:'} ${today}</div>
                         </div>
                     </div>
                     ${printContent.innerHTML}
                     <div class="footer">
-                        <p>${currentLang === 'ar' ? 'هذا التقرير تم إنشاؤه تلقائياً من لوحة قياس المشتريات' : 'This report was auto-generated from the Procurement Dashboard'}</p>
+                        <p>${'This report was auto-generated from the Procurement Dashboard'}</p>
                         <p style="margin-top: 5px;">© ${new Date().getFullYear()} NESMA Holding - All Rights Reserved</p>
                     </div>
                 </body>
@@ -4064,14 +4046,14 @@
                 const filteredVendors = getFilteredVendors();
                 data = filteredVendors.map(v => ({
                     'Vendor Name': v.name || '',
-                    'Category': v.category || (currentLang === 'ar' ? 'غير مصنف' : 'Unclassified'),
+                    'Category': v.category || ('Unclassified'),
                     'Score (%)': v.score || 0,
-                    'Status': v.score > 0 ? (currentLang === 'ar' ? 'تم التقييم' : 'Evaluated') : (currentLang === 'ar' ? 'معلق' : 'Pending')
+                    'Status': v.score > 0 ? ('Evaluated') : ('Pending')
                 }));
             }
 
             if (data.length === 0) {
-                alert(currentLang === 'ar' ? 'لا توجد بيانات للتصدير' : 'No data to export');
+                alert('No data to export');
                 return;
             }
 
