@@ -6,23 +6,16 @@
     <title>NESMA | Supply Chain Management Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/nesma-theme.css">
     <style>
-        :root {
-            --nesma-primary: #2e3192;
-            --nesma-secondary: #80d1e9;
-        }
-
-        * { font-family: 'Cairo', 'Inter', sans-serif; }
-        [lang="en"] * { font-family: 'Inter', 'Cairo', sans-serif; }
-
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background: linear-gradient(135deg, #0E2841 0%, #203366 50%, #0E2841 100%);
             min-height: 100vh;
         }
 
         .hero-gradient {
-            background: radial-gradient(ellipse at top, rgba(128, 209, 233, 0.15) 0%, transparent 70%),
-                        radial-gradient(ellipse at bottom right, rgba(46, 49, 146, 0.2) 0%, transparent 70%);
+            background: radial-gradient(ellipse at top, rgba(128, 209, 233, 0.2) 0%, transparent 70%),
+                        radial-gradient(ellipse at bottom right, rgba(46, 49, 146, 0.25) 0%, transparent 70%);
         }
 
         .glass-card {
@@ -126,7 +119,7 @@
             margin-bottom: 24px;
         }
 
-        .logistics-gradient { background: linear-gradient(135deg, #2e3192 0%, #80d1e9 100%); }
+        .logistics-gradient { background: linear-gradient(135deg, #2E3192 0%, #80D1E9 100%); }
         .procurement-gradient { background: linear-gradient(135deg, #059669 0%, #34d399 100%); }
         .facilities-gradient { background: linear-gradient(135deg, #dc2626 0%, #f97316 100%); }
 
@@ -159,14 +152,7 @@
         <header class="container mx-auto px-6 pt-8 pb-4">
             <nav class="flex justify-between items-center">
                 <div class="flex items-center gap-4">
-                    <svg class="w-36 lg:w-44 h-12" viewBox="0 0 150 32" xmlns="http://www.w3.org/2000/svg">
-                        <polygon points="112.73 9.37 112.73 .05 123.95 .05 112.73 9.37" fill="#80d1e9"/>
-                        <rect x="126.61" y=".08" width="11.23" height="32.51" fill="#fff"/>
-                        <rect x="77.12" y=".05" width="11.23" height="32.6" fill="#fff"/>
-                        <path d="M110.07,17.69v14.86s0,.02,0,0l-19.07-18.16s0,0,0,0V.1s0-.02,0,0l19.07,17.59s0,0,0,0" fill="#fff"/>
-                        <rect x="112.73" y="11.44" width="11.23" height="21.16" fill="#fff"/>
-                        <rect x="140" y="11.98" width="10.03" height="7.8" fill="#fff"/>
-                    </svg>
+                    <img src="assets/logo.png" alt="NESMA" class="h-10 lg:h-12">
                 </div>
                 <div class="flex items-center gap-4">
                     <span class="text-gray-400 text-sm hidden md:inline" data-ar="إدارة سلسلة التوريد" data-en="Supply Chain Management">إدارة سلسلة التوريد</span>
@@ -304,7 +290,7 @@
             <div class="border-t border-gray-800 pt-6">
                 <p class="text-gray-500 text-sm mb-2" data-ar="شركة نسما للبنية التحتية والتكنولوجيا" data-en="NESMA Infrastructure & Technology">شركة نسما للبنية التحتية والتكنولوجيا</p>
                 <p class="text-gray-600 text-xs" data-ar="إدارة سلسلة التوريد" data-en="Supply Chain Management">إدارة سلسلة التوريد</p>
-                <p class="text-gray-700 text-xs mt-3">Version 4.0 | November 2025</p>
+                <p class="text-gray-700 text-xs mt-3">Version 5.0 | December 2025 | Brand Identity Update</p>
             </div>
         </footer>
     </div>

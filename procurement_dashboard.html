@@ -7,21 +7,22 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/nesma-theme.css">
     <style>
         :root {
             --nesma-primary: #2e3192;
             --nesma-secondary: #80d1e9;
             --nesma-dark: #203366;
             --nesma-gray: #b3b3b3;
-            --nesma-gradient: linear-gradient(135deg, #2e3192 0%, #203366 100%);
-            --procurement-gradient: linear-gradient(135deg, #2e3192 0%, #80d1e9 100%);
+            --nesma-gradient: linear-gradient(135deg, #2E3192 0%, #0E2841 100%);
+            --procurement-gradient: linear-gradient(135deg, #2E3192 0%, #0E2841 100%);
         }
 
         * { font-family: 'Cairo', 'Inter', sans-serif; }
         [lang="en"] * { font-family: 'Inter', 'Cairo', sans-serif; }
 
         body {
-            background: #f0f4f8;
+            background: linear-gradient(180deg, #E8E8E8 0%, #F5F5F5 100%);
             min-height: 100vh;
         }
 
@@ -296,14 +297,7 @@
                         <span class="text-sm hidden sm:inline" data-ar="الرئيسية" data-en="Home">الرئيسية</span>
                     </a>
                     <div class="h-6 w-px bg-white/30 hidden sm:block"></div>
-                    <svg class="w-32 lg:w-40 h-10" viewBox="0 0 150.02 32.68" xmlns="http://www.w3.org/2000/svg">
-                        <polygon points="112.73 9.37 112.73 .05 123.95 .05 112.73 9.37" fill="#80d1e9"/>
-                        <rect x="126.61" y=".08" width="11.23" height="32.51" fill="#fff"/>
-                        <rect x="77.12" y=".05" width="11.23" height="32.6" fill="#fff"/>
-                        <path d="M110.07,17.69v14.86s0,.02,0,0l-19.07-18.16s0,0,0,0V.1s0-.02,0,0l19.07,17.59s0,0,0,0" fill="#fff"/>
-                        <rect x="112.73" y="11.44" width="11.23" height="21.16" fill="#fff"/>
-                        <rect x="140" y="11.98" width="10.03" height="7.8" fill="#fff"/>
-                    </svg>
+                    <img src="assets/logo.png" alt="NESMA" class="h-8 lg:h-10">
                     <div class="hidden md:block border-r border-white/30 h-8 mx-2"></div>
                     <div class="hidden md:block">
                         <h1 class="text-lg font-bold" data-ar="لوحة قياس المشتريات" data-en="Procurement Dashboard">لوحة قياس المشتريات</h1>

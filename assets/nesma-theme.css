@@ -1,0 +1,430 @@
+/* ========================================
+   NESMA Brand Identity 2025 - Theme CSS
+   Supply Chain Management Dashboards
+   ======================================== */
+
+/* ==========================================
+   CSS Variables - NESMA Color Palette
+   ========================================== */
+:root {
+  /* Primary Brand Colors */
+  --nesma-primary: #2E3192;
+  --nesma-secondary: #80D1E9;
+  --nesma-dark: #0E2841;
+  --nesma-accent: #203366;
+
+  /* Neutral Colors */
+  --nesma-gray: #B3B3B3;
+  --nesma-light: #E8E8E8;
+  --nesma-white: #FFFFFF;
+  --nesma-black: #000000;
+
+  /* Status Colors */
+  --nesma-success: #10B981;
+  --nesma-warning: #F59E0B;
+  --nesma-danger: #EF4444;
+  --nesma-info: #3B82F6;
+
+  /* Gradients */
+  --nesma-gradient-primary: linear-gradient(135deg, #2E3192 0%, #0E2841 100%);
+  --nesma-gradient-secondary: linear-gradient(135deg, #80D1E9 0%, #2E3192 100%);
+  --nesma-gradient-dark: linear-gradient(135deg, #0E2841 0%, #203366 50%, #0E2841 100%);
+  --nesma-gradient-light: linear-gradient(180deg, #E8E8E8 0%, #F5F5F5 100%);
+
+  /* Shadows */
+  --nesma-shadow-sm: 0 2px 8px rgba(14, 40, 65, 0.08);
+  --nesma-shadow-md: 0 4px 20px rgba(14, 40, 65, 0.1);
+  --nesma-shadow-lg: 0 8px 40px rgba(14, 40, 65, 0.15);
+  --nesma-shadow-glow: 0 0 40px rgba(128, 209, 233, 0.3);
+
+  /* Border Radius */
+  --nesma-radius-sm: 8px;
+  --nesma-radius-md: 12px;
+  --nesma-radius-lg: 16px;
+  --nesma-radius-xl: 24px;
+
+  /* Transitions */
+  --nesma-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================
+   Typography
+   ========================================== */
+* {
+  font-family: 'Cairo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+[lang="en"] * {
+  font-family: 'Inter', 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ==========================================
+   Portal Pages - Dark Theme
+   ========================================== */
+.nesma-portal-bg {
+  background: var(--nesma-gradient-dark);
+  min-height: 100vh;
+}
+
+.nesma-hero-gradient {
+  background:
+    radial-gradient(ellipse at top, rgba(128, 209, 233, 0.2) 0%, transparent 70%),
+    radial-gradient(ellipse at bottom right, rgba(46, 49, 146, 0.25) 0%, transparent 70%);
+}
+
+/* ==========================================
+   Dashboard Pages - Light Theme
+   ========================================== */
+.nesma-dashboard-bg {
+  background: var(--nesma-gradient-light);
+  min-height: 100vh;
+}
+
+/* ==========================================
+   Headers
+   ========================================== */
+.nesma-header {
+  background: var(--nesma-gradient-primary);
+  color: var(--nesma-white);
+  padding: 1rem 1.5rem;
+  box-shadow: var(--nesma-shadow-md);
+}
+
+/* ==========================================
+   Cards
+   ========================================== */
+.nesma-card {
+  background: var(--nesma-white);
+  border-radius: var(--nesma-radius-lg);
+  box-shadow: var(--nesma-shadow-sm);
+  transition: var(--nesma-transition);
+}
+
+.nesma-card:hover {
+  box-shadow: var(--nesma-shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Glass Card for Portals */
+.nesma-glass {
+  background: rgba(14, 40, 65, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(128, 209, 233, 0.15);
+  border-radius: var(--nesma-radius-xl);
+  transition: var(--nesma-transition);
+}
+
+.nesma-glass:hover {
+  background: rgba(14, 40, 65, 0.08);
+  border-color: rgba(128, 209, 233, 0.4);
+  box-shadow: var(--nesma-shadow-glow);
+  transform: translateY(-8px);
+}
+
+/* KPI Cards */
+.nesma-kpi-card {
+  background: var(--nesma-white);
+  border-radius: var(--nesma-radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--nesma-shadow-sm);
+  border-right: 4px solid var(--nesma-primary);
+  transition: var(--nesma-transition);
+}
+
+[dir="ltr"] .nesma-kpi-card {
+  border-right: none;
+  border-left: 4px solid var(--nesma-primary);
+}
+
+.nesma-kpi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--nesma-shadow-md);
+}
+
+/* ==========================================
+   Buttons
+   ========================================== */
+.nesma-btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--nesma-radius-sm);
+  font-weight: 600;
+  transition: var(--nesma-transition);
+  cursor: pointer;
+  border: none;
+}
+
+.nesma-btn-primary {
+  background: var(--nesma-gradient-primary);
+  color: var(--nesma-white);
+}
+
+.nesma-btn-primary:hover {
+  box-shadow: var(--nesma-shadow-md);
+  transform: translateY(-2px);
+}
+
+.nesma-btn-secondary {
+  background: var(--nesma-secondary);
+  color: var(--nesma-dark);
+}
+
+.nesma-btn-secondary:hover {
+  background: #6bc4de;
+}
+
+.nesma-btn-outline {
+  background: transparent;
+  border: 2px solid var(--nesma-primary);
+  color: var(--nesma-primary);
+}
+
+.nesma-btn-outline:hover {
+  background: var(--nesma-primary);
+  color: var(--nesma-white);
+}
+
+/* ==========================================
+   Tables
+   ========================================== */
+.nesma-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.nesma-table th {
+  background: var(--nesma-gradient-primary);
+  color: var(--nesma-white);
+  padding: 0.875rem 1rem;
+  text-align: right;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+[dir="ltr"] .nesma-table th {
+  text-align: left;
+}
+
+.nesma-table th:first-child {
+  border-radius: 0 var(--nesma-radius-sm) 0 0;
+}
+
+[dir="ltr"] .nesma-table th:first-child {
+  border-radius: var(--nesma-radius-sm) 0 0 0;
+}
+
+.nesma-table th:last-child {
+  border-radius: var(--nesma-radius-sm) 0 0 0;
+}
+
+[dir="ltr"] .nesma-table th:last-child {
+  border-radius: 0 var(--nesma-radius-sm) 0 0;
+}
+
+.nesma-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--nesma-light);
+}
+
+.nesma-table tbody tr:hover {
+  background-color: rgba(128, 209, 233, 0.1);
+}
+
+/* ==========================================
+   Tabs
+   ========================================== */
+.nesma-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--nesma-white);
+  padding: 0.5rem;
+  border-radius: var(--nesma-radius-md);
+  box-shadow: var(--nesma-shadow-sm);
+}
+
+.nesma-tab {
+  padding: 0.625rem 1.5rem;
+  border-radius: var(--nesma-radius-sm);
+  font-weight: 500;
+  transition: var(--nesma-transition);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--nesma-dark);
+}
+
+.nesma-tab:hover {
+  background: rgba(46, 49, 146, 0.1);
+}
+
+.nesma-tab.active {
+  background: var(--nesma-primary);
+  color: var(--nesma-white);
+}
+
+/* ==========================================
+   Badges & Status
+   ========================================== */
+.nesma-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.nesma-badge-primary {
+  background: rgba(46, 49, 146, 0.15);
+  color: var(--nesma-primary);
+}
+
+.nesma-badge-secondary {
+  background: rgba(128, 209, 233, 0.2);
+  color: var(--nesma-dark);
+}
+
+.nesma-badge-success {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--nesma-success);
+}
+
+.nesma-badge-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #b45309;
+}
+
+.nesma-badge-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--nesma-danger);
+}
+
+.nesma-badge-info {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--nesma-info);
+}
+
+/* ==========================================
+   Form Elements
+   ========================================== */
+.nesma-input,
+.nesma-select {
+  padding: 0.625rem 1rem;
+  border: 2px solid var(--nesma-light);
+  border-radius: var(--nesma-radius-sm);
+  transition: var(--nesma-transition);
+  background: var(--nesma-white);
+}
+
+.nesma-input:focus,
+.nesma-select:focus {
+  outline: none;
+  border-color: var(--nesma-primary);
+  box-shadow: 0 0 0 3px rgba(46, 49, 146, 0.1);
+}
+
+/* ==========================================
+   Loading & Spinners
+   ========================================== */
+.nesma-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--nesma-light);
+  border-top-color: var(--nesma-primary);
+  border-radius: 50%;
+  animation: nesma-spin 1s linear infinite;
+}
+
+@keyframes nesma-spin {
+  to { transform: rotate(360deg); }
+}
+
+.nesma-loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* ==========================================
+   Animations
+   ========================================== */
+@keyframes nesma-fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nesma-fade-in-up {
+  animation: nesma-fadeInUp 0.6s ease forwards;
+}
+
+.nesma-stagger-1 { animation-delay: 0.1s; }
+.nesma-stagger-2 { animation-delay: 0.2s; }
+.nesma-stagger-3 { animation-delay: 0.3s; }
+.nesma-stagger-4 { animation-delay: 0.4s; }
+.nesma-stagger-5 { animation-delay: 0.5s; }
+
+/* ==========================================
+   Utilities
+   ========================================== */
+.nesma-text-primary { color: var(--nesma-primary); }
+.nesma-text-secondary { color: var(--nesma-secondary); }
+.nesma-text-dark { color: var(--nesma-dark); }
+.nesma-text-gray { color: var(--nesma-gray); }
+.nesma-text-success { color: var(--nesma-success); }
+.nesma-text-warning { color: var(--nesma-warning); }
+.nesma-text-danger { color: var(--nesma-danger); }
+
+.nesma-bg-primary { background-color: var(--nesma-primary); }
+.nesma-bg-secondary { background-color: var(--nesma-secondary); }
+.nesma-bg-dark { background-color: var(--nesma-dark); }
+.nesma-bg-light { background-color: var(--nesma-light); }
+
+.nesma-glow-text {
+  text-shadow: 0 0 40px rgba(128, 209, 233, 0.5);
+}
+
+/* ==========================================
+   Responsive Utilities
+   ========================================== */
+@media (max-width: 768px) {
+  .nesma-kpi-card {
+    padding: 1rem;
+  }
+
+  .nesma-tabs {
+    flex-wrap: wrap;
+  }
+
+  .nesma-tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* ==========================================
+   Print Styles
+   ========================================== */
+@media print {
+  .nesma-no-print {
+    display: none !important;
+  }
+
+  .nesma-card,
+  .nesma-kpi-card {
+    box-shadow: none;
+    border: 1px solid var(--nesma-light);
+  }
+}
