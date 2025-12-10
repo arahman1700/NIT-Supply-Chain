@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>NESMA | Supply Chain Management Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -57,18 +60,6 @@
 
         .glow-text { text-shadow: 0 0 40px rgba(128, 209, 233, 0.5); }
 
-        .lang-toggle {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 8px 16px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-
-        .lang-toggle:hover { background: rgba(255, 255, 255, 0.2); }
 
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
@@ -158,9 +149,6 @@
                     <span class="text-gray-400 text-sm hidden md:inline" data-ar="إدارة سلسلة التوريد" data-en="Supply Chain Management">إدارة سلسلة التوريد</span>
                     <div class="h-6 w-px bg-gray-700 hidden md:block"></div>
                     <span class="text-cyan-400 text-sm" id="currentTime"></span>
-                    <button onclick="toggleLanguage()" class="lang-toggle text-sm">
-                        <span id="langText">EN</span>
-                    </button>
                 </div>
             </nav>
         </header>
@@ -293,7 +281,7 @@
     </div>
 
     <script>
-        let currentLang = 'en';
+        const currentLang = 'en'; // Fixed to English
 
         function createParticles() {
             const container = document.getElementById('particles');
@@ -313,26 +301,7 @@
             document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', options);
         }
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            localStorage.setItem('nesma_lang', currentLang);
-            applyLanguage();
-        }
-
-        function applyLanguage() {
-            document.documentElement.lang = currentLang;
-            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            document.getElementById('langText').textContent = currentLang === 'ar' ? 'EN' : 'عربي';
-            document.querySelectorAll('[data-ar][data-en]').forEach(el => {
-                el.textContent = el.getAttribute(`data-${currentLang}`);
-            });
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            // Load saved language or default to English
-            const savedLang = localStorage.getItem('nesma_lang');
-            currentLang = savedLang || 'en';
-            applyLanguage();
             createParticles();
             updateTime();
             setInterval(updateTime, 1000);

@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>NESMA | SLA Dashboard - لوحة قياس اتفاقية مستوى الخدمة</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -195,20 +198,6 @@
             border-radius: 10px;
         }
 
-        .lang-toggle {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            padding: 6px 12px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-
-        .lang-toggle:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
 
         .alert-card {
             border-right: 4px solid;
@@ -497,9 +486,6 @@
                         <p class="text-xs text-cyan-200" data-ar="آخر تحديث" data-en="Last Update">آخر تحديث</p>
                         <p class="text-sm font-semibold" id="lastUpdate">نوفمبر 2025</p>
                     </div>
-                    <button onclick="toggleLanguage()" class="lang-toggle" id="langBtn">
-                        <span id="langText">EN</span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -1184,7 +1170,7 @@
     </div>
 
     <script>
-        let currentLang = 'en';
+        const currentLang = 'en'; // Fixed to English
         let currentModalData = null;
 
         // Chart.js Config
@@ -1341,24 +1327,6 @@
             document.getElementById(`tab-${tabName}`).classList.add('active');
         }
 
-        // Language Toggle
-        function toggleLanguage() {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            localStorage.setItem('nesma_lang', currentLang);
-            applyLanguage();
-        }
-
-        function applyLanguage() {
-            document.documentElement.lang = currentLang;
-            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            document.getElementById('langText').textContent = currentLang === 'ar' ? 'EN' : 'عربي';
-
-            Chart.defaults.font.family = currentLang === 'ar' ? 'Cairo' : 'Inter';
-
-            document.querySelectorAll('[data-ar][data-en]').forEach(el => {
-                el.textContent = el.getAttribute(`data-${currentLang}`);
-            });
-        }
 
         // KPI Data Store
         const kpiData = {
