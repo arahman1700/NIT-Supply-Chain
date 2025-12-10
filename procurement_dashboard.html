@@ -3609,9 +3609,23 @@
             `);
 
             printWindow.document.close();
-            setTimeout(() => {
-                printWindow.print();
-            }, 500);
+
+            // Wait for image to load before printing
+            const logoImg = printWindow.document.querySelector('img.logo');
+            if (logoImg) {
+                logoImg.onload = () => {
+                    setTimeout(() => printWindow.print(), 100);
+                };
+                logoImg.onerror = () => {
+                    setTimeout(() => printWindow.print(), 100);
+                };
+                // Fallback if image already loaded
+                if (logoImg.complete) {
+                    setTimeout(() => printWindow.print(), 300);
+                }
+            } else {
+                setTimeout(() => printWindow.print(), 500);
+            }
         }
 
         // ==========================================
@@ -3999,7 +4013,7 @@
                 </head>
                 <body>
                     <div class="header">
-                        <img src="assets/logo.svg" class="logo" alt="NESMA" onerror="this.style.display='none'">
+                        <img src="${NESMA_LOGO_BASE64}" class="logo" alt="NESMA">
                         <div class="title-section">
                             <div class="title">${sectionNames[section] || 'NESMA Report'}</div>
                             <div class="subtitle">${currentLang === 'ar' ? 'لوحة قياس المشتريات - نسما' : 'NESMA Procurement Dashboard'}</div>
@@ -4016,9 +4030,21 @@
             `);
             printWindow.document.close();
 
-            setTimeout(() => {
-                printWindow.print();
-            }, 500);
+            // Wait for image to load before printing
+            const logoImg = printWindow.document.querySelector('img.logo');
+            if (logoImg) {
+                logoImg.onload = () => {
+                    setTimeout(() => printWindow.print(), 100);
+                };
+                logoImg.onerror = () => {
+                    setTimeout(() => printWindow.print(), 100);
+                };
+                if (logoImg.complete) {
+                    setTimeout(() => printWindow.print(), 300);
+                }
+            } else {
+                setTimeout(() => printWindow.print(), 500);
+            }
         }
 
         // Export Section to Excel/CSV
