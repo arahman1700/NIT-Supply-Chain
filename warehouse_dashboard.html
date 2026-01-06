@@ -16,11 +16,11 @@
             --nesma-primary: #2E3192;
             --nesma-secondary: #80D1E9;
             --nesma-dark: #0E2841;
-            --nesma-accent: #1E3A5F;
+            --nesma-accent: #203366;
             --nesma-gray: #6B7280;
             --nesma-gradient: linear-gradient(135deg, #2E3192 0%, #0E2841 100%);
-            --warehouse-gradient: linear-gradient(135deg, #059669 0%, #047857 100%);
-            --nesma-success: #059669;
+            --warehouse-gradient: linear-gradient(135deg, #10B981 0%, #0E2841 100%);
+            --nesma-success: #10B981;
         }
 
         * { font-family: 'Inter', 'Cairo', sans-serif; }
@@ -32,7 +32,7 @@
 
         .nesma-header {
             background: var(--warehouse-gradient);
-            box-shadow: 0 4px 20px rgba(5, 150, 105, 0.25);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
             position: relative;
         }
         
@@ -51,11 +51,11 @@
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
             transition: all 0.3s ease;
-            border: 1px solid rgba(5, 150, 105, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.05);
         }
 
         .card:hover {
-            box-shadow: 0 8px 30px rgba(5, 150, 105, 0.1);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.1);
             transform: translateY(-2px);
         }
 
@@ -93,7 +93,7 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: #059669;
+            background: #10B981;
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
@@ -103,8 +103,8 @@
         }
 
         .tab-btn.active {
-            color: #059669;
-            background: rgba(5, 150, 105, 0.05);
+            color: #10B981;
+            background: rgba(16, 185, 129, 0.05);
         }
 
         .tab-content {
@@ -136,7 +136,7 @@
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             padding: 14px 16px;
             font-weight: 600;
-            color: #059669;
+            color: #10B981;
             border-bottom: 2px solid #80d1e9;
             position: sticky;
             top: 0;
@@ -148,7 +148,7 @@
         }
 
         .data-table tr:hover td {
-            background: rgba(5, 150, 105, 0.05);
+            background: rgba(16, 185, 129, 0.05);
         }
 
         .scroll-container {
@@ -173,7 +173,7 @@
         .status-critical { background: #fef2f2; color: #991b1b; }
         .status-low { background: #fef3c7; color: #92400e; }
         .status-zero { background: #f3f4f6; color: #374151; }
-        .status-normal { background: #d1fae5; color: #065f46; }
+        .status-normal { background: #d1fae5; color: #10B981; }
 
         .filter-section {
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
@@ -194,8 +194,8 @@
 
         .filter-select:focus {
             outline: none;
-            border-color: #059669;
-            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+            border-color: #10B981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
         }
 
         .modal {
@@ -385,10 +385,10 @@
                     <!-- Surplus KPIs -->
                     <div id="surplus-kpi-cards" class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
                         <!-- Total Transfers -->
-                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-emerald-600 to-emerald-700 text-white" onclick="showSurplusDetails('all')">
+                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-[#10B981] to-[#0E2841] text-white" onclick="showSurplusDetails('all')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-emerald-100 text-xs lg:text-sm mb-1">Total Transfers</p>
+                                    <p class="text-[#80D1E9] text-xs lg:text-sm mb-1">Total Transfers</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="kpi-transfers">0</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -397,7 +397,7 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="text-xs text-emerald-100">
+                            <div class="text-xs text-[#80D1E9]">
                                 <span>Click for details</span>
                             </div>
                         </div>
@@ -465,7 +465,7 @@
                         </div>
                         <div class="card p-3 lg:p-4 text-center">
                             <p class="text-gray-500 text-xs mb-1">Active Stores</p>
-                            <p class="text-xl lg:text-2xl font-bold text-emerald-600" id="kpi-stores">0</p>
+                            <p class="text-xl lg:text-2xl font-bold text-[#10B981]" id="kpi-stores">0</p>
                         </div>
                         <div class="card p-3 lg:p-4 text-center">
                             <p class="text-gray-500 text-xs mb-1">Source Projects</p>
@@ -473,7 +473,7 @@
                         </div>
                         <div class="card p-3 lg:p-4 text-center">
                             <p class="text-gray-500 text-xs mb-1">Destination Projects</p>
-                            <p class="text-xl lg:text-2xl font-bold text-purple-600" id="kpi-to-projects">0</p>
+                            <p class="text-xl lg:text-2xl font-bold text-[#2E3192]" id="kpi-to-projects">0</p>
                         </div>
                     </div>
 
@@ -581,10 +581,10 @@
                     <!-- Inventory KPIs -->
                     <div id="inventory-kpi-cards" class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
                         <!-- Total Materials -->
-                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-purple-600 to-purple-700 text-white" onclick="showInventoryDetails('all')">
+                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-[#2E3192] to-[#0E2841] text-white" onclick="showInventoryDetails('all')">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-purple-100 text-xs lg:text-sm mb-1">Total Materials</p>
+                                    <p class="text-[#80D1E9] text-xs lg:text-sm mb-1">Total Materials</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="inv-kpi-total">0</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -594,7 +594,7 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="text-xs text-purple-100">
+                            <div class="text-xs text-[#80D1E9]">
                                 <span>Unique items in stock</span>
                             </div>
                         </div>
@@ -636,10 +636,10 @@
                         </div>
 
                         <!-- Current Balance -->
-                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-emerald-600 to-emerald-700 text-white">
+                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-[#10B981] to-[#0E2841] text-white">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-emerald-100 text-xs lg:text-sm mb-1">Current Balance</p>
+                                    <p class="text-[#80D1E9] text-xs lg:text-sm mb-1">Current Balance</p>
                                     <p class="text-2xl lg:text-3xl font-bold" id="inv-kpi-balance">0</p>
                                 </div>
                                 <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -648,7 +648,7 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="text-xs text-emerald-100">
+                            <div class="text-xs text-[#80D1E9]">
                                 <span>Units in stock</span>
                             </div>
                         </div>
@@ -671,9 +671,9 @@
                             <p class="text-xl lg:text-2xl font-bold text-gray-600" id="inv-kpi-zero">0</p>
                             <p class="text-xs text-gray-400">Empty</p>
                         </div>
-                        <div class="card p-3 lg:p-4 text-center border-l-4 border-emerald-500 cursor-pointer hover:shadow-lg" onclick="filterByStatus('normal')">
+                        <div class="card p-3 lg:p-4 text-center border-l-4 border-[#10B981] cursor-pointer hover:shadow-lg" onclick="filterByStatus('normal')">
                             <p class="text-gray-500 text-xs mb-1">Normal</p>
-                            <p class="text-xl lg:text-2xl font-bold text-emerald-600" id="inv-kpi-normal">0</p>
+                            <p class="text-xl lg:text-2xl font-bold text-[#10B981]" id="inv-kpi-normal">0</p>
                             <p class="text-xs text-gray-400">Healthy stock</p>
                         </div>
                     </div>
@@ -892,7 +892,7 @@
     <!-- KPI Details Modal -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-t-2xl">
+            <div class="modal-header bg-gradient-to-r from-[#10B981] to-[#0E2841] text-white rounded-t-2xl">
                 <h3 class="text-lg font-bold" id="modalTitle">Details</h3>
                 <button class="close-btn text-white hover:bg-white/20 rounded" onclick="closeModal()">&times;</button>
             </div>
@@ -907,14 +907,14 @@
     <!-- Settings Modal -->
     <div id="settingsModal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-t-2xl">
+            <div class="modal-header bg-gradient-to-r from-[#10B981] to-[#0E2841] text-white rounded-t-2xl">
                 <h3 class="text-lg font-bold">Dashboard Settings</h3>
                 <button class="close-btn text-white hover:bg-white/20 rounded" onclick="closeSettingsModal()">&times;</button>
             </div>
             <div class="modal-body">
                 <p class="text-sm text-gray-500 mb-4">Export dashboard data</p>
                 <div class="space-y-4">
-                    <button onclick="exportAllData()" class="w-full py-3 px-4 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center justify-center gap-2">
+                    <button onclick="exportAllData()" class="w-full py-3 px-4 bg-[#10B981] text-white rounded-lg hover:bg-[#0E2841] flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                         <span>Export All Data to Excel</span>
                     </button>
@@ -1128,8 +1128,8 @@
                     datasets: [{
                         label: 'Transfers',
                         data: data.monthly.counts,
-                        backgroundColor: 'rgba(5, 150, 105, 0.8)',
-                        borderColor: 'rgb(5, 150, 105)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                        borderColor: '#10B981',
                         borderWidth: 1
                     }]
                 },
@@ -1174,8 +1174,8 @@
                     datasets: [{
                         data: data.by_store.counts,
                         backgroundColor: [
-                            'rgba(5, 150, 105, 0.8)',
-                            'rgba(37, 99, 235, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(46, 49, 146, 0.8)',
                             'rgba(245, 158, 11, 0.8)'
                         ]
                     }]
@@ -1199,8 +1199,8 @@
                     datasets: [{
                         label: 'Quantity',
                         data: data.monthly.quantities,
-                        borderColor: 'rgb(124, 58, 237)',
-                        backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                        borderColor: '#2E3192',
+                        backgroundColor: 'rgba(46, 49, 146, 0.1)',
                         fill: true,
                         tension: 0.4
                     }]
@@ -1306,8 +1306,8 @@
                     datasets: [{
                         label: 'Balance',
                         data: data.top_balance.values,
-                        backgroundColor: 'rgba(5, 150, 105, 0.8)',
-                        borderColor: 'rgb(5, 150, 105)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                        borderColor: '#10B981',
                         borderWidth: 1
                     }]
                 },
@@ -1331,7 +1331,7 @@
                         backgroundColor: [
                             'rgba(239, 68, 68, 0.8)',
                             'rgba(245, 158, 11, 0.8)',
-                            'rgba(156, 163, 175, 0.8)',
+                            'rgba(179, 179, 179, 0.8)',
                             'rgba(16, 185, 129, 0.8)'
                         ]
                     }]
@@ -1355,8 +1355,8 @@
                     datasets: [{
                         data: data.by_location.counts,
                         backgroundColor: [
-                            'rgba(79, 70, 229, 0.8)',
-                            'rgba(236, 72, 153, 0.8)',
+                            'rgba(46, 49, 146, 0.8)',
+                            'rgba(128, 209, 233, 0.8)',
                             'rgba(245, 158, 11, 0.8)'
                         ]
                     }]
@@ -1380,7 +1380,7 @@
                     datasets: [{
                         label: 'Items',
                         data: data.by_sub_location.counts,
-                        backgroundColor: 'rgba(99, 102, 241, 0.8)'
+                        backgroundColor: 'rgba(46, 49, 146, 0.8)'
                     }]
                 },
                 options: {
@@ -1439,8 +1439,8 @@
                     datasets: [{
                         label: 'Quantity Issued',
                         data: data.daily.quantities,
-                        borderColor: 'rgb(79, 70, 229)',
-                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderColor: '#2E3192',
+                        backgroundColor: 'rgba(46, 49, 146, 0.1)',
                         fill: true,
                         tension: 0.3
                     }]
@@ -1463,8 +1463,8 @@
                     datasets: [{
                         label: 'Quantity Issued',
                         data: data.top_materials.quantities,
-                        backgroundColor: 'rgba(236, 72, 153, 0.8)',
-                        borderColor: 'rgb(236, 72, 153)',
+                        backgroundColor: 'rgba(128, 209, 233, 0.8)',
+                        borderColor: '#80D1E9',
                         borderWidth: 1
                     }]
                 },
@@ -1486,8 +1486,8 @@
                     datasets: [{
                         label: 'Weekly Issuance',
                         data: data.weekly.quantities,
-                        backgroundColor: 'rgba(6, 182, 212, 0.8)',
-                        borderColor: 'rgb(6, 182, 212)',
+                        backgroundColor: 'rgba(128, 209, 233, 0.8)',
+                        borderColor: '#80D1E9',
                         borderWidth: 1
                     }]
                 },

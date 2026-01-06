@@ -133,7 +133,7 @@
             font-weight: 600;
         }
 
-        .badge-success { background: #d1fae5; color: #059669; }
+        .badge-success { background: #d1fae5; color: #10B981; }
         .badge-warning { background: #fef3c7; color: #d97706; }
         .badge-danger { background: #fee2e2; color: #dc2626; }
         .badge-info { background: #dbeafe; color: #2563eb; }
@@ -281,7 +281,7 @@
             </div>
             <div class="stat-card glass-card rounded-xl p-4">
                 <div class="text-3xl mb-2">🔄</div>
-                <div class="text-2xl font-bold text-purple-600" id="kpiPaymentCycle">0</div>
+                <div class="text-2xl font-bold text-[#2E3192]" id="kpiPaymentCycle">0</div>
                 <div class="text-sm text-gray-500" id="kpiPaymentCycleLabel">Payment Cycle (Days)</div>
             </div>
         </div>
@@ -695,7 +695,7 @@
 
             const labels = Object.keys(statusCounts);
             const data = Object.values(statusCounts);
-            const colors = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6'];
+            const colors = ['#10B981', '#F59E0B', '#EF4444', '#2E3192', '#80D1E9'];
 
             if (charts.statusChart) charts.statusChart.destroy();
 
@@ -846,7 +846,7 @@
             const labels = sorted.map(s => s[0]);
             const data = sorted.map(s => s[1]);
 
-            const colors = ['#2e3192', '#80d1e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6'];
+            const colors = ['#2E3192', '#80D1E9', '#0E2841', '#203366', '#B3B3B3', '#10B981', '#F59E0B', '#EF4444'];
 
             if (charts.supplierPieChart) charts.supplierPieChart.destroy();
 

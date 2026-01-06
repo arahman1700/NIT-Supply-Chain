@@ -2,53 +2,57 @@
    NESMA Infrastructure & Technology
    Brand Identity 2025 - Theme CSS
    Supply Chain Management Dashboards
-   Version: 2.0.0 | January 2026
+   Version: 2.1.0 | January 2026
+   
+   Colors extracted from official NESMA PPT Template
    ======================================== */
 
 /* ==========================================
-   CSS Variables - NESMA Color Palette
-   Based on NIT Brand Identity 2025
+   CSS Variables - NESMA Official Color Palette
+   Based on NIT Brand Identity 2025 PPT Template
    ========================================== */
 :root {
-  /* Primary Brand Colors - NESMA 2025 */
-  --nesma-primary: #2E3192;       /* Deep Blue - Primary */
-  --nesma-secondary: #80D1E9;     /* Cyan - Secondary */
-  --nesma-dark: #0E2841;          /* Dark Navy */
-  --nesma-accent: #1E3A5F;        /* Medium Blue Accent */
+  /* Primary Brand Colors - NESMA 2025 (from PPT theme1.xml) */
+  --nesma-primary: #2E3192;       /* accent1 - Deep Blue Primary */
+  --nesma-secondary: #80D1E9;     /* accent3 - Cyan Secondary */
+  --nesma-dark: #0E2841;          /* dk2 - Dark Navy */
+  --nesma-accent: #203366;        /* accent4 - Medium Blue */
+  --nesma-neutral: #B3B3B3;       /* accent2/6 - Gray */
+  --nesma-light-bg: #E8E8E8;      /* lt2 - Light Background */
 
   /* Neutral Colors */
   --nesma-gray: #6B7280;
-  --nesma-gray-light: #9CA3AF;
-  --nesma-light: #F3F4F6;
+  --nesma-gray-light: #B3B3B3;
+  --nesma-light: #E8E8E8;
   --nesma-white: #FFFFFF;
-  --nesma-black: #111827;
+  --nesma-black: #000000;
 
   /* Status Colors - Harmonized with Brand */
-  --nesma-success: #059669;       /* Emerald - Success */
+  --nesma-success: #10B981;       /* Emerald - Success */
   --nesma-success-light: #D1FAE5;
-  --nesma-warning: #D97706;       /* Amber - Warning */
+  --nesma-warning: #F59E0B;       /* Amber - Warning */
   --nesma-warning-light: #FEF3C7;
-  --nesma-danger: #DC2626;        /* Red - Danger */
+  --nesma-danger: #EF4444;        /* Red - Danger */
   --nesma-danger-light: #FEE2E2;
-  --nesma-info: #0284C7;          /* Sky Blue - Info */
-  --nesma-info-light: #E0F2FE;
+  --nesma-info: #80D1E9;          /* Cyan - Info (matches secondary) */
+  --nesma-info-light: #E0F7FA;
 
   /* Gradients - NESMA Brand */
   --nesma-gradient-primary: linear-gradient(135deg, #2E3192 0%, #0E2841 100%);
   --nesma-gradient-secondary: linear-gradient(135deg, #80D1E9 0%, #2E3192 100%);
-  --nesma-gradient-dark: linear-gradient(135deg, #0E2841 0%, #1E3A5F 50%, #0E2841 100%);
-  --nesma-gradient-light: linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%);
-  --nesma-gradient-header: linear-gradient(135deg, #2E3192 0%, #1E3A5F 50%, #0E2841 100%);
+  --nesma-gradient-dark: linear-gradient(135deg, #0E2841 0%, #203366 50%, #0E2841 100%);
+  --nesma-gradient-light: linear-gradient(180deg, #FFFFFF 0%, #E8E8E8 100%);
+  --nesma-gradient-header: linear-gradient(135deg, #2E3192 0%, #203366 50%, #0E2841 100%);
 
-  /* Chart Colors - NESMA Palette */
-  --nesma-chart-1: #2E3192;
-  --nesma-chart-2: #80D1E9;
-  --nesma-chart-3: #059669;
-  --nesma-chart-4: #D97706;
-  --nesma-chart-5: #7C3AED;
-  --nesma-chart-6: #DC2626;
-  --nesma-chart-7: #0284C7;
-  --nesma-chart-8: #DB2777;
+  /* Chart Colors - NESMA Official Palette */
+  --nesma-chart-1: #2E3192;       /* Primary Blue */
+  --nesma-chart-2: #80D1E9;       /* Cyan */
+  --nesma-chart-3: #0E2841;       /* Dark Navy */
+  --nesma-chart-4: #203366;       /* Medium Blue */
+  --nesma-chart-5: #B3B3B3;       /* Gray */
+  --nesma-chart-6: #10B981;       /* Success Green */
+  --nesma-chart-7: #F59E0B;       /* Warning Amber */
+  --nesma-chart-8: #EF4444;       /* Danger Red */
 
   /* Shadows - Enhanced */
   --nesma-shadow-xs: 0 1px 2px rgba(14, 40, 65, 0.05);

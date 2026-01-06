@@ -36,7 +36,7 @@
        ======================================== */
     --nesma-success: #10B981;
     --nesma-success-light: #D1FAE5;
-    --nesma-success-dark: #059669;
+    --nesma-success-dark: #0E2841;
     
     --nesma-warning: #F59E0B;
     --nesma-warning-light: #FEF3C7;
@@ -44,7 +44,7 @@
     
     --nesma-danger: #EF4444;
     --nesma-danger-light: #FEE2E2;
-    --nesma-danger-dark: #DC2626;
+    --nesma-danger-dark: #0E2841;
     
     --nesma-info: #3B82F6;
     --nesma-info-light: #DBEAFE;
@@ -57,8 +57,8 @@
     --gradient-secondary: linear-gradient(135deg, #80D1E9 0%, #2E3192 100%);
     --gradient-dark: linear-gradient(135deg, #0E2841 0%, #203366 50%, #0E2841 100%);
     --gradient-light: linear-gradient(180deg, #E8E8E8 0%, #F5F5F5 100%);
-    --gradient-success: linear-gradient(135deg, #059669 0%, #064E3B 100%);
-    --gradient-danger: linear-gradient(135deg, #DC2626 0%, #F97316 100%);
+    --gradient-success: linear-gradient(135deg, #10B981 0%, #0E2841 100%);
+    --gradient-danger: linear-gradient(135deg, #EF4444 0%, #0E2841 100%);
     
     /* ========================================
        Shadows

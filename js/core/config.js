@@ -33,22 +33,22 @@ const NesmaConfig = {
         primary: '#2E3192',
         secondary: '#80D1E9',
         dark: '#0E2841',
-        accent: '#1E3A5F',
+        accent: '#203366',
         
         // Status Colors
-        success: '#059669',
+        success: '#10B981',
         successLight: '#D1FAE5',
-        warning: '#D97706',
+        warning: '#F59E0B',
         warningLight: '#FEF3C7',
-        danger: '#DC2626',
+        danger: '#EF4444',
         dangerLight: '#FEE2E2',
-        info: '#0284C7',
-        infoLight: '#E0F2FE',
+        info: '#80D1E9',
+        infoLight: '#E0F7FA',
         
         // Neutral Colors
         gray: '#6B7280',
-        grayLight: '#9CA3AF',
-        light: '#F3F4F6',
+        grayLight: '#B3B3B3',
+        light: '#E8E8E8',
         white: '#FFFFFF',
         black: '#111827'
     },
@@ -57,30 +57,30 @@ const NesmaConfig = {
     chartColors: [
         '#2E3192',  // Primary Blue
         '#80D1E9',  // Secondary Cyan
-        '#059669',  // Success Green
-        '#D97706',  // Warning Amber
-        '#7C3AED',  // Purple
-        '#DC2626',  // Danger Red
-        '#0284C7',  // Info Sky
-        '#DB2777',  // Pink
-        '#0D9488',  // Teal
-        '#4F46E5',  // Indigo
-        '#84CC16',  // Lime
-        '#F97316'   // Orange
+        '#10B981',  // Success Green
+        '#F59E0B',  // Warning Amber
+        '#0E2841',  // Dark Navy
+        '#EF4444',  // Danger Red
+        '#203366',  // Medium Blue
+        '#B3B3B3',  // Gray
+        '#0E2841',  // Dark Navy (alt)
+        '#2E3192',  // Primary Blue (alt)
+        '#10B981',  // Success Green (alt)
+        '#F59E0B'   // Warning Amber (alt)
     ],
 
     // Gradients - NESMA Brand
     gradients: {
         primary: 'linear-gradient(135deg, #2E3192 0%, #0E2841 100%)',
         secondary: 'linear-gradient(135deg, #80D1E9 0%, #2E3192 100%)',
-        header: 'linear-gradient(135deg, #2E3192 0%, #1E3A5F 50%, #0E2841 100%)',
-        dark: 'linear-gradient(135deg, #0E2841 0%, #1E3A5F 50%, #0E2841 100%)',
-        light: 'linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%)',
-        success: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+        header: 'linear-gradient(135deg, #2E3192 0%, #203366 50%, #0E2841 100%)',
+        dark: 'linear-gradient(135deg, #0E2841 0%, #203366 50%, #0E2841 100%)',
+        light: 'linear-gradient(180deg, #E8E8E8 0%, #F5F5F5 100%)',
+        success: 'linear-gradient(135deg, #10B981 0%, #0E2841 100%)',
         logistics: 'linear-gradient(135deg, #2E3192 0%, #0E2841 100%)',
-        warehouse: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+        warehouse: 'linear-gradient(135deg, #10B981 0%, #0E2841 100%)',
         procurement: 'linear-gradient(135deg, #2E3192 0%, #0E2841 100%)',
-        facilities: 'linear-gradient(135deg, #DC2626 0%, #B91C1C 100%)'
+        facilities: 'linear-gradient(135deg, #EF4444 0%, #0E2841 100%)'
     },
 
     // Pagination
@@ -123,16 +123,16 @@ const NesmaConfig = {
         warehouse: {
             name: 'Warehouse',
             description: 'Inventory & Materials Management',
-            color: '#059669',
-            gradient: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+            color: '#10B981',
+            gradient: 'linear-gradient(135deg, #10B981 0%, #0E2841 100%)',
             icon: 'archive',
             active: true
         },
         facilities: {
             name: 'Facilities Management',
             description: 'Buildings, Maintenance & Services',
-            color: '#DC2626',
-            gradient: 'linear-gradient(135deg, #DC2626 0%, #B91C1C 100%)',
+            color: '#EF4444',
+            gradient: 'linear-gradient(135deg, #EF4444 0%, #0E2841 100%)',
             icon: 'building',
             active: false
         }

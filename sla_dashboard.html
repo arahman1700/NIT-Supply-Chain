@@ -114,10 +114,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .status-done { background: #d1fae5; color: #065f46; }
+        .status-done { background: #d1fae5; color: #10B981; }
         .status-progress { background: #fef3c7; color: #92400e; }
         .status-not { background: #fee2e2; color: #991b1b; }
-        .status-available { background: #d1fae5; color: #065f46; }
+        .status-available { background: #d1fae5; color: #10B981; }
         .status-partial { background: #fef3c7; color: #92400e; }
         .status-coming { background: #e0e7ff; color: #3730a3; }
 
@@ -222,7 +222,7 @@
 
         .alert-critical { border-color: #ef4444; background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); }
         .alert-warning { border-color: #f59e0b; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); }
-        .alert-success { border-color: #10b981; background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); }
+        .alert-success { border-color: #10B981; background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); }
 
         .report-card {
             transition: all 0.3s ease;
@@ -376,7 +376,7 @@
         }
 
         .export-excel:hover {
-            background: #059669;
+            background: #0E2841;
             transform: translateY(-1px);
         }
 
@@ -417,9 +417,9 @@
             transition: width 0.5s ease;
         }
 
-        .progress-fill.green { background: linear-gradient(90deg, #10b981, #34d399); }
-        .progress-fill.amber { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-        .progress-fill.red { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .progress-fill.green { background: linear-gradient(90deg, #10B981, #80D1E9); }
+        .progress-fill.amber { background: linear-gradient(90deg, #F59E0B, #fbbf24); }
+        .progress-fill.red { background: linear-gradient(90deg, #EF4444, #f87171); }
     </style>
 </head>
 <body>
@@ -533,10 +533,10 @@
             </div>
 
             <!-- Total Amount -->
-            <div class="card kpi-card clickable p-4 lg:p-6 bg-gradient-to-br from-purple-600 to-purple-700 text-white" onclick="showKpiDetails('totalamount')" title="Click for details">
+            <div class="card kpi-card clickable p-4 lg:p-6 bg-gradient-to-br from-[#2E3192] to-[#0E2841] text-white" onclick="showKpiDetails('totalamount')" title="Click for details">
                 <div class="flex justify-between items-start mb-3">
                     <div>
-                        <p class="text-purple-100 text-xs lg:text-sm mb-1">Total Amount</p>
+                        <p class="text-[#80D1E9] text-xs lg:text-sm mb-1">Total Amount</p>
                         <p class="text-2xl lg:text-3xl font-bold">4.9M</p>
                     </div>
                     <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -546,7 +546,7 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-xs text-purple-200">SAR</p>
+                <p class="text-xs text-[#80D1E9]">SAR</p>
             </div>
         </div>
 
@@ -566,7 +566,7 @@
             </div>
             <div class="card p-3 lg:p-4 text-center">
                 <p class="text-gray-500 text-xs mb-1">Completion Rate</p>
-                <p class="text-xl lg:text-2xl font-bold text-emerald-600">94.9%</p>
+                <p class="text-xl lg:text-2xl font-bold text-[#10B981]">94.9%</p>
             </div>
         </div>
 
@@ -645,8 +645,8 @@
                                 <h4 class="text-sm font-semibold text-gray-700">Equipment Request</h4>
                                 <span class="status-available text-xs font-medium px-2 py-0.5 rounded">Active</span>
                             </div>
-                            <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-lg">
-                                <p class="text-3xl font-bold text-emerald-600">98.5%</p>
+                            <div class="bg-gradient-to-br from-green-50 to-[#D1FAE5] p-4 rounded-lg">
+                                <p class="text-3xl font-bold text-[#10B981]">98.5%</p>
                                 <p class="text-xs text-gray-600 mt-1">Target: &ge;95% within 1 day</p>
                                 <div class="mt-2 flex items-center text-xs text-green-600">
                                     <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"/></svg>
@@ -677,8 +677,8 @@
                                 <h4 class="text-sm font-semibold text-gray-700">Scrap Removal</h4>
                                 <span class="status-available text-xs font-medium px-2 py-0.5 rounded">Active</span>
                             </div>
-                            <div class="bg-gradient-to-br from-purple-50 to-violet-50 p-4 rounded-lg">
-                                <p class="text-3xl font-bold text-purple-600">97.8%</p>
+                            <div class="bg-gradient-to-br from-blue-50 to-[#E0F7FA] p-4 rounded-lg">
+                                <p class="text-3xl font-bold text-[#2E3192]">97.8%</p>
                                 <p class="text-xs text-gray-600 mt-1">Target: &ge;95% within 3 days</p>
                                 <div class="mt-2 flex items-center text-xs text-green-600">
                                     <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"/></svg>
@@ -714,8 +714,8 @@
                                 <h4 class="text-sm font-semibold text-gray-700">Material Movement</h4>
                                 <span class="status-available text-xs font-medium px-2 py-0.5 rounded">Active</span>
                             </div>
-                            <div class="bg-gradient-to-br from-teal-50 to-emerald-50 p-4 rounded-lg">
-                                <p class="text-3xl font-bold text-teal-600">95.7%</p>
+                            <div class="bg-gradient-to-br from-[#E0F7FA] to-[#D1FAE5] p-4 rounded-lg">
+                                <p class="text-3xl font-bold text-[#10B981]">95.7%</p>
                                 <p class="text-xs text-gray-600 mt-1">Target: &ge;95% within 2 days</p>
                                 <div class="mt-2 flex items-center text-xs text-green-600">
                                     <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"/></svg>
@@ -1168,7 +1168,7 @@
                         labels: ['Done', 'In Progress', 'Not Done'],
                         datasets: [{
                             data: [610, 27, 4],
-                            backgroundColor: ['#059669', '#D97706', '#DC2626'],
+                            backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
                             borderWidth: 0
                         }]
                     },
@@ -1189,7 +1189,7 @@
                         labels: ['NIT', 'NP', 'LOGISTIC', 'OVERHEAD'],
                         datasets: [{
                             data: [481, 112, 43, 7],
-                            backgroundColor: ['#2E3192', '#80D1E9', '#0E2841', '#1E3A5F'],
+                            backgroundColor: ['#2E3192', '#80D1E9', '#0E2841', '#203366'],
                             borderWidth: 0
                         }]
                     },
@@ -1272,7 +1272,7 @@
                         }, {
                             label: 'Target 95%',
                             data: Array(11).fill(95),
-                            borderColor: '#059669',
+                            borderColor: '#10B981',
                             borderDash: [5, 5],
                             borderWidth: 2,
                             pointRadius: 0
