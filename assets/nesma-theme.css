@@ -1,61 +1,98 @@
 /* ========================================
-   NESMA Brand Identity 2025 - Theme CSS
+   NESMA Infrastructure & Technology
+   Brand Identity 2025 - Theme CSS
    Supply Chain Management Dashboards
+   Version: 2.0.0 | January 2026
    ======================================== */
 
 /* ==========================================
    CSS Variables - NESMA Color Palette
+   Based on NIT Brand Identity 2025
    ========================================== */
 :root {
-  /* Primary Brand Colors */
-  --nesma-primary: #2E3192;
-  --nesma-secondary: #80D1E9;
-  --nesma-dark: #0E2841;
-  --nesma-accent: #203366;
+  /* Primary Brand Colors - NESMA 2025 */
+  --nesma-primary: #2E3192;       /* Deep Blue - Primary */
+  --nesma-secondary: #80D1E9;     /* Cyan - Secondary */
+  --nesma-dark: #0E2841;          /* Dark Navy */
+  --nesma-accent: #1E3A5F;        /* Medium Blue Accent */
 
   /* Neutral Colors */
-  --nesma-gray: #B3B3B3;
-  --nesma-light: #E8E8E8;
+  --nesma-gray: #6B7280;
+  --nesma-gray-light: #9CA3AF;
+  --nesma-light: #F3F4F6;
   --nesma-white: #FFFFFF;
-  --nesma-black: #000000;
+  --nesma-black: #111827;
 
-  /* Status Colors */
-  --nesma-success: #10B981;
-  --nesma-warning: #F59E0B;
-  --nesma-danger: #EF4444;
-  --nesma-info: #3B82F6;
+  /* Status Colors - Harmonized with Brand */
+  --nesma-success: #059669;       /* Emerald - Success */
+  --nesma-success-light: #D1FAE5;
+  --nesma-warning: #D97706;       /* Amber - Warning */
+  --nesma-warning-light: #FEF3C7;
+  --nesma-danger: #DC2626;        /* Red - Danger */
+  --nesma-danger-light: #FEE2E2;
+  --nesma-info: #0284C7;          /* Sky Blue - Info */
+  --nesma-info-light: #E0F2FE;
 
-  /* Gradients */
+  /* Gradients - NESMA Brand */
   --nesma-gradient-primary: linear-gradient(135deg, #2E3192 0%, #0E2841 100%);
   --nesma-gradient-secondary: linear-gradient(135deg, #80D1E9 0%, #2E3192 100%);
-  --nesma-gradient-dark: linear-gradient(135deg, #0E2841 0%, #203366 50%, #0E2841 100%);
-  --nesma-gradient-light: linear-gradient(180deg, #E8E8E8 0%, #F5F5F5 100%);
+  --nesma-gradient-dark: linear-gradient(135deg, #0E2841 0%, #1E3A5F 50%, #0E2841 100%);
+  --nesma-gradient-light: linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%);
+  --nesma-gradient-header: linear-gradient(135deg, #2E3192 0%, #1E3A5F 50%, #0E2841 100%);
 
-  /* Shadows */
+  /* Chart Colors - NESMA Palette */
+  --nesma-chart-1: #2E3192;
+  --nesma-chart-2: #80D1E9;
+  --nesma-chart-3: #059669;
+  --nesma-chart-4: #D97706;
+  --nesma-chart-5: #7C3AED;
+  --nesma-chart-6: #DC2626;
+  --nesma-chart-7: #0284C7;
+  --nesma-chart-8: #DB2777;
+
+  /* Shadows - Enhanced */
+  --nesma-shadow-xs: 0 1px 2px rgba(14, 40, 65, 0.05);
   --nesma-shadow-sm: 0 2px 8px rgba(14, 40, 65, 0.08);
   --nesma-shadow-md: 0 4px 20px rgba(14, 40, 65, 0.1);
   --nesma-shadow-lg: 0 8px 40px rgba(14, 40, 65, 0.15);
+  --nesma-shadow-xl: 0 16px 60px rgba(14, 40, 65, 0.2);
   --nesma-shadow-glow: 0 0 40px rgba(128, 209, 233, 0.3);
+  --nesma-shadow-primary: 0 4px 20px rgba(46, 49, 146, 0.25);
 
   /* Border Radius */
+  --nesma-radius-xs: 4px;
   --nesma-radius-sm: 8px;
   --nesma-radius-md: 12px;
   --nesma-radius-lg: 16px;
   --nesma-radius-xl: 24px;
+  --nesma-radius-full: 9999px;
 
   /* Transitions */
+  --nesma-transition-fast: all 0.15s ease;
   --nesma-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --nesma-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Spacing */
+  --nesma-space-xs: 0.25rem;
+  --nesma-space-sm: 0.5rem;
+  --nesma-space-md: 1rem;
+  --nesma-space-lg: 1.5rem;
+  --nesma-space-xl: 2rem;
+  --nesma-space-2xl: 3rem;
 }
 
 /* ==========================================
-   Typography
+   Typography - NESMA Brand Fonts
+   English: Inter (fallback for Futura PT)
+   Arabic: Cairo (fallback for DIN Next)
    ========================================== */
 * {
-  font-family: 'Cairo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-[lang="en"] * {
-  font-family: 'Inter', 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+[lang="ar"] *,
+[dir="rtl"] * {
+  font-family: 'Cairo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* ==========================================
@@ -68,8 +105,8 @@
 
 .nesma-hero-gradient {
   background:
-    radial-gradient(ellipse at top, rgba(128, 209, 233, 0.2) 0%, transparent 70%),
-    radial-gradient(ellipse at bottom right, rgba(46, 49, 146, 0.25) 0%, transparent 70%);
+    radial-gradient(ellipse at top, rgba(128, 209, 233, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at bottom right, rgba(46, 49, 146, 0.2) 0%, transparent 60%);
 }
 
 /* ==========================================
@@ -81,66 +118,123 @@
 }
 
 /* ==========================================
-   Headers
+   Headers - NESMA Brand
    ========================================== */
 .nesma-header {
-  background: var(--nesma-gradient-primary);
+  background: var(--nesma-gradient-header);
   color: var(--nesma-white);
   padding: 1rem 1.5rem;
-  box-shadow: var(--nesma-shadow-md);
+  box-shadow: var(--nesma-shadow-primary);
+  position: relative;
+}
+
+.nesma-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--nesma-secondary) 0%, transparent 100%);
 }
 
 /* ==========================================
-   Cards
+   Cards - NESMA Style
    ========================================== */
 .nesma-card {
   background: var(--nesma-white);
   border-radius: var(--nesma-radius-lg);
   box-shadow: var(--nesma-shadow-sm);
+  border: 1px solid rgba(46, 49, 146, 0.05);
   transition: var(--nesma-transition);
 }
 
 .nesma-card:hover {
   box-shadow: var(--nesma-shadow-md);
   transform: translateY(-2px);
+  border-color: rgba(128, 209, 233, 0.2);
 }
 
 /* Glass Card for Portals */
 .nesma-glass {
-  background: rgba(14, 40, 65, 0.03);
+  background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(128, 209, 233, 0.15);
+  border: 1px solid rgba(128, 209, 233, 0.1);
   border-radius: var(--nesma-radius-xl);
   transition: var(--nesma-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.nesma-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--nesma-radius-xl);
+  padding: 1px;
+  background: linear-gradient(135deg, transparent 0%, rgba(128, 209, 233, 0.3) 50%, transparent 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.nesma-glass:hover::before {
+  opacity: 1;
 }
 
 .nesma-glass:hover {
-  background: rgba(14, 40, 65, 0.08);
-  border-color: rgba(128, 209, 233, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(128, 209, 233, 0.3);
   box-shadow: var(--nesma-shadow-glow);
-  transform: translateY(-8px);
+  transform: translateY(-8px) scale(1.02);
 }
 
-/* KPI Cards */
+/* KPI Cards - NESMA Brand */
 .nesma-kpi-card {
   background: var(--nesma-white);
   border-radius: var(--nesma-radius-lg);
   padding: 1.5rem;
   box-shadow: var(--nesma-shadow-sm);
-  border-right: 4px solid var(--nesma-primary);
+  border-left: 4px solid var(--nesma-primary);
   transition: var(--nesma-transition);
+  position: relative;
+  overflow: hidden;
 }
 
-[dir="ltr"] .nesma-kpi-card {
-  border-right: none;
-  border-left: 4px solid var(--nesma-primary);
+.nesma-kpi-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(128, 209, 233, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+[dir="rtl"] .nesma-kpi-card {
+  border-left: none;
+  border-right: 4px solid var(--nesma-primary);
 }
 
 .nesma-kpi-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-4px) scale(1.02);
   box-shadow: var(--nesma-shadow-md);
 }
+
+.nesma-kpi-card.kpi-success { border-left-color: var(--nesma-success); }
+.nesma-kpi-card.kpi-warning { border-left-color: var(--nesma-warning); }
+.nesma-kpi-card.kpi-danger { border-left-color: var(--nesma-danger); }
+.nesma-kpi-card.kpi-info { border-left-color: var(--nesma-info); }
+
+[dir="rtl"] .nesma-kpi-card.kpi-success { border-right-color: var(--nesma-success); }
+[dir="rtl"] .nesma-kpi-card.kpi-warning { border-right-color: var(--nesma-warning); }
+[dir="rtl"] .nesma-kpi-card.kpi-danger { border-right-color: var(--nesma-danger); }
+[dir="rtl"] .nesma-kpi-card.kpi-info { border-right-color: var(--nesma-info); }
 
 /* ==========================================
    Buttons

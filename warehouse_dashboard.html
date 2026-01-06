@@ -13,24 +13,37 @@
     <link rel="stylesheet" href="assets/nesma-theme.css">
     <style>
         :root {
-            --nesma-primary: #2e3192;
-            --nesma-secondary: #80d1e9;
-            --nesma-dark: #203366;
-            --nesma-gray: #b3b3b3;
+            --nesma-primary: #2E3192;
+            --nesma-secondary: #80D1E9;
+            --nesma-dark: #0E2841;
+            --nesma-accent: #1E3A5F;
+            --nesma-gray: #6B7280;
             --nesma-gradient: linear-gradient(135deg, #2E3192 0%, #0E2841 100%);
-            --warehouse-gradient: linear-gradient(135deg, #059669 0%, #064E3B 100%);
+            --warehouse-gradient: linear-gradient(135deg, #059669 0%, #047857 100%);
+            --nesma-success: #059669;
         }
 
         * { font-family: 'Inter', 'Cairo', sans-serif; }
 
         body {
-            background: linear-gradient(180deg, #E8E8E8 0%, #F5F5F5 100%);
+            background: linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%);
             min-height: 100vh;
         }
 
         .nesma-header {
             background: var(--warehouse-gradient);
-            box-shadow: 0 4px 20px rgba(5, 150, 105, 0.3);
+            box-shadow: 0 4px 20px rgba(5, 150, 105, 0.25);
+            position: relative;
+        }
+        
+        .nesma-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--nesma-secondary) 0%, transparent 100%);
         }
 
         .card {
@@ -260,7 +273,7 @@
             <div class="flex justify-between items-center">
                 <!-- Logo & Back -->
                 <div class="flex items-center gap-4">
-                    <a href="portal.html" class="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+                    <a href="index.html" class="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
@@ -872,7 +885,7 @@
             <p class="mb-2">
                 Warehouse Management System - NESMA Infrastructure & Technology
             </p>
-            <p class="text-xs">Version 1.0 | December 2025</p>
+            <p class="text-xs">Version 2.1.0 | January 2026</p>
         </footer>
     </main>
 

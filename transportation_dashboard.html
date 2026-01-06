@@ -133,6 +133,20 @@
         .badge-warning { background: #fef3c7; color: #d97706; }
         .badge-danger { background: #fee2e2; color: #dc2626; }
         .badge-info { background: #dbeafe; color: #2563eb; }
+
+        /* Header accent line */
+        .nesma-header {
+            position: relative;
+        }
+        .nesma-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--secondary) 0%, transparent 100%);
+        }
     </style>
 </head>
 <body class="ltr">
@@ -145,7 +159,7 @@
     </div>
 
     <!-- Header -->
-    <header class="gradient-primary text-white py-4 px-6 shadow-lg">
+    <header class="gradient-primary text-white py-4 px-6 shadow-lg nesma-header">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <a href="logistics_portal.html" class="text-white/80 hover:text-white transition">
@@ -383,6 +397,7 @@
     <footer class="text-center py-6 text-gray-500 text-sm">
         <p id="footerText">SLA Management System - Nesma Technology & Industry</p>
         <p class="mt-1">Last Update: <span id="lastUpdate">-</span></p>
+        <p class="mt-1 text-xs">Version 2.1.0 | January 2026</p>
     </footer>
 
     <script>
