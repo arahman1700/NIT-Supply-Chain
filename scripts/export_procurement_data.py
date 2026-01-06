@@ -19,7 +19,7 @@ except ImportError:
     import smartsheet
 
 # Configuration
-TOKEN = os.environ.get('SMARTSHEET_ACCESS_TOKEN', 'M54czWuhesCxLxjayIjZ84RX1r7bVPXivdF5z')
+TOKEN = os.environ.get('SMARTSHEET_ACCESS_TOKEN', 'C5MqdG1kJeP9hYPzRAMo7cSEAf30DHmcdwNIE')
 PR_SHEET_ID = 7610099599101828  # PR to PO report
 VENDOR_SHEET_ID = 1185309157969796  # Vendor Evaluation Log 2025
 
@@ -63,7 +63,7 @@ def export_pr_data(client):
         if pr_status:
             status_counts[pr_status] += 1
 
-        # Parse date and get year/month
+        # Parse date and get year/month - count by STATUS not just by date
         if pr_approved_date:
             try:
                 if isinstance(pr_approved_date, str):
@@ -75,19 +75,13 @@ def export_pr_data(client):
                 month = date_obj.month
 
                 if year == current_year:
-                    monthly_stats[month]['approved'] += 1
+                    # Only count as approved if status is APPROVED
+                    if pr_status == 'APPROVED':
+                        monthly_stats[month]['approved'] += 1
 
-                    # Check if returned
-                    if pr_return_date:
+                    # Only count as returned if status is RETURNED
+                    if pr_status == 'RETURNED':
                         monthly_stats[month]['returned'] += 1
-
-                        # Calculate return days
-                        if isinstance(pr_return_date, str):
-                            return_date = datetime.strptime(pr_return_date[:10], '%Y-%m-%d')
-                        else:
-                            return_date = pr_return_date
-
-                        days_to_return = (return_date - date_obj).days if return_date > date_obj else 0
 
             except Exception as e:
                 pass

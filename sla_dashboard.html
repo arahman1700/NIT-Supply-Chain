@@ -454,14 +454,14 @@
                         <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
-                        <span class="text-sm hidden sm:inline">Back</span>
+                        <span class="text-sm hidden sm:inline" data-ar="رجوع" data-en="Back">Back</span>
                     </a>
                     <div class="h-6 w-px bg-white/30 hidden sm:block"></div>
                     <img src="assets/logo-white.svg" alt="NESMA" class="h-8 lg:h-10">
                     <div class="hidden md:block border-r border-white/30 h-8 mx-2"></div>
                     <div class="hidden md:block">
-                        <h1 class="text-lg font-bold">SLA Dashboard</h1>
-                        <p class="text-xs text-cyan-200">Service Level Agreement</p>
+                        <h1 class="text-lg font-bold" data-ar="لوحة قياس SLA" data-en="SLA Dashboard">SLA Dashboard</h1>
+                        <p class="text-xs text-cyan-200" data-ar="اتفاقية مستوى الخدمة" data-en="Service Level Agreement">Service Level Agreement</p>
                     </div>
                 </div>
 
@@ -473,17 +473,17 @@
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
                             </svg>
-                            <span class="hidden sm:inline">Excel</span>
+                            <span class="hidden sm:inline" data-ar="Excel" data-en="Excel">Excel</span>
                         </button>
                         <button onclick="exportToPDF()" class="export-btn export-pdf">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/>
                             </svg>
-                            <span class="hidden sm:inline">PDF</span>
+                            <span class="hidden sm:inline" data-ar="PDF" data-en="PDF">PDF</span>
                         </button>
                     </div>
                     <div class="text-left hidden sm:block">
-                        <p class="text-xs text-cyan-200">Last Update</p>
+                        <p class="text-xs text-cyan-200" data-ar="آخر تحديث" data-en="Last Update">Last Update</p>
                         <p class="text-sm font-semibold" id="lastUpdate">November 2025</p>
                     </div>
                 </div>
@@ -500,7 +500,7 @@
             <div class="card kpi-card clickable p-4 lg:p-6 bg-gradient-to-br from-red-500 to-red-600 text-white" onclick="showKpiDetails('ontime')" title="Click for details">
                 <div class="flex justify-between items-start mb-3">
                     <div>
-                        <p class="text-red-100 text-xs lg:text-sm mb-1">On-Time Delivery Rate</p>
+                        <p class="text-red-100 text-xs lg:text-sm mb-1" data-ar="معدل التسليم في الوقت" data-en="On-Time Delivery Rate">On-Time Delivery Rate</p>
                         <p class="text-2xl lg:text-3xl font-bold">87.8%</p>
                     </div>
                     <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -510,7 +510,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 text-xs">
-                    <span class="bg-white/20 px-2 py-1 rounded">Target: ≥95%</span>
+                    <span class="bg-white/20 px-2 py-1 rounded" data-ar="الهدف: ≥95%" data-en="Target: ≥95%">Target: ≥95%</span>
                     <span class="text-red-200">↓ 7.2%</span>
                 </div>
             </div>
@@ -519,7 +519,7 @@
             <div class="card kpi-card clickable p-4 lg:p-6 bg-gradient-to-br from-amber-500 to-amber-600 text-white" onclick="showKpiDetails('openorders')" title="Click for details">
                 <div class="flex justify-between items-start mb-3">
                     <div>
-                        <p class="text-amber-100 text-xs lg:text-sm mb-1">Open Orders</p>
+                        <p class="text-amber-100 text-xs lg:text-sm mb-1" data-ar="الطلبات المفتوحة" data-en="Open Orders">Open Orders</p>
                         <p class="text-2xl lg:text-3xl font-bold">19</p>
                     </div>
                     <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -529,7 +529,7 @@
                     </div>
                 </div>
                 <div class="text-xs">
-                    <span class="bg-white/20 px-2 py-1 rounded">Avg: 110 days</span>
+                    <span class="bg-white/20 px-2 py-1 rounded" data-ar="متوسط: 110 يوم" data-en="Avg: 110 days">Avg: 110 days</span>
                 </div>
             </div>
 
@@ -537,7 +537,7 @@
             <div class="card kpi-card clickable p-4 lg:p-6 bg-gradient-to-br from-[#2e3192] to-[#1a1a5e] text-white" onclick="showKpiDetails('totalorders')" title="Click for details">
                 <div class="flex justify-between items-start mb-3">
                     <div>
-                        <p class="text-blue-100 text-xs lg:text-sm mb-1">Total Orders</p>
+                        <p class="text-blue-100 text-xs lg:text-sm mb-1" data-ar="إجمالي الطلبات" data-en="Total Orders">Total Orders</p>
                         <p class="text-2xl lg:text-3xl font-bold">643</p>
                     </div>
                     <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -557,7 +557,7 @@
             <div class="card kpi-card clickable p-4 lg:p-6 bg-gradient-to-br from-purple-600 to-purple-700 text-white" onclick="showKpiDetails('totalamount')" title="Click for details">
                 <div class="flex justify-between items-start mb-3">
                     <div>
-                        <p class="text-purple-100 text-xs lg:text-sm mb-1">Total Amount</p>
+                        <p class="text-purple-100 text-xs lg:text-sm mb-1" data-ar="إجمالي القيمة" data-en="Total Amount">Total Amount</p>
                         <p class="text-2xl lg:text-3xl font-bold">4.9M</p>
                     </div>
                     <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
@@ -567,26 +567,26 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-xs text-purple-200">SAR</p>
+                <p class="text-xs text-purple-200" data-ar="ريال سعودي" data-en="SAR">SAR</p>
             </div>
         </div>
 
         <!-- Secondary KPIs -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6 lg:mb-8">
             <div class="card p-3 lg:p-4 text-center">
-                <p class="text-gray-500 text-xs mb-1">Avg. Delivery</p>
-                <p class="text-xl lg:text-2xl font-bold text-gray-800">1.81 <span class="text-sm">day</span></p>
+                <p class="text-gray-500 text-xs mb-1" data-ar="متوسط التسليم" data-en="Avg. Delivery">Avg. Delivery</p>
+                <p class="text-xl lg:text-2xl font-bold text-gray-800">1.81 <span class="text-sm" data-ar="يوم" data-en="day">day</span></p>
             </div>
             <div class="card p-3 lg:p-4 text-center">
                 <p class="text-gray-500 text-xs mb-1">Median (P50)</p>
-                <p class="text-xl lg:text-2xl font-bold text-gray-800">1.0 <span class="text-sm">day</span></p>
+                <p class="text-xl lg:text-2xl font-bold text-gray-800">1.0 <span class="text-sm" data-ar="يوم" data-en="day">day</span></p>
             </div>
             <div class="card p-3 lg:p-4 text-center">
                 <p class="text-gray-500 text-xs mb-1">P90</p>
-                <p class="text-xl lg:text-2xl font-bold text-gray-800">4.0 <span class="text-sm">days</span></p>
+                <p class="text-xl lg:text-2xl font-bold text-gray-800">4.0 <span class="text-sm" data-ar="أيام" data-en="days">days</span></p>
             </div>
             <div class="card p-3 lg:p-4 text-center">
-                <p class="text-gray-500 text-xs mb-1">Completion Rate</p>
+                <p class="text-gray-500 text-xs mb-1" data-ar="معدل الإكمال" data-en="Completion Rate">Completion Rate</p>
                 <p class="text-xl lg:text-2xl font-bold text-emerald-600">94.9%</p>
             </div>
         </div>
@@ -595,11 +595,21 @@
         <div class="card mb-6 lg:mb-8">
             <div class="border-b border-gray-200 no-print">
                 <div class="flex overflow-x-auto">
-                    <button class="tab-btn active px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('overview')">Overview</button>
-                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('reports')">Reports</button>
-                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('suppliers')">Suppliers</button>
-                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('projects')">Projects</button>
-                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('requirements')">Requirements</button>
+                    <button class="tab-btn active px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('overview')" data-ar="نظرة عامة" data-en="Overview">
+                        نظرة عامة
+                    </button>
+                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('reports')" data-ar="التقارير" data-en="Reports">
+                        التقارير
+                    </button>
+                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('suppliers')" data-ar="الموردين" data-en="Suppliers">
+                        الموردين
+                    </button>
+                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('projects')" data-ar="المشاريع" data-en="Projects">
+                        المشاريع
+                    </button>
+                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('requirements')" data-ar="المتطلبات" data-en="Requirements">
+                        المتطلبات
+                    </button>
                 </div>
             </div>
 
@@ -608,13 +618,13 @@
                 <div id="tab-overview" class="tab-content active">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Order Status Distribution</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="توزيع حالات الطلبات" data-en="Order Status Distribution">Order Status Distribution</h3>
                             <div class="chart-container">
                                 <canvas id="statusChart"></canvas>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Company Distribution</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="توزيع الشركات" data-en="Company Distribution">Company Distribution</h3>
                             <div class="chart-container">
                                 <canvas id="companyChart"></canvas>
                             </div>
@@ -623,22 +633,22 @@
 
                     <!-- Alerts -->
                     <div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-4">Alerts & Actions</h3>
+                        <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="التنبيهات والإجراءات" data-en="Alerts & Actions">Alerts & Actions</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             <div class="alert-card alert-critical p-4">
-                                <h4 class="font-semibold text-gray-800 mb-1">On-Time Rate Below Target</h4>
-                                <p class="text-sm text-gray-600 mb-2">Current rate 87.8% - Target 95%</p>
-                                <p class="text-xs text-gray-500">Improve delivery process</p>
+                                <h4 class="font-semibold text-gray-800 mb-1" data-ar="معدل التسليم تحت الهدف" data-en="On-Time Rate Below Target">On-Time Rate Below Target</h4>
+                                <p class="text-sm text-gray-600 mb-2" data-ar="المعدل الحالي 87.8% - الهدف 95%" data-en="Current rate 87.8% - Target 95%">Current rate 87.8% - Target 95%</p>
+                                <p class="text-xs text-gray-500" data-ar="تحسين عملية التسليم" data-en="Improve delivery process">Improve delivery process</p>
                             </div>
                             <div class="alert-card alert-warning p-4">
-                                <h4 class="font-semibold text-gray-800 mb-1">Aged Open Orders</h4>
-                                <p class="text-sm text-gray-600 mb-2">19 open orders avg 110 days</p>
-                                <p class="text-xs text-gray-500">Review pending orders</p>
+                                <h4 class="font-semibold text-gray-800 mb-1" data-ar="طلبات مفتوحة قديمة" data-en="Aged Open Orders">Aged Open Orders</h4>
+                                <p class="text-sm text-gray-600 mb-2" data-ar="19 طلب مفتوح بمتوسط 110 يوم" data-en="19 open orders avg 110 days">19 open orders avg 110 days</p>
+                                <p class="text-xs text-gray-500" data-ar="مراجعة الطلبات المعلقة" data-en="Review pending orders">Review pending orders</p>
                             </div>
                             <div class="alert-card alert-success p-4">
-                                <h4 class="font-semibold text-gray-800 mb-1">Median Delivery Performance</h4>
-                                <p class="text-sm text-gray-600 mb-2">Median delivery 1 day - Excellent</p>
-                                <p class="text-xs text-gray-500">Maintain performance</p>
+                                <h4 class="font-semibold text-gray-800 mb-1" data-ar="أداء متوسط التسليم" data-en="Median Delivery Performance">Median Delivery Performance</h4>
+                                <p class="text-sm text-gray-600 mb-2" data-ar="متوسط التسليم 1 يوم - ممتاز" data-en="Median delivery 1 day - Excellent">Median delivery 1 day - Excellent</p>
+                                <p class="text-xs text-gray-500" data-ar="الحفاظ على الأداء" data-en="Maintain performance">Maintain performance</p>
                             </div>
                         </div>
                     </div>
@@ -647,21 +657,21 @@
                 <!-- Reports Tab -->
                 <div id="tab-reports" class="tab-content">
                     <!-- Logistics Services Section -->
-                    <h3 class="text-lg font-bold text-gray-800 mb-6">Logistics Services</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-6" data-ar="خدمات اللوجستيات" data-en="Logistics Services">Logistics Services</h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         <!-- Equipment Request -->
                         <div class="report-card clickable card p-5" onclick="showServiceDetails('equipment_request')" title="Click for details">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Equipment Request</h4>
-                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded">Active</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="طلبات المعدات" data-en="Equipment Request">Equipment Request</h4>
+                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded" data-ar="نشط" data-en="Active">Active</span>
                             </div>
                             <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-lg">
                                 <p class="text-3xl font-bold text-emerald-600">98.5%</p>
-                                <p class="text-xs text-gray-600 mt-1">Target: ≥95% within 1 day</p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="الهدف: ≥95% خلال 1 يوم" data-en="Target: ≥95% within 1 day">Target: ≥95% within 1 day</p>
                                 <div class="mt-2 flex items-center text-xs text-green-600">
                                     <svg class="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"/></svg>
-                                    <span>Excellent</span>
+                                    <span data-ar="ممتاز" data-en="Excellent">Excellent</span>
                                 </div>
                             </div>
                         </div>
@@ -669,15 +679,15 @@
                         <!-- Equipment Delivery -->
                         <div class="report-card clickable card p-5" onclick="showServiceDetails('equipment_delivery')" title="Click for details">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Equipment Delivery</h4>
-                                <span class="status-partial text-xs font-medium px-2 py-0.5 rounded">Improving</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="تسليم المعدات" data-en="Equipment Delivery">Equipment Delivery</h4>
+                                <span class="status-partial text-xs font-medium px-2 py-0.5 rounded" data-ar="تحسين" data-en="Improving">Improving</span>
                             </div>
                             <div class="bg-gradient-to-br from-amber-50 to-yellow-50 p-4 rounded-lg">
                                 <p class="text-3xl font-bold text-amber-600">88%</p>
-                                <p class="text-xs text-gray-600 mt-1">Target: ≥95% within 2-3 days</p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="الهدف: ≥95% خلال 2-3 يوم" data-en="Target: ≥95% within 2-3 days">Target: ≥95% within 2-3 days</p>
                                 <div class="mt-2 flex items-center text-xs text-amber-600">
                                     <svg class="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"/></svg>
-                                    <span>7% below target</span>
+                                    <span data-ar="تحت الهدف 7%" data-en="7% below target">7% below target</span>
                                 </div>
                             </div>
                         </div>
@@ -685,36 +695,36 @@
                         <!-- Scrap Removal -->
                         <div class="report-card clickable card p-5" onclick="showServiceDetails('scrap_removal')" title="Click for details">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Scrap Removal</h4>
-                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded">Active</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="إزالة الخردة" data-en="Scrap Removal">Scrap Removal</h4>
+                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded" data-ar="نشط" data-en="Active">Active</span>
                             </div>
                             <div class="bg-gradient-to-br from-purple-50 to-violet-50 p-4 rounded-lg">
                                 <p class="text-3xl font-bold text-purple-600">97.8%</p>
-                                <p class="text-xs text-gray-600 mt-1">Target: ≥95% within 3 days</p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="الهدف: ≥95% خلال 3 يوم" data-en="Target: ≥95% within 3 days">Target: ≥95% within 3 days</p>
                                 <div class="mt-2 flex items-center text-xs text-green-600">
                                     <svg class="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"/></svg>
-                                    <span>Above Target</span>
+                                    <span data-ar="فوق الهدف" data-en="Above Target">Above Target</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Material Handling Section -->
-                    <h3 class="text-lg font-bold text-gray-800 mb-6">Material Handling Services</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-6" data-ar="خدمات مناولة المواد" data-en="Material Handling Services">Material Handling Services</h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         <!-- Stock Confirmation -->
                         <div class="report-card clickable card p-5" onclick="showServiceDetails('stock_confirmation')" title="Click for details">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Stock Confirmation</h4>
-                                <span class="status-partial text-xs font-medium px-2 py-0.5 rounded">Improving</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="تأكيد المخزون" data-en="Stock Confirmation">Stock Confirmation</h4>
+                                <span class="status-partial text-xs font-medium px-2 py-0.5 rounded" data-ar="تطوير" data-en="Improving">Improving</span>
                             </div>
                             <div class="bg-gradient-to-br from-cyan-50 to-sky-50 p-4 rounded-lg">
-                                <p class="text-xl font-bold text-cyan-600">Process Applied</p>
-                                <p class="text-xs text-gray-600 mt-1">Target: ≥95% within 1 day</p>
+                                <p class="text-xl font-bold text-cyan-600" data-ar="تم تطبيق الآلية" data-en="Process Applied">Process Applied</p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="الهدف: ≥95% خلال 1 يوم" data-en="Target: ≥95% within 1 day">Target: ≥95% within 1 day</p>
                                 <div class="mt-2 flex items-center text-xs text-amber-600">
                                     <svg class="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"/></svg>
-                                    <span>Under improvement</span>
+                                    <span data-ar="جاري التحسين والتطوير" data-en="Under improvement">Under improvement</span>
                                 </div>
                             </div>
                         </div>
@@ -722,15 +732,15 @@
                         <!-- Material Movement -->
                         <div class="report-card clickable card p-5" onclick="showServiceDetails('material_movement')" title="Click for details">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Material Movement</h4>
-                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded">Active</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="نقل المواد" data-en="Material Movement">Material Movement</h4>
+                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded" data-ar="نشط" data-en="Active">Active</span>
                             </div>
                             <div class="bg-gradient-to-br from-teal-50 to-emerald-50 p-4 rounded-lg">
                                 <p class="text-3xl font-bold text-teal-600">95.7%</p>
-                                <p class="text-xs text-gray-600 mt-1">Target: ≥95% within 2 days</p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="الهدف: ≥95% خلال 2 يوم" data-en="Target: ≥95% within 2 days">Target: ≥95% within 2 days</p>
                                 <div class="mt-2 flex items-center text-xs text-green-600">
                                     <svg class="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"/></svg>
-                                    <span>Above Target</span>
+                                    <span data-ar="فوق الهدف" data-en="Above Target">Above Target</span>
                                 </div>
                             </div>
                         </div>
@@ -738,15 +748,15 @@
                         <!-- Storage Compliance -->
                         <div class="report-card clickable card p-5" onclick="showServiceDetails('storage_compliance')" title="Click for details">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Storage Compliance</h4>
-                                <span class="status-partial text-xs font-medium px-2 py-0.5 rounded">Improving</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="امتثال التخزين" data-en="Storage Compliance">امتثال التخزين</h4>
+                                <span class="status-partial text-xs font-medium px-2 py-0.5 rounded" data-ar="تطوير" data-en="Improving">Improving</span>
                             </div>
                             <div class="bg-gradient-to-br from-indigo-50 to-blue-50 p-4 rounded-lg">
-                                <p class="text-xl font-bold text-indigo-600">In Progress</p>
-                                <p class="text-xs text-gray-600 mt-1">Target: ≥98% (Audit)</p>
+                                <p class="text-xl font-bold text-indigo-600" data-ar="جاري التحسين" data-en="Under Improvement">جاري التحسين</p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="الهدف: ≥98% (تدقيق)" data-en="Target: ≥98% (audit)">الهدف: ≥98% (تدقيق)</p>
                                 <div class="mt-2 flex items-center text-xs text-amber-600">
                                     <svg class="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"/></svg>
-                                    <span>Under improvement</span>
+                                    <span data-ar="جاري التحسين والتطوير" data-en="Under improvement">Under improvement</span>
                                 </div>
                             </div>
                         </div>
@@ -754,48 +764,48 @@
                         <!-- Incident Reporting -->
                         <div class="report-card clickable card p-5" onclick="showServiceDetails('incident_reporting')" title="Click for details">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Incident Reporting</h4>
-                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded">Active</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="تقارير الحوادث" data-en="Incident Reporting">تقارير الحوادث</h4>
+                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded" data-ar="نشط" data-en="Active">Active</span>
                             </div>
                             <div class="bg-gradient-to-br from-rose-50 to-pink-50 p-4 rounded-lg">
                                 <p class="text-3xl font-bold text-rose-600">100%</p>
-                                <p class="text-xs text-gray-600 mt-1">Target: 100% Immediate</p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="الهدف: 100% فوري" data-en="Target: 100% Immediate">الهدف: 100% فوري</p>
                                 <div class="mt-2 flex items-center text-xs text-green-600">
                                     <svg class="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
-                                    <span>Excellent</span>
+                                    <span data-ar="ممتاز" data-en="Excellent">Excellent</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Storage Reports Section (Annex A) -->
-                    <h3 class="text-lg font-bold text-gray-800 mb-6">Warehouse Reports (Annex A)</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-6" data-ar="تقارير المستودعات (Annex A)" data-en="Storage Reports (Annex A)">تقارير المستودعات (Annex A)</h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <!-- Free Stock List -->
                         <div class="report-card card p-5">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Free Stock List</h4>
-                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded">Available</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="قائمة المخزون الحر" data-en="Free Stock List">قائمة المخزون الحر</h4>
+                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded" data-ar="متوفر" data-en="Available">متوفر</span>
                             </div>
                             <div class="bg-green-50 p-3 rounded-lg">
-                                <p class="text-xl font-bold text-green-600">✓ Weekly</p>
-                                <p class="text-xs text-gray-600 mt-1">Issued weekly</p>
+                                <p class="text-xl font-bold text-green-600" data-ar="✓ أسبوعياً" data-en="✓ Weekly">✓ أسبوعياً</p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="يتم إصداره كل أسبوع" data-en="Issued weekly">يتم إصداره كل أسبوع</p>
                             </div>
                         </div>
 
                         <!-- Material from Free Stock -->
                         <div class="report-card card p-5">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Materials from Free Stock</h4>
-                                <span class="status-partial text-xs font-medium px-2 py-0.5 rounded">Improving</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="المواد من المخزون الحر" data-en="Material from Free Stock">المواد من المخزون الحر</h4>
+                                <span class="status-partial text-xs font-medium px-2 py-0.5 rounded" data-ar="تطوير" data-en="Improving">Improving</span>
                             </div>
                             <div class="bg-gradient-to-br from-amber-50 to-yellow-50 p-3 rounded-lg">
-                                <p class="text-xl font-bold text-amber-600">Process Being Applied</p>
-                                <p class="text-xs text-gray-600 mt-1">Track inter-project transfers</p>
+                                <p class="text-xl font-bold text-amber-600" data-ar="جاري تطبيق الآلية" data-en="Process Being Applied">جاري تطبيق الآلية</p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="تتبع النقل بين المشاريع" data-en="Inter-project transfers">تتبع النقل بين المشاريع</p>
                                 <div class="mt-2 flex items-center text-xs text-amber-600">
                                     <svg class="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
-                                    <span>Under improvement</span>
+                                    <span data-ar="جاري التحسين والتطوير" data-en="Under improvement">Under improvement</span>
                                 </div>
                             </div>
                         </div>
@@ -803,72 +813,72 @@
                         <!-- SCRAP List -->
                         <div class="report-card card p-5">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Cumulative Scrap List</h4>
-                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded">Available</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="قائمة الخردة التراكمية" data-en="Cumulative SCRAP">قائمة الخردة التراكمية</h4>
+                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded" data-ar="متوفر" data-en="Available">متوفر</span>
                             </div>
                             <div class="bg-green-50 p-3 rounded-lg">
                                 <p class="text-xl font-bold text-green-600">483,940 SAR</p>
-                                <p class="text-xs text-gray-600 mt-1">132 operations - AWTAD</p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="132 عملية - AWTAD" data-en="132 ops - AWTAD">132 عملية - AWTAD</p>
                             </div>
                         </div>
 
                         <!-- Quarterly Inventory -->
                         <div class="report-card card p-5">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Quarterly Inventory</h4>
-                                <span class="status-partial text-xs font-medium px-2 py-0.5 rounded">Partial</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="الجرد الربعي" data-en="Quarterly Inventory">الجرد الربعي</h4>
+                                <span class="status-partial text-xs font-medium px-2 py-0.5 rounded" data-ar="جزئي" data-en="Partial">جزئي</span>
                             </div>
                             <div class="bg-yellow-50 p-3 rounded-lg">
                                 <p class="text-xl font-bold text-yellow-600">70%</p>
-                                <p class="text-xs text-gray-600 mt-1">Available for 70% of projects</p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="متوفر لـ 70% من المشاريع" data-en="70% of projects">متوفر لـ 70% من المشاريع</p>
                             </div>
                         </div>
 
                         <!-- Retained Material Summary -->
                         <div class="report-card card p-5">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Held Materials</h4>
-                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded">Available</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="المواد المحتجزة" data-en="Retained Material">المواد المحتجزة</h4>
+                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded" data-ar="متوفر" data-en="Available">متوفر</span>
                             </div>
                             <div class="bg-green-50 p-3 rounded-lg">
-                                <p class="text-xl font-bold text-green-600">✓ Monthly</p>
-                                <p class="text-xs text-gray-600 mt-1">Summary of held materials as free stock</p>
+                                <p class="text-xl font-bold text-green-600" data-ar="✓ شهرياً" data-en="✓ Monthly">✓ شهرياً</p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="ملخص المواد المحتجزة كمخزون حر" data-en="Retained as free stock">ملخص المواد المحتجزة كمخزون حر</p>
                             </div>
                         </div>
 
                         <!-- Material Days in Custody -->
                         <div class="report-card card p-5 coming-soon">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-white">Days Materials in Hold</h4>
-                                <span class="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded animate-pulse">Coming Soon</span>
+                                <h4 class="text-sm font-semibold text-white" data-ar="أيام المواد في الحجز" data-en="Material Days in Custody">أيام المواد في الحجز</h4>
+                                <span class="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded animate-pulse" data-ar="قريباً" data-en="Coming">Coming Soon</span>
                             </div>
                             <div class="bg-gray-700/30 p-3 rounded-lg">
                                 <p class="text-lg font-bold text-white">Coming Soon</p>
-                                <p class="text-xs text-gray-300 mt-1">December 2025</p>
+                                <p class="text-xs text-gray-300 mt-1" data-ar="ديسمبر 2025" data-en="December 2025">ديسمبر 2025</p>
                             </div>
                         </div>
 
                         <!-- Theft/Damage Cases -->
                         <div class="report-card card p-5 coming-soon">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-white">Theft/Damage Cases</h4>
-                                <span class="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded animate-pulse">Coming Soon</span>
+                                <h4 class="text-sm font-semibold text-white" data-ar="حالات السرقة/الضرر" data-en="Theft/Damage Cases">حالات السرقة/الضرر</h4>
+                                <span class="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded animate-pulse" data-ar="قريباً" data-en="Coming">Coming Soon</span>
                             </div>
                             <div class="bg-gray-700/30 p-3 rounded-lg">
                                 <p class="text-lg font-bold text-white">Coming Soon</p>
-                                <p class="text-xs text-gray-300 mt-1">Coordinated with Security</p>
+                                <p class="text-xs text-gray-300 mt-1" data-ar="بالتنسيق مع الأمن" data-en="With Security">بالتنسيق مع الأمن</p>
                             </div>
                         </div>
 
                         <!-- SC Reply Average -->
                         <div class="report-card card p-5">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-gray-700">Avg SC Response</h4>
-                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded">Available</span>
+                                <h4 class="text-sm font-semibold text-gray-700" data-ar="متوسط رد SC" data-en="Avg SC Reply">متوسط رد SC</h4>
+                                <span class="status-available text-xs font-medium px-2 py-0.5 rounded" data-ar="متوفر" data-en="Available">متوفر</span>
                             </div>
                             <div class="bg-blue-50 p-3 rounded-lg">
-                                <p class="text-xl font-bold text-blue-600">0.8 <span class="text-sm">day</span></p>
-                                <p class="text-xs text-gray-600 mt-1">Avg response and delivery time</p>
+                                <p class="text-xl font-bold text-blue-600">0.8 <span class="text-sm" data-ar="يوم" data-en="day">day</span></p>
+                                <p class="text-xs text-gray-600 mt-1" data-ar="متوسط وقت الرد والتسليم" data-en="Avg reply & delivery time">متوسط وقت الرد والتسليم</p>
                             </div>
                         </div>
                     </div>
@@ -878,20 +888,20 @@
                 <div id="tab-suppliers" class="tab-content">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Supplier Performance</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="أداء الموردين" data-en="Supplier Performance">أداء الموردين</h3>
                             <div class="chart-container">
                                 <canvas id="suppliersChart"></canvas>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Supplier Details</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="تفاصيل الموردين" data-en="Supplier Details">تفاصيل الموردين</h3>
                             <div class="scroll-container">
                                 <table class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Supplier</th>
-                                            <th>Order Count</th>
-                                            <th>Percentage</th>
+                                            <th data-ar="المورد" data-en="Supplier">المورد</th>
+                                            <th data-ar="عدد الطلبات" data-en="Orders">عدد الطلبات</th>
+                                            <th data-ar="النسبة" data-en="Percentage">النسبة</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -914,19 +924,19 @@
                 <div id="tab-projects" class="tab-content">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Top Projects</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="أكبر المشاريع" data-en="Top Projects">أكبر المشاريع</h3>
                             <div class="chart-container">
                                 <canvas id="projectsChart"></canvas>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Project Details</h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4" data-ar="تفاصيل المشاريع" data-en="Project Details">تفاصيل المشاريع</h3>
                             <div class="scroll-container">
                                 <table class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Project</th>
-                                            <th>Value (SAR)</th>
+                                            <th data-ar="المشروع" data-en="Project">المشروع</th>
+                                            <th data-ar="القيمة (SAR)" data-en="Amount (SAR)">القيمة (SAR)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -947,7 +957,7 @@
 
                 <!-- Requirements Tab -->
                 <div id="tab-requirements" class="tab-content">
-                    <h3 class="text-lg font-bold text-gray-800 mb-6">Service Level Standards (SLA)</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-6" data-ar="معايير الخدمة (SLA)" data-en="Service Standards (SLA)">معايير الخدمة (SLA)</h3>
 
                     <!-- SLA Service Standards Table -->
                     <div class="card mb-8 overflow-hidden">
@@ -955,59 +965,59 @@
                             <table class="data-table text-sm">
                                 <thead>
                                     <tr>
-                                        <th class="text-right">Service</th>
-                                        <th class="text-right">Standard (SLA)</th>
-                                        <th class="text-center">Target</th>
-                                        <th class="text-center">Current</th>
-                                        <th class="text-center">Status</th>
+                                        <th class="text-right" data-ar="الخدمة" data-en="Service">الخدمة</th>
+                                        <th class="text-right" data-ar="المعيار (SLA)" data-en="Standard (SLA)">المعيار (SLA)</th>
+                                        <th class="text-center" data-ar="الهدف" data-en="Target">الهدف</th>
+                                        <th class="text-center" data-ar="الحالي" data-en="Current">الحالي</th>
+                                        <th class="text-center" data-ar="الحالة" data-en="Status">الحالة</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="font-medium">Equipment Request Approval</td>
-                                        <td>Within 1 working day</td>
+                                        <td class="font-medium" data-ar="الموافقة على طلب المعدات" data-en="Equipment Request Approval">الموافقة على طلب المعدات</td>
+                                        <td data-ar="خلال 1 يوم عمل" data-en="Within 1 business day">خلال 1 يوم عمل</td>
                                         <td class="text-center">≥95%</td>
                                         <td class="text-center font-bold text-green-600">98.5%</td>
                                         <td class="text-center"><span class="status-done px-2 py-1 rounded text-xs">✓</span></td>
                                     </tr>
                                     <tr>
-                                        <td class="font-medium">Equipment Delivery</td>
-                                        <td>2-3 working days</td>
+                                        <td class="font-medium" data-ar="تسليم المعدات" data-en="Equipment Delivery">Equipment Delivery</td>
+                                        <td data-ar="2-3 أيام عمل" data-en="2-3 business days">2-3 أيام عمل</td>
                                         <td class="text-center">≥95%</td>
                                         <td class="text-center font-bold text-amber-600">88%</td>
                                         <td class="text-center"><span class="status-progress px-2 py-1 rounded text-xs">!</span></td>
                                     </tr>
                                     <tr>
-                                        <td class="font-medium">Storage Compliance</td>
-                                        <td>Apply storage recommendations</td>
+                                        <td class="font-medium" data-ar="امتثال التخزين" data-en="Storage Compliance">امتثال التخزين</td>
+                                        <td data-ar="تطبيق توصيات التخزين" data-en="Apply storage recommendations">تطبيق توصيات التخزين</td>
                                         <td class="text-center">≥98%</td>
                                         <td class="text-center font-bold text-green-600">98.2%</td>
                                         <td class="text-center"><span class="status-done px-2 py-1 rounded text-xs">✓</span></td>
                                     </tr>
                                     <tr>
-                                        <td class="font-medium">Stock Confirmation Response</td>
-                                        <td>Within 1 working day</td>
+                                        <td class="font-medium" data-ar="رد تأكيد المخزون" data-en="Stock Confirmation Reply">رد تأكيد المخزون</td>
+                                        <td data-ar="خلال 1 يوم عمل" data-en="Within 1 business day">خلال 1 يوم عمل</td>
                                         <td class="text-center">≥95%</td>
-                                        <td class="text-center font-bold text-amber-600">Improving</td>
-                                        <td class="text-center"><span class="status-partial px-2 py-1 rounded text-xs" title="Process applied - In progress">⚙</span></td>
+                                        <td class="text-center font-bold text-amber-600" data-ar="تطوير" data-en="Improving">Improving</td>
+                                        <td class="text-center"><span class="status-partial px-2 py-1 rounded text-xs" title="تم تطبيق الآلية - جاري التحسين">⚙</span></td>
                                     </tr>
                                     <tr>
-                                        <td class="font-medium">Material Movement Delivery</td>
-                                        <td>Within 2 working days</td>
+                                        <td class="font-medium" data-ar="تسليم نقل المواد" data-en="Material Transfer Delivery">تسليم نقل المواد</td>
+                                        <td data-ar="خلال 2 يوم عمل" data-en="Within 2 business days">خلال 2 يوم عمل</td>
                                         <td class="text-center">≥95%</td>
                                         <td class="text-center font-bold text-green-600">95.7%</td>
                                         <td class="text-center"><span class="status-done px-2 py-1 rounded text-xs">✓</span></td>
                                     </tr>
                                     <tr>
-                                        <td class="font-medium">Incident Reporting</td>
-                                        <td>Immediate</td>
+                                        <td class="font-medium" data-ar="تقارير الحوادث" data-en="Incident Reporting">تقارير الحوادث</td>
+                                        <td data-ar="فوري" data-en="Immediately">فوري</td>
                                         <td class="text-center">100%</td>
                                         <td class="text-center font-bold text-green-600">100%</td>
                                         <td class="text-center"><span class="status-done px-2 py-1 rounded text-xs">✓</span></td>
                                     </tr>
                                     <tr>
-                                        <td class="font-medium">Scrap Removal</td>
-                                        <td>Within 3 working days</td>
+                                        <td class="font-medium" data-ar="إزالة الخردة" data-en="Scrap Removal">Scrap Removal</td>
+                                        <td data-ar="خلال 3 أيام عمل" data-en="Within 3 business days">خلال 3 أيام عمل</td>
                                         <td class="text-center">≥95%</td>
                                         <td class="text-center font-bold text-green-600">97.8%</td>
                                         <td class="text-center"><span class="status-done px-2 py-1 rounded text-xs">✓</span></td>
@@ -1018,17 +1028,17 @@
                     </div>
 
                     <!-- KPIs Coming Soon -->
-                    <h3 class="text-lg font-bold text-gray-800 mb-6">Upcoming KPIs</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-6" data-ar="مؤشرات قادمة" data-en="Coming Soon KPIs">مؤشرات قادمة</h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         <!-- First-time Ready Rate -->
                         <div class="report-card card p-5 coming-soon">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-white">First-Time Ready Rate</h4>
-                                <span class="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded animate-pulse">Coming Soon</span>
+                                <h4 class="text-sm font-semibold text-white" data-ar="معدل الجاهزية الأولى" data-en="First-time Ready Rate">معدل الجاهزية الأولى</h4>
+                                <span class="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded animate-pulse" data-ar="قريباً" data-en="Coming">Coming Soon</span>
                             </div>
                             <div class="text-center py-3">
-                                <p class="text-lg font-bold text-white">Target: Measure</p>
+                                <p class="text-lg font-bold text-white" data-ar="الهدف: قياس" data-en="Target: Measure">الهدف: قياس</p>
                                 <p class="text-xs text-gray-300 mt-1">December 2025</p>
                             </div>
                         </div>
@@ -1036,11 +1046,11 @@
                         <!-- Internal OTIF -->
                         <div class="report-card card p-5 coming-soon">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-white">Internal OTIF</h4>
-                                <span class="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded animate-pulse">Coming Soon</span>
+                                <h4 class="text-sm font-semibold text-white" data-ar="OTIF الداخلي" data-en="Internal OTIF">OTIF الداخلي</h4>
+                                <span class="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded animate-pulse" data-ar="قريباً" data-en="Coming">Coming Soon</span>
                             </div>
                             <div class="text-center py-3">
-                                <p class="text-lg font-bold text-white">Target: ≥95%</p>
+                                <p class="text-lg font-bold text-white" data-ar="الهدف: ≥95%" data-en="Target: ≥95%">Target: ≥95%</p>
                                 <p class="text-xs text-gray-300 mt-1">January 2026</p>
                             </div>
                         </div>
@@ -1048,11 +1058,11 @@
                         <!-- Early Utilization -->
                         <div class="report-card card p-5 coming-soon">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-white">Early Usage</h4>
-                                <span class="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded animate-pulse">Coming Soon</span>
+                                <h4 class="text-sm font-semibold text-white" data-ar="الاستخدام المبكر" data-en="Early Utilization">الاستخدام المبكر</h4>
+                                <span class="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded animate-pulse" data-ar="قريباً" data-en="Coming">Coming Soon</span>
                             </div>
                             <div class="text-center py-3">
-                                <p class="text-lg font-bold text-white">7 days</p>
+                                <p class="text-lg font-bold text-white" data-ar="7 أيام" data-en="7-day">7 أيام</p>
                                 <p class="text-xs text-gray-300 mt-1">January 2026</p>
                             </div>
                         </div>
@@ -1060,11 +1070,11 @@
                         <!-- Damage-on-handling -->
                         <div class="report-card card p-5 coming-soon">
                             <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-semibold text-white">Damage Rate</h4>
-                                <span class="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded animate-pulse">Coming Soon</span>
+                                <h4 class="text-sm font-semibold text-white" data-ar="معدل التلف" data-en="Damage Rate">معدل التلف</h4>
+                                <span class="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded animate-pulse" data-ar="قريباً" data-en="Coming">Coming Soon</span>
                             </div>
                             <div class="text-center py-3">
-                                <p class="text-lg font-bold text-white">Target: Measure</p>
+                                <p class="text-lg font-bold text-white" data-ar="الهدف: قياس" data-en="Target: Measure">الهدف: قياس</p>
                                 <p class="text-xs text-gray-300 mt-1">December 2025</p>
                             </div>
                         </div>
@@ -1072,39 +1082,39 @@
 
                     <!-- Critical Actions -->
                     <div class="bg-red-50 border-r-4 border-red-500 rounded-xl p-6">
-                        <h3 class="text-xl font-bold text-red-800 mb-4">Required Actions</h3>
+                        <h3 class="text-xl font-bold text-red-800 mb-4" data-ar="إجراءات مطلوبة" data-en="Required Actions">إجراءات مطلوبة</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <h4 class="font-semibold text-red-700 mb-2">Immediate (Within 1 week):</h4>
+                                <h4 class="font-semibold text-red-700 mb-2" data-ar="فورية (خلال أسبوع):" data-en="Immediate (within a week):">فورية (خلال أسبوع):</h4>
                                 <ul class="space-y-2 text-sm text-gray-700">
                                     <li class="flex items-start">
                                         <span class="text-red-500 ml-2">•</span>
-                                        <span>Process 19 open orders (avg age 110 days)</span>
+                                        <span data-ar="معالجة 19 طلب مفتوح (متوسط عمر 110 يوم)" data-en="Process 19 open orders (avg age 110 days)">معالجة 19 طلب مفتوح (متوسط عمر 110 يوم)</span>
                                     </li>
                                     <li class="flex items-start">
                                         <span class="text-red-500 ml-2">•</span>
-                                        <span>Improve equipment delivery from 88% to 95%</span>
+                                        <span data-ar="تحسين تسليم المعدات من 88% إلى 95%" data-en="Improve equipment delivery from 88% to 95%">تحسين تسليم المعدات من 88% إلى 95%</span>
                                     </li>
                                     <li class="flex items-start">
                                         <span class="text-red-500 ml-2">•</span>
-                                        <span>Address stock confirmation system issues</span>
+                                        <span data-ar="معالجة مشاكل تطبيق نظام تأكيد المخزون" data-en="Resolve Stock Confirmation system issues">معالجة مشاكل تطبيق نظام تأكيد المخزون</span>
                                     </li>
                                 </ul>
                             </div>
                             <div>
-                                <h4 class="font-semibold text-amber-700 mb-2">Near-term (Within 1 month):</h4>
+                                <h4 class="font-semibold text-amber-700 mb-2" data-ar="قريبة (خلال شهر):" data-en="Near-term (within a month):">قريبة (خلال شهر):</h4>
                                 <ul class="space-y-2 text-sm text-gray-700">
                                     <li class="flex items-start">
                                         <span class="text-amber-500 ml-2">•</span>
-                                        <span>Create materials hold days report</span>
+                                        <span data-ar="إنشاء تقرير أيام المواد في الحجز" data-en="Create Material Days in Custody report">إنشاء تقرير أيام المواد في الحجز</span>
                                     </li>
                                     <li class="flex items-start">
                                         <span class="text-amber-500 ml-2">•</span>
-                                        <span>Enable theft/damage case tracking</span>
+                                        <span data-ar="تفعيل تتبع حالات السرقة/التلف" data-en="Enable theft/damage case tracking">تفعيل تتبع حالات السرقة/التلف</span>
                                     </li>
                                     <li class="flex items-start">
                                         <span class="text-amber-500 ml-2">•</span>
-                                        <span>Complete quarterly inventory for 100% of projects</span>
+                                        <span data-ar="إكمال الجرد الربعي لـ 100% من المشاريع" data-en="Complete quarterly inventory for 100% of projects">إكمال الجرد الربعي لـ 100% من المشاريع</span>
                                     </li>
                                 </ul>
                             </div>
@@ -1116,7 +1126,7 @@
 
         <!-- Monthly Trends -->
         <div class="card p-6 mb-8">
-            <h2 class="text-xl font-bold text-gray-800 mb-6">Monthly Trends</h2>
+            <h2 class="text-xl font-bold text-gray-800 mb-6" data-ar="الاتجاهات الشهرية" data-en="Monthly Trends">الاتجاهات الشهرية</h2>
             <div class="chart-container" style="height: 350px;">
                 <canvas id="trendsChart"></canvas>
             </div>
@@ -1124,7 +1134,9 @@
 
         <!-- Footer -->
         <footer class="text-center py-6 text-gray-500 text-sm">
-            <p class="mb-2">Supply Chain Performance Management - NESMA Infrastructure & Technology</p>
+            <p class="mb-2" data-ar="نظام إدارة أداء سلسلة التوريد - شركة نسما للبنية التحتية والتكنولوجيا" data-en="Supply Chain Performance System - NESMA Infrastructure & Technology">
+                نظام إدارة أداء سلسلة التوريد - شركة نسما للبنية التحتية والتكنولوجيا
+            </p>
             <p class="text-xs">Version 3.0 | November 2025</p>
         </footer>
     </main>
@@ -1134,7 +1146,7 @@
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header relative">
                 <button class="modal-close" onclick="closeModal()">&times;</button>
-                <h2 id="modalTitle" class="text-xl font-bold">Details</h2>
+                <h2 id="modalTitle" class="text-xl font-bold">تفاصيل</h2>
                 <p id="modalSubtitle" class="text-sm text-cyan-200 mt-1"></p>
             </div>
             <div class="modal-body" id="modalBody">
@@ -1145,13 +1157,13 @@
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
                     </svg>
-                    <span>Export Excel</span>
+                    <span data-ar="تصدير Excel" data-en="Export Excel">تصدير Excel</span>
                 </button>
                 <button onclick="exportModalToPDF()" class="export-btn export-pdf">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/>
                     </svg>
-                    <span>Export PDF</span>
+                    <span data-ar="تصدير PDF" data-en="Export PDF">تصدير PDF</span>
                 </button>
             </div>
         </div>
@@ -1182,7 +1194,7 @@
                 new Chart(statusCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Done', 'In Progress', 'Not Done'],
+                        labels: currentLang === 'ar' ? ['مكتمل', 'قيد التنفيذ', 'غير مكتمل'] : ['Done', 'In Progress', 'Not Done'],
                         datasets: [{
                             data: [610, 27, 4],
                             backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
@@ -1226,7 +1238,7 @@
                     data: {
                         labels: ['AWTAD', 'Zad Alomran', 'ALMAMORAH', 'FIFO', 'CPCC', 'ALBURAQ', 'albede', 'AlhayAlsayeed'],
                         datasets: [{
-                            label: 'Orders',
+                            label: currentLang === 'ar' ? 'عدد الطلبات' : 'Orders',
                             data: [131, 123, 121, 83, 66, 55, 40, 22],
                             backgroundColor: '#2e3192',
                             borderRadius: 6
@@ -1250,7 +1262,7 @@
                     data: {
                         labels: ['WEST-JAZERA', 'EST-JAFURAH', 'MED-RUH-Dir', 'MED-RUH-Mur', 'WEST-Makkah', 'NORTH-NEOM', 'NORTH-TAIBA', 'WEST-JED'],
                         datasets: [{
-                            label: 'Amount (SAR)',
+                            label: currentLang === 'ar' ? 'القيمة (SAR)' : 'Amount (SAR)',
                             data: [777340, 424900, 304610, 235820, 223625, 216700, 207598, 190430],
                             backgroundColor: '#80d1e9',
                             borderRadius: 6
@@ -1273,13 +1285,15 @@
             // Trends Chart
             const trendsCtx = document.getElementById('trendsChart')?.getContext('2d');
             if (trendsCtx) {
-                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
+                const months = currentLang === 'ar'
+                    ? ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر']
+                    : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
                 new Chart(trendsCtx, {
                     type: 'line',
                     data: {
                         labels: months,
                         datasets: [{
-                            label: 'On-Time Rate %',
+                            label: currentLang === 'ar' ? 'معدل التسليم %' : 'On-Time Rate %',
                             data: [92, 89, 91, 88, 86, 85, 87, 89, 88, 87, 88],
                             borderColor: '#2e3192',
                             backgroundColor: 'rgba(46, 49, 146, 0.1)',
@@ -1287,7 +1301,7 @@
                             borderWidth: 3,
                             fill: true
                         }, {
-                            label: 'Target 95%',
+                            label: currentLang === 'ar' ? 'الهدف 95%' : 'Target 95%',
                             data: Array(11).fill(95),
                             borderColor: '#10b981',
                             borderDash: [5, 5],
@@ -1317,62 +1331,62 @@
         // KPI Data Store
         const kpiData = {
             ontime: {
-                title: 'On-Time Delivery Rate',
-                subtitle: 'Monthly Performance Details',
+                title: { ar: 'معدل التسليم في الوقت المحدد', en: 'On-Time Delivery Rate' },
+                subtitle: { ar: 'تفاصيل الأداء الشهري', en: 'Monthly Performance Details' },
                 value: '87.8%',
                 target: '95%',
                 status: 'below',
                 details: [
-                    { label: 'Current Value', value: '87.8%' },
-                    { label: 'Target', value: '≥95%' },
-                    { label: 'Gap', value: '-7.2%' },
-                    { label: 'Trend', value: '↓' }
+                    { label: { ar: 'القيمة الحالية', en: 'Current Value' }, value: '87.8%' },
+                    { label: { ar: 'الهدف', en: 'Target' }, value: '≥95%' },
+                    { label: { ar: 'الفجوة', en: 'Gap' }, value: '-7.2%' },
+                    { label: { ar: 'الاتجاه', en: 'Trend' }, value: '↓' }
                 ],
                 breakdown: [
-                    { month: 'Jan', value: 92 },
-                    { month: 'Feb', value: 89 },
-                    { month: 'Mar', value: 91 },
-                    { month: 'Apr', value: 88 },
-                    { month: 'May', value: 86 },
-                    { month: 'Jun', value: 85 },
-                    { month: 'Jul', value: 87 },
-                    { month: 'Aug', value: 89 },
-                    { month: 'Sep', value: 88 },
-                    { month: 'Oct', value: 87 },
-                    { month: 'Nov', value: 88 }
+                    { month: 'يناير', value: 92 },
+                    { month: 'فبراير', value: 89 },
+                    { month: 'مارس', value: 91 },
+                    { month: 'أبريل', value: 88 },
+                    { month: 'مايو', value: 86 },
+                    { month: 'يونيو', value: 85 },
+                    { month: 'يوليو', value: 87 },
+                    { month: 'أغسطس', value: 89 },
+                    { month: 'سبتمبر', value: 88 },
+                    { month: 'أكتوبر', value: 87 },
+                    { month: 'نوفمبر', value: 88 }
                 ],
                 recommendations: [
-                    'Improve supplier coordination',
-                    'Enable early warning system',
-                    'Review agreed delivery times'
+                    { ar: 'تحسين التنسيق مع الموردين', en: 'Improve supplier coordination' },
+                    { ar: 'تفعيل نظام التنبيهات المبكرة', en: 'Enable early warning system' },
+                    { ar: 'مراجعة أوقات التسليم المتفق عليها', en: 'Review agreed delivery times' }
                 ]
             },
             openorders: {
-                title: 'Open Orders',
-                subtitle: 'Pending Orders Details',
+                title: { ar: 'الطلبات المفتوحة', en: 'Open Orders' },
+                subtitle: { ar: 'تفاصيل الطلبات المعلقة', en: 'Pending Orders Details' },
                 value: '19',
                 details: [
-                    { label: 'Total Open Orders', value: '19' },
-                    { label: 'Average Age', value: '110 days' },
-                    { label: 'Oldest Order', value: '245 days' },
-                    { label: 'Total Value', value: '1.2M SAR' }
+                    { label: { ar: 'إجمالي الطلبات المفتوحة', en: 'Total Open Orders' }, value: '19' },
+                    { label: { ar: 'متوسط العمر', en: 'Average Age' }, value: '110 days' },
+                    { label: { ar: 'أقدم طلب', en: 'Oldest Order' }, value: '245 days' },
+                    { label: { ar: 'القيمة الإجمالية', en: 'Total Value' }, value: '1.2M SAR' }
                 ],
                 breakdown: [
-                    { category: 'Less than 30 days', count: 3 },
-                    { category: '30-60 days', count: 5 },
-                    { category: '60-90 days', count: 4 },
-                    { category: 'More than 90 days', count: 7 }
+                    { category: 'أقل من 30 يوم', count: 3 },
+                    { category: '30-60 يوم', count: 5 },
+                    { category: '60-90 يوم', count: 4 },
+                    { category: 'أكثر من 90 يوم', count: 7 }
                 ]
             },
             totalorders: {
-                title: 'Total Orders',
-                subtitle: 'Orders Distribution by Company',
+                title: { ar: 'إجمالي الطلبات', en: 'Total Orders' },
+                subtitle: { ar: 'توزيع الطلبات حسب الشركة', en: 'Orders Distribution by Company' },
                 value: '643',
                 details: [
-                    { label: 'Total Orders', value: '643' },
-                    { label: 'Completed', value: '610 (94.9%)' },
-                    { label: 'In Progress', value: '27 (4.2%)' },
-                    { label: 'Not Done', value: '4 (0.6%)' }
+                    { label: { ar: 'إجمالي الطلبات', en: 'Total Orders' }, value: '643' },
+                    { label: { ar: 'مكتمل', en: 'Completed' }, value: '610 (94.9%)' },
+                    { label: { ar: 'قيد التنفيذ', en: 'In Progress' }, value: '27 (4.2%)' },
+                    { label: { ar: 'غير مكتمل', en: 'Not Done' }, value: '4 (0.6%)' }
                 ],
                 breakdown: [
                     { company: 'NIT', orders: 481, percentage: '74.8%' },
@@ -1382,14 +1396,14 @@
                 ]
             },
             totalamount: {
-                title: 'Total Amount',
-                subtitle: 'Value Distribution by Projects',
+                title: { ar: 'إجمالي القيمة', en: 'Total Amount' },
+                subtitle: { ar: 'توزيع القيمة حسب المشاريع', en: 'Value Distribution by Projects' },
                 value: '4.9M SAR',
                 details: [
-                    { label: 'Total Value', value: '4,914,523 SAR' },
-                    { label: 'Avg Order Value', value: '7,643 SAR' },
-                    { label: 'Highest Order', value: '125,000 SAR' },
-                    { label: 'Lowest Order', value: '250 SAR' }
+                    { label: { ar: 'إجمالي القيمة', en: 'Total Value' }, value: '4,914,523 SAR' },
+                    { label: { ar: 'متوسط قيمة الطلب', en: 'Avg Order Value' }, value: '7,643 SAR' },
+                    { label: { ar: 'أعلى طلب', en: 'Highest Order' }, value: '125,000 SAR' },
+                    { label: { ar: 'أقل طلب', en: 'Lowest Order' }, value: '250 SAR' }
                 ],
                 breakdown: [
                     { project: 'WEST-JAZERA ROYAL', amount: 777340 },
@@ -1405,113 +1419,113 @@
         // Service Data Store
         const serviceData = {
             equipment_request: {
-                title: 'Equipment Request',
-                subtitle: 'Equipment Request Service Details',
+                title: { ar: 'طلبات المعدات', en: 'Equipment Request' },
+                subtitle: { ar: 'تفاصيل خدمة طلب المعدات', en: 'Equipment Request Service Details' },
                 value: '98.5%',
                 target: '95%',
                 status: 'above',
                 details: [
-                    { label: 'Completion Rate', value: '98.5%' },
-                    { label: 'Target', value: '≥95%' },
-                    { label: 'Time Standard', value: '1 working day' },
-                    { label: 'Status', value: 'Excellent ✓' }
+                    { label: { ar: 'نسبة الإنجاز', en: 'Completion Rate' }, value: '98.5%' },
+                    { label: { ar: 'الهدف', en: 'Target' }, value: '≥95%' },
+                    { label: { ar: 'المعيار الزمني', en: 'Time Standard' }, value: '1 working day' },
+                    { label: { ar: 'الحالة', en: 'Status' }, value: 'Excellent ✓' }
                 ],
                 description: {
-                    en: 'Equipment requests are approved within 1 working day with 98.5% success rate',
+                    ar: 'يتم الموافقة على طلبات المعدات خلال يوم عمل واحد بنسبة نجاح 98.5%',
                     en: 'Equipment requests are approved within 1 business day with 98.5% success rate'
                 }
             },
             equipment_delivery: {
-                title: 'Equipment Delivery',
-                subtitle: 'Equipment Delivery Service Details',
+                title: { ar: 'تسليم المعدات', en: 'Equipment Delivery' },
+                subtitle: { ar: 'تفاصيل خدمة تسليم المعدات', en: 'Equipment Delivery Service Details' },
                 value: '88%',
                 target: '95%',
                 status: 'below',
                 details: [
-                    { label: 'Completion Rate', value: '88%' },
-                    { label: 'Target', value: '≥95%' },
-                    { label: 'Time Standard', value: '2-3 working days' },
-                    { label: 'Gap', value: '-7%' }
+                    { label: { ar: 'نسبة الإنجاز', en: 'Completion Rate' }, value: '88%' },
+                    { label: { ar: 'الهدف', en: 'Target' }, value: '≥95%' },
+                    { label: { ar: 'المعيار الزمني', en: 'Time Standard' }, value: '2-3 working days' },
+                    { label: { ar: 'الفجوة', en: 'Gap' }, value: '-7%' }
                 ],
                 recommendations: [
-                    'Improve coordination with transport companies',
-                    'Increase available trucks'
+                    { ar: 'تحسين التنسيق مع شركات النقل', en: 'Improve coordination with transport companies' },
+                    { ar: 'زيادة عدد الشاحنات المتاحة', en: 'Increase available trucks' }
                 ]
             },
             scrap_removal: {
-                title: 'Scrap Removal',
-                subtitle: 'Scrap Removal Service Details',
+                title: { ar: 'إزالة الخردة', en: 'Scrap Removal' },
+                subtitle: { ar: 'تفاصيل خدمة إزالة الخردة', en: 'Scrap Removal Service Details' },
                 value: '97.8%',
                 target: '95%',
                 status: 'above',
                 details: [
-                    { label: 'Completion Rate', value: '97.8%' },
-                    { label: 'Target', value: '≥95%' },
-                    { label: 'Time Standard', value: '3 working days' },
-                    { label: 'Status', value: 'Excellent ✓' }
+                    { label: { ar: 'نسبة الإنجاز', en: 'Completion Rate' }, value: '97.8%' },
+                    { label: { ar: 'الهدف', en: 'Target' }, value: '≥95%' },
+                    { label: { ar: 'المعيار الزمني', en: 'Time Standard' }, value: '3 working days' },
+                    { label: { ar: 'الحالة', en: 'Status' }, value: 'Excellent ✓' }
                 ],
                 stats: [
-                    { label: 'Total Scrap Operations', value: '132' },
-                    { label: 'Total Value', value: '483,940 SAR' },
-                    { label: 'Main Vendor', value: 'AWTAD' }
+                    { label: { ar: 'إجمالي عمليات الخردة', en: 'Total Scrap Operations' }, value: '132' },
+                    { label: { ar: 'القيمة الإجمالية', en: 'Total Value' }, value: '483,940 SAR' },
+                    { label: { ar: 'المورد الرئيسي', en: 'Main Vendor' }, value: 'AWTAD' }
                 ]
             },
             stock_confirmation: {
-                title: 'Stock Confirmation',
-                subtitle: 'Stock Confirmation Service Details',
+                title: { ar: 'تأكيد المخزون', en: 'Stock Confirmation' },
+                subtitle: { ar: 'تفاصيل خدمة تأكيد المخزون', en: 'Stock Confirmation Service Details' },
                 value: 'Improving',
                 target: '95%',
                 status: 'developing',
                 details: [
-                    { label: 'Status', value: 'Process Applied' },
-                    { label: 'Target', value: '≥95% within 1 day' },
-                    { label: 'Phase', value: 'Under Improvement' }
+                    { label: { ar: 'الحالة', en: 'Status' }, value: 'Process Applied' },
+                    { label: { ar: 'الهدف', en: 'Target' }, value: '≥95% within 1 day' },
+                    { label: { ar: 'المرحلة', en: 'Phase' }, value: 'Under Improvement' }
                 ],
                 description: {
-                    en: 'Stock confirmation process is being applied and improved to reach the target',
+                    ar: 'جاري تطبيق آلية تأكيد المخزون وتحسين العملية للوصول للهدف المطلوب',
                     en: 'Stock confirmation process is being implemented and improved to reach target'
                 }
             },
             material_movement: {
-                title: 'Material Movement',
-                subtitle: 'Material Movement Service Details',
+                title: { ar: 'نقل المواد', en: 'Material Movement' },
+                subtitle: { ar: 'تفاصيل خدمة نقل المواد', en: 'Material Movement Service Details' },
                 value: '95.7%',
                 target: '95%',
                 status: 'above',
                 details: [
-                    { label: 'Completion Rate', value: '95.7%' },
-                    { label: 'Target', value: '≥95%' },
-                    { label: 'Time Standard', value: '2 working days' },
-                    { label: 'Status', value: 'Above Target ✓' }
+                    { label: { ar: 'نسبة الإنجاز', en: 'Completion Rate' }, value: '95.7%' },
+                    { label: { ar: 'الهدف', en: 'Target' }, value: '≥95%' },
+                    { label: { ar: 'المعيار الزمني', en: 'Time Standard' }, value: '2 working days' },
+                    { label: { ar: 'الحالة', en: 'Status' }, value: 'Above Target ✓' }
                 ]
             },
             storage_compliance: {
-                title: 'Storage Compliance',
-                subtitle: 'Storage Compliance Details',
+                title: { ar: 'امتثال التخزين', en: 'Storage Compliance' },
+                subtitle: { ar: 'تفاصيل امتثال التخزين', en: 'Storage Compliance Details' },
                 value: 'Improving',
                 target: '98%',
                 status: 'developing',
                 details: [
-                    { label: 'Status', value: 'In Progress' },
-                    { label: 'Target', value: '≥98%' },
-                    { label: 'Measurement', value: 'Periodic Audit' }
+                    { label: { ar: 'الحالة', en: 'Status' }, value: 'In Progress' },
+                    { label: { ar: 'الهدف', en: 'Target' }, value: '≥98%' },
+                    { label: { ar: 'نوع القياس', en: 'Measurement' }, value: 'Periodic Audit' }
                 ],
                 description: {
-                    en: 'Working on improving storage compliance according to vendor recommendations and standards',
+                    ar: 'جاري العمل على تحسين امتثال التخزين وفقاً لتوصيات الموردين والمعايير',
                     en: 'Working on improving storage compliance per vendor recommendations and standards'
                 }
             },
             incident_reporting: {
-                title: 'Incident Reporting',
-                subtitle: 'Incident Reporting Details',
+                title: { ar: 'تقارير الحوادث', en: 'Incident Reporting' },
+                subtitle: { ar: 'تفاصيل الإبلاغ عن الحوادث', en: 'Incident Reporting Details' },
                 value: '100%',
                 target: '100%',
                 status: 'above',
                 details: [
-                    { label: 'Reporting Rate', value: '100%' },
-                    { label: 'Target', value: '100%' },
-                    { label: 'Time Standard', value: 'Immediate' },
-                    { label: 'Status', value: 'Excellent ✓' }
+                    { label: { ar: 'نسبة الإبلاغ', en: 'Reporting Rate' }, value: '100%' },
+                    { label: { ar: 'الهدف', en: 'Target' }, value: '100%' },
+                    { label: { ar: 'المعيار الزمني', en: 'Time Standard' }, value: 'Immediate' },
+                    { label: { ar: 'الحالة', en: 'Status' }, value: 'Excellent ✓' }
                 ]
             }
         };
@@ -1661,34 +1675,34 @@
 
             // KPIs Sheet
             const kpiSheet = [
-                ['KPI', 'Value', 'Target', 'Status'],
-                ['On-Time Delivery Rate', '87.8%', '≥95%', 'Below Target'],
-                ['Open Orders', '19', '-', 'Needs Follow-up'],
-                ['Total Orders', '643', '-', 'NIT: 481, NP: 112'],
-                ['Total Value', '4.9M SAR', '-', '-'],
-                ['Avg Delivery', '1.81 days', '-', '-'],
-                ['Median (P50)', '1.0 day', '-', '-'],
-                ['P90', '4.0 days', '-', '-'],
-                ['Completion Rate', '94.9%', '-', 'Good']
+                ['مؤشر الأداء', 'القيمة', 'الهدف', 'الحالة'],
+                ['معدل التسليم في الوقت', '87.8%', '≥95%', 'تحت الهدف'],
+                ['الطلبات المفتوحة', '19', '-', 'تحتاج متابعة'],
+                ['إجمالي الطلبات', '643', '-', 'NIT: 481, NP: 112'],
+                ['إجمالي القيمة', '4.9M SAR', '-', '-'],
+                ['متوسط التسليم', '1.81 يوم', '-', '-'],
+                ['Median (P50)', '1.0 يوم', '-', '-'],
+                ['P90', '4.0 أيام', '-', '-'],
+                ['معدل الإكمال', '94.9%', '-', 'جيد']
             ];
             XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(kpiSheet), 'KPIs');
 
             // Services Sheet
             const servicesSheet = [
-                ['Service', 'Rate', 'Target', 'Time Standard', 'Status'],
-                ['Equipment Request', '98.5%', '≥95%', '1 working day', 'Excellent'],
-                ['Equipment Delivery', '88%', '≥95%', '2-3 working days', 'Improving'],
-                ['Scrap Removal', '97.8%', '≥95%', '3 working days', 'Excellent'],
-                ['Stock Confirmation', 'Improving', '≥95%', '1 working day', 'In Progress'],
-                ['Material Movement', '95.7%', '≥95%', '2 working days', 'Above Target'],
-                ['Storage Compliance', 'Improving', '≥98%', 'Audit', 'In Progress'],
-                ['Incident Reporting', '100%', '100%', 'Immediate', 'Excellent']
+                ['الخدمة', 'النسبة', 'الهدف', 'المعيار الزمني', 'الحالة'],
+                ['طلبات المعدات', '98.5%', '≥95%', '1 يوم عمل', 'ممتاز'],
+                ['تسليم المعدات', '88%', '≥95%', '2-3 أيام عمل', 'تحسين'],
+                ['إزالة الخردة', '97.8%', '≥95%', '3 أيام عمل', 'ممتاز'],
+                ['تأكيد المخزون', 'تطوير', '≥95%', '1 يوم عمل', 'جاري'],
+                ['نقل المواد', '95.7%', '≥95%', '2 يوم عمل', 'فوق الهدف'],
+                ['امتثال التخزين', 'تحسين', '≥98%', 'تدقيق', 'جاري'],
+                ['تقارير الحوادث', '100%', '100%', 'فوري', 'ممتاز']
             ];
             XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(servicesSheet), 'Services');
 
             // Suppliers Sheet
             const suppliersSheet = [
-                ['Supplier', 'Order Count', 'Percentage'],
+                ['المورد', 'عدد الطلبات', 'النسبة'],
                 ['AWTAD', 131, '20.4%'],
                 ['Zad Alomran', 123, '19.1%'],
                 ['ALMAMORAH', 121, '18.8%'],
@@ -1702,7 +1716,7 @@
 
             // Projects Sheet
             const projectsSheet = [
-                ['Project', 'Value (SAR)'],
+                ['المشروع', 'القيمة (SAR)'],
                 ['WEST-JAZERA ROYAL', 777340],
                 ['EST-JAFURAH', 424900],
                 ['MED-RUH-Diriyahy', 304610],

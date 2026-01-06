@@ -539,23 +539,23 @@
 
                     <!-- Summary KPIs (Dynamic based on filters) -->
                     <div id="pr-kpi-summary" class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4 mb-6">
-                        <div class="card p-3 lg:p-4 text-center">
+                        <div class="card p-3 lg:p-4 text-center cursor-pointer hover:shadow-lg transition-shadow" onclick="showKPIDetails('total')">
                             <p class="text-gray-500 text-xs mb-1" id="kpi-total-label">Total PRs</p>
                             <p class="text-xl lg:text-2xl font-bold text-gray-800" id="kpi-total-filtered">1,929</p>
                         </div>
-                        <div class="card p-3 lg:p-4 text-center">
+                        <div class="card p-3 lg:p-4 text-center cursor-pointer hover:shadow-lg transition-shadow" onclick="showKPIDetails('rejected')">
                             <p class="text-gray-500 text-xs mb-1">Rejected</p>
                             <p class="text-xl lg:text-2xl font-bold text-rose-600" id="kpi-rejected">498</p>
                         </div>
-                        <div class="card p-3 lg:p-4 text-center">
+                        <div class="card p-3 lg:p-4 text-center cursor-pointer hover:shadow-lg transition-shadow" onclick="showKPIDetails('incomplete')">
                             <p class="text-gray-500 text-xs mb-1">Incomplete</p>
                             <p class="text-xl lg:text-2xl font-bold text-orange-600" id="kpi-incomplete">118</p>
                         </div>
-                        <div class="card p-3 lg:p-4 text-center">
+                        <div class="card p-3 lg:p-4 text-center cursor-pointer hover:shadow-lg transition-shadow" onclick="showKPIDetails('inprocess')">
                             <p class="text-gray-500 text-xs mb-1">In Process</p>
                             <p class="text-xl lg:text-2xl font-bold text-cyan-600" id="kpi-in-process">114</p>
                         </div>
-                        <div class="card p-3 lg:p-4 text-center">
+                        <div class="card p-3 lg:p-4 text-center cursor-pointer hover:shadow-lg transition-shadow" onclick="showKPIDetails('avgdays')">
                             <p class="text-gray-500 text-xs mb-1">Avg PR→PO</p>
                             <p class="text-xl lg:text-2xl font-bold text-blue-600" id="kpi-avg-pr-to-po">42.9</p>
                             <p class="text-xs text-gray-400">days</p>
@@ -1729,9 +1729,9 @@
             const allPRs = prData?.all_prs || [];
             const stats = {
                 total: allPRs.length,
-                rejected: allPRs.filter(pr => pr.pr_status === 'REJECTED').length,
-                incomplete: allPRs.filter(pr => pr.pr_status === 'INCOMPLETE').length,
-                inProcess: allPRs.filter(pr => pr.pr_status === 'IN PROCESS').length,
+                rejected: allPRs.filter(pr => pr.status === 'REJECTED').length,
+                incomplete: allPRs.filter(pr => pr.status === 'INCOMPLETE').length,
+                inProcess: allPRs.filter(pr => pr.status === 'IN PROCESS').length,
             };
             const prToPoDays = allPRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days !== undefined).map(pr => pr.pr_to_po_days);
             const avgPrToPo = prToPoDays.length > 0 ? (prToPoDays.reduce((a, b) => a + b, 0) / prToPoDays.length).toFixed(1) : 0;
@@ -1934,7 +1934,7 @@
             const pendingWithCtx = document.getElementById('pendingWithChart')?.getContext('2d');
             if (pendingWithCtx) {
                 // Analyze pending with data from returned PRs
-                const returnedPRs = prData.all_prs.filter(pr => pr.return_date);
+                const returnedPRs = prData.all_prs.filter(pr => pr.status === 'RETURNED');
                 const pendingWithCounts = {};
                 returnedPRs.forEach(pr => {
                     const pendingWith = pr.pending_with || ('Not Specified');
@@ -2273,17 +2273,19 @@
         function calculateFilteredStats(filteredPRs) {
             const total = filteredPRs.length;
             const approved = filteredPRs.filter(pr => (pr.pr_status || pr.status) === 'APPROVED').length;
-            const returned = filteredPRs.filter(pr => pr.return_date).length;
+            const returned = filteredPRs.filter(pr => (pr.pr_status || pr.status) === 'RETURNED').length;
             const rejected = filteredPRs.filter(pr => (pr.pr_status || pr.status) === 'REJECTED').length;
             const incomplete = filteredPRs.filter(pr => (pr.pr_status || pr.status) === 'INCOMPLETE').length;
             const inProcess = filteredPRs.filter(pr => (pr.pr_status || pr.status) === 'IN PROCESS').length;
 
-            const within2days = filteredPRs.filter(pr => {
-                if (!pr.return_date || !pr.approved_date) return false;
+            // PRs with return_date (for within/after 2 days calculation)
+            const prsWithReturnDate = filteredPRs.filter(pr => pr.return_date);
+            const within2days = prsWithReturnDate.filter(pr => {
+                if (!pr.approved_date) return false;
                 const days = Math.floor((new Date(pr.return_date) - new Date(pr.approved_date)) / 86400000);
                 return days <= 2;
             }).length;
-            const after2days = returned - within2days;
+            const after2days = prsWithReturnDate.length - within2days;
 
             const posIssued = filteredPRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days !== undefined).length;
             const within30days = filteredPRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days <= 30).length;
@@ -2534,19 +2536,24 @@
                         const date = new Date(dateStr);
                         const month = date.getMonth() + 1;
                         if (month >= 1 && month <= 12) {
-                            monthlyStats[month].approved++;
+                            // Count approved by status
+                            if (pr.status === 'APPROVED') {
+                                monthlyStats[month].approved++;
+                            }
 
-                            // Check if returned
-                            if (pr.return_date) {
+                            // Check if returned by status
+                            if (pr.status === 'RETURNED') {
                                 monthlyStats[month].returned++;
 
-                                // Calculate return days
-                                const returnDate = new Date(pr.return_date);
-                                const daysToReturn = Math.floor((returnDate - date) / (1000 * 60 * 60 * 24));
-                                if (daysToReturn <= 2) {
-                                    within2Days++;
-                                } else {
-                                    after2Days++;
+                                // Calculate return days if return_date exists
+                                if (pr.return_date) {
+                                    const returnDate = new Date(pr.return_date);
+                                    const daysToReturn = Math.floor((returnDate - date) / (1000 * 60 * 60 * 24));
+                                    if (daysToReturn <= 2) {
+                                        within2Days++;
+                                    } else {
+                                        after2Days++;
+                                    }
                                 }
                             }
                         }
@@ -3104,7 +3111,7 @@
                     break;
                 case 'returned':
                     titleText = `Returned PRs - ${filterDesc}`;
-                    filteredPRs = basePRs.filter(pr => pr.return_date);
+                    filteredPRs = basePRs.filter(pr => (pr.pr_status || pr.status) === 'RETURNED');
                     break;
                 case 'within2days':
                     titleText = `PRs Returned ≤2 Days - ${filterDesc}`;
@@ -3121,6 +3128,35 @@
                         const days = Math.floor((new Date(pr.return_date) - new Date(pr.approved_date)) / 86400000);
                         return days > 2;
                     });
+                    break;
+                case 'total':
+                    titleText = `All PRs - ${filterDesc}`;
+                    filteredPRs = basePRs;
+                    break;
+                case 'rejected':
+                    titleText = `Rejected PRs - ${filterDesc}`;
+                    filteredPRs = basePRs.filter(pr => {
+                        const status = (pr.pr_status || pr.status || '').toUpperCase();
+                        return status === 'REJECTED' || status === 'REJECT';
+                    });
+                    break;
+                case 'incomplete':
+                    titleText = `Incomplete PRs - ${filterDesc}`;
+                    filteredPRs = basePRs.filter(pr => {
+                        const status = (pr.pr_status || pr.status || '').toUpperCase();
+                        return status === 'INCOMPLETE';
+                    });
+                    break;
+                case 'inprocess':
+                    titleText = `PRs In Process - ${filterDesc}`;
+                    filteredPRs = basePRs.filter(pr => {
+                        const status = (pr.pr_status || pr.status || '').toUpperCase();
+                        return status === 'IN PROCESS';
+                    });
+                    break;
+                case 'avgdays':
+                    titleText = `PRs with PR→PO Duration - ${filterDesc}`;
+                    filteredPRs = basePRs.filter(pr => pr.pr_to_po_days && pr.pr_to_po_days > 0);
                     break;
             }
 
