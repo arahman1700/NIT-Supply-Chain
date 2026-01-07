@@ -591,10 +591,10 @@
             filteredRecords = allData.records.filter(record => {
                 if (project && record.project !== project) return false;
                 if (supplier && record.supplier !== supplier) return false;
-                if (equipment && record.equipment !== equipment) return false;
+                if (equipment && record.equipment_1 !== equipment) return false;
                 if (status && record.payment_status !== status) return false;
-                if (dateFrom && record.date < dateFrom) return false;
-                if (dateTo && record.date > dateTo) return false;
+                if (dateFrom && record.request_date < dateFrom) return false;
+                if (dateTo && record.request_date > dateTo) return false;
                 return true;
             });
 
@@ -658,11 +658,11 @@
             const records = filteredRecords;
 
             const totalInvoices = records.length;
-            const totalAmount = records.reduce((sum, r) => sum + (r.cost || 0), 0);
+            const totalAmount = records.reduce((sum, r) => sum + (parseFloat(r.total_amount) || 0), 0);
             const paidCount = records.filter(r => r.payment_status === 'Paid').length;
             const pendingCount = records.filter(r => r.payment_status && r.payment_status.includes('Under')).length;
-            const avgDays = records.reduce((sum, r) => sum + (r.completion_days || 0), 0) / records.length || 0;
-            const avgCycle = records.reduce((sum, r) => sum + (r.payment_cycle_days || 0), 0) / records.length || 0;
+            const avgDays = records.reduce((sum, r) => sum + (parseFloat(r.duration) || 0), 0) / records.length || 0;
+            const avgCycle = records.reduce((sum, r) => sum + (parseFloat(r.payment_cycle_days) || 0), 0) / records.length || 0;
 
             document.getElementById('kpiTotalInvoices').textContent = formatNumber(totalInvoices);
             document.getElementById('kpiTotalAmount').textContent = formatCurrency(totalAmount);
@@ -733,13 +733,13 @@
             // Aggregate by month
             const monthlyData = {};
             filteredRecords.forEach(r => {
-                if (r.date) {
-                    const month = r.date.substring(0, 7);
+                if (r.request_date) {
+                    const month = r.request_date.substring(0, 7);
                     if (!monthlyData[month]) {
                         monthlyData[month] = { count: 0, amount: 0 };
                     }
                     monthlyData[month].count++;
-                    monthlyData[month].amount += r.cost || 0;
+                    monthlyData[month].amount += parseFloat(r.total_amount) || 0;
                 }
             });
 
@@ -793,7 +793,7 @@
                     supplierData[supplier] = { count: 0, amount: 0 };
                 }
                 supplierData[supplier].count++;
-                supplierData[supplier].amount += r.cost || 0;
+                supplierData[supplier].amount += parseFloat(r.total_amount) || 0;
             });
 
             const sorted = Object.entries(supplierData)
@@ -839,7 +839,7 @@
             const supplierData = {};
             filteredRecords.forEach(r => {
                 const supplier = r.supplier || 'Unknown';
-                supplierData[supplier] = (supplierData[supplier] || 0) + (r.cost || 0);
+                supplierData[supplier] = (supplierData[supplier] || 0) + (parseFloat(r.total_amount) || 0);
             });
 
             const sorted = Object.entries(supplierData).sort((a, b) => b[1] - a[1]).slice(0, 8);
@@ -883,7 +883,7 @@
                     projectData[project] = { count: 0, amount: 0 };
                 }
                 projectData[project].count++;
-                projectData[project].amount += r.cost || 0;
+                projectData[project].amount += parseFloat(r.total_amount) || 0;
             });
 
             const sorted = Object.entries(projectData)
@@ -928,12 +928,12 @@
             // Aggregate by equipment
             const eqData = {};
             filteredRecords.forEach(r => {
-                const eq = r.equipment || 'Unknown';
+                const eq = r.equipment_1 || 'Unknown';
                 if (!eqData[eq]) {
                     eqData[eq] = { count: 0, amount: 0 };
                 }
                 eqData[eq].count++;
-                eqData[eq].amount += r.cost || 0;
+                eqData[eq].amount += parseFloat(r.total_amount) || 0;
             });
 
             const sorted = Object.entries(eqData)
@@ -978,7 +978,7 @@
 
             // Aggregate by supplier
             const supplierData = {};
-            const totalAmount = filteredRecords.reduce((sum, r) => sum + (r.cost || 0), 0);
+            const totalAmount = filteredRecords.reduce((sum, r) => sum + (parseFloat(r.total_amount) || 0), 0);
 
             filteredRecords.forEach(r => {
                 const supplier = r.supplier || 'Unknown';
@@ -986,7 +986,7 @@
                     supplierData[supplier] = { count: 0, amount: 0 };
                 }
                 supplierData[supplier].count++;
-                supplierData[supplier].amount += r.cost || 0;
+                supplierData[supplier].amount += parseFloat(r.total_amount) || 0;
             });
 
             const sorted = Object.entries(supplierData).sort((a, b) => b[1].amount - a[1].amount);
@@ -1015,8 +1015,8 @@
                     projectData[project] = { count: 0, amount: 0, days: [] };
                 }
                 projectData[project].count++;
-                projectData[project].amount += r.cost || 0;
-                if (r.completion_days) projectData[project].days.push(r.completion_days);
+                projectData[project].amount += parseFloat(r.total_amount) || 0;
+                if (r.duration) projectData[project].days.push(parseFloat(r.duration));
             });
 
             const sorted = Object.entries(projectData).sort((a, b) => b[1].amount - a[1].amount);
@@ -1042,12 +1042,12 @@
             const eqData = {};
 
             filteredRecords.forEach(r => {
-                const eq = r.equipment || 'Unknown';
+                const eq = r.equipment_1 || 'Unknown';
                 if (!eqData[eq]) {
                     eqData[eq] = { count: 0, amount: 0 };
                 }
                 eqData[eq].count++;
-                eqData[eq].amount += r.cost || 0;
+                eqData[eq].amount += parseFloat(r.total_amount) || 0;
             });
 
             const sorted = Object.entries(eqData).sort((a, b) => b[1].count - a[1].count);
@@ -1079,11 +1079,11 @@
                     <tr class="border-b hover:bg-gray-50">
                         <td class="px-3 py-2">${formatNumber(start + i + 1)}</td>
                         <td class="px-3 py-2 font-mono">${r.job_order_no || '-'}</td>
-                        <td class="px-3 py-2">${r.date || '-'}</td>
+                        <td class="px-3 py-2">${r.request_date || '-'}</td>
                         <td class="px-3 py-2">${r.project || '-'}</td>
                         <td class="px-3 py-2">${r.supplier || '-'}</td>
-                        <td class="px-3 py-2">${r.equipment || '-'}</td>
-                        <td class="px-3 py-2 font-medium">${formatCurrency(r.cost || 0)}</td>
+                        <td class="px-3 py-2">${r.equipment_1 || '-'}</td>
+                        <td class="px-3 py-2 font-medium">${formatCurrency(parseFloat(r.total_amount) || 0)}</td>
                         <td class="px-3 py-2"><span class="badge ${statusClass}">${r.payment_status || '-'}</span></td>
                     </tr>
                 `;
@@ -1188,11 +1188,11 @@
         function exportData() {
             const data = filteredRecords.map(r => ({
                 'Job Order': r.job_order_no,
-                'Date': r.date,
+                'Date': r.request_date,
                 'Project': r.project,
                 'Supplier': r.supplier,
-                'Equipment': r.equipment,
-                'Cost': r.cost,
+                'Equipment': r.equipment_1,
+                'Amount': r.total_amount,
                 'Status': r.payment_status
             }));
 
