@@ -2,9 +2,12 @@ name: Update Procurement Data
 
 on:
   schedule:
-    # Run daily at 6 AM Saudi Arabia time (UTC+3)
-    - cron: '0 3 * * *'
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
   workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: write
 
 jobs:
   update-data:
@@ -21,13 +24,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install smartsheet-python-sdk
+          pip install requests
 
-      - name: Run export script
+      - name: Run procurement sync script
         env:
-          SMARTSHEET_ACCESS_TOKEN: ${{ secrets.SMARTSHEET_ACCESS_TOKEN }}
+          SMARTSHEET_TOKEN: ${{ secrets.SMARTSHEET_TOKEN }}
         run: |
-          python scripts/export_procurement_data.py
+          python sync_procurement.py
 
       - name: Check for changes
         id: git-check
@@ -40,5 +43,5 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add data/
-          git commit -m "chore: Update procurement data [automated]"
+          git commit -m "chore: Update procurement data from Smartsheet [automated]"
           git push
