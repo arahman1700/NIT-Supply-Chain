@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>NESMA | Fleet Management Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/nesma-theme.css">
+    <style>
+        :root {
+            --primary: #2E3192;
+            --secondary: #80D1E9;
+            --accent: #0E2841;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', 'Cairo', sans-serif;
+            background: linear-gradient(180deg, #0E2841 0%, #1a365d 50%, #0E2841 100%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+        }
+
+        .stat-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(128, 209, 233, 0.15);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0E2841 0%, #1a365d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(128, 209, 233, 0.1);
+            border-top-color: #80D1E9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: #9ca3af;
+        }
+
+        .tab-btn:hover {
+            background: rgba(128, 209, 233, 0.1);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .badge-info { background: rgba(128, 209, 233, 0.2); color: #80d1e9; }
+        .badge-purple { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+
+        table {
+            width: 100%;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            font-weight: 600;
+            color: #9ca3af;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #e5e7eb;
+            font-size: 13px;
+        }
+
+        tr:hover td {
+            background: rgba(128, 209, 233, 0.05);
+        }
+
+        .filter-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 13px;
+            min-width: 140px;
+        }
+
+        .filter-select option {
+            background: #1a365d;
+            color: white;
+        }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px 8px 36px;
+            color: white;
+            font-size: 13px;
+            width: 200px;
+        }
+
+        .search-input::placeholder {
+            color: #6b7280;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #0E2841 0%, #1a365d 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+            padding: 24px;
+        }
+
+        .kpi-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        @media (max-width: 768px) {
+            .kpi-card-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="text-center">
+            <div class="loader mx-auto mb-4"></div>
+            <p class="text-cyan-400" id="loadingText">Loading Fleet Data...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-[#0E2841] to-[#2E3192] shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="facility_portal.html" class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                    <img src="assets/logo-white.svg" alt="NESMA" class="h-8">
+                    <div class="hidden md:block">
+                        <h1 class="text-lg font-bold text-white">Fleet Management Dashboard</h1>
+                        <p class="text-xs text-gray-400">Vehicles, Rentals, Fuel & Maintenance</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-xs text-gray-400">Last Update: <span id="lastUpdate">-</span></span>
+                    <button onclick="exportData()" class="flex items-center gap-2 bg-[#10B981] hover:bg-[#059669] px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filters -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="glass-card p-4">
+            <div class="flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                    </svg>
+                    <span class="text-sm font-medium text-gray-300">Filters</span>
+                </div>
+                <select id="filterCompany" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Companies</option>
+                </select>
+                <select id="filterAvailability" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Status</option>
+                </select>
+                <select id="filterMake" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Makes</option>
+                </select>
+                <select id="filterProject" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Projects</option>
+                </select>
+                <select id="filterCity" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Cities</option>
+                </select>
+                <button onclick="resetFilters()" class="text-sm text-cyan-400 hover:text-cyan-300">Reset</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- KPI Cards Row 1 - Owned Vehicles -->
+    <section class="container mx-auto px-4 py-2">
+        <h3 class="text-sm font-semibold text-gray-400 mb-3">OWNED VEHICLES</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+            <div class="glass-card stat-card p-4" onclick="showDetail('total')">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
+                            <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1v-1h5a1 1 0 001-1v-3a1 1 0 00-.293-.707l-2-2A1 1 0 0014 7h-3V5a1 1 0 00-1-1H3z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-cyan-400" id="kpiTotal">-</p>
+                <p class="text-xs text-gray-400 mt-1">Total Vehicles</p>
+            </div>
+            <div class="glass-card stat-card p-4" onclick="showDetail('active')">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-green-400" id="kpiActive">-</p>
+                <p class="text-xs text-gray-400 mt-1">Active</p>
+            </div>
+            <div class="glass-card stat-card p-4" onclick="showDetail('parked')">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-amber-400" id="kpiParked">-</p>
+                <p class="text-xs text-gray-400 mt-1">Parked</p>
+            </div>
+            <div class="glass-card stat-card p-4" onclick="showDetail('temporary')">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-purple-400" id="kpiTemporary">-</p>
+                <p class="text-xs text-gray-400 mt-1">Temporary</p>
+            </div>
+            <div class="glass-card stat-card p-4" onclick="showDetail('client')">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-blue-400" id="kpiClient">-</p>
+                <p class="text-xs text-gray-400 mt-1">Client</p>
+            </div>
+            <div class="glass-card stat-card p-4" onclick="showDetail('accident')">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-red-400" id="kpiAccident">-</p>
+                <p class="text-xs text-gray-400 mt-1">Accident</p>
+            </div>
+            <div class="glass-card stat-card p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-indigo-400" id="kpiMarketValue">-</p>
+                <p class="text-xs text-gray-400 mt-1">Market Value</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- KPI Cards Row 2 - Monthly Costs -->
+    <section class="container mx-auto px-4 py-2">
+        <h3 class="text-sm font-semibold text-gray-400 mb-3">MONTHLY COSTS (DEC 2025)</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div class="glass-card stat-card p-4">
+                <p class="text-xs text-gray-400 mb-1">Fuel (DREES)</p>
+                <p class="text-xl font-bold text-cyan-400" id="kpiFuel">-</p>
+                <p class="text-xs text-gray-500"><span id="kpiFuelTags">-</span> Active Tags</p>
+            </div>
+            <div class="glass-card stat-card p-4">
+                <p class="text-xs text-gray-400 mb-1">Maintenance</p>
+                <p class="text-xl font-bold text-amber-400" id="kpiMaintenance">-</p>
+                <p class="text-xs text-gray-500"><span id="kpiMaintCars">-</span> Cars Serviced</p>
+            </div>
+            <div class="glass-card stat-card p-4">
+                <p class="text-xs text-gray-400 mb-1">Rental - Key Co.</p>
+                <p class="text-xl font-bold text-purple-400" id="kpiRentalKey">-</p>
+                <p class="text-xs text-gray-500"><span id="kpiKeyCount">-</span> Vehicles</p>
+            </div>
+            <div class="glass-card stat-card p-4">
+                <p class="text-xs text-gray-400 mb-1">Rental - Theeb</p>
+                <p class="text-xl font-bold text-rose-400" id="kpiRentalTheeb">-</p>
+                <p class="text-xs text-gray-500"><span id="kpiTheebCount">-</span> Vehicles</p>
+            </div>
+            <div class="glass-card stat-card p-4">
+                <p class="text-xs text-gray-400 mb-1">Traffic Violations</p>
+                <p class="text-xl font-bold text-red-400" id="kpiViolations">-</p>
+                <p class="text-xs text-gray-500"><span id="kpiViolationsCount">-</span> Violations</p>
+            </div>
+            <div class="glass-card stat-card p-4">
+                <p class="text-xs text-gray-400 mb-1">Total Monthly</p>
+                <p class="text-xl font-bold text-green-400" id="kpiTotalMonthly">-</p>
+                <p class="text-xs text-gray-500">All Fleet Costs</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Row 1 -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Vehicle Status -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Vehicle Status Distribution</h3>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+            <!-- By Company -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Vehicles by Company</h3>
+                <div class="chart-container">
+                    <canvas id="companyChart"></canvas>
+                </div>
+            </div>
+            <!-- By Make -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Top Vehicle Makes</h3>
+                <div class="chart-container">
+                    <canvas id="makeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Row 2 -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- By Project -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Vehicles by Project (Top 15)</h3>
+                <div class="chart-container" style="height: 350px;">
+                    <canvas id="projectChart"></canvas>
+                </div>
+            </div>
+            <!-- Maintenance by Vendor -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Maintenance Costs by Vendor</h3>
+                <div class="chart-container">
+                    <canvas id="maintenanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabs Section -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="glass-card">
+            <!-- Tab Headers -->
+            <div class="flex flex-wrap gap-2 p-4 border-b border-white/10">
+                <button class="tab-btn active" onclick="showTab('owned')">Owned Vehicles</button>
+                <button class="tab-btn" onclick="showTab('rental')">Rental Vehicles</button>
+                <button class="tab-btn" onclick="showTab('maintenance')">Maintenance Log</button>
+                <button class="tab-btn" onclick="showTab('violations')">Violations</button>
+            </div>
+
+            <!-- Search -->
+            <div class="p-4 border-b border-white/10">
+                <div class="relative">
+                    <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search vehicles..." class="search-input" onkeyup="searchTable()">
+                </div>
+            </div>
+
+            <!-- Tab Contents -->
+            <div id="ownedContent" class="tab-content p-4">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Plate No.</th>
+                                <th>Make/Model</th>
+                                <th>Year</th>
+                                <th>Company</th>
+                                <th>Status</th>
+                                <th>Project</th>
+                                <th>User</th>
+                                <th>City</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ownedTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="flex justify-between items-center mt-4 text-sm text-gray-400">
+                    <span>Showing <span id="recordsShowing">0</span> of <span id="recordsTotal">0</span> records</span>
+                    <div class="flex gap-2" id="pagination"></div>
+                </div>
+            </div>
+
+            <div id="rentalContent" class="tab-content p-4 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Key Company -->
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <h4 class="font-semibold text-purple-400 mb-4">Key Company</h4>
+                        <div class="space-y-3">
+                            <div class="flex justify-between"><span class="text-gray-400">Total Vehicles</span><span class="font-semibold" id="keyTotal">-</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Active VRF</span><span class="font-semibold text-green-400" id="keyActiveVRF">-</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Expired VRF</span><span class="font-semibold text-red-400" id="keyExpiredVRF">-</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Expiring Q1 2026</span><span class="font-semibold text-amber-400" id="keyExpiring">-</span></div>
+                            <div class="flex justify-between border-t border-white/10 pt-3"><span class="text-gray-400">Pending Invoice (Dec)</span><span class="font-semibold text-cyan-400" id="keyInvoice">-</span></div>
+                        </div>
+                    </div>
+                    <!-- Theeb Company -->
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <h4 class="font-semibold text-rose-400 mb-4">Theeb Company</h4>
+                        <div class="space-y-3">
+                            <div class="flex justify-between"><span class="text-gray-400">Total Vehicles</span><span class="font-semibold" id="theebTotal">-</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Active VRF</span><span class="font-semibold text-green-400" id="theebActiveVRF">-</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Expired VRF</span><span class="font-semibold text-red-400" id="theebExpiredVRF">-</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Nov Invoice</span><span class="font-semibold text-amber-400" id="theebNovInvoice">-</span></div>
+                            <div class="flex justify-between border-t border-white/10 pt-3"><span class="text-gray-400">Dec Invoice</span><span class="font-semibold text-cyan-400" id="theebDecInvoice">-</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="maintenanceContent" class="tab-content p-4 hidden">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vendor</th>
+                                <th>Cars Serviced</th>
+                                <th>Total Cost</th>
+                                <th>Avg per Car</th>
+                            </tr>
+                        </thead>
+                        <tbody id="maintenanceTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="violationsContent" class="tab-content p-4 hidden">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>TAMM Account</th>
+                                <th>Paid Qty</th>
+                                <th>Paid Amount</th>
+                                <th>Unpaid Qty</th>
+                                <th>Unpaid Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="violationsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detail Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content w-full max-w-4xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold" id="modalTitle">Vehicle Details</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let allData = null;
+        let filteredRecords = [];
+        let currentPage = 1;
+        const recordsPerPage = 20;
+        let charts = {};
+
+        // Format functions
+        function formatNumber(num) {
+            return new Intl.NumberFormat('en-US').format(Math.round(num));
+        }
+
+        function formatCurrency(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M SAR';
+            if (num >= 1000) return (num / 1000).toFixed(0) + 'K SAR';
+            return formatNumber(num) + ' SAR';
+        }
+
+        // Load data
+        async function loadData() {
+            try {
+                const response = await fetch('data/facility_vehicles.json');
+                if (!response.ok) throw new Error('Failed to load data');
+                allData = await response.json();
+
+                populateFilters();
+                filteredRecords = [...allData.records];
+                updateDashboard();
+
+                document.getElementById('lastUpdate').textContent = allData.metadata.last_update;
+                document.getElementById('loadingOverlay').style.display = 'none';
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loadingText').textContent = 'Error loading data';
+            }
+        }
+
+        // Populate filters
+        function populateFilters() {
+            const filters = allData.filters;
+
+            const companySelect = document.getElementById('filterCompany');
+            companySelect.innerHTML = '<option value="">All Companies</option>';
+            filters.companies.forEach(c => companySelect.innerHTML += `<option value="${c}">${c}</option>`);
+
+            const availabilitySelect = document.getElementById('filterAvailability');
+            availabilitySelect.innerHTML = '<option value="">All Status</option>';
+            filters.availability.forEach(a => availabilitySelect.innerHTML += `<option value="${a}">${a}</option>`);
+
+            const makeSelect = document.getElementById('filterMake');
+            makeSelect.innerHTML = '<option value="">All Makes</option>';
+            filters.makes.forEach(m => makeSelect.innerHTML += `<option value="${m}">${m}</option>`);
+
+            const projectSelect = document.getElementById('filterProject');
+            projectSelect.innerHTML = '<option value="">All Projects</option>';
+            filters.projects.forEach(p => projectSelect.innerHTML += `<option value="${p}">${p}</option>`);
+
+            const citySelect = document.getElementById('filterCity');
+            citySelect.innerHTML = '<option value="">All Cities</option>';
+            filters.cities.forEach(c => citySelect.innerHTML += `<option value="${c}">${c}</option>`);
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const company = document.getElementById('filterCompany').value;
+            const availability = document.getElementById('filterAvailability').value;
+            const make = document.getElementById('filterMake').value;
+            const project = document.getElementById('filterProject').value;
+            const city = document.getElementById('filterCity').value;
+
+            filteredRecords = allData.records.filter(r => {
+                if (company && r.company !== company) return false;
+                if (availability && r.availability !== availability) return false;
+                if (make && r.make !== make) return false;
+                if (project && r.project !== project) return false;
+                if (city && r.city !== city) return false;
+                return true;
+            });
+
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('filterCompany').value = '';
+            document.getElementById('filterAvailability').value = '';
+            document.getElementById('filterMake').value = '';
+            document.getElementById('filterProject').value = '';
+            document.getElementById('filterCity').value = '';
+            filteredRecords = [...allData.records];
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            updateKPIs();
+            updateCharts();
+            updateTables();
+        }
+
+        // Update KPIs
+        function updateKPIs() {
+            const records = filteredRecords;
+            const summary = allData.summary;
+
+            // Owned vehicles KPIs (filtered)
+            const total = records.length;
+            const active = records.filter(r => r.availability === 'ACTIVE').length;
+            const parked = records.filter(r => r.availability === 'PARKED').length;
+            const temporary = records.filter(r => r.availability === 'TEMPORARY').length;
+            const client = records.filter(r => r.availability === 'CLIENT').length;
+            const accident = records.filter(r => r.availability === 'ACCIDENT').length;
+            const marketValue = records.reduce((sum, r) => sum + (r.market_price || 0), 0);
+
+            document.getElementById('kpiTotal').textContent = formatNumber(total);
+            document.getElementById('kpiActive').textContent = formatNumber(active);
+            document.getElementById('kpiParked').textContent = formatNumber(parked);
+            document.getElementById('kpiTemporary').textContent = formatNumber(temporary);
+            document.getElementById('kpiClient').textContent = formatNumber(client);
+            document.getElementById('kpiAccident').textContent = formatNumber(accident);
+            document.getElementById('kpiMarketValue').textContent = formatCurrency(marketValue);
+
+            // Monthly costs (from summary - not filtered)
+            document.getElementById('kpiFuel').textContent = formatCurrency(summary.fuel.total_invoice);
+            document.getElementById('kpiFuelTags').textContent = summary.fuel.active_tags;
+            document.getElementById('kpiMaintenance').textContent = formatCurrency(summary.maintenance.total_amount);
+            document.getElementById('kpiMaintCars').textContent = summary.maintenance.total_cars;
+            document.getElementById('kpiRentalKey').textContent = formatCurrency(summary.rental.key_company.pending_invoice);
+            document.getElementById('kpiKeyCount').textContent = summary.rental.key_company.total;
+            document.getElementById('kpiRentalTheeb').textContent = formatCurrency(summary.rental.theeb_company.nov_invoice + summary.rental.theeb_company.dec_invoice);
+            document.getElementById('kpiTheebCount').textContent = summary.rental.theeb_company.total;
+            document.getElementById('kpiViolations').textContent = formatCurrency(summary.violations.total.amount);
+            document.getElementById('kpiViolationsCount').textContent = summary.violations.total.quantity;
+
+            const totalMonthly = summary.fuel.total_invoice + summary.maintenance.total_amount + 
+                                summary.rental.key_company.pending_invoice + 
+                                summary.rental.theeb_company.nov_invoice + summary.rental.theeb_company.dec_invoice;
+            document.getElementById('kpiTotalMonthly').textContent = formatCurrency(totalMonthly);
+        }
+
+        // Update charts
+        function updateCharts() {
+            updateStatusChart();
+            updateCompanyChart();
+            updateMakeChart();
+            updateProjectChart();
+            updateMaintenanceChart();
+        }
+
+        function updateStatusChart() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            const statusCounts = {};
+            filteredRecords.forEach(r => {
+                const status = r.availability || 'Unknown';
+                statusCounts[status] = (statusCounts[status] || 0) + 1;
+            });
+
+            const labels = Object.keys(statusCounts);
+            const data = Object.values(statusCounts);
+            const colors = {
+                'ACTIVE': '#10B981',
+                'PARKED': '#F59E0B',
+                'TEMPORARY': '#8B5CF6',
+                'CLIENT': '#3B82F6',
+                'ACCIDENT': '#EF4444',
+                'GUEST': '#EC4899'
+            };
+            const backgroundColors = labels.map(l => colors[l] || '#6B7280');
+
+            if (charts.statusChart) charts.statusChart.destroy();
+            charts.statusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { color: '#9CA3AF', padding: 15, font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCompanyChart() {
+            const ctx = document.getElementById('companyChart').getContext('2d');
+            const companyCounts = {};
+            filteredRecords.forEach(r => {
+                const company = r.company || 'Unknown';
+                companyCounts[company] = (companyCounts[company] || 0) + 1;
+            });
+
+            const labels = Object.keys(companyCounts);
+            const data = Object.values(companyCounts);
+            const colors = ['#2E3192', '#80D1E9', '#10B981', '#F59E0B'];
+
+            if (charts.companyChart) charts.companyChart.destroy();
+            charts.companyChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { color: '#9CA3AF', padding: 15, font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateMakeChart() {
+            const ctx = document.getElementById('makeChart').getContext('2d');
+            const makeCounts = {};
+            filteredRecords.forEach(r => {
+                const make = r.make || 'Unknown';
+                makeCounts[make] = (makeCounts[make] || 0) + 1;
+            });
+
+            const sorted = Object.entries(makeCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
+
+            if (charts.makeChart) charts.makeChart.destroy();
+            charts.makeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: '#80D1E9',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9CA3AF' } },
+                        y: { grid: { display: false }, ticks: { color: '#9CA3AF', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        function updateProjectChart() {
+            const ctx = document.getElementById('projectChart').getContext('2d');
+            const projectCounts = {};
+            filteredRecords.forEach(r => {
+                const project = r.project || 'Unassigned';
+                projectCounts[project] = (projectCounts[project] || 0) + 1;
+            });
+
+            const sorted = Object.entries(projectCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
+
+            if (charts.projectChart) charts.projectChart.destroy();
+            charts.projectChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: '#2E3192',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9CA3AF' } },
+                        y: { grid: { display: false }, ticks: { color: '#9CA3AF', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        function updateMaintenanceChart() {
+            const ctx = document.getElementById('maintenanceChart').getContext('2d');
+            const maint = allData.summary.maintenance;
+            
+            const labels = ['One Stop', 'Petromin', 'Mismar'];
+            const carData = [maint.one_stop.cars, maint.petromin.cars, maint.mismar.cars];
+            const amountData = [maint.one_stop.amount, maint.petromin.amount, maint.mismar.amount];
+
+            if (charts.maintenanceChart) charts.maintenanceChart.destroy();
+            charts.maintenanceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Cars',
+                            data: carData,
+                            backgroundColor: '#80D1E9',
+                            borderRadius: 6,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Cost (SAR)',
+                            data: amountData,
+                            backgroundColor: '#F59E0B',
+                            borderRadius: 6,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#9CA3AF' }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9CA3AF' } },
+                        y: { 
+                            type: 'linear', 
+                            position: 'left',
+                            grid: { color: 'rgba(255,255,255,0.05)' }, 
+                            ticks: { color: '#9CA3AF' },
+                            title: { display: true, text: 'Cars', color: '#9CA3AF' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            grid: { display: false },
+                            ticks: { color: '#9CA3AF' },
+                            title: { display: true, text: 'Cost (SAR)', color: '#9CA3AF' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update tables
+        function updateTables() {
+            updateOwnedTable();
+            updateRentalInfo();
+            updateMaintenanceTable();
+            updateViolationsTable();
+        }
+
+        function updateOwnedTable() {
+            const tbody = document.getElementById('ownedTableBody');
+            const start = (currentPage - 1) * recordsPerPage;
+            const end = start + recordsPerPage;
+            const pageRecords = filteredRecords.slice(start, end);
+
+            document.getElementById('recordsShowing').textContent = Math.min(end, filteredRecords.length);
+            document.getElementById('recordsTotal').textContent = filteredRecords.length;
+
+            tbody.innerHTML = pageRecords.map((r, i) => {
+                const statusClass = r.availability === 'ACTIVE' ? 'badge-success' :
+                                   r.availability === 'PARKED' ? 'badge-warning' :
+                                   r.availability === 'ACCIDENT' ? 'badge-danger' :
+                                   r.availability === 'TEMPORARY' ? 'badge-purple' : 'badge-info';
+                return `
+                    <tr>
+                        <td>${start + i + 1}</td>
+                        <td class="font-mono text-xs">${r.plate_eng || r.plate_ara || '-'}</td>
+                        <td>${r.make} ${r.model}</td>
+                        <td>${r.year || '-'}</td>
+                        <td>${r.company}</td>
+                        <td><span class="badge ${statusClass}">${r.availability}</span></td>
+                        <td>${r.project || '-'}</td>
+                        <td>${r.user_name || '-'}</td>
+                        <td>${r.city || '-'}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            updatePagination();
+        }
+
+        function updateRentalInfo() {
+            const rental = allData.summary.rental;
+            
+            // Key Company
+            document.getElementById('keyTotal').textContent = rental.key_company.total;
+            document.getElementById('keyActiveVRF').textContent = rental.key_company.active_vrf;
+            document.getElementById('keyExpiredVRF').textContent = rental.key_company.expired_vrf;
+            document.getElementById('keyExpiring').textContent = rental.key_company.expiring_q1_2026;
+            document.getElementById('keyInvoice').textContent = formatCurrency(rental.key_company.pending_invoice);
+
+            // Theeb Company
+            document.getElementById('theebTotal').textContent = rental.theeb_company.total;
+            document.getElementById('theebActiveVRF').textContent = rental.theeb_company.active_vrf;
+            document.getElementById('theebExpiredVRF').textContent = rental.theeb_company.expired_vrf;
+            document.getElementById('theebNovInvoice').textContent = formatCurrency(rental.theeb_company.nov_invoice);
+            document.getElementById('theebDecInvoice').textContent = formatCurrency(rental.theeb_company.dec_invoice);
+        }
+
+        function updateMaintenanceTable() {
+            const maint = allData.summary.maintenance;
+            const tbody = document.getElementById('maintenanceTableBody');
+            
+            const vendors = [
+                { name: 'One Stop', cars: maint.one_stop.cars, amount: maint.one_stop.amount },
+                { name: 'Petromin', cars: maint.petromin.cars, amount: maint.petromin.amount },
+                { name: 'Mismar', cars: maint.mismar.cars, amount: maint.mismar.amount }
+            ];
+
+            tbody.innerHTML = vendors.map(v => `
+                <tr>
+                    <td class="font-medium">${v.name}</td>
+                    <td>${v.cars}</td>
+                    <td>${formatCurrency(v.amount)}</td>
+                    <td>${formatCurrency(v.amount / v.cars)}</td>
+                </tr>
+            `).join('') + `
+                <tr class="font-bold border-t border-white/20">
+                    <td>Total</td>
+                    <td>${maint.total_cars}</td>
+                    <td class="text-amber-400">${formatCurrency(maint.total_amount)}</td>
+                    <td>${formatCurrency(maint.total_amount / maint.total_cars)}</td>
+                </tr>
+            `;
+        }
+
+        function updateViolationsTable() {
+            const violations = allData.summary.violations;
+            const tbody = document.getElementById('violationsTableBody');
+            
+            tbody.innerHTML = `
+                <tr>
+                    <td>7018055116</td>
+                    <td>${violations.paid.quantity}</td>
+                    <td class="text-green-400">${formatCurrency(violations.paid.amount)}</td>
+                    <td>${violations.unpaid.quantity}</td>
+                    <td class="text-red-400">${formatCurrency(violations.unpaid.amount)}</td>
+                </tr>
+                <tr class="font-bold border-t border-white/20">
+                    <td>Total</td>
+                    <td>${violations.paid.quantity}</td>
+                    <td class="text-green-400">${formatCurrency(violations.paid.amount)}</td>
+                    <td>${violations.unpaid.quantity}</td>
+                    <td class="text-red-400">${formatCurrency(violations.unpaid.amount)}</td>
+                </tr>
+            `;
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            let html = '';
+            if (currentPage > 1) {
+                html += `<button onclick="goToPage(${currentPage - 1})" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20">Prev</button>`;
+            }
+            
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                html += `<button onclick="goToPage(${i})" class="px-3 py-1 ${i === currentPage ? 'bg-cyan-500' : 'bg-white/10 hover:bg-white/20'} rounded">${i}</button>`;
+            }
+            
+            if (currentPage < totalPages) {
+                html += `<button onclick="goToPage(${currentPage + 1})" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20">Next</button>`;
+            }
+            
+            pagination.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            updateOwnedTable();
+        }
+
+        // Tab functionality
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabName + 'Content').classList.remove('hidden');
+            event.target.classList.add('active');
+        }
+
+        // Search
+        function searchTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredRecords = allData.records.filter(r => {
+                const searchFields = [r.plate_eng, r.plate_ara, r.make, r.model, r.company, r.project, r.user_name, r.city].filter(Boolean).join(' ').toLowerCase();
+                return searchFields.includes(searchTerm);
+            });
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Modal functions
+        function showDetail(type) {
+            const modal = document.getElementById('detailModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            
+            let records = [];
+            let titleText = '';
+            
+            switch(type) {
+                case 'active':
+                    records = filteredRecords.filter(r => r.availability === 'ACTIVE');
+                    titleText = 'Active Vehicles';
+                    break;
+                case 'parked':
+                    records = filteredRecords.filter(r => r.availability === 'PARKED');
+                    titleText = 'Parked Vehicles';
+                    break;
+                case 'accident':
+                    records = filteredRecords.filter(r => r.availability === 'ACCIDENT');
+                    titleText = 'Accident Vehicles';
+                    break;
+                case 'temporary':
+                    records = filteredRecords.filter(r => r.availability === 'TEMPORARY');
+                    titleText = 'Temporary Vehicles';
+                    break;
+                case 'client':
+                    records = filteredRecords.filter(r => r.availability === 'CLIENT');
+                    titleText = 'Client Vehicles';
+                    break;
+                default:
+                    records = filteredRecords;
+                    titleText = 'All Vehicles';
+            }
+            
+            title.textContent = `${titleText} (${records.length})`;
+            content.innerHTML = `
+                <div class="overflow-x-auto max-h-96">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Plate</th>
+                                <th>Make/Model</th>
+                                <th>Company</th>
+                                <th>Project</th>
+                                <th>User</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${records.slice(0, 50).map(r => `
+                                <tr>
+                                    <td class="font-mono text-xs">${r.plate_eng || r.plate_ara || '-'}</td>
+                                    <td>${r.make} ${r.model}</td>
+                                    <td>${r.company}</td>
+                                    <td>${r.project || '-'}</td>
+                                    <td>${r.user_name || '-'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        // Export data
+        function exportData() {
+            const data = filteredRecords.map(r => ({
+                'Plate No.': r.plate_eng || r.plate_ara,
+                'Make': r.make,
+                'Model': r.model,
+                'Year': r.year,
+                'Company': r.company,
+                'Status': r.availability,
+                'Project': r.project,
+                'User': r.user_name,
+                'City': r.city,
+                'Market Price': r.market_price
+            }));
+
+            const csv = [
+                Object.keys(data[0]).join(','),
+                ...data.map(row => Object.values(row).map(v => `"${v || ''}"`).join(','))
+            ].join('\n');
+
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'fleet_data_export.csv';
+            link.click();
+        }
+
+        // Close modal on outside click
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>

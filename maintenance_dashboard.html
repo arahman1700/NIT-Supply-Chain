@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>NESMA | Maintenance Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/nesma-theme.css">
+    <style>
+        :root {
+            --primary: #2E3192;
+            --secondary: #80D1E9;
+            --accent: #0E2841;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', 'Cairo', sans-serif;
+            background: linear-gradient(180deg, #0E2841 0%, #1a365d 50%, #0E2841 100%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+        }
+
+        .stat-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(245, 158, 11, 0.15);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0E2841 0%, #1a365d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(245, 158, 11, 0.1);
+            border-top-color: #F59E0B;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: #9ca3af;
+        }
+
+        .tab-btn:hover {
+            background: rgba(245, 158, 11, 0.1);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            color: white;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .badge-info { background: rgba(128, 209, 233, 0.2); color: #80d1e9; }
+
+        table { width: 100%; }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            font-weight: 600;
+            color: #9ca3af;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #e5e7eb;
+            font-size: 13px;
+        }
+
+        tr:hover td {
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .filter-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 13px;
+            min-width: 140px;
+        }
+
+        .filter-select option {
+            background: #1a365d;
+            color: white;
+        }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px 8px 36px;
+            color: white;
+            font-size: 13px;
+            width: 250px;
+        }
+
+        .search-input::placeholder {
+            color: #6b7280;
+        }
+
+        .kpi-card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        @media (max-width: 768px) {
+            .kpi-card-value {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="text-center">
+            <div class="loader mx-auto mb-4"></div>
+            <p class="text-amber-400" id="loadingText">Loading Maintenance Data...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-[#0E2841] to-[#F59E0B] shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="facility_portal.html" class="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                    <img src="assets/logo-white.svg" alt="NESMA" class="h-8">
+                    <div class="hidden md:block">
+                        <h1 class="text-lg font-bold text-white">Maintenance Dashboard</h1>
+                        <p class="text-xs text-gray-200">Facility Maintenance & Service Requests</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-xs text-gray-200">December 2025</span>
+                    <button onclick="exportData()" class="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filters -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="glass-card p-4">
+            <div class="flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                    </svg>
+                    <span class="text-sm font-medium text-gray-300">Filters</span>
+                </div>
+                <select id="filterRegion" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Regions</option>
+                </select>
+                <select id="filterCity" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Cities</option>
+                </select>
+                <select id="filterLocation" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Locations</option>
+                </select>
+                <select id="filterVendor" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Vendors</option>
+                </select>
+                <button onclick="resetFilters()" class="text-sm text-amber-400 hover:text-amber-300">Reset</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- KPI Cards -->
+    <section class="container mx-auto px-4 py-2">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div class="glass-card stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-amber-400" id="kpiTotal">-</p>
+                <p class="text-xs text-gray-400 mt-2">Total Requests</p>
+            </div>
+
+            <div class="glass-card stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-green-400" id="kpiCompleted">-</p>
+                <p class="text-xs text-gray-400 mt-2">Completed</p>
+            </div>
+
+            <div class="glass-card stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-cyan-400" id="kpiRate">-</p>
+                <p class="text-xs text-gray-400 mt-2">Completion Rate</p>
+            </div>
+
+            <div class="glass-card stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-purple-400" id="kpiLocations">-</p>
+                <p class="text-xs text-gray-400 mt-2">Locations</p>
+            </div>
+
+            <div class="glass-card stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-indigo-400" id="kpiVendors">-</p>
+                <p class="text-xs text-gray-400 mt-2">Vendors</p>
+            </div>
+
+            <div class="glass-card stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-rose-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-rose-400" id="kpiTopRegion">-</p>
+                <p class="text-xs text-gray-400 mt-2">Top Region</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Row -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- By Region -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Requests by Region</h3>
+                <div class="chart-container">
+                    <canvas id="regionChart"></canvas>
+                </div>
+            </div>
+            <!-- By Vendor -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Requests by Vendor</h3>
+                <div class="chart-container">
+                    <canvas id="vendorChart"></canvas>
+                </div>
+            </div>
+            <!-- Completion Rate -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Completion Status</h3>
+                <div class="chart-container flex items-center justify-center">
+                    <div class="relative">
+                        <svg class="progress-ring w-48 h-48">
+                            <circle cx="96" cy="96" r="80" stroke="rgba(255,255,255,0.1)" stroke-width="16" fill="none"/>
+                            <circle id="progressCircle" cx="96" cy="96" r="80" stroke="#10B981" stroke-width="16" fill="none" stroke-linecap="round" stroke-dasharray="502" stroke-dashoffset="0"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center flex-col">
+                            <span class="text-4xl font-bold text-green-400" id="completionPercent">-</span>
+                            <span class="text-xs text-gray-400">Complete</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Row 2 -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Top Locations -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Top 10 Locations by Requests</h3>
+                <div class="chart-container" style="height: 350px;">
+                    <canvas id="locationChart"></canvas>
+                </div>
+            </div>
+            <!-- Top Cities -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Requests by City</h3>
+                <div class="chart-container" style="height: 350px;">
+                    <canvas id="cityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabs Section -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="glass-card">
+            <!-- Tab Headers -->
+            <div class="flex flex-wrap gap-2 p-4 border-b border-white/10">
+                <button class="tab-btn active" onclick="showTab('all')">All Requests</button>
+                <button class="tab-btn" onclick="showTab('byLocation')">By Location</button>
+                <button class="tab-btn" onclick="showTab('byVendor')">By Vendor</button>
+            </div>
+
+            <!-- Search -->
+            <div class="p-4 border-b border-white/10">
+                <div class="relative">
+                    <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search requests..." class="search-input" onkeyup="searchTable()">
+                </div>
+            </div>
+
+            <!-- Tab Contents -->
+            <div id="allContent" class="tab-content p-4">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Region</th>
+                                <th>City</th>
+                                <th>Location</th>
+                                <th>Description</th>
+                                <th>Vendor</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="flex justify-between items-center mt-4 text-sm text-gray-400">
+                    <span>Showing <span id="recordsShowing">0</span> of <span id="recordsTotal">0</span> records</span>
+                    <div class="flex gap-2" id="pagination"></div>
+                </div>
+            </div>
+
+            <div id="byLocationContent" class="tab-content p-4 hidden">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Location</th>
+                                <th>Region</th>
+                                <th>Total Requests</th>
+                                <th>Completed</th>
+                                <th>Completion Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody id="byLocationTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="byVendorContent" class="tab-content p-4 hidden">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vendor</th>
+                                <th>Total Requests</th>
+                                <th>Completed</th>
+                                <th>Share %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="byVendorTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let allData = null;
+        let filteredRecords = [];
+        let currentPage = 1;
+        const recordsPerPage = 20;
+        let charts = {};
+
+        // Format functions
+        function formatNumber(num) {
+            return new Intl.NumberFormat('en-US').format(Math.round(num));
+        }
+
+        // Load data
+        async function loadData() {
+            try {
+                const response = await fetch('data/facility_maintenance.json');
+                if (!response.ok) throw new Error('Failed to load data');
+                allData = await response.json();
+
+                populateFilters();
+                filteredRecords = [...allData.records];
+                updateDashboard();
+
+                document.getElementById('loadingOverlay').style.display = 'none';
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loadingText').textContent = 'Error loading data';
+            }
+        }
+
+        // Populate filters
+        function populateFilters() {
+            const filters = allData.filters;
+
+            const regionSelect = document.getElementById('filterRegion');
+            regionSelect.innerHTML = '<option value="">All Regions</option>';
+            filters.regions.forEach(r => regionSelect.innerHTML += `<option value="${r}">${r}</option>`);
+
+            const citySelect = document.getElementById('filterCity');
+            citySelect.innerHTML = '<option value="">All Cities</option>';
+            filters.cities.forEach(c => citySelect.innerHTML += `<option value="${c}">${c}</option>`);
+
+            const locationSelect = document.getElementById('filterLocation');
+            locationSelect.innerHTML = '<option value="">All Locations</option>';
+            filters.locations.forEach(l => locationSelect.innerHTML += `<option value="${l}">${l}</option>`);
+
+            const vendorSelect = document.getElementById('filterVendor');
+            vendorSelect.innerHTML = '<option value="">All Vendors</option>';
+            filters.vendors.forEach(v => vendorSelect.innerHTML += `<option value="${v}">${v}</option>`);
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const region = document.getElementById('filterRegion').value;
+            const city = document.getElementById('filterCity').value;
+            const location = document.getElementById('filterLocation').value;
+            const vendor = document.getElementById('filterVendor').value;
+
+            filteredRecords = allData.records.filter(r => {
+                if (region && r.region !== region) return false;
+                if (city && r.city !== city) return false;
+                if (location && r.location !== location) return false;
+                if (vendor && r.vendor !== vendor) return false;
+                return true;
+            });
+
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('filterRegion').value = '';
+            document.getElementById('filterCity').value = '';
+            document.getElementById('filterLocation').value = '';
+            document.getElementById('filterVendor').value = '';
+            filteredRecords = [...allData.records];
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            updateKPIs();
+            updateCharts();
+            updateTables();
+        }
+
+        // Update KPIs
+        function updateKPIs() {
+            const records = filteredRecords;
+            const total = records.length;
+            const completed = records.filter(r => r.completion_status === 1).length;
+            const rate = total > 0 ? (completed / total * 100).toFixed(0) : 0;
+            const locations = new Set(records.map(r => r.location)).size;
+            const vendors = new Set(records.map(r => r.vendor)).size;
+            
+            // Find top region
+            const regionCounts = {};
+            records.forEach(r => {
+                regionCounts[r.region] = (regionCounts[r.region] || 0) + 1;
+            });
+            const topRegion = Object.entries(regionCounts).sort((a, b) => b[1] - a[1])[0];
+
+            document.getElementById('kpiTotal').textContent = formatNumber(total);
+            document.getElementById('kpiCompleted').textContent = formatNumber(completed);
+            document.getElementById('kpiRate').textContent = rate + '%';
+            document.getElementById('kpiLocations').textContent = formatNumber(locations);
+            document.getElementById('kpiVendors').textContent = formatNumber(vendors);
+            document.getElementById('kpiTopRegion').textContent = topRegion ? topRegion[0] : '-';
+
+            // Update completion ring
+            document.getElementById('completionPercent').textContent = rate + '%';
+            const circle = document.getElementById('progressCircle');
+            const circumference = 2 * Math.PI * 80;
+            const offset = circumference - (rate / 100 * circumference);
+            circle.style.strokeDashoffset = offset;
+        }
+
+        // Update charts
+        function updateCharts() {
+            updateRegionChart();
+            updateVendorChart();
+            updateLocationChart();
+            updateCityChart();
+        }
+
+        function updateRegionChart() {
+            const ctx = document.getElementById('regionChart').getContext('2d');
+            const regionCounts = {};
+            filteredRecords.forEach(r => {
+                regionCounts[r.region] = (regionCounts[r.region] || 0) + 1;
+            });
+
+            const sorted = Object.entries(regionCounts).sort((a, b) => b[1] - a[1]);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
+            const colors = ['#F59E0B', '#10B981', '#80D1E9', '#8B5CF6', '#EF4444'];
+
+            if (charts.regionChart) charts.regionChart.destroy();
+            charts.regionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: colors, borderWidth: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#9CA3AF', padding: 15 } } }
+                }
+            });
+        }
+
+        function updateVendorChart() {
+            const ctx = document.getElementById('vendorChart').getContext('2d');
+            const vendorCounts = {};
+            filteredRecords.forEach(r => {
+                vendorCounts[r.vendor] = (vendorCounts[r.vendor] || 0) + 1;
+            });
+
+            const sorted = Object.entries(vendorCounts).sort((a, b) => b[1] - a[1]);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
+            const colors = ['#2E3192', '#80D1E9', '#10B981'];
+
+            if (charts.vendorChart) charts.vendorChart.destroy();
+            charts.vendorChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: colors, borderWidth: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#9CA3AF', padding: 15 } } }
+                }
+            });
+        }
+
+        function updateLocationChart() {
+            const ctx = document.getElementById('locationChart').getContext('2d');
+            const locationCounts = {};
+            filteredRecords.forEach(r => {
+                locationCounts[r.location] = (locationCounts[r.location] || 0) + 1;
+            });
+
+            const sorted = Object.entries(locationCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
+
+            if (charts.locationChart) charts.locationChart.destroy();
+            charts.locationChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: '#F59E0B', borderRadius: 6 }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9CA3AF' } },
+                        y: { grid: { display: false }, ticks: { color: '#9CA3AF', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        function updateCityChart() {
+            const ctx = document.getElementById('cityChart').getContext('2d');
+            const cityCounts = {};
+            filteredRecords.forEach(r => {
+                cityCounts[r.city] = (cityCounts[r.city] || 0) + 1;
+            });
+
+            const sorted = Object.entries(cityCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
+
+            if (charts.cityChart) charts.cityChart.destroy();
+            charts.cityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: '#80D1E9', borderRadius: 6 }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9CA3AF' } },
+                        y: { grid: { display: false }, ticks: { color: '#9CA3AF', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // Update tables
+        function updateTables() {
+            updateAllTable();
+            updateByLocationTable();
+            updateByVendorTable();
+        }
+
+        function updateAllTable() {
+            const tbody = document.getElementById('allTableBody');
+            const start = (currentPage - 1) * recordsPerPage;
+            const end = start + recordsPerPage;
+            const pageRecords = filteredRecords.slice(start, end);
+
+            document.getElementById('recordsShowing').textContent = Math.min(end, filteredRecords.length);
+            document.getElementById('recordsTotal').textContent = filteredRecords.length;
+
+            tbody.innerHTML = pageRecords.map((r, i) => `
+                <tr>
+                    <td>${start + i + 1}</td>
+                    <td>${r.date || '-'}</td>
+                    <td>${r.region || '-'}</td>
+                    <td>${r.city || '-'}</td>
+                    <td>${r.location || '-'}</td>
+                    <td class="max-w-xs truncate">${r.description || '-'}</td>
+                    <td>${r.vendor || '-'}</td>
+                    <td><span class="badge ${r.completion_status === 1 ? 'badge-success' : 'badge-warning'}">${r.completion_status === 1 ? 'Done' : 'Pending'}</span></td>
+                </tr>
+            `).join('');
+
+            updatePagination();
+        }
+
+        function updateByLocationTable() {
+            const tbody = document.getElementById('byLocationTableBody');
+            const locationData = {};
+
+            filteredRecords.forEach(r => {
+                if (!locationData[r.location]) {
+                    locationData[r.location] = { region: r.region, total: 0, completed: 0 };
+                }
+                locationData[r.location].total++;
+                if (r.completion_status === 1) locationData[r.location].completed++;
+            });
+
+            const sorted = Object.entries(locationData).sort((a, b) => b[1].total - a[1].total);
+
+            tbody.innerHTML = sorted.map(([location, data]) => `
+                <tr>
+                    <td class="font-medium">${location}</td>
+                    <td>${data.region}</td>
+                    <td>${data.total}</td>
+                    <td class="text-green-400">${data.completed}</td>
+                    <td>${(data.completed / data.total * 100).toFixed(0)}%</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateByVendorTable() {
+            const tbody = document.getElementById('byVendorTableBody');
+            const vendorData = {};
+            const total = filteredRecords.length;
+
+            filteredRecords.forEach(r => {
+                if (!vendorData[r.vendor]) {
+                    vendorData[r.vendor] = { total: 0, completed: 0 };
+                }
+                vendorData[r.vendor].total++;
+                if (r.completion_status === 1) vendorData[r.vendor].completed++;
+            });
+
+            const sorted = Object.entries(vendorData).sort((a, b) => b[1].total - a[1].total);
+
+            tbody.innerHTML = sorted.map(([vendor, data]) => `
+                <tr>
+                    <td class="font-medium">${vendor}</td>
+                    <td>${data.total}</td>
+                    <td class="text-green-400">${data.completed}</td>
+                    <td>${(data.total / total * 100).toFixed(1)}%</td>
+                </tr>
+            `).join('');
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            let html = '';
+            if (currentPage > 1) {
+                html += `<button onclick="goToPage(${currentPage - 1})" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20">Prev</button>`;
+            }
+            
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                html += `<button onclick="goToPage(${i})" class="px-3 py-1 ${i === currentPage ? 'bg-amber-500' : 'bg-white/10 hover:bg-white/20'} rounded">${i}</button>`;
+            }
+            
+            if (currentPage < totalPages) {
+                html += `<button onclick="goToPage(${currentPage + 1})" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20">Next</button>`;
+            }
+            
+            pagination.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            updateAllTable();
+        }
+
+        // Tab functionality
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabName + 'Content').classList.remove('hidden');
+            event.target.classList.add('active');
+        }
+
+        // Search
+        function searchTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredRecords = allData.records.filter(r => {
+                const searchFields = [r.location, r.city, r.region, r.description, r.vendor].filter(Boolean).join(' ').toLowerCase();
+                return searchFields.includes(searchTerm);
+            });
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Export
+        function exportData() {
+            const data = filteredRecords.map(r => ({
+                'Date': r.date,
+                'Region': r.region,
+                'City': r.city,
+                'Location': r.location,
+                'Description': r.description,
+                'Vendor': r.vendor,
+                'Category': r.category,
+                'Status': r.completion_status === 1 ? 'Completed' : 'Pending'
+            }));
+
+            const csv = [
+                Object.keys(data[0]).join(','),
+                ...data.map(row => Object.values(row).map(v => `"${v || ''}"`).join(','))
+            ].join('\n');
+
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'maintenance_data_export.csv';
+            link.click();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>NESMA | Contracts & Leasing Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/nesma-theme.css">
+    <style>
+        :root {
+            --primary: #2E3192;
+            --secondary: #80D1E9;
+            --accent: #0E2841;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', 'Cairo', sans-serif;
+            background: linear-gradient(180deg, #0E2841 0%, #1a365d 50%, #0E2841 100%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+        }
+
+        .stat-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0E2841 0%, #1a365d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(16, 185, 129, 0.1);
+            border-top-color: #10B981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: #9ca3af;
+        }
+
+        .tab-btn:hover {
+            background: rgba(16, 185, 129, 0.1);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .badge-info { background: rgba(128, 209, 233, 0.2); color: #80d1e9; }
+        .badge-gray { background: rgba(107, 114, 128, 0.2); color: #9ca3af; }
+
+        table {
+            width: 100%;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            font-weight: 600;
+            color: #9ca3af;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #e5e7eb;
+            font-size: 13px;
+        }
+
+        tr:hover td {
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .filter-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 13px;
+            min-width: 140px;
+        }
+
+        .filter-select option {
+            background: #1a365d;
+            color: white;
+        }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px 8px 36px;
+            color: white;
+            font-size: 13px;
+            width: 200px;
+        }
+
+        .search-input::placeholder {
+            color: #6b7280;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #0E2841 0%, #1a365d 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+            padding: 24px;
+        }
+
+        .kpi-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .expiry-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .expiry-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .kpi-card-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="text-center">
+            <div class="loader mx-auto mb-4"></div>
+            <p class="text-green-400" id="loadingText">Loading Contracts Data...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-[#0E2841] to-[#10B981] shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="facility_portal.html" class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                    <img src="assets/logo-white.svg" alt="NESMA" class="h-8">
+                    <div class="hidden md:block">
+                        <h1 class="text-lg font-bold text-white">Contracts & Leasing Dashboard</h1>
+                        <p class="text-xs text-gray-300">Real Estate & Contract Management</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-xs text-gray-300">Last Update: <span id="lastUpdate">-</span></span>
+                    <button onclick="exportData()" class="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filters -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="glass-card p-4">
+            <div class="flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                    </svg>
+                    <span class="text-sm font-medium text-gray-300">Filters</span>
+                </div>
+                <select id="filterStatus" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Status</option>
+                </select>
+                <select id="filterRegion" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Regions</option>
+                </select>
+                <select id="filterUnitType" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Unit Types</option>
+                </select>
+                <select id="filterContractType" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Contract Types</option>
+                </select>
+                <select id="filterCity" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Cities</option>
+                </select>
+                <button onclick="resetFilters()" class="text-sm text-green-400 hover:text-green-300">Reset</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- KPI Cards -->
+    <section class="container mx-auto px-4 py-2">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+            <div class="glass-card stat-card p-4" onclick="showDetail('all')">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-cyan-400" id="kpiTotal">-</p>
+                <p class="text-xs text-gray-400 mt-1">Total Contracts</p>
+            </div>
+            <div class="glass-card stat-card p-4" onclick="showDetail('active')">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-green-400" id="kpiActive">-</p>
+                <p class="text-xs text-gray-400 mt-1">Active</p>
+            </div>
+            <div class="glass-card stat-card p-4" onclick="showDetail('inactive')">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-gray-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-gray-400" id="kpiInactive">-</p>
+                <p class="text-xs text-gray-400 mt-1">Inactive</p>
+            </div>
+            <div class="glass-card stat-card p-4" onclick="showDetail('expiring30')">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-red-400" id="kpiExpiring30">-</p>
+                <p class="text-xs text-gray-400 mt-1">Expiring 30d</p>
+            </div>
+            <div class="glass-card stat-card p-4" onclick="showDetail('expiring90')">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-amber-400" id="kpiExpiring90">-</p>
+                <p class="text-xs text-gray-400 mt-1">Expiring 90d</p>
+            </div>
+            <div class="glass-card stat-card p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-indigo-400" id="kpiTotalValue">-</p>
+                <p class="text-xs text-gray-400 mt-1">Total Value</p>
+            </div>
+            <div class="glass-card stat-card p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-green-400" id="kpiActiveValue">-</p>
+                <p class="text-xs text-gray-400 mt-1">Active Value</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Row 1 -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Contract Status -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Contract Status Distribution</h3>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+            <!-- By Unit Type -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Contracts by Unit Type</h3>
+                <div class="chart-container">
+                    <canvas id="unitTypeChart"></canvas>
+                </div>
+            </div>
+            <!-- By Region -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Contracts by Region</h3>
+                <div class="chart-container">
+                    <canvas id="regionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Row 2 -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Value by Region -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Contract Value by Region (Active)</h3>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="valueByRegionChart"></canvas>
+                </div>
+            </div>
+            <!-- Contracts by City -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Top 15 Cities by Contract Count</h3>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="cityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expiring Contracts Alert -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="glass-card p-4">
+            <h3 class="text-sm font-semibold text-gray-300 mb-4">Contracts Expiring Soon</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="expiringContracts">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabs Section -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="glass-card">
+            <!-- Tab Headers -->
+            <div class="flex flex-wrap gap-2 p-4 border-b border-white/10">
+                <button class="tab-btn active" onclick="showTab('all')">All Contracts</button>
+                <button class="tab-btn" onclick="showTab('active')">Active</button>
+                <button class="tab-btn" onclick="showTab('expiring')">Expiring Soon</button>
+                <button class="tab-btn" onclick="showTab('byRegion')">By Region</button>
+            </div>
+
+            <!-- Search -->
+            <div class="p-4 border-b border-white/10">
+                <div class="relative">
+                    <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search contracts..." class="search-input" onkeyup="searchTable()">
+                </div>
+            </div>
+
+            <!-- Tab Contents -->
+            <div id="allContent" class="tab-content p-4">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Project Name</th>
+                                <th>City</th>
+                                <th>Region</th>
+                                <th>Unit Type</th>
+                                <th>Status</th>
+                                <th>End Date</th>
+                                <th>Remaining</th>
+                                <th>Value (SAR)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="flex justify-between items-center mt-4 text-sm text-gray-400">
+                    <span>Showing <span id="recordsShowing">0</span> of <span id="recordsTotal">0</span> records</span>
+                    <div class="flex gap-2" id="pagination"></div>
+                </div>
+            </div>
+
+            <div id="activeContent" class="tab-content p-4 hidden">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Project Name</th>
+                                <th>City</th>
+                                <th>Unit Type</th>
+                                <th>End Date</th>
+                                <th>Remaining Days</th>
+                                <th>Annual Payment</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activeTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="expiringContent" class="tab-content p-4 hidden">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>City</th>
+                                <th>Unit Type</th>
+                                <th>End Date</th>
+                                <th>Days Left</th>
+                                <th>Urgency</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expiringTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="byRegionContent" class="tab-content p-4 hidden">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Region</th>
+                                <th>Total Contracts</th>
+                                <th>Active</th>
+                                <th>Inactive</th>
+                                <th>Total Value</th>
+                                <th>Active Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="byRegionTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detail Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content w-full max-w-4xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold" id="modalTitle">Contract Details</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let allData = null;
+        let filteredRecords = [];
+        let currentPage = 1;
+        const recordsPerPage = 20;
+        let charts = {};
+
+        // Format functions
+        function formatNumber(num) {
+            return new Intl.NumberFormat('en-US').format(Math.round(num));
+        }
+
+        function formatCurrency(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
+            return formatNumber(num);
+        }
+
+        // Load data
+        async function loadData() {
+            try {
+                const response = await fetch('data/facility_contracts.json');
+                if (!response.ok) throw new Error('Failed to load data');
+                allData = await response.json();
+
+                populateFilters();
+                filteredRecords = [...allData.records];
+                updateDashboard();
+
+                document.getElementById('lastUpdate').textContent = allData.metadata.last_update;
+                document.getElementById('loadingOverlay').style.display = 'none';
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loadingText').textContent = 'Error loading data';
+            }
+        }
+
+        // Populate filters
+        function populateFilters() {
+            const filters = allData.filters;
+
+            const statusSelect = document.getElementById('filterStatus');
+            statusSelect.innerHTML = '<option value="">All Status</option>';
+            filters.statuses.forEach(s => statusSelect.innerHTML += `<option value="${s}">${s}</option>`);
+
+            const regionSelect = document.getElementById('filterRegion');
+            regionSelect.innerHTML = '<option value="">All Regions</option>';
+            filters.regions.forEach(r => regionSelect.innerHTML += `<option value="${r}">${r}</option>`);
+
+            const unitTypeSelect = document.getElementById('filterUnitType');
+            unitTypeSelect.innerHTML = '<option value="">All Unit Types</option>';
+            filters.unit_types.forEach(u => unitTypeSelect.innerHTML += `<option value="${u}">${u}</option>`);
+
+            const contractTypeSelect = document.getElementById('filterContractType');
+            contractTypeSelect.innerHTML = '<option value="">All Contract Types</option>';
+            filters.contract_types.forEach(c => contractTypeSelect.innerHTML += `<option value="${c}">${c}</option>`);
+
+            const citySelect = document.getElementById('filterCity');
+            citySelect.innerHTML = '<option value="">All Cities</option>';
+            filters.cities.forEach(c => citySelect.innerHTML += `<option value="${c}">${c}</option>`);
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const status = document.getElementById('filterStatus').value;
+            const region = document.getElementById('filterRegion').value;
+            const unitType = document.getElementById('filterUnitType').value;
+            const contractType = document.getElementById('filterContractType').value;
+            const city = document.getElementById('filterCity').value;
+
+            filteredRecords = allData.records.filter(r => {
+                if (status && r.status !== status) return false;
+                if (region && r.region !== region) return false;
+                if (unitType && r.unit_type !== unitType) return false;
+                if (contractType && r.contract_type !== contractType) return false;
+                if (city && r.city !== city) return false;
+                return true;
+            });
+
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterRegion').value = '';
+            document.getElementById('filterUnitType').value = '';
+            document.getElementById('filterContractType').value = '';
+            document.getElementById('filterCity').value = '';
+            filteredRecords = [...allData.records];
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            updateKPIs();
+            updateCharts();
+            updateTables();
+            updateExpiringAlerts();
+        }
+
+        // Update KPIs
+        function updateKPIs() {
+            const records = filteredRecords;
+
+            const total = records.length;
+            const active = records.filter(r => r.status === 'ACTIVE').length;
+            const inactive = records.filter(r => r.status === 'INACTIVE').length;
+            const expiring30 = records.filter(r => r.status === 'ACTIVE' && r.remaining_days > 0 && r.remaining_days <= 30).length;
+            const expiring90 = records.filter(r => r.status === 'ACTIVE' && r.remaining_days > 0 && r.remaining_days <= 90).length;
+            const totalValue = records.reduce((sum, r) => sum + (r.total_contract_cost || 0), 0);
+            const activeValue = records.filter(r => r.status === 'ACTIVE').reduce((sum, r) => sum + (r.total_contract_cost || 0), 0);
+
+            document.getElementById('kpiTotal').textContent = formatNumber(total);
+            document.getElementById('kpiActive').textContent = formatNumber(active);
+            document.getElementById('kpiInactive').textContent = formatNumber(inactive);
+            document.getElementById('kpiExpiring30').textContent = formatNumber(expiring30);
+            document.getElementById('kpiExpiring90').textContent = formatNumber(expiring90);
+            document.getElementById('kpiTotalValue').textContent = formatCurrency(totalValue);
+            document.getElementById('kpiActiveValue').textContent = formatCurrency(activeValue);
+        }
+
+        // Update charts
+        function updateCharts() {
+            updateStatusChart();
+            updateUnitTypeChart();
+            updateRegionChart();
+            updateValueByRegionChart();
+            updateCityChart();
+        }
+
+        function updateStatusChart() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            const statusCounts = {};
+            filteredRecords.forEach(r => {
+                const status = r.status || 'Unknown';
+                statusCounts[status] = (statusCounts[status] || 0) + 1;
+            });
+
+            const labels = Object.keys(statusCounts);
+            const data = Object.values(statusCounts);
+            const colors = { 'ACTIVE': '#10B981', 'INACTIVE': '#6B7280', 'EXPIRED': '#EF4444', 'DRAFT': '#F59E0B' };
+            const backgroundColors = labels.map(l => colors[l] || '#6B7280');
+
+            if (charts.statusChart) charts.statusChart.destroy();
+            charts.statusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: backgroundColors, borderWidth: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#9CA3AF', padding: 15 } } }
+                }
+            });
+        }
+
+        function updateUnitTypeChart() {
+            const ctx = document.getElementById('unitTypeChart').getContext('2d');
+            const typeCounts = {};
+            filteredRecords.forEach(r => {
+                const type = r.unit_type || 'Unknown';
+                typeCounts[type] = (typeCounts[type] || 0) + 1;
+            });
+
+            const labels = Object.keys(typeCounts);
+            const data = Object.values(typeCounts);
+            const colors = ['#2E3192', '#80D1E9', '#10B981', '#F59E0B', '#EF4444'];
+
+            if (charts.unitTypeChart) charts.unitTypeChart.destroy();
+            charts.unitTypeChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: colors, borderWidth: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#9CA3AF', padding: 15 } } }
+                }
+            });
+        }
+
+        function updateRegionChart() {
+            const ctx = document.getElementById('regionChart').getContext('2d');
+            const regionCounts = {};
+            filteredRecords.forEach(r => {
+                const region = r.region || 'Unknown';
+                regionCounts[region] = (regionCounts[region] || 0) + 1;
+            });
+
+            const sorted = Object.entries(regionCounts).sort((a, b) => b[1] - a[1]);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
+
+            if (charts.regionChart) charts.regionChart.destroy();
+            charts.regionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: '#10B981', borderRadius: 6 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9CA3AF' } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9CA3AF' } }
+                    }
+                }
+            });
+        }
+
+        function updateValueByRegionChart() {
+            const ctx = document.getElementById('valueByRegionChart').getContext('2d');
+            const regionValues = {};
+            filteredRecords.filter(r => r.status === 'ACTIVE').forEach(r => {
+                const region = r.region || 'Unknown';
+                regionValues[region] = (regionValues[region] || 0) + (r.total_contract_cost || 0);
+            });
+
+            const sorted = Object.entries(regionValues).sort((a, b) => b[1] - a[1]);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
+
+            if (charts.valueByRegionChart) charts.valueByRegionChart.destroy();
+            charts.valueByRegionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{ label: 'Value (SAR)', data: data, backgroundColor: '#2E3192', borderRadius: 6 }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9CA3AF', callback: v => formatCurrency(v) } },
+                        y: { grid: { display: false }, ticks: { color: '#9CA3AF' } }
+                    }
+                }
+            });
+        }
+
+        function updateCityChart() {
+            const ctx = document.getElementById('cityChart').getContext('2d');
+            const cityCounts = {};
+            filteredRecords.forEach(r => {
+                const city = r.city || 'Unknown';
+                cityCounts[city] = (cityCounts[city] || 0) + 1;
+            });
+
+            const sorted = Object.entries(cityCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
+
+            if (charts.cityChart) charts.cityChart.destroy();
+            charts.cityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: '#80D1E9', borderRadius: 4 }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9CA3AF' } },
+                        y: { grid: { display: false }, ticks: { color: '#9CA3AF', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // Update expiring alerts
+        function updateExpiringAlerts() {
+            const container = document.getElementById('expiringContracts');
+            const expiring = filteredRecords
+                .filter(r => r.status === 'ACTIVE' && r.remaining_days > 0 && r.remaining_days <= 90)
+                .sort((a, b) => a.remaining_days - b.remaining_days)
+                .slice(0, 6);
+
+            if (expiring.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 col-span-3 text-center py-8">No contracts expiring within 90 days</p>';
+                return;
+            }
+
+            container.innerHTML = expiring.map(c => {
+                const urgency = c.remaining_days <= 30 ? 'danger' : 'warning';
+                const urgencyBg = c.remaining_days <= 30 ? 'bg-red-500/10 border-red-500/30' : 'bg-amber-500/10 border-amber-500/30';
+                const urgencyText = c.remaining_days <= 30 ? 'text-red-400' : 'text-amber-400';
+                
+                return `
+                    <div class="p-4 rounded-lg border ${urgencyBg}">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-semibold text-sm">${c.project_name || 'Unknown'}</h4>
+                            <span class="badge badge-${urgency}">${c.remaining_days}d</span>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-2">${c.city} - ${c.unit_type}</p>
+                        <div class="expiry-bar">
+                            <div class="expiry-bar-fill ${c.remaining_days <= 30 ? 'bg-red-500' : 'bg-amber-500'}" style="width: ${Math.max(5, 100 - c.remaining_days)}%"></div>
+                        </div>
+                        <p class="text-xs ${urgencyText} mt-2">Ends: ${c.end_date}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update tables
+        function updateTables() {
+            updateAllTable();
+            updateActiveTable();
+            updateExpiringTable();
+            updateByRegionTable();
+        }
+
+        function updateAllTable() {
+            const tbody = document.getElementById('allTableBody');
+            const start = (currentPage - 1) * recordsPerPage;
+            const end = start + recordsPerPage;
+            const pageRecords = filteredRecords.slice(start, end);
+
+            document.getElementById('recordsShowing').textContent = Math.min(end, filteredRecords.length);
+            document.getElementById('recordsTotal').textContent = filteredRecords.length;
+
+            tbody.innerHTML = pageRecords.map((r, i) => {
+                const statusClass = r.status === 'ACTIVE' ? 'badge-success' : 'badge-gray';
+                const daysClass = r.remaining_days <= 30 ? 'text-red-400' : r.remaining_days <= 90 ? 'text-amber-400' : 'text-gray-400';
+                
+                return `
+                    <tr>
+                        <td>${start + i + 1}</td>
+                        <td class="font-medium">${r.project_name || '-'}</td>
+                        <td>${r.city || '-'}</td>
+                        <td>${r.region || '-'}</td>
+                        <td>${r.unit_type || '-'}</td>
+                        <td><span class="badge ${statusClass}">${r.status}</span></td>
+                        <td>${r.end_date || '-'}</td>
+                        <td class="${daysClass}">${r.remaining_days > 0 ? r.remaining_days + 'd' : '-'}</td>
+                        <td>${formatCurrency(r.total_contract_cost || 0)}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            updatePagination();
+        }
+
+        function updateActiveTable() {
+            const tbody = document.getElementById('activeTableBody');
+            const activeRecords = filteredRecords.filter(r => r.status === 'ACTIVE').slice(0, 50);
+
+            tbody.innerHTML = activeRecords.map((r, i) => {
+                const daysClass = r.remaining_days <= 30 ? 'text-red-400' : r.remaining_days <= 90 ? 'text-amber-400' : 'text-green-400';
+                return `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td class="font-medium">${r.project_name || '-'}</td>
+                        <td>${r.city || '-'}</td>
+                        <td>${r.unit_type || '-'}</td>
+                        <td>${r.end_date || '-'}</td>
+                        <td class="${daysClass} font-semibold">${r.remaining_days > 0 ? r.remaining_days : '-'}</td>
+                        <td>${formatCurrency(r.annual_payment || 0)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateExpiringTable() {
+            const tbody = document.getElementById('expiringTableBody');
+            const expiringRecords = filteredRecords
+                .filter(r => r.status === 'ACTIVE' && r.remaining_days > 0 && r.remaining_days <= 90)
+                .sort((a, b) => a.remaining_days - b.remaining_days);
+
+            tbody.innerHTML = expiringRecords.map(r => {
+                const urgency = r.remaining_days <= 30 ? 'Critical' : 'Warning';
+                const urgencyClass = r.remaining_days <= 30 ? 'badge-danger' : 'badge-warning';
+                
+                return `
+                    <tr>
+                        <td class="font-medium">${r.project_name || '-'}</td>
+                        <td>${r.city || '-'}</td>
+                        <td>${r.unit_type || '-'}</td>
+                        <td>${r.end_date || '-'}</td>
+                        <td class="${r.remaining_days <= 30 ? 'text-red-400' : 'text-amber-400'} font-bold">${r.remaining_days}</td>
+                        <td><span class="badge ${urgencyClass}">${urgency}</span></td>
+                        <td>${formatCurrency(r.total_contract_cost || 0)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateByRegionTable() {
+            const tbody = document.getElementById('byRegionTableBody');
+            const regionData = {};
+
+            filteredRecords.forEach(r => {
+                const region = r.region || 'Unknown';
+                if (!regionData[region]) {
+                    regionData[region] = { total: 0, active: 0, inactive: 0, totalValue: 0, activeValue: 0 };
+                }
+                regionData[region].total++;
+                if (r.status === 'ACTIVE') {
+                    regionData[region].active++;
+                    regionData[region].activeValue += r.total_contract_cost || 0;
+                } else {
+                    regionData[region].inactive++;
+                }
+                regionData[region].totalValue += r.total_contract_cost || 0;
+            });
+
+            const sorted = Object.entries(regionData).sort((a, b) => b[1].totalValue - a[1].totalValue);
+
+            tbody.innerHTML = sorted.map(([region, data]) => `
+                <tr>
+                    <td class="font-medium">${region}</td>
+                    <td>${data.total}</td>
+                    <td class="text-green-400">${data.active}</td>
+                    <td class="text-gray-400">${data.inactive}</td>
+                    <td>${formatCurrency(data.totalValue)}</td>
+                    <td class="text-green-400">${formatCurrency(data.activeValue)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            let html = '';
+            if (currentPage > 1) {
+                html += `<button onclick="goToPage(${currentPage - 1})" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20">Prev</button>`;
+            }
+            
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                html += `<button onclick="goToPage(${i})" class="px-3 py-1 ${i === currentPage ? 'bg-green-500' : 'bg-white/10 hover:bg-white/20'} rounded">${i}</button>`;
+            }
+            
+            if (currentPage < totalPages) {
+                html += `<button onclick="goToPage(${currentPage + 1})" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20">Next</button>`;
+            }
+            
+            pagination.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            updateAllTable();
+        }
+
+        // Tab functionality
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabName + 'Content').classList.remove('hidden');
+            event.target.classList.add('active');
+        }
+
+        // Search
+        function searchTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredRecords = allData.records.filter(r => {
+                const searchFields = [r.project_name, r.city, r.region, r.unit_type, r.contract_type, r.project_manager].filter(Boolean).join(' ').toLowerCase();
+                return searchFields.includes(searchTerm);
+            });
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Modal
+        function showDetail(type) {
+            const modal = document.getElementById('detailModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            
+            let records = [];
+            let titleText = '';
+            
+            switch(type) {
+                case 'active':
+                    records = filteredRecords.filter(r => r.status === 'ACTIVE');
+                    titleText = 'Active Contracts';
+                    break;
+                case 'inactive':
+                    records = filteredRecords.filter(r => r.status === 'INACTIVE');
+                    titleText = 'Inactive Contracts';
+                    break;
+                case 'expiring30':
+                    records = filteredRecords.filter(r => r.status === 'ACTIVE' && r.remaining_days > 0 && r.remaining_days <= 30);
+                    titleText = 'Contracts Expiring in 30 Days';
+                    break;
+                case 'expiring90':
+                    records = filteredRecords.filter(r => r.status === 'ACTIVE' && r.remaining_days > 0 && r.remaining_days <= 90);
+                    titleText = 'Contracts Expiring in 90 Days';
+                    break;
+                default:
+                    records = filteredRecords;
+                    titleText = 'All Contracts';
+            }
+            
+            title.textContent = `${titleText} (${records.length})`;
+            content.innerHTML = `
+                <div class="overflow-x-auto max-h-96">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th>City</th>
+                                <th>Type</th>
+                                <th>End Date</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${records.slice(0, 50).map(r => `
+                                <tr>
+                                    <td class="font-medium">${r.project_name || '-'}</td>
+                                    <td>${r.city || '-'}</td>
+                                    <td>${r.unit_type || '-'}</td>
+                                    <td>${r.end_date || '-'}</td>
+                                    <td>${formatCurrency(r.total_contract_cost || 0)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        // Export
+        function exportData() {
+            const data = filteredRecords.map(r => ({
+                'Project Name': r.project_name,
+                'City': r.city,
+                'Region': r.region,
+                'Unit Type': r.unit_type,
+                'Contract Type': r.contract_type,
+                'Status': r.status,
+                'Start Date': r.start_date,
+                'End Date': r.end_date,
+                'Remaining Days': r.remaining_days,
+                'Total Value': r.total_contract_cost,
+                'Annual Payment': r.annual_payment
+            }));
+
+            const csv = [
+                Object.keys(data[0]).join(','),
+                ...data.map(row => Object.values(row).map(v => `"${v || ''}"`).join(','))
+            ].join('\n');
+
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'contracts_data_export.csv';
+            link.click();
+        }
+
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>

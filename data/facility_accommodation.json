@@ -1,0 +1,793 @@
+{
+  "metadata": {
+    "last_update": "2025-12-31",
+    "total_records": 64,
+    "month": "December 2025",
+    "source": "Contract Management (Master Data) - SLA Sheet"
+  },
+  "filters": {
+    "departments": [
+      "Operation"
+    ],
+    "projects": [
+      "COO office ",
+      "Closed project",
+      "JEC",
+      "Modon",
+      "NAF",
+      "NEOM",
+      "Tarshed",
+      "Tharshed",
+      "ZATCA"
+    ],
+    "cities": [
+      "Al Riyadh",
+      "Jeddah"
+    ],
+    "locations": [
+      "Al Narjis ",
+      "Al Nuzha",
+      "Al Raheli"
+    ]
+  },
+  "summary": {
+    "total_staff": 64,
+    "monthly_cost": 50575,
+    "locations_count": 3,
+    "cities_count": 2
+  },
+  "arrivals": {
+    "new_arrivals": {
+      "total": 66,
+      "by_city": {
+        "Jeddah": 36,
+        "Dammam": 27,
+        "Riyadh": 2,
+        "Jizan": 1
+      }
+    },
+    "transfers": {
+      "total": 38,
+      "to_cities": {
+        "Madinah": 15,
+        "AL Khobar": 6,
+        "Bisha": 3,
+        "Riyadh": 4,
+        "Hafer AlBatin": 3,
+        "Farasan": 7,
+        "Abha": 2
+      }
+    },
+    "rental_employees": {
+      "total": 38,
+      "by_city": {
+        "Jeddah": 10,
+        "Yanbu": 3,
+        "Madinah": 15,
+        "Rabigh": 3,
+        "AL Khobar": 7
+      }
+    }
+  },
+  "hotel_bookings": {
+    "total": 36,
+    "by_city": {
+      "Dammam": 16,
+      "Riyadh": 20
+    },
+    "special_bookings": [
+      {
+        "type": "FAT",
+        "location": "Cloud Villa - Riyadh",
+        "guests": 5,
+        "purpose": "SEC engineers - FAT invitation (Cable Joints & Termination Kits)"
+      }
+    ]
+  },
+  "records": [
+    {
+      "rn": 1,
+      "staff_name": "Khan atawy",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 39,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 2,
+      "staff_name": "Alaudin",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 118,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 3,
+      "staff_name": "Aaminl",
+      "department": "Operation",
+      "project": "Tharshed",
+      "staff_id": 43,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "Move to Dammam",
+      "cost": 755
+    },
+    {
+      "rn": 4,
+      "staff_name": "Nasrudain",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 241,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 5,
+      "staff_name": "Sanullah",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 235,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 6,
+      "staff_name": "Carnado",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 357,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "",
+      "cost": 755
+    },
+    {
+      "rn": 7,
+      "staff_name": "Asodee",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 77,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "",
+      "cost": 755
+    },
+    {
+      "rn": 8,
+      "staff_name": "Yenkatcsh",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 444,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 9,
+      "staff_name": "Mohd Iqbal",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 578,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 10,
+      "staff_name": "Ramjeet",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 464,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 11,
+      "staff_name": "Noor",
+      "department": "Operation",
+      "project": "Tharshed",
+      "staff_id": 22,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 12,
+      "staff_name": "najm",
+      "department": "Operation",
+      "project": "Tharshed",
+      "staff_id": 57,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 13,
+      "staff_name": "Babu Amsari",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 236,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 14,
+      "staff_name": "Islam",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 15,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "",
+      "cost": 755
+    },
+    {
+      "rn": 15,
+      "staff_name": "Shabaz",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 1032,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 16,
+      "staff_name": "Aasif",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 327,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 17,
+      "staff_name": "Babu Ali",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 110,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 18,
+      "staff_name": "Willson",
+      "department": "Operation",
+      "project": "ZATCA",
+      "staff_id": 31,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 19,
+      "staff_name": "Alauddin",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 33,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 20,
+      "staff_name": "Ruel",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 41,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 21,
+      "staff_name": "Asadullah",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 73,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 22,
+      "staff_name": "Eric ",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 321,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 23,
+      "staff_name": "Melechor",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 342,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 24,
+      "staff_name": "Basar ",
+      "department": "Operation",
+      "project": "Modon",
+      "staff_id": 161,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "Move to Dammam",
+      "cost": 755
+    },
+    {
+      "rn": 25,
+      "staff_name": "Abusadim",
+      "department": "Operation",
+      "project": "Modon",
+      "staff_id": 75,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 26,
+      "staff_name": "Ajeet",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 438,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 27,
+      "staff_name": "Laik",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 278,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "Vacation",
+      "cost": 775
+    },
+    {
+      "rn": 28,
+      "staff_name": "Alaudin",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 158,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 29,
+      "staff_name": "Satya",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 226,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 30,
+      "staff_name": "Ashok",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 334,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 31,
+      "staff_name": "Maruf",
+      "department": "Operation",
+      "project": "Closed project",
+      "staff_id": 0,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "Vacation",
+      "cost": 755
+    },
+    {
+      "rn": 32,
+      "staff_name": "Layak",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 0,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "",
+      "cost": 755
+    },
+    {
+      "rn": 33,
+      "staff_name": "Babu M",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 24,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 34,
+      "staff_name": "Sabir",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 218,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 35,
+      "staff_name": "Aalam",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 159,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 36,
+      "staff_name": "Joena Rosa",
+      "department": "Operation",
+      "project": "NEOM",
+      "staff_id": 44,
+      "city": "Jeddah",
+      "location": "Al Nuzha",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 37,
+      "staff_name": "Akhlak",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 59,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 38,
+      "staff_name": "Safricos",
+      "department": "Operation",
+      "project": "Closed project",
+      "staff_id": 0,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "Move to Ryiadh",
+      "cost": 755
+    },
+    {
+      "rn": 39,
+      "staff_name": "Dinsh",
+      "department": "Operation",
+      "project": "Closed project",
+      "staff_id": 223,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 40,
+      "staff_name": "Rony",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 135,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 41,
+      "staff_name": "Manju",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 225,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 42,
+      "staff_name": "Mohammed Samad",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 0,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 43,
+      "staff_name": "Sinmorcos",
+      "department": "Operation",
+      "project": "Closed project",
+      "staff_id": 0,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "",
+      "cost": 755
+    },
+    {
+      "rn": 44,
+      "staff_name": "Mohammed Ansri",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 0,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 45,
+      "staff_name": "Flornte",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 1119,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 46,
+      "staff_name": "Kurshid",
+      "department": "Operation",
+      "project": "Tharshed",
+      "staff_id": 46,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 47,
+      "staff_name": "Aasif",
+      "department": "Operation",
+      "project": "Tharshed",
+      "staff_id": 81,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 48,
+      "staff_name": "Kulandr",
+      "department": "Operation",
+      "project": "Tharshed",
+      "staff_id": 68,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 49,
+      "staff_name": "Giyasudin",
+      "department": "Operation",
+      "project": "Tharshed",
+      "staff_id": 175,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "Vacation",
+      "cost": 755
+    },
+    {
+      "rn": 50,
+      "staff_name": "Finanacefile",
+      "department": "Operation",
+      "project": "Closed project",
+      "staff_id": 0,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "",
+      "cost": 755
+    },
+    {
+      "rn": 51,
+      "staff_name": "Edilberto",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 270,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "Move to Riyadh",
+      "cost": 755
+    },
+    {
+      "rn": 52,
+      "staff_name": "Arny",
+      "department": "Operation",
+      "project": "Closed project",
+      "staff_id": 0,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "Move to Dammam",
+      "cost": 1500
+    },
+    {
+      "rn": 53,
+      "staff_name": "Abdulhalim",
+      "department": "Operation",
+      "project": "Closed project",
+      "staff_id": 36,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 54,
+      "staff_name": "Rasid",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 205,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 55,
+      "staff_name": "Nadim",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 330,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 56,
+      "staff_name": "Orngzab",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 332,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 57,
+      "staff_name": "Ahmed Mustafa",
+      "department": "Operation",
+      "project": "Tarshed",
+      "staff_id": 477,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 58,
+      "staff_name": "Omer",
+      "department": "Operation",
+      "project": "Tarshed",
+      "staff_id": 412,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 59,
+      "staff_name": "Saddam",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 277,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 60,
+      "staff_name": "Bilal Ahmad",
+      "department": "Operation",
+      "project": "NAF",
+      "staff_id": 207,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "Vacation",
+      "cost": 755
+    },
+    {
+      "rn": 61,
+      "staff_name": "Eng. Asim",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 1317,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "",
+      "cost": 1500
+    },
+    {
+      "rn": 62,
+      "staff_name": "Muzib",
+      "department": "Operation",
+      "project": "JEC",
+      "staff_id": 105,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "-",
+      "cost": 755
+    },
+    {
+      "rn": 63,
+      "staff_name": "Samar",
+      "department": "Operation",
+      "project": "Closed project",
+      "staff_id": 0,
+      "city": "Jeddah",
+      "location": "Al Raheli",
+      "note": "",
+      "cost": 755
+    },
+    {
+      "rn": 64,
+      "staff_name": "Melwin Mathew",
+      "department": "Operation",
+      "project": "COO office ",
+      "staff_id": 99,
+      "city": "Al Riyadh",
+      "location": "Al Narjis ",
+      "note": "",
+      "cost": 1500
+    }
+  ]
+}

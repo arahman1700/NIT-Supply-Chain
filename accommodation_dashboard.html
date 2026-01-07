@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>NESMA | Accommodation Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/nesma-theme.css">
+    <style>
+        :root {
+            --primary: #2E3192;
+            --secondary: #80D1E9;
+            --accent: #0E2841;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', 'Cairo', sans-serif;
+            background: linear-gradient(180deg, #0E2841 0%, #1a365d 50%, #0E2841 100%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+        }
+
+        .stat-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(244, 63, 94, 0.15);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0E2841 0%, #1a365d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(244, 63, 94, 0.1);
+            border-top-color: #F43F5E;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: #9ca3af;
+        }
+
+        .tab-btn:hover {
+            background: rgba(244, 63, 94, 0.1);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #F43F5E 0%, #E11D48 100%);
+            color: white;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .badge-info { background: rgba(128, 209, 233, 0.2); color: #80d1e9; }
+        .badge-rose { background: rgba(244, 63, 94, 0.2); color: #fb7185; }
+
+        table { width: 100%; }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            font-weight: 600;
+            color: #9ca3af;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #e5e7eb;
+            font-size: 13px;
+        }
+
+        tr:hover td {
+            background: rgba(244, 63, 94, 0.05);
+        }
+
+        .filter-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 13px;
+            min-width: 140px;
+        }
+
+        .filter-select option {
+            background: #1a365d;
+            color: white;
+        }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px 8px 36px;
+            color: white;
+            font-size: 13px;
+            width: 200px;
+        }
+
+        .search-input::placeholder {
+            color: #6b7280;
+        }
+
+        .kpi-card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .arrival-card {
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.1) 0%, rgba(244, 63, 94, 0.02) 100%);
+            border: 1px solid rgba(244, 63, 94, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .hotel-card {
+            background: linear-gradient(135deg, rgba(128, 209, 233, 0.1) 0%, rgba(128, 209, 233, 0.02) 100%);
+            border: 1px solid rgba(128, 209, 233, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .kpi-card-value {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="text-center">
+            <div class="loader mx-auto mb-4"></div>
+            <p class="text-rose-400" id="loadingText">Loading Accommodation Data...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-[#0E2841] to-[#F43F5E] shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="facility_portal.html" class="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                    <img src="assets/logo-white.svg" alt="NESMA" class="h-8">
+                    <div class="hidden md:block">
+                        <h1 class="text-lg font-bold text-white">Accommodation Dashboard</h1>
+                        <p class="text-xs text-gray-200">Staff Housing, Hotels & Arrivals</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-xs text-gray-200">December 2025</span>
+                    <button onclick="exportData()" class="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filters -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="glass-card p-4">
+            <div class="flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                    </svg>
+                    <span class="text-sm font-medium text-gray-300">Filters</span>
+                </div>
+                <select id="filterProject" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Projects</option>
+                </select>
+                <select id="filterCity" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Cities</option>
+                </select>
+                <select id="filterLocation" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Locations</option>
+                </select>
+                <button onclick="resetFilters()" class="text-sm text-rose-400 hover:text-rose-300">Reset</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- KPI Cards -->
+    <section class="container mx-auto px-4 py-2">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div class="glass-card stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-rose-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-rose-400" id="kpiTotalStaff">-</p>
+                <p class="text-xs text-gray-400 mt-2">Staff in Housing</p>
+            </div>
+
+            <div class="glass-card stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-cyan-400" id="kpiMonthlyCost">-</p>
+                <p class="text-xs text-gray-400 mt-2">Monthly Cost</p>
+            </div>
+
+            <div class="glass-card stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-green-400" id="kpiNewArrivals">-</p>
+                <p class="text-xs text-gray-400 mt-2">New Arrivals</p>
+            </div>
+
+            <div class="glass-card stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8 5a1 1 0 100 2h5.586l-1.293 1.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L13.586 5H8zM12 15a1 1 0 100-2H6.414l1.293-1.293a1 1 0 10-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L6.414 15H12z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-amber-400" id="kpiTransfers">-</p>
+                <p class="text-xs text-gray-400 mt-2">Transfers</p>
+            </div>
+
+            <div class="glass-card stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-purple-400" id="kpiHotelBookings">-</p>
+                <p class="text-xs text-gray-400 mt-2">Hotel Bookings</p>
+            </div>
+
+            <div class="glass-card stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="kpi-card-value text-indigo-400" id="kpiLocations">-</p>
+                <p class="text-xs text-gray-400 mt-2">Locations</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Arrivals & Transfers Section -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- New Arrivals -->
+            <div class="glass-card p-5">
+                <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/>
+                    </svg>
+                    New Arrivals - December 2025
+                </h3>
+                <div class="grid grid-cols-2 gap-3" id="arrivalsGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Transfers -->
+            <div class="glass-card p-5">
+                <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M8 5a1 1 0 100 2h5.586l-1.293 1.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L13.586 5H8zM12 15a1 1 0 100-2H6.414l1.293-1.293a1 1 0 10-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L6.414 15H12z"/>
+                    </svg>
+                    Transfers To - December 2025
+                </h3>
+                <div class="grid grid-cols-2 gap-3" id="transfersGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hotel Bookings Section -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="glass-card p-5">
+            <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4z" clip-rule="evenodd"/>
+                </svg>
+                Hotel Bookings - December 2025
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="hotel-card">
+                    <p class="text-3xl font-bold text-purple-400" id="totalBookings">-</p>
+                    <p class="text-sm text-gray-400">Total Bookings</p>
+                </div>
+                <div class="hotel-card">
+                    <div id="hotelsByCity" class="space-y-2">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="hotel-card">
+                    <p class="text-sm font-semibold text-cyan-400 mb-2">Special Booking</p>
+                    <p class="text-xs text-gray-400" id="specialBooking">-</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Row -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- By Project -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Staff by Project</h3>
+                <div class="chart-container">
+                    <canvas id="projectChart"></canvas>
+                </div>
+            </div>
+            <!-- By Location -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Staff by Location</h3>
+                <div class="chart-container">
+                    <canvas id="locationChart"></canvas>
+                </div>
+            </div>
+            <!-- By City -->
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">Staff by City</h3>
+                <div class="chart-container">
+                    <canvas id="cityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Staff Table -->
+    <section class="container mx-auto px-4 py-4">
+        <div class="glass-card">
+            <div class="flex flex-wrap gap-2 p-4 border-b border-white/10">
+                <button class="tab-btn active" onclick="showTab('staff')">Staff List</button>
+                <button class="tab-btn" onclick="showTab('byProject')">By Project</button>
+                <button class="tab-btn" onclick="showTab('byLocation')">By Location</button>
+            </div>
+
+            <div class="p-4 border-b border-white/10">
+                <div class="relative">
+                    <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search staff..." class="search-input" onkeyup="searchTable()">
+                </div>
+            </div>
+
+            <div id="staffContent" class="tab-content p-4">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Staff Name</th>
+                                <th>Department</th>
+                                <th>Project</th>
+                                <th>City</th>
+                                <th>Location</th>
+                                <th>Cost (SAR)</th>
+                                <th>Note</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staffTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="flex justify-between items-center mt-4 text-sm text-gray-400">
+                    <span>Showing <span id="recordsShowing">0</span> of <span id="recordsTotal">0</span> records</span>
+                    <div class="flex gap-2" id="pagination"></div>
+                </div>
+            </div>
+
+            <div id="byProjectContent" class="tab-content p-4 hidden">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th>Staff Count</th>
+                                <th>Monthly Cost</th>
+                                <th>Avg Cost/Staff</th>
+                            </tr>
+                        </thead>
+                        <tbody id="byProjectTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="byLocationContent" class="tab-content p-4 hidden">
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Location</th>
+                                <th>City</th>
+                                <th>Staff Count</th>
+                                <th>Monthly Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody id="byLocationTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let allData = null;
+        let filteredRecords = [];
+        let currentPage = 1;
+        const recordsPerPage = 20;
+        let charts = {};
+
+        // Format functions
+        function formatNumber(num) {
+            return new Intl.NumberFormat('en-US').format(Math.round(num));
+        }
+
+        function formatCurrency(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
+            return formatNumber(num);
+        }
+
+        // Load data
+        async function loadData() {
+            try {
+                const response = await fetch('data/facility_accommodation.json');
+                if (!response.ok) throw new Error('Failed to load data');
+                allData = await response.json();
+
+                populateFilters();
+                filteredRecords = [...allData.records];
+                updateDashboard();
+
+                document.getElementById('loadingOverlay').style.display = 'none';
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loadingText').textContent = 'Error loading data';
+            }
+        }
+
+        // Populate filters
+        function populateFilters() {
+            const filters = allData.filters;
+
+            const projectSelect = document.getElementById('filterProject');
+            projectSelect.innerHTML = '<option value="">All Projects</option>';
+            filters.projects.forEach(p => projectSelect.innerHTML += `<option value="${p}">${p}</option>`);
+
+            const citySelect = document.getElementById('filterCity');
+            citySelect.innerHTML = '<option value="">All Cities</option>';
+            filters.cities.forEach(c => citySelect.innerHTML += `<option value="${c}">${c}</option>`);
+
+            const locationSelect = document.getElementById('filterLocation');
+            locationSelect.innerHTML = '<option value="">All Locations</option>';
+            filters.locations.forEach(l => locationSelect.innerHTML += `<option value="${l}">${l}</option>`);
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const project = document.getElementById('filterProject').value;
+            const city = document.getElementById('filterCity').value;
+            const location = document.getElementById('filterLocation').value;
+
+            filteredRecords = allData.records.filter(r => {
+                if (project && r.project !== project) return false;
+                if (city && r.city !== city) return false;
+                if (location && r.location !== location) return false;
+                return true;
+            });
+
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('filterProject').value = '';
+            document.getElementById('filterCity').value = '';
+            document.getElementById('filterLocation').value = '';
+            filteredRecords = [...allData.records];
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            updateKPIs();
+            updateArrivalsAndTransfers();
+            updateHotelBookings();
+            updateCharts();
+            updateTables();
+        }
+
+        // Update KPIs
+        function updateKPIs() {
+            const records = filteredRecords;
+            const total = records.length;
+            const monthlyCost = records.reduce((sum, r) => sum + (r.cost || 0), 0);
+            const locations = new Set(records.map(r => r.location)).size;
+
+            document.getElementById('kpiTotalStaff').textContent = formatNumber(total);
+            document.getElementById('kpiMonthlyCost').textContent = formatCurrency(monthlyCost);
+            document.getElementById('kpiNewArrivals').textContent = allData.arrivals.new_arrivals.total;
+            document.getElementById('kpiTransfers').textContent = allData.arrivals.transfers.total;
+            document.getElementById('kpiHotelBookings').textContent = allData.hotel_bookings.total;
+            document.getElementById('kpiLocations').textContent = formatNumber(locations);
+        }
+
+        // Update arrivals and transfers
+        function updateArrivalsAndTransfers() {
+            // New Arrivals
+            const arrivalsGrid = document.getElementById('arrivalsGrid');
+            const arrivals = allData.arrivals.new_arrivals.by_city;
+            arrivalsGrid.innerHTML = Object.entries(arrivals).map(([city, count]) => `
+                <div class="arrival-card">
+                    <p class="text-2xl font-bold text-green-400">${count}</p>
+                    <p class="text-xs text-gray-400">${city}</p>
+                </div>
+            `).join('');
+
+            // Transfers
+            const transfersGrid = document.getElementById('transfersGrid');
+            const transfers = allData.arrivals.transfers.to_cities;
+            transfersGrid.innerHTML = Object.entries(transfers).map(([city, count]) => `
+                <div class="arrival-card" style="border-color: rgba(245, 158, 11, 0.2); background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.02) 100%);">
+                    <p class="text-2xl font-bold text-amber-400">${count}</p>
+                    <p class="text-xs text-gray-400">${city}</p>
+                </div>
+            `).join('');
+        }
+
+        // Update hotel bookings
+        function updateHotelBookings() {
+            document.getElementById('totalBookings').textContent = allData.hotel_bookings.total;
+            
+            const hotelsByCity = document.getElementById('hotelsByCity');
+            const byCity = allData.hotel_bookings.by_city;
+            hotelsByCity.innerHTML = Object.entries(byCity).map(([city, count]) => `
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-400">${city}</span>
+                    <span class="text-sm font-semibold text-purple-400">${count}</span>
+                </div>
+            `).join('');
+
+            const special = allData.hotel_bookings.special_bookings[0];
+            if (special) {
+                document.getElementById('specialBooking').textContent = `${special.guests} engineers at ${special.location} - ${special.purpose}`;
+            }
+        }
+
+        // Update charts
+        function updateCharts() {
+            updateProjectChart();
+            updateLocationChart();
+            updateCityChart();
+        }
+
+        function updateProjectChart() {
+            const ctx = document.getElementById('projectChart').getContext('2d');
+            const projectCounts = {};
+            filteredRecords.forEach(r => {
+                projectCounts[r.project] = (projectCounts[r.project] || 0) + 1;
+            });
+
+            const sorted = Object.entries(projectCounts).sort((a, b) => b[1] - a[1]);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
+            const colors = ['#F43F5E', '#10B981', '#80D1E9', '#F59E0B', '#8B5CF6', '#EF4444', '#6366F1'];
+
+            if (charts.projectChart) charts.projectChart.destroy();
+            charts.projectChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: colors, borderWidth: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#9CA3AF', padding: 10, font: { size: 10 } } } }
+                }
+            });
+        }
+
+        function updateLocationChart() {
+            const ctx = document.getElementById('locationChart').getContext('2d');
+            const locationCounts = {};
+            filteredRecords.forEach(r => {
+                locationCounts[r.location] = (locationCounts[r.location] || 0) + 1;
+            });
+
+            const sorted = Object.entries(locationCounts).sort((a, b) => b[1] - a[1]);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
+            const colors = ['#2E3192', '#80D1E9', '#10B981'];
+
+            if (charts.locationChart) charts.locationChart.destroy();
+            charts.locationChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: colors, borderWidth: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#9CA3AF', padding: 15 } } }
+                }
+            });
+        }
+
+        function updateCityChart() {
+            const ctx = document.getElementById('cityChart').getContext('2d');
+            const cityCounts = {};
+            filteredRecords.forEach(r => {
+                cityCounts[r.city] = (cityCounts[r.city] || 0) + 1;
+            });
+
+            const sorted = Object.entries(cityCounts).sort((a, b) => b[1] - a[1]);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
+
+            if (charts.cityChart) charts.cityChart.destroy();
+            charts.cityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: '#F43F5E', borderRadius: 6 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9CA3AF' } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9CA3AF' } }
+                    }
+                }
+            });
+        }
+
+        // Update tables
+        function updateTables() {
+            updateStaffTable();
+            updateByProjectTable();
+            updateByLocationTable();
+        }
+
+        function updateStaffTable() {
+            const tbody = document.getElementById('staffTableBody');
+            const start = (currentPage - 1) * recordsPerPage;
+            const end = start + recordsPerPage;
+            const pageRecords = filteredRecords.slice(start, end);
+
+            document.getElementById('recordsShowing').textContent = Math.min(end, filteredRecords.length);
+            document.getElementById('recordsTotal').textContent = filteredRecords.length;
+
+            tbody.innerHTML = pageRecords.map((r, i) => `
+                <tr>
+                    <td>${start + i + 1}</td>
+                    <td class="font-medium">${r.staff_name || '-'}</td>
+                    <td>${r.department || '-'}</td>
+                    <td><span class="badge badge-rose">${r.project || '-'}</span></td>
+                    <td>${r.city || '-'}</td>
+                    <td>${r.location || '-'}</td>
+                    <td>${formatNumber(r.cost || 0)}</td>
+                    <td class="text-xs text-gray-400">${r.note || '-'}</td>
+                </tr>
+            `).join('');
+
+            updatePagination();
+        }
+
+        function updateByProjectTable() {
+            const tbody = document.getElementById('byProjectTableBody');
+            const projectData = {};
+
+            filteredRecords.forEach(r => {
+                if (!projectData[r.project]) {
+                    projectData[r.project] = { count: 0, cost: 0 };
+                }
+                projectData[r.project].count++;
+                projectData[r.project].cost += r.cost || 0;
+            });
+
+            const sorted = Object.entries(projectData).sort((a, b) => b[1].count - a[1].count);
+
+            tbody.innerHTML = sorted.map(([project, data]) => `
+                <tr>
+                    <td class="font-medium">${project}</td>
+                    <td>${data.count}</td>
+                    <td>${formatCurrency(data.cost)} SAR</td>
+                    <td>${formatNumber(data.cost / data.count)} SAR</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateByLocationTable() {
+            const tbody = document.getElementById('byLocationTableBody');
+            const locationData = {};
+
+            filteredRecords.forEach(r => {
+                if (!locationData[r.location]) {
+                    locationData[r.location] = { city: r.city, count: 0, cost: 0 };
+                }
+                locationData[r.location].count++;
+                locationData[r.location].cost += r.cost || 0;
+            });
+
+            const sorted = Object.entries(locationData).sort((a, b) => b[1].count - a[1].count);
+
+            tbody.innerHTML = sorted.map(([location, data]) => `
+                <tr>
+                    <td class="font-medium">${location}</td>
+                    <td>${data.city}</td>
+                    <td>${data.count}</td>
+                    <td>${formatCurrency(data.cost)} SAR</td>
+                </tr>
+            `).join('');
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            let html = '';
+            if (currentPage > 1) {
+                html += `<button onclick="goToPage(${currentPage - 1})" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20">Prev</button>`;
+            }
+            
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                html += `<button onclick="goToPage(${i})" class="px-3 py-1 ${i === currentPage ? 'bg-rose-500' : 'bg-white/10 hover:bg-white/20'} rounded">${i}</button>`;
+            }
+            
+            if (currentPage < totalPages) {
+                html += `<button onclick="goToPage(${currentPage + 1})" class="px-3 py-1 bg-white/10 rounded hover:bg-white/20">Next</button>`;
+            }
+            
+            pagination.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            updateStaffTable();
+        }
+
+        // Tab functionality
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabName + 'Content').classList.remove('hidden');
+            event.target.classList.add('active');
+        }
+
+        // Search
+        function searchTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredRecords = allData.records.filter(r => {
+                const searchFields = [r.staff_name, r.project, r.city, r.location, r.department].filter(Boolean).join(' ').toLowerCase();
+                return searchFields.includes(searchTerm);
+            });
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Export
+        function exportData() {
+            const data = filteredRecords.map(r => ({
+                'Staff Name': r.staff_name,
+                'Department': r.department,
+                'Project': r.project,
+                'City': r.city,
+                'Location': r.location,
+                'Cost': r.cost,
+                'Note': r.note
+            }));
+
+            const csv = [
+                Object.keys(data[0]).join(','),
+                ...data.map(row => Object.values(row).map(v => `"${v || ''}"`).join(','))
+            ].join('\n');
+
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'accommodation_data_export.csv';
+            link.click();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>

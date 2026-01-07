@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>NESMA | Facility Management Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/nesma-theme.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0E2841 0%, #203366 50%, #0E2841 100%);
+            min-height: 100vh;
+        }
+
+        .hero-gradient {
+            background: radial-gradient(ellipse at top, rgba(128, 209, 233, 0.2) 0%, transparent 70%),
+                        radial-gradient(ellipse at bottom right, rgba(46, 49, 146, 0.25) 0%, transparent 70%);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            padding: 2px;
+            background: linear-gradient(135deg, transparent 0%, rgba(128, 209, 233, 0.3) 50%, transparent 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .glass-card:hover::before { opacity: 1; }
+
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 60px rgba(128, 209, 233, 0.15);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(46, 49, 146, 0.2) 0%, rgba(46, 49, 146, 0.05) 100%);
+            border: 1px solid rgba(128, 209, 233, 0.15);
+            border-radius: 16px;
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(128, 209, 233, 0.4);
+            transform: translateY(-4px);
+        }
+
+        .glow-text { text-shadow: 0 0 40px rgba(128, 209, 233, 0.5); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in-up { animation: fadeInUp 0.8s ease forwards; opacity: 0; }
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--nesma-secondary);
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: particleFloat 20s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .icon-gradient {
+            background: linear-gradient(135deg, #6366F1 0%, #0E2841 100%);
+        }
+
+        .badge {
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .badge-active { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .badge-new { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
+
+        .kpi-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0E2841 0%, #203366 50%, #0E2841 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(128, 209, 233, 0.1);
+            border-top-color: #80D1E9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="text-center">
+            <div class="loader mx-auto mb-4"></div>
+            <p class="text-cyan-400">Loading Facility Data...</p>
+        </div>
+    </div>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 hero-gradient min-h-screen">
+        <!-- Header -->
+        <header class="container mx-auto px-6 pt-8 pb-4">
+            <nav class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+                        <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        <span class="text-sm">Home</span>
+                    </a>
+                    <div class="h-6 w-px bg-gray-700"></div>
+                    <img src="assets/logo-white.svg" alt="NESMA" class="h-10 lg:h-12">
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-gray-400 text-sm hidden md:inline">Supply Chain Management</span>
+                    <div class="h-6 w-px bg-gray-700 hidden md:block"></div>
+                    <span class="text-cyan-400 text-sm" id="currentTime"></span>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Hero -->
+        <section class="container mx-auto px-6 py-8 text-center">
+            <div class="fade-in-up stagger-1">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 glow-text">Facility Management</h1>
+                <p class="text-lg text-gray-400 mb-2">Fleet, Contracts, Maintenance & Accommodation</p>
+                <p class="text-sm text-cyan-400/70">December 2025 Report</p>
+            </div>
+
+            <!-- Summary KPIs -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-8 fade-in-up stagger-2">
+                <div class="stat-card text-center">
+                    <p class="kpi-value text-cyan-400" id="kpiTotalVehicles">-</p>
+                    <p class="text-xs text-gray-400">Total Vehicles</p>
+                </div>
+                <div class="stat-card text-center">
+                    <p class="kpi-value text-[#10B981]" id="kpiActiveContracts">-</p>
+                    <p class="text-xs text-gray-400">Active Contracts</p>
+                </div>
+                <div class="stat-card text-center">
+                    <p class="kpi-value text-[#80D1E9]" id="kpiContractValue">-</p>
+                    <p class="text-xs text-gray-400">Contract Value</p>
+                </div>
+                <div class="stat-card text-center">
+                    <p class="kpi-value text-amber-400" id="kpiMaintenanceReq">-</p>
+                    <p class="text-xs text-gray-400">Maintenance Req.</p>
+                </div>
+                <div class="stat-card text-center">
+                    <p class="kpi-value text-purple-400" id="kpiFuelCost">-</p>
+                    <p class="text-xs text-gray-400">Fuel Cost</p>
+                </div>
+                <div class="stat-card text-center">
+                    <p class="kpi-value text-rose-400" id="kpiStaffAccom">-</p>
+                    <p class="text-xs text-gray-400">Staff in Housing</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Cards -->
+        <section class="container mx-auto px-6 py-8">
+            <h2 class="text-xl font-bold text-center mb-8 text-gray-300 fade-in-up stagger-2">Select Dashboard</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Fleet Management -->
+                <a href="fleet_dashboard.html" class="glass-card p-6 fade-in-up stagger-3 block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="icon-gradient p-4 rounded-2xl">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
+                                <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1v-1h5a1 1 0 001-1v-3a1 1 0 00-.293-.707l-2-2A1 1 0 0014 7h-3V5a1 1 0 00-1-1H3z"/>
+                            </svg>
+                        </div>
+                        <span class="badge badge-active">Active</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Fleet Management</h3>
+                    <p class="text-gray-400 text-sm mb-4">Vehicles, Rentals, Fuel & Maintenance</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded" id="fleetOwned">- Owned</span>
+                        <span class="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded" id="fleetRental">- Rental</span>
+                        <span class="text-xs bg-amber-500/20 text-amber-300 px-2 py-1 rounded" id="fleetFuel">- Fuel</span>
+                    </div>
+                    <div class="flex items-center text-cyan-400 text-sm">
+                        <span>Open Dashboard</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- Contracts & Leasing -->
+                <a href="contracts_dashboard.html" class="glass-card p-6 fade-in-up stagger-3 block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="bg-gradient-to-br from-[#10B981] to-[#0E2841] p-4 rounded-2xl">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <span class="badge badge-active">Active</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Contracts & Leasing</h3>
+                    <p class="text-gray-400 text-sm mb-4">Real Estate, Leases & Contract Management</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="text-xs bg-[#10B981]/20 text-[#10B981] px-2 py-1 rounded" id="contractsActive">- Active</span>
+                        <span class="text-xs bg-gray-500/20 text-gray-300 px-2 py-1 rounded" id="contractsInactive">- Inactive</span>
+                        <span class="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded" id="contractsValue">- SAR</span>
+                    </div>
+                    <div class="flex items-center text-[#10B981] text-sm">
+                        <span>Open Dashboard</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- Maintenance -->
+                <a href="maintenance_dashboard.html" class="glass-card p-6 fade-in-up stagger-4 block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="bg-gradient-to-br from-amber-500 to-[#0E2841] p-4 rounded-2xl">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <span class="badge badge-active">Active</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Maintenance</h3>
+                    <p class="text-gray-400 text-sm mb-4">Facility Maintenance & Service Requests</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="text-xs bg-amber-500/20 text-amber-300 px-2 py-1 rounded" id="maintTotal">- Requests</span>
+                        <span class="text-xs bg-[#10B981]/20 text-[#10B981] px-2 py-1 rounded" id="maintCompleted">- Completed</span>
+                        <span class="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded" id="maintRate">-% Rate</span>
+                    </div>
+                    <div class="flex items-center text-amber-400 text-sm">
+                        <span>Open Dashboard</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- Accommodation -->
+                <a href="accommodation_dashboard.html" class="glass-card p-6 fade-in-up stagger-4 block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="bg-gradient-to-br from-rose-500 to-[#0E2841] p-4 rounded-2xl">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                            </svg>
+                        </div>
+                        <span class="badge badge-active">Active</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Accommodation</h3>
+                    <p class="text-gray-400 text-sm mb-4">Staff Housing, Hotels & Arrivals</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="text-xs bg-rose-500/20 text-rose-300 px-2 py-1 rounded" id="accomStaff">- Staff</span>
+                        <span class="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded" id="accomArrivals">- Arrivals</span>
+                        <span class="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded" id="accomHotels">- Bookings</span>
+                    </div>
+                    <div class="flex items-center text-rose-400 text-sm">
+                        <span>Open Dashboard</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="container mx-auto px-6 py-8 text-center">
+            <div class="border-t border-gray-800 pt-6">
+                <p class="text-gray-500 text-sm mb-2">NESMA Infrastructure & Technology</p>
+                <p class="text-gray-600 text-xs">Facility Management Department</p>
+                <p class="text-gray-700 text-xs mt-3">Version 1.0.0 | January 2026</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Load summary data
+        async function loadSummaryData() {
+            try {
+                const [vehiclesRes, contractsRes, maintenanceRes, accommodationRes] = await Promise.all([
+                    fetch('data/facility_vehicles.json'),
+                    fetch('data/facility_contracts.json'),
+                    fetch('data/facility_maintenance.json'),
+                    fetch('data/facility_accommodation.json')
+                ]);
+
+                const vehicles = await vehiclesRes.json();
+                const contracts = await contractsRes.json();
+                const maintenance = await maintenanceRes.json();
+                const accommodation = await accommodationRes.json();
+
+                // Update main KPIs
+                document.getElementById('kpiTotalVehicles').textContent = vehicles.summary.owned.total + vehicles.summary.rental.key_company.total + vehicles.summary.rental.theeb_company.total;
+                document.getElementById('kpiActiveContracts').textContent = contracts.summary.active_contracts;
+                document.getElementById('kpiContractValue').textContent = formatCompactNumber(contracts.summary.active_value);
+                document.getElementById('kpiMaintenanceReq').textContent = maintenance.summary.total_requests;
+                document.getElementById('kpiFuelCost').textContent = formatCompactNumber(vehicles.summary.fuel.total_invoice);
+                document.getElementById('kpiStaffAccom').textContent = accommodation.summary.total_staff;
+
+                // Update Fleet card
+                document.getElementById('fleetOwned').textContent = vehicles.summary.owned.total + ' Owned';
+                document.getElementById('fleetRental').textContent = (vehicles.summary.rental.key_company.total + vehicles.summary.rental.theeb_company.total) + ' Rental';
+                document.getElementById('fleetFuel').textContent = formatCompactNumber(vehicles.summary.fuel.total_invoice) + ' Fuel';
+
+                // Update Contracts card
+                document.getElementById('contractsActive').textContent = contracts.summary.active_contracts + ' Active';
+                document.getElementById('contractsInactive').textContent = contracts.summary.inactive_contracts + ' Inactive';
+                document.getElementById('contractsValue').textContent = formatCompactNumber(contracts.summary.active_value);
+
+                // Update Maintenance card
+                document.getElementById('maintTotal').textContent = maintenance.summary.total_requests + ' Requests';
+                document.getElementById('maintCompleted').textContent = maintenance.summary.completed + ' Completed';
+                document.getElementById('maintRate').textContent = maintenance.summary.completion_rate + '% Rate';
+
+                // Update Accommodation card
+                document.getElementById('accomStaff').textContent = accommodation.summary.total_staff + ' Staff';
+                document.getElementById('accomArrivals').textContent = accommodation.arrivals.new_arrivals.total + ' Arrivals';
+                document.getElementById('accomHotels').textContent = accommodation.hotel_bookings.total + ' Bookings';
+
+                // Hide loading overlay
+                document.getElementById('loadingOverlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                }, 500);
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loadingOverlay').innerHTML = '<p class="text-red-400">Error loading data</p>';
+            }
+        }
+
+        function formatCompactNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
+            return num.toString();
+        }
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (20 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'Asia/Riyadh' };
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', options);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            updateTime();
+            setInterval(updateTime, 1000);
+            loadSummaryData();
+        });
+    </script>
+</body>
+</html>
