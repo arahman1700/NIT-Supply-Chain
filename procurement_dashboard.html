@@ -4350,37 +4350,61 @@
             const prsWithApprovalDate = allPRs.filter(pr => pr.approved_date && pr.submission_date);
             let prOnTime = 0;
             prsWithApprovalDate.forEach(pr => {
-                const submitted = new Date(pr.submission_date);
-                const approved = new Date(pr.approved_date);
-                const days = Math.floor((approved - submitted) / 86400000);
-                if (days <= 2) prOnTime++;
+                try {
+                    const submitted = new Date(pr.submission_date);
+                    const approved = new Date(pr.approved_date);
+                    const days = Math.floor((approved - submitted) / 86400000);
+                    if (days <= 2) prOnTime++;
+                } catch (e) {
+                    console.error('Date parsing error:', e);
+                }
             });
             const prOnTimeRate = prsWithApprovalDate.length > 0 
                 ? (prOnTime / prsWithApprovalDate.length * 100).toFixed(1) 
                 : 0;
             
-            // PO Issuance SLA (≤20 days)
-            const prsWithPO = allPRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days !== undefined);
-            const poWithin20 = prsWithPO.filter(pr => pr.pr_to_po_days <= 20).length;
+            // PO Issuance SLA (≤20 days) - ensure numeric comparison
+            const prsWithPO = allPRs.filter(pr => {
+                const days = pr.pr_to_po_days;
+                return days !== null && days !== undefined && !isNaN(parseFloat(days));
+            });
+            const poWithin20 = prsWithPO.filter(pr => parseFloat(pr.pr_to_po_days) <= 20).length;
             const poAfter20 = prsWithPO.length - poWithin20;
             const poOnTimeRate = prsWithPO.length > 0 
                 ? (poWithin20 / prsWithPO.length * 100).toFixed(1) 
                 : 0;
             
-            // Cycle Time Analysis (P50, P90)
-            const prToPoDays = prsWithPO.map(pr => pr.pr_to_po_days).sort((a, b) => a - b);
+            // Cycle Time Analysis (P50, P90) - ensure numeric values
+            const prToPoDays = prsWithPO
+                .map(pr => parseFloat(pr.pr_to_po_days))
+                .filter(d => !isNaN(d))
+                .sort((a, b) => a - b);
             const avgDays = prToPoDays.length > 0 
                 ? (prToPoDays.reduce((a, b) => a + b, 0) / prToPoDays.length).toFixed(1) 
                 : 0;
             const p50 = prToPoDays.length > 0 
-                ? prToPoDays[Math.floor(prToPoDays.length * 0.5)] 
+                ? Math.round(prToPoDays[Math.floor(prToPoDays.length * 0.5)]) 
                 : 0;
             const p90 = prToPoDays.length > 0 
-                ? prToPoDays[Math.floor(prToPoDays.length * 0.9)] 
+                ? Math.round(prToPoDays[Math.floor(prToPoDays.length * 0.9)]) 
                 : 0;
             
             // Overall Compliance
             const overallRate = ((parseFloat(prOnTimeRate) + parseFloat(poOnTimeRate)) / 2).toFixed(1);
+            
+            console.log('SLA Calculation Results:', {
+                prTotal: prsWithApprovalDate.length,
+                prOnTime,
+                prOnTimeRate,
+                poTotal: prsWithPO.length,
+                poWithin20,
+                poAfter20,
+                poOnTimeRate,
+                avgDays,
+                p50,
+                p90,
+                overallRate
+            });
             
             return {
                 prOnTimeRate,
@@ -4701,7 +4725,12 @@
             if (!ctx) return;
             
             const allPRs = getFilteredPRs();
-            const prsWithPO = allPRs.filter(pr => pr.pr_to_po_days !== null && pr.pr_to_po_days !== undefined);
+            const prsWithPO = allPRs.filter(pr => {
+                const days = pr.pr_to_po_days;
+                return days !== null && days !== undefined && !isNaN(parseFloat(days));
+            });
+            
+            console.log('Cycle Time Distribution: Processing', prsWithPO.length, 'PRs with PO');
             
             // Create distribution buckets
             const buckets = {
@@ -4714,7 +4743,7 @@
             };
             
             prsWithPO.forEach(pr => {
-                const days = pr.pr_to_po_days;
+                const days = parseFloat(pr.pr_to_po_days);
                 if (days <= 10) buckets['0-10']++;
                 else if (days <= 20) buckets['11-20']++;
                 else if (days <= 30) buckets['21-30']++;
@@ -4722,6 +4751,8 @@
                 else if (days <= 100) buckets['51-100']++;
                 else buckets['>100']++;
             });
+            
+            console.log('Distribution buckets:', buckets);
             
             // Destroy existing chart if exists
             if (charts.cycleTimeDistribution) {
