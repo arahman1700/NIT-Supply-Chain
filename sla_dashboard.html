@@ -3384,13 +3384,20 @@
 
         // Show Scrap Details Modal
         function showScrapDetails(type) {
+            console.log('showScrapDetails called with type:', type);
+            console.log('scrapData:', scrapData);
+            console.log('filteredScrapRecords length:', filteredScrapRecords ? filteredScrapRecords.length : 'undefined');
+            
             if (!scrapData || !scrapData.records) {
-                alert('Loading scrap data...');
+                alert('Loading scrap data... Please wait and try again.');
+                loadScrapData();
                 return;
             }
 
             // Use filtered records as base (respects current filters)
-            let records = [...filteredScrapRecords];
+            let records = filteredScrapRecords && filteredScrapRecords.length > 0 
+                ? [...filteredScrapRecords] 
+                : [...scrapData.records];
             let titleText = 'Scrap Operations';
             let subtitleText = '';
             let totalAmount = 0;
