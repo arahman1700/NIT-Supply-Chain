@@ -396,7 +396,7 @@
             <!-- Storage Reports (Annex A) Summary -->
             <div class="bg-gray-50 rounded-xl p-4">
                 <h3 class="text-sm font-bold text-gray-700 mb-3">Storage Reports (Annex A)</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
                     <div class="bg-white p-3 rounded-lg border border-gray-200">
                         <p class="text-xs text-gray-500">Free Stock List</p>
                         <p class="text-sm font-bold text-green-600">✓ Weekly</p>
@@ -412,6 +412,15 @@
                     <div class="bg-white p-3 rounded-lg border border-gray-200">
                         <p class="text-xs text-gray-500">SC Avg Reply</p>
                         <p class="text-sm font-bold text-blue-600">0.8 Day</p>
+                    </div>
+                    <!-- Free Materials KPI Card -->
+                    <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-lg cursor-pointer hover:shadow-lg transition-all" onclick="showFreeMaterialsModal()">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs text-purple-100">Free Materials</p>
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z" clip-rule="evenodd"/><path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"/></svg>
+                        </div>
+                        <p class="text-xl font-bold text-white mt-1" id="kpi-free-materials">155</p>
+                        <p class="text-xs text-purple-100">Surplus items available</p>
                     </div>
                 </div>
             </div>
@@ -443,6 +452,12 @@
                         <span class="flex items-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                             All Warehouses
+                        </span>
+                    </button>
+                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('freematerials')">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
+                            Free Materials
                         </span>
                     </button>
                 </div>
@@ -1150,6 +1165,222 @@
                     </div>
                 </div>
 
+                <!-- ========================================== -->
+                <!-- TAB 5: FREE MATERIALS (Surplus Available) -->
+                <!-- ========================================== -->
+                <div id="tab-freematerials" class="tab-content">
+                    <!-- Info Banner -->
+                    <div class="bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200 rounded-xl p-4 mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-purple-500 p-2 rounded-lg">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z" clip-rule="evenodd"/><path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"/></svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-purple-800">Free Materials - Available for Reuse</h3>
+                                <p class="text-sm text-purple-600 mt-1">Surplus materials from completed projects available for transfer to other active projects. Contact Supply Chain for allocation.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Free Materials KPIs -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
+                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-purple-600 to-purple-700 text-white">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="text-purple-100 text-xs lg:text-sm mb-1">Total Items</p>
+                                    <p class="text-2xl lg:text-3xl font-bold" id="fm-kpi-total">155</p>
+                                </div>
+                                <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
+                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+                                </div>
+                            </div>
+                            <p class="text-xs text-purple-100">Surplus items available</p>
+                        </div>
+
+                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-indigo-600 to-indigo-700 text-white">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="text-indigo-100 text-xs lg:text-sm mb-1">Locations</p>
+                                    <p class="text-2xl lg:text-3xl font-bold" id="fm-kpi-locations">2</p>
+                                </div>
+                                <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
+                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+                                </div>
+                            </div>
+                            <p class="text-xs text-indigo-100">Storage locations</p>
+                        </div>
+
+                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-blue-600 to-blue-700 text-white">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="text-blue-100 text-xs lg:text-sm mb-1">Cables</p>
+                                    <p class="text-2xl lg:text-3xl font-bold" id="fm-kpi-cables">9.4K</p>
+                                </div>
+                                <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
+                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
+                                </div>
+                            </div>
+                            <p class="text-xs text-blue-100">Meters available</p>
+                        </div>
+
+                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-teal-600 to-teal-700 text-white">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="text-teal-100 text-xs lg:text-sm mb-1">Cable Tray/Ladder</p>
+                                    <p class="text-2xl lg:text-3xl font-bold" id="fm-kpi-tray">8.4K</p>
+                                </div>
+                                <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
+                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+                                </div>
+                            </div>
+                            <p class="text-xs text-teal-100">PCS available</p>
+                        </div>
+                    </div>
+
+                    <!-- Location Cards -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6" id="freeMaterialsLocations">
+                        <!-- Dammam 16 Substation -->
+                        <div class="card p-5 border-l-4 border-purple-500 cursor-pointer hover:shadow-lg transition-all" onclick="showLocationDetails('dammam-16')">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-bold text-gray-800">Dammam 16 Substation</h3>
+                                <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">Cable Tray & Ladder</span>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Store:</span>
+                                    <span class="font-medium">Dammam Main Inside Store</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Region:</span>
+                                    <span class="font-medium">Eastern Province</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Items:</span>
+                                    <span class="font-bold text-purple-600">113 items</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Quantity:</span>
+                                    <span class="font-bold text-purple-600">4,896 PCS</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-gray-100">
+                                <p class="text-xs text-gray-400">Source: Dammam 16 Substation Suplus Materials & Return Materilas.xlsx</p>
+                            </div>
+                        </div>
+
+                        <!-- Jafourah Cables -->
+                        <div class="card p-5 border-l-4 border-blue-500 cursor-pointer hover:shadow-lg transition-all" onclick="showLocationDetails('jafourah-cables')">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-bold text-gray-800">Jafourah Project - Cables</h3>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">Cables</span>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Store:</span>
+                                    <span class="font-medium">Jafurah Store</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Region:</span>
+                                    <span class="font-medium">Eastern Province</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Items:</span>
+                                    <span class="font-bold text-blue-600">17 items</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Quantity:</span>
+                                    <span class="font-bold text-blue-600">9,411 meters</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-gray-100">
+                                <p class="text-xs text-gray-400">Source: SURPLUS MATERIAL LIST_CABLES Jafourah.xlsx</p>
+                            </div>
+                        </div>
+
+                        <!-- Jafourah Cable Tray -->
+                        <div class="card p-5 border-l-4 border-teal-500 cursor-pointer hover:shadow-lg transition-all" onclick="showLocationDetails('jafourah-tray')">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-bold text-gray-800">Jafourah Project - Tray</h3>
+                                <span class="px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">Cable Tray & Ladder</span>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Store:</span>
+                                    <span class="font-medium">Jafurah Store</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Region:</span>
+                                    <span class="font-medium">Eastern Province</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Items:</span>
+                                    <span class="font-bold text-teal-600">25 items</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Quantity:</span>
+                                    <span class="font-bold text-teal-600">3,474 PCS</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-gray-100">
+                                <p class="text-xs text-gray-400">Source: SURPLUS MATERIAL LIST_CABLE TRAY & LADDER Jafourah.xlsx</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="card p-4">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Materials by Category</h3>
+                            <div class="chart-container" style="height: 300px;">
+                                <canvas id="fmCategoryChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card p-4">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Materials by Location</h3>
+                            <div class="chart-container" style="height: 300px;">
+                                <canvas id="fmLocationChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Free Materials Table -->
+                    <div class="card p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-gray-800">All Free Materials</h3>
+                            <div class="flex gap-2">
+                                <select id="filterFMLocation" class="filter-select text-sm" onchange="applyFreeMaterialsFilters()">
+                                    <option value="">All Locations</option>
+                                    <option value="dammam-16">Dammam 16 Substation</option>
+                                    <option value="jafourah-cables">Jafourah Cables</option>
+                                    <option value="jafourah-tray">Jafourah Cable Tray</option>
+                                </select>
+                                <button onclick="exportFreeMaterials()" class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                    Export
+                                </button>
+                            </div>
+                        </div>
+                        <div class="scroll-container" style="max-height: 500px;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Description</th>
+                                        <th>Quantity</th>
+                                        <th>Unit</th>
+                                        <th>Location</th>
+                                        <th>Store</th>
+                                        <th>Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="freeMaterialsTableBody">
+                                    <!-- Data will be populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -1205,10 +1436,12 @@
 
         let warehouseData = null;
         let inventoryData = null;
+        let freeMaterialsData = null;
         let charts = {};
         let filteredSurplus = [];
         let filteredInventory = [];
         let filteredWarehouses = [];
+        let filteredFreeMaterials = [];
 
         // ==========================================
         // Data Loading
@@ -1228,6 +1461,16 @@
                     }
                 } catch (e) {
                     console.warn('Warehouse inventory data not available:', e);
+                }
+
+                // Load free materials data
+                try {
+                    const fmResponse = await fetch('data/free_materials.json?v=' + Date.now());
+                    if (fmResponse.ok) {
+                        freeMaterialsData = await fmResponse.json();
+                    }
+                } catch (e) {
+                    console.warn('Free materials data not available:', e);
                 }
 
                 // Update last updated date
@@ -1253,6 +1496,7 @@
             updateInventoryTab();
             updateMovementsTab();
             updateWarehousesTab();
+            updateFreeMaterialsTab();
         }
 
         // ==========================================
@@ -2286,6 +2530,235 @@
             document.getElementById('filterWHType').value = '';
             filteredWarehouses = [...inventoryData.warehouses];
             updateWarehousesTable();
+        }
+
+        // ==========================================
+        // TAB 5: FREE MATERIALS
+        // ==========================================
+        function updateFreeMaterialsTab() {
+            if (!freeMaterialsData) {
+                console.warn('Free materials data not loaded');
+                return;
+            }
+
+            // Update KPIs
+            const summary = freeMaterialsData.summary;
+            document.getElementById('fm-kpi-total').textContent = summary.total_items;
+            document.getElementById('fm-kpi-locations').textContent = summary.total_locations;
+            document.getElementById('fm-kpi-cables').textContent = formatNumber(summary.by_category.cables.quantity);
+            document.getElementById('fm-kpi-tray').textContent = formatNumber(summary.by_category.cable_tray_ladder.quantity);
+            
+            // Update the SLA KPI card too
+            document.getElementById('kpi-free-materials').textContent = summary.total_items;
+
+            // Create charts
+            createFreeMaterialsCharts();
+
+            // Populate table
+            updateFreeMaterialsTable();
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        function createFreeMaterialsCharts() {
+            // Category Chart
+            const categoryCtx = document.getElementById('fmCategoryChart');
+            if (categoryCtx) {
+                if (charts.fmCategory) charts.fmCategory.destroy();
+                
+                const categories = freeMaterialsData.summary.by_category;
+                charts.fmCategory = new Chart(categoryCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Cables (meters)', 'Cable Tray & Ladder (PCS)'],
+                        datasets: [{
+                            data: [categories.cables.quantity, categories.cable_tray_ladder.quantity],
+                            backgroundColor: ['#3B82F6', '#8B5CF6'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+
+            // Location Chart
+            const locationCtx = document.getElementById('fmLocationChart');
+            if (locationCtx) {
+                if (charts.fmLocation) charts.fmLocation.destroy();
+                
+                const locations = freeMaterialsData.locations;
+                charts.fmLocation = new Chart(locationCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: locations.map(l => l.name.substring(0, 20)),
+                        datasets: [{
+                            label: 'Items Count',
+                            data: locations.map(l => l.items_count),
+                            backgroundColor: ['#8B5CF6', '#3B82F6', '#14B8A6'],
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateFreeMaterialsTable(locationFilter = '') {
+            const tbody = document.getElementById('freeMaterialsTableBody');
+            if (!tbody || !freeMaterialsData) return;
+
+            let allItems = [];
+            let counter = 0;
+
+            freeMaterialsData.locations.forEach(location => {
+                if (locationFilter && location.id !== locationFilter) return;
+                
+                location.items.forEach(item => {
+                    counter++;
+                    allItems.push({
+                        index: counter,
+                        description: item.description,
+                        quantity: item.quantity,
+                        unit: item.unit || location.unit,
+                        locationName: location.name,
+                        store: location.store,
+                        category: location.category
+                    });
+                });
+            });
+
+            filteredFreeMaterials = allItems;
+
+            tbody.innerHTML = allItems.map(item => `
+                <tr>
+                    <td class="text-center">${item.index}</td>
+                    <td class="font-medium">${item.description}</td>
+                    <td class="text-right font-bold">${item.quantity.toLocaleString()}</td>
+                    <td class="text-center">${item.unit}</td>
+                    <td>${item.locationName}</td>
+                    <td>${item.store}</td>
+                    <td><span class="px-2 py-1 rounded-full text-xs ${item.category === 'Cables' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}">${item.category}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function applyFreeMaterialsFilters() {
+            const locationFilter = document.getElementById('filterFMLocation').value;
+            updateFreeMaterialsTable(locationFilter);
+        }
+
+        function showFreeMaterialsModal() {
+            switchTab('freematerials');
+            // Find and click the Free Materials tab button
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => {
+                if (btn.textContent.includes('Free Materials')) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function showLocationDetails(locationId) {
+            if (!freeMaterialsData) return;
+
+            const location = freeMaterialsData.locations.find(l => l.id === locationId);
+            if (!location) return;
+
+            const modal = document.getElementById('detailsModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+
+            modalTitle.textContent = location.name + ' - ' + location.category;
+
+            let itemsHtml = location.items.map((item, idx) => `
+                <tr>
+                    <td class="text-center">${idx + 1}</td>
+                    <td>${item.description}</td>
+                    <td class="text-right font-bold">${item.quantity.toLocaleString()}</td>
+                    <td class="text-center">${item.unit || location.unit}</td>
+                </tr>
+            `).join('');
+
+            modalContent.innerHTML = `
+                <div class="mb-4">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-xs text-gray-500">Store</p>
+                            <p class="font-bold">${location.store}</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-xs text-gray-500">Region</p>
+                            <p class="font-bold">${location.region}</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-xs text-gray-500">Total Items</p>
+                            <p class="font-bold text-purple-600">${location.items_count}</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-xs text-gray-500">Total Quantity</p>
+                            <p class="font-bold text-purple-600">${location.total_quantity.toLocaleString()} ${location.unit}</p>
+                        </div>
+                    </div>
+                    <div class="bg-purple-50 p-3 rounded-lg mb-4">
+                        <p class="text-xs text-purple-600">Source File</p>
+                        <p class="font-medium text-purple-800">${location.source_file}</p>
+                    </div>
+                </div>
+                <div class="scroll-container" style="max-height: 400px;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Description</th>
+                                <th>Quantity</th>
+                                <th>Unit</th>
+                            </tr>
+                        </thead>
+                        <tbody>${itemsHtml}</tbody>
+                    </table>
+                </div>
+            `;
+
+            modal.classList.add('show');
+        }
+
+        function exportFreeMaterials() {
+            if (!filteredFreeMaterials || filteredFreeMaterials.length === 0) {
+                alert('No data to export');
+                return;
+            }
+
+            let csv = 'No,Description,Quantity,Unit,Location,Store,Category\n';
+            filteredFreeMaterials.forEach(item => {
+                csv += `${item.index},"${item.description}",${item.quantity},${item.unit},"${item.locationName}","${item.store}","${item.category}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'free_materials_' + new Date().toISOString().split('T')[0] + '.csv';
+            link.click();
         }
 
         // ==========================================
