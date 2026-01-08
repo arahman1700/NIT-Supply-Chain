@@ -308,6 +308,115 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 lg:px-6 py-6 lg:py-8">
 
+        <!-- SLA Compliance Section -->
+        <div class="card mb-6 lg:mb-8 p-4 lg:p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <h2 class="text-lg font-bold text-gray-800">Warehouse SLA Compliance</h2>
+                    <button onclick="showWarehouseSLAInfo()" class="text-blue-600 hover:text-blue-800 transition-colors" title="SLA Requirements">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                    </button>
+                </div>
+                <span class="text-xs text-gray-500">NIT-SCM-SLA-KSA-001</span>
+            </div>
+            
+            <!-- SLA Service Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+                <!-- Stock Confirmation -->
+                <div class="card p-4 cursor-pointer hover:shadow-lg transition-all border-l-4 border-cyan-500" onclick="showSLADetails('stock-confirmation')">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-gray-500">Stock Confirmation</span>
+                        <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                    </div>
+                    <p class="text-xl font-bold text-cyan-600" id="sla-stock-confirmation">Process Applied</p>
+                    <p class="text-xs text-gray-500 mt-1">Target: ≥95% within 1 day</p>
+                    <div class="mt-2 flex items-center text-xs text-cyan-600">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+                        <span>Improving</span>
+                    </div>
+                </div>
+
+                <!-- Material Movement -->
+                <div class="card p-4 cursor-pointer hover:shadow-lg transition-all border-l-4 border-green-500" onclick="showSLADetails('material-movement')">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-gray-500">Material Movement</span>
+                        <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                    </div>
+                    <p class="text-2xl font-bold text-green-600" id="sla-material-movement">95.7%</p>
+                    <p class="text-xs text-gray-500 mt-1">Target: ≥95% within 2 days</p>
+                    <div class="mt-2 flex items-center text-xs text-green-600">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        <span>Meeting Target</span>
+                    </div>
+                </div>
+
+                <!-- Storage Compliance -->
+                <div class="card p-4 cursor-pointer hover:shadow-lg transition-all border-l-4 border-amber-500" onclick="showSLADetails('storage-compliance')">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-gray-500">Storage Compliance</span>
+                        <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                    </div>
+                    <p class="text-xl font-bold text-amber-600" id="sla-storage-compliance">Improving</p>
+                    <p class="text-xs text-gray-500 mt-1">Target: ≥98% (Audit)</p>
+                    <div class="mt-2 flex items-center text-xs text-amber-600">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+                        <span>Under Review</span>
+                    </div>
+                </div>
+
+                <!-- Scrap Removal -->
+                <div class="card p-4 cursor-pointer hover:shadow-lg transition-all border-l-4 border-blue-500" onclick="showSLADetails('scrap-removal')">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-gray-500">Scrap Removal</span>
+                        <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                    </div>
+                    <p class="text-2xl font-bold text-blue-600" id="sla-scrap-removal">97.8%</p>
+                    <p class="text-xs text-gray-500 mt-1">Target: ≥95% within 3 days</p>
+                    <div class="mt-2 flex items-center text-xs text-green-600">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        <span>Meeting Target</span>
+                    </div>
+                </div>
+
+                <!-- Incident Reporting -->
+                <div class="card p-4 cursor-pointer hover:shadow-lg transition-all border-l-4 border-rose-500" onclick="showSLADetails('incident-reporting')">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-gray-500">Incident Reporting</span>
+                        <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                    </div>
+                    <p class="text-2xl font-bold text-rose-600" id="sla-incident-reporting">100%</p>
+                    <p class="text-xs text-gray-500 mt-1">Target: 100% Immediate</p>
+                    <div class="mt-2 flex items-center text-xs text-green-600">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        <span>Excellent</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storage Reports (Annex A) Summary -->
+            <div class="bg-gray-50 rounded-xl p-4">
+                <h3 class="text-sm font-bold text-gray-700 mb-3">Storage Reports (Annex A)</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="bg-white p-3 rounded-lg border border-gray-200">
+                        <p class="text-xs text-gray-500">Free Stock List</p>
+                        <p class="text-sm font-bold text-green-600">✓ Weekly</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-gray-200">
+                        <p class="text-xs text-gray-500">Quarterly Inventory</p>
+                        <p class="text-sm font-bold text-amber-600">70% Coverage</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-gray-200">
+                        <p class="text-xs text-gray-500">Retained Material</p>
+                        <p class="text-sm font-bold text-green-600">✓ Monthly</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-gray-200">
+                        <p class="text-xs text-gray-500">SC Avg Reply</p>
+                        <p class="text-sm font-bold text-blue-600">0.8 Day</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Tab Navigation -->
         <div class="card mb-6 lg:mb-8">
             <div class="border-b border-gray-200 no-print">
@@ -1650,6 +1759,157 @@
         function exportAllData() {
             exportToExcel('surplus');
             setTimeout(() => exportToExcel('inventory'), 500);
+        }
+
+        // ==========================================
+        // Warehouse SLA Functions
+        // ==========================================
+        
+        // SLA Requirements Reference (NIT-SCM-SLA-KSA-001)
+        const WAREHOUSE_SLA_INFO = {
+            'stock-confirmation': {
+                name: 'Stock Confirmation',
+                standard: '≤1 Business Day',
+                target: '≥95%',
+                description: 'Confirm material availability and stock levels upon request.',
+                calculation: 'Confirmations within SLA / Total Confirmation Requests × 100',
+                currentRate: 'Process Applied',
+                status: 'improving'
+            },
+            'material-movement': {
+                name: 'Material Movement',
+                standard: '≤2 Business Days',
+                target: '≥95%',
+                description: 'Move materials between warehouse locations or to project sites.',
+                calculation: 'Movements within SLA / Total Movement Requests × 100',
+                currentRate: '95.7%',
+                status: 'meeting'
+            },
+            'storage-compliance': {
+                name: 'Storage Compliance',
+                standard: 'Quarterly Audit',
+                target: '≥98%',
+                description: 'Maintain proper storage conditions and organization per standards.',
+                calculation: 'Based on quarterly storage audits and compliance checks',
+                currentRate: 'Improving',
+                status: 'review'
+            },
+            'scrap-removal': {
+                name: 'Scrap Removal',
+                standard: '≤3 Business Days',
+                target: '≥95%',
+                description: 'Remove scrap materials (cable, wood, etc.) from warehouse/sites.',
+                calculation: 'Removals within SLA / Total Removal Requests × 100',
+                currentRate: '97.8%',
+                status: 'meeting'
+            },
+            'incident-reporting': {
+                name: 'Incident Reporting',
+                standard: 'Immediate',
+                target: '100%',
+                description: 'Report any warehouse incidents, damages, or safety concerns immediately.',
+                calculation: 'Incidents reported within 24 hours / Total Incidents × 100',
+                currentRate: '100%',
+                status: 'excellent'
+            }
+        };
+
+        function showWarehouseSLAInfo() {
+            const content = `
+                <div class="space-y-4">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <h4 class="font-bold text-blue-800 mb-2">Reference Document</h4>
+                        <p class="text-sm text-blue-700">NIT-SCM-SLA-KSA-001 - Supply Chain Management Service Level Agreement</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="data-table w-full text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="text-left">Service</th>
+                                    <th class="text-left">Response Standard</th>
+                                    <th class="text-left">Target</th>
+                                    <th class="text-left">Current</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Object.entries(WAREHOUSE_SLA_INFO).map(([key, sla]) => `
+                                    <tr>
+                                        <td class="font-medium">${sla.name}</td>
+                                        <td>${sla.standard}</td>
+                                        <td>${sla.target}</td>
+                                        <td class="${sla.status === 'meeting' || sla.status === 'excellent' ? 'text-green-600' : sla.status === 'below' ? 'text-red-600' : 'text-amber-600'} font-semibold">${sla.currentRate}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-3 text-xs text-gray-600">
+                        <p><strong>Note:</strong> SLA compliance is measured monthly and reported quarterly. Storage compliance requires quarterly physical audits.</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalTitle').textContent = 'Warehouse SLA Requirements';
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('detailsModal').classList.add('show');
+        }
+
+        function showSLADetails(serviceId) {
+            const sla = WAREHOUSE_SLA_INFO[serviceId];
+            if (!sla) return;
+            
+            const statusColors = {
+                'meeting': 'bg-green-100 text-green-800',
+                'excellent': 'bg-green-100 text-green-800',
+                'below': 'bg-red-100 text-red-800',
+                'improving': 'bg-amber-100 text-amber-800',
+                'review': 'bg-amber-100 text-amber-800'
+            };
+            
+            const statusLabels = {
+                'meeting': 'Meeting Target',
+                'excellent': 'Excellent',
+                'below': 'Below Target',
+                'improving': 'Improving',
+                'review': 'Under Review'
+            };
+            
+            const content = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="px-3 py-1 rounded-full text-sm font-medium ${statusColors[sla.status]}">${statusLabels[sla.status]}</span>
+                        <span class="text-2xl font-bold ${sla.status === 'meeting' || sla.status === 'excellent' ? 'text-green-600' : sla.status === 'below' ? 'text-red-600' : 'text-amber-600'}">${sla.currentRate}</span>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-gray-700">${sla.description}</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-blue-50 rounded-lg p-3">
+                            <p class="text-xs text-blue-600 font-medium">Response Standard</p>
+                            <p class="text-lg font-bold text-blue-800">${sla.standard}</p>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-3">
+                            <p class="text-xs text-green-600 font-medium">Target Rate</p>
+                            <p class="text-lg font-bold text-green-800">${sla.target}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-4">
+                        <h4 class="text-sm font-bold text-gray-700 mb-2">Calculation Method</h4>
+                        <p class="text-sm text-gray-600 bg-gray-100 p-3 rounded font-mono">${sla.calculation}</p>
+                    </div>
+                    
+                    <div class="text-xs text-gray-500 italic">
+                        Reference: NIT-SCM-SLA-KSA-001
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalTitle').textContent = sla.name + ' - SLA Details';
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('detailsModal').classList.add('show');
         }
 
         // ==========================================
