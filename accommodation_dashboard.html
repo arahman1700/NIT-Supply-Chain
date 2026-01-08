@@ -178,6 +178,103 @@
                 font-size: 1.75rem;
             }
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a365d 0%, #0E2841 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 24px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(244, 63, 94, 0.3);
+        }
+
+        .detail-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .clickable-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clickable-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(244, 63, 94, 0.2);
+        }
     </style>
 </head>
 <body class="text-white">
@@ -245,19 +342,23 @@
     <!-- KPI Cards -->
     <section class="container mx-auto px-4 py-2">
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div class="glass-card stat-card p-5">
+            <div class="glass-card stat-card clickable-card p-5" onclick="showStaffDetails()">
                 <div class="flex items-center justify-between mb-3">
                     <div class="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center">
                         <svg class="w-5 h-5 text-rose-400" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                         </svg>
                     </div>
+                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                 </div>
                 <p class="kpi-card-value text-rose-400" id="kpiTotalStaff">-</p>
                 <p class="text-xs text-gray-400 mt-2">Staff in Housing</p>
+                <p class="text-xs text-gray-500 mt-1">Click for details</p>
             </div>
 
-            <div class="glass-card stat-card p-5">
+            <div class="glass-card stat-card clickable-card p-5" onclick="showCostDetails()">
                 <div class="flex items-center justify-between mb-3">
                     <div class="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
                         <svg class="w-5 h-5 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
@@ -265,9 +366,13 @@
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
                         </svg>
                     </div>
+                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                 </div>
                 <p class="kpi-card-value text-cyan-400" id="kpiMonthlyCost">-</p>
                 <p class="text-xs text-gray-400 mt-2">Monthly Cost</p>
+                <p class="text-xs text-gray-500 mt-1">Click for details</p>
             </div>
 
             <div class="glass-card stat-card p-5">
@@ -480,6 +585,46 @@
             </div>
         </div>
     </section>
+
+    <!-- Modal for Staff Details -->
+    <div class="modal-overlay" id="staffModal" onclick="closeModal('staffModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <h3 class="text-xl font-bold text-rose-400">Staff in Housing Details</h3>
+                    <p class="text-sm text-gray-400">Breakdown by Project, Location & City</p>
+                </div>
+                <button class="modal-close" onclick="closeModal('staffModal')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="staffModalBody">
+                <!-- Content populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Cost Details -->
+    <div class="modal-overlay" id="costModal" onclick="closeModal('costModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <h3 class="text-xl font-bold text-cyan-400">Monthly Cost Details</h3>
+                    <p class="text-sm text-gray-400">Cost Breakdown by Project & Location</p>
+                </div>
+                <button class="modal-close" onclick="closeModal('costModal')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="costModalBody">
+                <!-- Content populated by JS -->
+            </div>
+        </div>
+    </div>
 
     <script>
         let allData = null;
@@ -865,6 +1010,247 @@
             link.download = 'accommodation_data_export.csv';
             link.click();
         }
+
+        // Show Staff Details Modal
+        function showStaffDetails() {
+            const records = filteredRecords;
+            
+            // Calculate stats by project
+            const byProject = {};
+            records.forEach(r => {
+                if (!byProject[r.project]) {
+                    byProject[r.project] = { count: 0, cost: 0 };
+                }
+                byProject[r.project].count++;
+                byProject[r.project].cost += r.cost || 0;
+            });
+
+            // Calculate stats by location
+            const byLocation = {};
+            records.forEach(r => {
+                if (!byLocation[r.location]) {
+                    byLocation[r.location] = { count: 0, city: r.city };
+                }
+                byLocation[r.location].count++;
+            });
+
+            // Calculate stats by city
+            const byCity = {};
+            records.forEach(r => {
+                if (!byCity[r.city]) {
+                    byCity[r.city] = 0;
+                }
+                byCity[r.city]++;
+            });
+
+            const sortedProjects = Object.entries(byProject).sort((a, b) => b[1].count - a[1].count);
+            const sortedLocations = Object.entries(byLocation).sort((a, b) => b[1].count - a[1].count);
+            const sortedCities = Object.entries(byCity).sort((a, b) => b[1] - a[1]);
+
+            let html = `
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-rose-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-rose-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold text-rose-400">${formatNumber(records.length)}</p>
+                            <p class="text-sm text-gray-400">Total Staff in Housing</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500">Data Source: facility_accommodation.json > records.length</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="detail-card">
+                        <h4 class="text-sm font-semibold text-rose-400 mb-3 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4z" clip-rule="evenodd"/>
+                            </svg>
+                            By Project
+                        </h4>
+                        ${sortedProjects.map(([project, data]) => `
+                            <div class="detail-row">
+                                <span class="text-gray-300">${project}</span>
+                                <span class="text-rose-400 font-semibold">${data.count}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="detail-card">
+                        <h4 class="text-sm font-semibold text-green-400 mb-3 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                            </svg>
+                            By Location
+                        </h4>
+                        ${sortedLocations.map(([location, data]) => `
+                            <div class="detail-row">
+                                <span class="text-gray-300">${location} <span class="text-xs text-gray-500">(${data.city})</span></span>
+                                <span class="text-green-400 font-semibold">${data.count}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <h4 class="text-sm font-semibold text-cyan-400 mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                        </svg>
+                        By City
+                    </h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        ${sortedCities.map(([city, count]) => `
+                            <div class="flex justify-between items-center bg-cyan-500/10 rounded-lg p-3">
+                                <span class="text-gray-300">${city}</span>
+                                <span class="text-cyan-400 font-bold text-xl">${count}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('staffModalBody').innerHTML = html;
+            document.getElementById('staffModal').classList.add('active');
+        }
+
+        // Show Cost Details Modal
+        function showCostDetails() {
+            const records = filteredRecords;
+            const totalCost = records.reduce((sum, r) => sum + (r.cost || 0), 0);
+            const avgCostPerStaff = records.length > 0 ? totalCost / records.length : 0;
+
+            // Calculate cost by project
+            const byProject = {};
+            records.forEach(r => {
+                if (!byProject[r.project]) {
+                    byProject[r.project] = { count: 0, cost: 0 };
+                }
+                byProject[r.project].count++;
+                byProject[r.project].cost += r.cost || 0;
+            });
+
+            // Calculate cost by location
+            const byLocation = {};
+            records.forEach(r => {
+                if (!byLocation[r.location]) {
+                    byLocation[r.location] = { count: 0, cost: 0, city: r.city };
+                }
+                byLocation[r.location].count++;
+                byLocation[r.location].cost += r.cost || 0;
+            });
+
+            // Find min and max cost
+            const costs = records.map(r => r.cost || 0);
+            const minCost = Math.min(...costs);
+            const maxCost = Math.max(...costs);
+
+            const sortedProjects = Object.entries(byProject).sort((a, b) => b[1].cost - a[1].cost);
+            const sortedLocations = Object.entries(byLocation).sort((a, b) => b[1].cost - a[1].cost);
+
+            let html = `
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold text-cyan-400">${formatNumber(totalCost)} SAR</p>
+                            <p class="text-sm text-gray-400">Total Monthly Cost</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500">Data Source: facility_accommodation.json > SUM(records.cost)</p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="detail-card text-center">
+                        <p class="text-2xl font-bold text-green-400">${formatNumber(avgCostPerStaff)}</p>
+                        <p class="text-xs text-gray-400">Avg Cost/Staff</p>
+                    </div>
+                    <div class="detail-card text-center">
+                        <p class="text-2xl font-bold text-amber-400">${formatNumber(minCost)}</p>
+                        <p class="text-xs text-gray-400">Min Cost</p>
+                    </div>
+                    <div class="detail-card text-center">
+                        <p class="text-2xl font-bold text-rose-400">${formatNumber(maxCost)}</p>
+                        <p class="text-xs text-gray-400">Max Cost</p>
+                    </div>
+                    <div class="detail-card text-center">
+                        <p class="text-2xl font-bold text-purple-400">${records.length}</p>
+                        <p class="text-xs text-gray-400">Total Records</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="detail-card">
+                        <h4 class="text-sm font-semibold text-rose-400 mb-3 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4z" clip-rule="evenodd"/>
+                            </svg>
+                            Cost by Project
+                        </h4>
+                        ${sortedProjects.map(([project, data]) => `
+                            <div class="detail-row">
+                                <div>
+                                    <span class="text-gray-300">${project}</span>
+                                    <span class="text-xs text-gray-500 block">${data.count} staff</span>
+                                </div>
+                                <span class="text-cyan-400 font-semibold">${formatNumber(data.cost)} SAR</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="detail-card">
+                        <h4 class="text-sm font-semibold text-green-400 mb-3 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                            </svg>
+                            Cost by Location
+                        </h4>
+                        ${sortedLocations.map(([location, data]) => `
+                            <div class="detail-row">
+                                <div>
+                                    <span class="text-gray-300">${location}</span>
+                                    <span class="text-xs text-gray-500 block">${data.city} - ${data.count} staff</span>
+                                </div>
+                                <span class="text-green-400 font-semibold">${formatNumber(data.cost)} SAR</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <h4 class="text-sm font-semibold text-amber-400 mb-3">Cost Calculation Formula</h4>
+                    <div class="bg-black/30 rounded-lg p-4 font-mono text-xs text-gray-300">
+                        <p class="mb-2">// Monthly Cost = Sum of all staff costs</p>
+                        <p class="text-cyan-400">const monthlyCost = records.reduce((sum, r) => sum + (r.cost || 0), 0);</p>
+                        <p class="mt-2 text-gray-500">// Result: ${records.length} records x avg ${formatNumber(avgCostPerStaff)} SAR = ${formatNumber(totalCost)} SAR</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('costModalBody').innerHTML = html;
+            document.getElementById('costModal').classList.add('active');
+        }
+
+        // Close Modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal('staffModal');
+                closeModal('costModal');
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', loadData);
     </script>
