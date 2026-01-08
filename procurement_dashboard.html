@@ -1569,6 +1569,188 @@
         let charts = {};
         let filteredPRData = [];
         let currentModalData = [];
+        let currentModalType = ''; // Track current modal type for column selection
+
+        // ==========================================
+        // SLA INFORMATION DICTIONARY
+        // Based on NIT-SCM-SLA-KSA-001 (Operations)
+        // ==========================================
+        const SLA_INFO = {
+            'pr-processing': {
+                title: 'PR Processing SLA',
+                requirement: 'Approve PR, or provide feedback, within 2 business days of complete request.',
+                target: '≥95%',
+                standard: '≤2 Business Days',
+                source: 'NIT-SCM-SLA-KSA-001 (Operations)',
+                supportingKPIs: ['Cycle time (P50/P90)', 'PR quality rate (first-time complete)', 'APRs not converted to PO >30 days'],
+                calculation: {
+                    columns: ['submission_date', 'approved_date'],
+                    formula: 'Processing Days = approved_date - submission_date',
+                    condition: 'On-Time if Processing Days ≤ 2',
+                    rate: 'SLA Rate = (Count of On-Time PRs / Total PRs with both dates) × 100',
+                    notes: 'Only includes PRs with both submission_date and approved_date'
+                }
+            },
+            'po-issuance': {
+                title: 'PO Issuance SLA',
+                requirement: 'Issue PO and obtain acknowledgement within 20 business days of APR (≥SAR 500K) or 15 business days (<SAR 500K).',
+                target: '≥95% (by value band)',
+                standard: '≤20 Days (High Value ≥500K) / ≤15 Days (Standard <500K)',
+                source: 'NIT-SCM-SLA-KSA-001 (Operations)',
+                supportingKPIs: ['Cycle time (P50/P90) PR→PO', 'Cycle time (P50/P90) PR→POA'],
+                calculation: {
+                    columns: ['pr_to_po_days', 'pr_value'],
+                    formula: 'PR to PO Days = pr_to_po_days (pre-calculated in Smartsheet)',
+                    condition: 'On-Time if pr_to_po_days ≤ 20 (or ≤15 for pr_value < 500,000)',
+                    rate: 'SLA Rate = (Count of On-Time POs / Total PRs with PO) × 100',
+                    notes: 'pr_to_po_days comes directly from Smartsheet calculation'
+                }
+            },
+            'high-value': {
+                title: 'High Value PO SLA (≥500K SAR)',
+                requirement: 'Issue PO within 20 business days for PRs with value ≥ SAR 500,000.',
+                target: '≥95%',
+                standard: '≤20 Business Days',
+                source: 'NIT-SCM-SLA-KSA-001 (Operations)',
+                calculation: {
+                    columns: ['pr_to_po_days', 'pr_value'],
+                    formula: 'Filter: pr_value >= 500,000 AND pr_to_po_days is not null',
+                    condition: 'On-Time if pr_to_po_days ≤ 20',
+                    rate: 'SLA Rate = (Count On-Time / Total High Value with PO) × 100'
+                }
+            },
+            'low-value': {
+                title: 'Standard PO SLA (<500K SAR)',
+                requirement: 'Issue PO within 15 business days for PRs with value < SAR 500,000.',
+                target: '≥95%',
+                standard: '≤15 Business Days',
+                source: 'NIT-SCM-SLA-KSA-001 (Operations)',
+                calculation: {
+                    columns: ['pr_to_po_days', 'pr_value'],
+                    formula: 'Filter: pr_value < 500,000 AND pr_to_po_days is not null',
+                    condition: 'On-Time if pr_to_po_days ≤ 15',
+                    rate: 'SLA Rate = (Count On-Time / Total Standard with PO) × 100'
+                }
+            },
+            'aprs-pending': {
+                title: 'APRs Not Converted to PO',
+                requirement: 'Monitor approved PRs that have not been converted to PO within 30 days.',
+                target: 'Minimize (Informational KPI)',
+                standard: 'Action required if >30 days',
+                source: 'NIT-SCM-SLA-KSA-001 (Operations)',
+                calculation: {
+                    columns: ['status', 'approved_date', 'pr_to_po_days'],
+                    formula: 'Days Pending = Today - approved_date',
+                    condition: 'Flag if status = APPROVED AND pr_to_po_days is null AND Days Pending > 30',
+                    rate: 'Count of flagged PRs'
+                }
+            },
+            'cycle-time': {
+                title: 'Cycle Time Analysis',
+                requirement: 'Track processing speed and tail behavior for PR to PO conversion.',
+                target: 'Informational (Lower is better)',
+                standard: 'P50 (Median) and P90 (90th percentile)',
+                source: 'NIT-SCM-SLA-KSA-001 (Operations)',
+                calculation: {
+                    columns: ['pr_to_po_days'],
+                    formula: 'Sort all pr_to_po_days values ascending',
+                    condition: 'P50 = value at 50th percentile, P90 = value at 90th percentile',
+                    rate: 'Average = Sum of all days / Count'
+                }
+            },
+            'overall': {
+                title: 'Overall SLA Compliance',
+                requirement: 'Combined compliance rate for PR Processing and PO Issuance.',
+                target: '≥95%',
+                standard: 'Average of PR and PO SLA rates',
+                source: 'NIT-SCM-SLA-KSA-001 (Operations)',
+                calculation: {
+                    columns: ['All SLA metrics'],
+                    formula: 'Overall = (PR Processing SLA + PO Issuance SLA) / 2',
+                    condition: 'Green ≥95%, Yellow 85-94%, Red <85%',
+                    rate: 'Weighted average of component SLAs'
+                }
+            },
+            'approved': {
+                title: 'Approved PRs',
+                requirement: 'Count of PRs with APPROVED status in selected period.',
+                target: 'Informational',
+                calculation: {
+                    columns: ['status', 'approved_date'],
+                    formula: 'Filter: status = "APPROVED"',
+                    condition: 'Apply year/month filters based on approved_date'
+                }
+            },
+            'returned': {
+                title: 'Returned PRs',
+                requirement: 'Count of PRs returned for revision.',
+                target: 'Lower is better',
+                calculation: {
+                    columns: ['status', 'return_date'],
+                    formula: 'Filter: status = "RETURNED"',
+                    rate: 'Return Rate = (Returned / Approved) × 100'
+                }
+            }
+        };
+
+        // ==========================================
+        // AVAILABLE COLUMNS DICTIONARY
+        // All columns from Smartsheet PR data
+        // ==========================================
+        const AVAILABLE_COLUMNS = {
+            'pr_num': { id: 'pr_num', label: 'PR #', type: 'text', width: '80px', align: 'left' },
+            'project': { id: 'project', label: 'Project', type: 'text', width: '150px', align: 'left', truncate: true },
+            'description': { id: 'description', label: 'Description', type: 'text', width: '200px', align: 'left', truncate: true },
+            'vendor': { id: 'vendor', label: 'Vendor', type: 'text', width: '120px', align: 'left', truncate: true },
+            'pr_value': { id: 'pr_value', label: 'PR Value', type: 'currency', width: '120px', align: 'right' },
+            'po_value': { id: 'po_value', label: 'PO Value', type: 'currency', width: '120px', align: 'right' },
+            'po_num': { id: 'po_num', label: 'PO #', type: 'text', width: '80px', align: 'left' },
+            'submission_date': { id: 'submission_date', label: 'Submitted', type: 'date', width: '100px', align: 'center' },
+            'approved_date': { id: 'approved_date', label: 'Approved', type: 'date', width: '100px', align: 'center' },
+            'return_date': { id: 'return_date', label: 'Returned', type: 'date', width: '100px', align: 'center' },
+            'reject_date': { id: 'reject_date', label: 'Rejected', type: 'date', width: '100px', align: 'center' },
+            'pr_to_po_days': { id: 'pr_to_po_days', label: 'PR→PO Days', type: 'number', width: '100px', align: 'center' },
+            'status': { id: 'status', label: 'Status', type: 'status', width: '100px', align: 'center' },
+            'agent': { id: 'agent', label: 'Agent', type: 'text', width: '120px', align: 'left', truncate: true },
+            'pending_with': { id: 'pending_with', label: 'Pending With', type: 'text', width: '120px', align: 'left', truncate: true },
+            'pending_since': { id: 'pending_since', label: 'Pending Since', type: 'date', width: '100px', align: 'center' },
+            'pr_note': { id: 'pr_note', label: 'Note', type: 'text', width: '150px', align: 'left', truncate: true },
+            'currency': { id: 'currency', label: 'Currency', type: 'text', width: '70px', align: 'center' },
+            'saving_amount': { id: 'saving_amount', label: 'Savings', type: 'currency', width: '100px', align: 'right' },
+            'po_status': { id: 'po_status', label: 'PO Status', type: 'text', width: '100px', align: 'center' }
+        };
+
+        // Default columns for each modal type
+        const DEFAULT_MODAL_COLUMNS = {
+            'approved': ['pr_num', 'project', 'vendor', 'pr_value', 'approved_date', 'status'],
+            'returned': ['pr_num', 'project', 'vendor', 'pr_value', 'return_date', 'pr_note', 'status'],
+            'rejected': ['pr_num', 'project', 'vendor', 'pr_value', 'reject_date', 'pr_note'],
+            'pr-processing': ['pr_num', 'project', 'vendor', 'submission_date', 'approved_date', 'status'],
+            'po-issuance': ['pr_num', 'project', 'vendor', 'pr_value', 'pr_to_po_days', 'status'],
+            'high-value': ['pr_num', 'project', 'vendor', 'pr_value', 'pr_to_po_days', 'status'],
+            'low-value': ['pr_num', 'project', 'vendor', 'pr_value', 'pr_to_po_days', 'status'],
+            'aprs-pending': ['pr_num', 'project', 'vendor', 'pr_value', 'approved_date', 'pending_with'],
+            'aging': ['pr_num', 'project', 'vendor', 'submission_date', 'pending_with', 'status'],
+            'default': ['pr_num', 'project', 'vendor', 'pr_value', 'status']
+        };
+
+        // Get saved column preferences or defaults
+        function getModalColumns(modalType) {
+            const saved = localStorage.getItem('modalColumns_' + modalType);
+            if (saved) {
+                try {
+                    return JSON.parse(saved);
+                } catch (e) {
+                    console.error('Error parsing saved columns:', e);
+                }
+            }
+            return DEFAULT_MODAL_COLUMNS[modalType] || DEFAULT_MODAL_COLUMNS['default'];
+        }
+
+        // Save column preferences
+        function saveModalColumns(modalType, columns) {
+            localStorage.setItem('modalColumns_' + modalType, JSON.stringify(columns));
+        }
 
         // ==========================================
         // Dashboard Settings System
@@ -4890,7 +5072,7 @@
         }
         
         // ==========================================
-        // SLA DETAILS MODAL
+        // SLA DETAILS MODAL (Enhanced with Info Icons)
         // ==========================================
         
         function showSLADetails(slaType) {
@@ -4901,6 +5083,7 @@
             const allPRs = getFilteredPRs();
             let filteredPRs = [];
             let titleText = '';
+            currentModalType = slaType;
             
             switch(slaType) {
                 case 'pr-processing':
@@ -4917,7 +5100,7 @@
                     titleText = 'PO Issuance SLA Details (≤20 Days)';
                     filteredPRs = allPRs.filter(pr => pr.pr_to_po_days !== null).map(pr => ({
                         ...pr,
-                        isOnTime: pr.pr_to_po_days <= 20
+                        isOnTime: parseFloat(pr.pr_to_po_days) <= 20
                     }));
                     break;
                     
@@ -4928,21 +5111,430 @@
                     
                 case 'overall':
                     titleText = 'Overall SLA Compliance Summary';
-                    const metrics = calculateSLAMetrics();
-                    content.innerHTML = generateSLASummaryContent(metrics);
+                    // Use stored stats from updateFilteredKPIs or calculate fresh
+                    const stats = window.currentStats || calculateFilteredStats(allPRs);
+                    const metrics = {
+                        prOnTimeRate: stats.prProcessingSLARate,
+                        poOnTimeRate: stats.poSLA20Rate,
+                        avgDays: stats.avgPrToPo,
+                        p50: stats.p50,
+                        p90: stats.p90,
+                        overallRate: ((parseFloat(stats.prProcessingSLARate) + parseFloat(stats.poSLA20Rate)) / 2).toFixed(1),
+                        // Additional stats
+                        prTotal: stats.prProcessingTotal,
+                        prOnTime: stats.prProcessingWithin2,
+                        poTotal: stats.posIssued,
+                        poWithin20: stats.within20days,
+                        highValueRate: stats.highValueSLARate,
+                        lowValueRate: stats.lowValueSLARate,
+                        approvedNoPO: stats.approvedNoPOCount
+                    };
+                    content.innerHTML = generateEnhancedSLASummary(metrics);
                     title.textContent = titleText;
                     modal.classList.add('show');
                     return;
             }
             
             currentModalData = filteredPRs;
-            content.innerHTML = generateSLADetailTable(filteredPRs, slaType);
+            content.innerHTML = generateEnhancedSLADetailTable(filteredPRs, slaType);
             title.textContent = titleText + ` (${filteredPRs.length} records)`;
             modal.classList.add('show');
             setupModalSearch();
         }
         
-        function generateSLADetailTable(prs, slaType) {
+        // Generate Enhanced Overall SLA Summary with Info Icons
+        function generateEnhancedSLASummary(metrics) {
+            const slaInfo = SLA_INFO['overall'];
+            
+            return `
+                <!-- Info Icons Bar -->
+                <div class="flex justify-end gap-2 mb-4">
+                    <button onclick="showSLARequirementInfo('overall')" class="p-2 bg-blue-100 hover:bg-blue-200 rounded-lg text-blue-700 transition-colors" title="SLA Requirement">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </button>
+                    <button onclick="showCalculationMethodInfo('overall')" class="p-2 bg-purple-100 hover:bg-purple-200 rounded-lg text-purple-700 transition-colors" title="Calculation Method">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="space-y-6">
+                    <!-- PR Processing & PO Issuance Cards -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-blue-50 rounded-xl p-4 border border-blue-200 cursor-pointer hover:shadow-md transition-shadow" onclick="showSLADetails('pr-processing')">
+                            <h4 class="font-bold text-blue-800 mb-3 flex items-center gap-2">
+                                <span class="text-2xl">📋</span> PR Processing
+                                <span class="text-xs bg-blue-200 px-2 py-0.5 rounded">≤2 days</span>
+                            </h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Total Processed:</span>
+                                    <span class="font-medium">${metrics.prTotal?.toLocaleString() || 0}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">On-Time:</span>
+                                    <span class="font-medium text-green-600">${metrics.prOnTime?.toLocaleString() || 0}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">SLA Rate:</span>
+                                    <span class="font-bold text-lg ${parseFloat(metrics.prOnTimeRate) >= 95 ? 'text-green-600' : 'text-red-600'}">${metrics.prOnTimeRate}%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Status:</span>
+                                    <span class="px-2 py-0.5 rounded text-xs ${parseFloat(metrics.prOnTimeRate) >= 95 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                                        ${parseFloat(metrics.prOnTimeRate) >= 95 ? '✓ Meeting SLA' : '✗ Below Target'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-purple-50 rounded-xl p-4 border border-purple-200 cursor-pointer hover:shadow-md transition-shadow" onclick="showSLADetails('po-issuance')">
+                            <h4 class="font-bold text-purple-800 mb-3 flex items-center gap-2">
+                                <span class="text-2xl">📦</span> PO Issuance
+                                <span class="text-xs bg-purple-200 px-2 py-0.5 rounded">≤20 days</span>
+                            </h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Total with PO:</span>
+                                    <span class="font-medium">${metrics.poTotal?.toLocaleString() || 0}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">On-Time:</span>
+                                    <span class="font-medium text-green-600">${metrics.poWithin20?.toLocaleString() || 0}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">SLA Rate:</span>
+                                    <span class="font-bold text-lg ${parseFloat(metrics.poOnTimeRate) >= 95 ? 'text-green-600' : 'text-red-600'}">${metrics.poOnTimeRate}%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Status:</span>
+                                    <span class="px-2 py-0.5 rounded text-xs ${parseFloat(metrics.poOnTimeRate) >= 95 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                                        ${parseFloat(metrics.poOnTimeRate) >= 95 ? '✓ Meeting SLA' : '✗ Below Target'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Value Band SLA -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-200">
+                            <h4 class="font-semibold text-indigo-800 mb-2 flex items-center gap-2">
+                                💰 High Value (≥500K)
+                                <span class="text-xs bg-indigo-200 px-2 py-0.5 rounded">≤20 days</span>
+                            </h4>
+                            <p class="text-2xl font-bold ${parseFloat(metrics.highValueRate) >= 95 ? 'text-green-600' : 'text-red-600'}">${metrics.highValueRate}%</p>
+                        </div>
+                        <div class="bg-cyan-50 rounded-xl p-4 border border-cyan-200">
+                            <h4 class="font-semibold text-cyan-800 mb-2 flex items-center gap-2">
+                                📋 Standard (<500K)
+                                <span class="text-xs bg-cyan-200 px-2 py-0.5 rounded">≤15 days</span>
+                            </h4>
+                            <p class="text-2xl font-bold ${parseFloat(metrics.lowValueRate) >= 95 ? 'text-green-600' : 'text-red-600'}">${metrics.lowValueRate}%</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Cycle Time Analysis -->
+                    <div class="bg-gray-50 rounded-xl p-4 border">
+                        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                            <span class="text-2xl">⏱️</span> Cycle Time Analysis (PR → PO)
+                        </h4>
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                <p class="text-2xl font-bold text-blue-600">${metrics.avgDays}</p>
+                                <p class="text-xs text-gray-500">Average Days</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                <p class="text-2xl font-bold text-green-600">${metrics.p50}</p>
+                                <p class="text-xs text-gray-500">P50 (Median)</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                <p class="text-2xl font-bold text-orange-600">${metrics.p90}</p>
+                                <p class="text-xs text-gray-500">P90 (90th %ile)</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- APRs Pending Alert -->
+                    ${metrics.approvedNoPO > 0 ? `
+                    <div class="bg-amber-50 rounded-xl p-4 border border-amber-200 cursor-pointer hover:shadow-md transition-shadow" onclick="showAPRsPendingDetails()">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="text-2xl">⚠️</span>
+                                <div>
+                                    <h4 class="font-bold text-amber-800">APRs Pending >30 Days</h4>
+                                    <p class="text-xs text-amber-600">Click to view details and take action</p>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold text-amber-700">${metrics.approvedNoPO}</p>
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <!-- Overall Compliance -->
+                    <div class="text-center p-4 rounded-xl ${parseFloat(metrics.overallRate) >= 95 ? 'bg-green-100 border-green-300' : parseFloat(metrics.overallRate) >= 85 ? 'bg-yellow-100 border-yellow-300' : 'bg-red-100 border-red-300'} border-2">
+                        <p class="text-sm text-gray-600 mb-1">Overall SLA Compliance</p>
+                        <p class="text-4xl font-bold ${parseFloat(metrics.overallRate) >= 95 ? 'text-green-600' : parseFloat(metrics.overallRate) >= 85 ? 'text-yellow-600' : 'text-red-600'}">${metrics.overallRate}%</p>
+                        <p class="text-sm mt-2">${parseFloat(metrics.overallRate) >= 95 ? '✅ Meeting Target (≥95%)' : parseFloat(metrics.overallRate) >= 85 ? '⚠️ Needs Improvement (85-94%)' : '❌ Below Target (<85%) - Action Required'}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ==========================================
+        // SLA REQUIREMENT INFO MODAL
+        // ==========================================
+        function showSLARequirementInfo(slaType) {
+            const info = SLA_INFO[slaType];
+            if (!info) return;
+            
+            const infoModal = document.createElement('div');
+            infoModal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[60]';
+            infoModal.id = 'slaInfoModal';
+            infoModal.onclick = (e) => { if (e.target === infoModal) infoModal.remove(); };
+            
+            infoModal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-4 text-white">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                SLA Requirement
+                            </h3>
+                            <button onclick="document.getElementById('slaInfoModal').remove()" class="p-1 hover:bg-white/20 rounded">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800 text-lg mb-2">${info.title}</h4>
+                            <p class="text-gray-600">${info.requirement}</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-green-50 rounded-lg p-3 border border-green-200">
+                                <p class="text-xs text-green-600 mb-1">Target</p>
+                                <p class="text-xl font-bold text-green-700">${info.target}</p>
+                            </div>
+                            <div class="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                                <p class="text-xs text-blue-600 mb-1">Standard</p>
+                                <p class="text-xl font-bold text-blue-700">${info.standard}</p>
+                            </div>
+                        </div>
+                        
+                        ${info.supportingKPIs ? `
+                        <div class="bg-gray-50 rounded-lg p-3">
+                            <p class="text-xs text-gray-500 mb-2">Supporting KPIs:</p>
+                            <ul class="text-sm text-gray-700 list-disc list-inside">
+                                ${info.supportingKPIs.map(kpi => `<li>${kpi}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="text-xs text-gray-400 flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Source: ${info.source || 'NIT-SCM-SLA-KSA-001'}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(infoModal);
+        }
+        
+        // ==========================================
+        // CALCULATION METHOD INFO MODAL
+        // ==========================================
+        function showCalculationMethodInfo(slaType) {
+            const info = SLA_INFO[slaType];
+            if (!info || !info.calculation) return;
+            const calc = info.calculation;
+            
+            const infoModal = document.createElement('div');
+            infoModal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[60]';
+            infoModal.id = 'calcInfoModal';
+            infoModal.onclick = (e) => { if (e.target === infoModal) infoModal.remove(); };
+            
+            infoModal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden">
+                    <div class="bg-gradient-to-r from-purple-600 to-purple-700 p-4 text-white">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                </svg>
+                                Calculation Method
+                            </h3>
+                            <button onclick="document.getElementById('calcInfoModal').remove()" class="p-1 hover:bg-white/20 rounded">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800 text-lg mb-2">${info.title}</h4>
+                        </div>
+                        
+                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                            <p class="text-xs text-blue-600 mb-2 font-semibold">📊 Data Columns Used (from Smartsheet):</p>
+                            <div class="flex flex-wrap gap-2">
+                                ${calc.columns.map(col => `
+                                    <span class="bg-white px-2 py-1 rounded text-sm font-mono text-blue-700 border border-blue-300">${col}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                            <p class="text-xs text-purple-600 mb-2 font-semibold">📐 Formula:</p>
+                            <p class="font-mono text-sm text-purple-800 bg-white p-2 rounded border">${calc.formula}</p>
+                        </div>
+                        
+                        <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                            <p class="text-xs text-green-600 mb-2 font-semibold">✓ Condition:</p>
+                            <p class="text-sm text-green-800">${calc.condition}</p>
+                        </div>
+                        
+                        ${calc.rate ? `
+                        <div class="bg-amber-50 rounded-lg p-4 border border-amber-200">
+                            <p class="text-xs text-amber-600 mb-2 font-semibold">📈 Rate Calculation:</p>
+                            <p class="font-mono text-sm text-amber-800">${calc.rate}</p>
+                        </div>
+                        ` : ''}
+                        
+                        ${calc.notes ? `
+                        <div class="text-xs text-gray-500 bg-gray-100 p-3 rounded-lg">
+                            <strong>Note:</strong> ${calc.notes}
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(infoModal);
+        }
+        
+        // ==========================================
+        // COLUMN SELECTOR FOR MODALS
+        // ==========================================
+        function showColumnSelector(modalType) {
+            const currentColumns = getModalColumns(modalType);
+            
+            const selectorModal = document.createElement('div');
+            selectorModal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[60]';
+            selectorModal.id = 'columnSelectorModal';
+            selectorModal.onclick = (e) => { if (e.target === selectorModal) selectorModal.remove(); };
+            
+            const columnsHTML = Object.keys(AVAILABLE_COLUMNS).map(colId => {
+                const col = AVAILABLE_COLUMNS[colId];
+                const isChecked = currentColumns.includes(colId);
+                return `
+                    <label class="flex items-center gap-2 p-2 rounded hover:bg-gray-100 cursor-pointer">
+                        <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" 
+                            data-col-id="${colId}" ${isChecked ? 'checked' : ''}>
+                        <span class="text-sm">${col.label}</span>
+                    </label>
+                `;
+            }).join('');
+            
+            selectorModal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+                    <div class="bg-gradient-to-r from-gray-700 to-gray-800 p-4 text-white">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                                </svg>
+                                Select Columns
+                            </h3>
+                            <button onclick="document.getElementById('columnSelectorModal').remove()" class="p-1 hover:bg-white/20 rounded">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4 max-h-[400px] overflow-y-auto">
+                        <div class="grid grid-cols-2 gap-1">
+                            ${columnsHTML}
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 border-t flex justify-between">
+                        <button onclick="resetModalColumnsToDefault('${modalType}')" class="px-4 py-2 text-gray-600 hover:text-gray-800">
+                            Reset to Default
+                        </button>
+                        <div class="flex gap-2">
+                            <button onclick="document.getElementById('columnSelectorModal').remove()" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
+                                Cancel
+                            </button>
+                            <button onclick="applyColumnSelection('${modalType}')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(selectorModal);
+        }
+        
+        function applyColumnSelection(modalType) {
+            const checkboxes = document.querySelectorAll('#columnSelectorModal input[type="checkbox"]:checked');
+            const selectedColumns = Array.from(checkboxes).map(cb => cb.dataset.colId);
+            
+            if (selectedColumns.length === 0) {
+                alert('Please select at least one column');
+                return;
+            }
+            
+            saveModalColumns(modalType, selectedColumns);
+            document.getElementById('columnSelectorModal').remove();
+            
+            // Refresh the current modal if it's open
+            if (currentModalData.length > 0) {
+                refreshCurrentModal();
+            }
+        }
+        
+        function resetModalColumnsToDefault(modalType) {
+            localStorage.removeItem('modalColumns_' + modalType);
+            document.getElementById('columnSelectorModal').remove();
+            if (currentModalData.length > 0) {
+                refreshCurrentModal();
+            }
+        }
+        
+        function refreshCurrentModal() {
+            // Re-trigger the current modal based on type
+            if (currentModalType) {
+                // Close and reopen with same type
+                const modal = document.getElementById('kpiModal');
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    if (currentModalType.startsWith('pr-') || currentModalType.startsWith('po-') || currentModalType === 'overall' || currentModalType === 'cycle-time') {
+                        showSLADetails(currentModalType);
+                    } else if (currentModalType === 'high' || currentModalType === 'low') {
+                        showValueBandDetails(currentModalType);
+                    }
+                }, 100);
+            }
+        }
+        
+        // ==========================================
+        // ENHANCED SLA DETAIL TABLE WITH COLUMN SELECTOR
+        // ==========================================
+        function generateEnhancedSLADetailTable(prs, slaType) {
             if (prs.length === 0) {
                 return '<p class="text-gray-500 text-center py-8">No data available</p>';
             }
@@ -4951,7 +5543,81 @@
             const lateCount = prs.length - onTimeCount;
             const onTimeRate = ((onTimeCount / prs.length) * 100).toFixed(1);
             
-            const summaryCards = `
+            // Get columns for this modal type
+            const columns = getModalColumns(slaType);
+            
+            // Generate dynamic headers
+            const headers = columns.map(colId => {
+                const col = AVAILABLE_COLUMNS[colId];
+                if (!col) return '';
+                return `<th class="text-${col.align || 'left'}" style="width: ${col.width || 'auto'}">${col.label}</th>`;
+            }).join('');
+            
+            // Generate dynamic rows
+            const rows = prs.slice(0, 100).map((pr, i) => {
+                const cells = columns.map(colId => {
+                    const col = AVAILABLE_COLUMNS[colId];
+                    if (!col) return '<td>-</td>';
+                    
+                    let value = pr[colId];
+                    let cellClass = `text-${col.align || 'left'}`;
+                    let cellContent = '-';
+                    
+                    if (value !== null && value !== undefined && value !== '') {
+                        switch (col.type) {
+                            case 'currency':
+                                cellContent = parseFloat(value).toLocaleString() + ' SAR';
+                                break;
+                            case 'status':
+                                const statusColors = {
+                                    'APPROVED': 'bg-green-100 text-green-800',
+                                    'RETURNED': 'bg-red-100 text-red-800',
+                                    'REJECTED': 'bg-gray-100 text-gray-800',
+                                    'IN PROCESS': 'bg-blue-100 text-blue-800',
+                                    'INCOMPLETE': 'bg-yellow-100 text-yellow-800'
+                                };
+                                cellContent = `<span class="px-2 py-0.5 rounded text-xs ${statusColors[value] || 'bg-gray-100'}">${value}</span>`;
+                                break;
+                            case 'number':
+                                if (colId === 'pr_to_po_days' || colId === 'processingDays') {
+                                    const isOnTime = pr.isOnTime;
+                                    cellContent = `<span class="px-2 py-0.5 rounded text-xs ${isOnTime ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${value} days</span>`;
+                                } else {
+                                    cellContent = value;
+                                }
+                                break;
+                            default:
+                                cellContent = col.truncate ? `<span class="truncate block max-w-[${col.width}]" title="${value}">${value}</span>` : value;
+                        }
+                    }
+                    
+                    return `<td class="${cellClass}">${cellContent}</td>`;
+                }).join('');
+                
+                return `<tr class="modal-row">${cells}</tr>`;
+            }).join('');
+            
+            return `
+                <!-- Info Icons Bar -->
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex gap-2">
+                        <button onclick="showSLARequirementInfo('${slaType}')" class="p-2 bg-blue-100 hover:bg-blue-200 rounded-lg text-blue-700 transition-colors flex items-center gap-1 text-sm" title="SLA Requirement">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>SLA Info</span>
+                        </button>
+                        <button onclick="showCalculationMethodInfo('${slaType}')" class="p-2 bg-purple-100 hover:bg-purple-200 rounded-lg text-purple-700 transition-colors flex items-center gap-1 text-sm" title="Calculation Method">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                            <span>Formula</span>
+                        </button>
+                    </div>
+                    <span class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Total: ${prs.length}</span>
+                </div>
+                
+                <!-- Summary Cards -->
                 <div class="grid grid-cols-3 gap-4 mb-4">
                     <div class="bg-green-50 rounded-lg p-3 text-center border border-green-200">
                         <p class="text-2xl font-bold text-green-600">${onTimeCount}</p>
@@ -4966,49 +5632,28 @@
                         <p class="text-xs ${parseFloat(onTimeRate) >= 95 ? 'text-green-700' : 'text-red-700'}">Compliance (Target: 95%)</p>
                     </div>
                 </div>
-            `;
-            
-            const rows = prs.slice(0, 100).map((pr, i) => {
-                const daysValue = slaType === 'pr-processing' ? pr.processingDays : pr.pr_to_po_days;
-                const isOnTime = pr.isOnTime;
                 
-                return `
-                    <tr>
-                        <td class="text-center">${i + 1}</td>
-                        <td class="font-medium">${pr.pr_num || '-'}</td>
-                        <td class="max-w-[120px] truncate">${pr.project || '-'}</td>
-                        <td class="max-w-[100px] truncate">${pr.vendor || '-'}</td>
-                        <td class="text-center">
-                            <span class="px-2 py-1 rounded text-xs font-medium ${isOnTime ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                ${daysValue} days
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            ${isOnTime ? '<span class="text-green-600">✓ On-Time</span>' : '<span class="text-red-600">✗ Late</span>'}
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-            
-            return `
-                ${summaryCards}
-                <div class="mb-4 flex justify-between items-center">
+                <!-- Toolbar -->
+                <div class="mb-4 flex flex-wrap gap-2 items-center justify-between">
                     <input type="text" id="modalSearch" placeholder="Search..." class="px-3 py-2 border rounded-lg text-sm w-48">
                     <div class="flex gap-2">
-                        <button onclick="exportModalToPDF()" class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm">PDF</button>
-                        <button onclick="exportToCSV()" class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm">CSV</button>
+                        <button onclick="showColumnSelector('${slaType}')" class="px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg text-sm flex items-center gap-1" title="Select Columns">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                            Columns
+                        </button>
+                        <button onclick="exportModalToPDF()" class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">PDF</button>
+                        <button onclick="exportToCSV()" class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">CSV</button>
                     </div>
                 </div>
-                <div class="scroll-container" style="max-height: 350px;">
+                
+                <!-- Table -->
+                <div class="scroll-container" style="max-height: 300px;">
                     <table class="data-table text-sm w-full" id="modalTable">
                         <thead>
                             <tr>
-                                <th class="text-center">#</th>
-                                <th>PR #</th>
-                                <th>Project</th>
-                                <th>Vendor</th>
-                                <th class="text-center">Days</th>
-                                <th class="text-center">SLA Status</th>
+                                ${headers}
                             </tr>
                         </thead>
                         <tbody>${rows}</tbody>
@@ -5018,6 +5663,12 @@
             `;
         }
         
+        // Keep old function for backward compatibility
+        function generateSLADetailTable(prs, slaType) {
+            return generateEnhancedSLADetailTable(prs, slaType);
+        }
+        
+        // Legacy function - redirect to new enhanced summary
         function generateSLASummaryContent(metrics) {
             return `
                 <div class="space-y-6">
