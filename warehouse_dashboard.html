@@ -439,6 +439,12 @@
                             Stock Movements
                         </span>
                     </button>
+                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('warehouses')">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            All Warehouses
+                        </span>
+                    </button>
                 </div>
             </div>
 
@@ -986,6 +992,164 @@
                     </div>
                 </div>
 
+                <!-- ========================================== -->
+                <!-- TAB 4: ALL WAREHOUSES -->
+                <!-- ========================================== -->
+                <div id="tab-warehouses" class="tab-content">
+                    <!-- Filters Section -->
+                    <div class="filter-section mb-6">
+                        <div class="flex flex-wrap gap-3 items-center">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Region</label>
+                                <select id="filterWHRegion" class="filter-select" onchange="applyWarehouseFilters()">
+                                    <option value="">All Regions</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Project Type</label>
+                                <select id="filterWHType" class="filter-select" onchange="applyWarehouseFilters()">
+                                    <option value="">All Types</option>
+                                </select>
+                            </div>
+                            <div class="flex-grow"></div>
+                            <button onclick="resetWarehouseFilters()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium transition-colors">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Warehouse KPIs -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
+                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-emerald-600 to-emerald-700 text-white">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="text-emerald-100 text-xs lg:text-sm mb-1">Total Warehouses</p>
+                                    <p class="text-2xl lg:text-3xl font-bold" id="wh-kpi-total">12</p>
+                                </div>
+                                <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
+                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+                                </div>
+                            </div>
+                            <p class="text-xs text-emerald-100">Across 5 regions</p>
+                        </div>
+
+                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-blue-600 to-blue-700 text-white">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="text-blue-100 text-xs lg:text-sm mb-1">Total Items</p>
+                                    <p class="text-2xl lg:text-3xl font-bold" id="wh-kpi-items">17.6K</p>
+                                </div>
+                                <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
+                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd"/></svg>
+                                </div>
+                            </div>
+                            <p class="text-xs text-blue-100">Unique material items</p>
+                        </div>
+
+                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-cyan-600 to-cyan-700 text-white">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="text-cyan-100 text-xs lg:text-sm mb-1">Total Received</p>
+                                    <p class="text-2xl lg:text-3xl font-bold" id="wh-kpi-received">2.77M</p>
+                                </div>
+                                <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
+                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                </div>
+                            </div>
+                            <p class="text-xs text-cyan-100">Total units received</p>
+                        </div>
+
+                        <div class="card kpi-card p-4 lg:p-6 bg-gradient-to-br from-green-500 to-green-600 text-white">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="text-green-100 text-xs lg:text-sm mb-1">Current Balance</p>
+                                    <p class="text-2xl lg:text-3xl font-bold" id="wh-kpi-balance">1.95M</p>
+                                </div>
+                                <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
+                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"/></svg>
+                                </div>
+                            </div>
+                            <p class="text-xs text-green-100">Units in stock</p>
+                        </div>
+                    </div>
+
+                    <!-- Regional Distribution -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="card p-4">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Warehouses by Region</h3>
+                            <div class="chart-container" style="height: 300px;">
+                                <canvas id="whRegionChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card p-4">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Warehouses by Project Type</h3>
+                            <div class="chart-container" style="height: 300px;">
+                                <canvas id="whTypeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Warehouses Table -->
+                    <div class="card p-4">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">All Warehouses Details</h3>
+                        <div class="scroll-container" style="max-height: 500px;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Warehouse Name</th>
+                                        <th>Project</th>
+                                        <th>Region</th>
+                                        <th>City</th>
+                                        <th>Type</th>
+                                        <th>Items</th>
+                                        <th>Received</th>
+                                        <th>Issued</th>
+                                        <th>Balance</th>
+                                        <th>Utilization</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="warehousesTableBody">
+                                    <!-- Data will be populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Low Stock Alerts -->
+                    <div class="card p-4 mt-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            Low Stock Alerts
+                        </h3>
+                        <div class="scroll-container" style="max-height: 300px;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Priority</th>
+                                        <th>Warehouse</th>
+                                        <th>Item</th>
+                                        <th>Balance</th>
+                                        <th>Project</th>
+                                        <th>Region</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lowStockTableBody">
+                                    <!-- Data will be populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Recent Movements -->
+                    <div class="card p-4 mt-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Recent Material Movements</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="recentMovementsGrid">
+                            <!-- Data will be populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -1040,21 +1204,36 @@
         };
 
         let warehouseData = null;
+        let inventoryData = null;
         let charts = {};
         let filteredSurplus = [];
         let filteredInventory = [];
+        let filteredWarehouses = [];
 
         // ==========================================
         // Data Loading
         // ==========================================
         async function loadData() {
             try {
+                // Load surplus transfers data
                 const response = await fetch('data/warehouse_data.json?v=' + Date.now());
-                if (!response.ok) throw new Error('Failed to load data');
+                if (!response.ok) throw new Error('Failed to load surplus data');
                 warehouseData = await response.json();
 
+                // Load warehouse inventory data
+                try {
+                    const invResponse = await fetch('data/warehouse_inventory.json?v=' + Date.now());
+                    if (invResponse.ok) {
+                        inventoryData = await invResponse.json();
+                    }
+                } catch (e) {
+                    console.warn('Warehouse inventory data not available:', e);
+                }
+
                 // Update last updated date
-                if (warehouseData.last_updated) {
+                if (inventoryData && inventoryData.metadata) {
+                    document.getElementById('lastUpdateDate').textContent = 'January 5, 2025';
+                } else if (warehouseData.last_updated) {
                     const date = new Date(warehouseData.last_updated);
                     document.getElementById('lastUpdateDate').textContent = date.toLocaleDateString('en-US', {
                         year: 'numeric', month: 'long', day: 'numeric'
@@ -1064,7 +1243,7 @@
                 initializeDashboard();
             } catch (error) {
                 console.error('Error loading data:', error);
-                alert('Failed to load warehouse data. Please check if data/warehouse_data.json exists.');
+                alert('Failed to load warehouse data. Please check if data files exist.');
             }
         }
 
@@ -1073,6 +1252,7 @@
             updateSurplusTab();
             updateInventoryTab();
             updateMovementsTab();
+            updateWarehousesTab();
         }
 
         // ==========================================
@@ -1910,6 +2090,202 @@
             document.getElementById('modalTitle').textContent = sla.name + ' - SLA Details';
             document.getElementById('modalContent').innerHTML = content;
             document.getElementById('detailsModal').classList.add('show');
+        }
+
+        // ==========================================
+        // Warehouses Tab Functions
+        // ==========================================
+        function updateWarehousesTab() {
+            if (!inventoryData) return;
+
+            // Update KPIs
+            const summary = inventoryData.summary;
+            document.getElementById('wh-kpi-total').textContent = summary.total_warehouses;
+            document.getElementById('wh-kpi-items').textContent = formatNumber(summary.total_items);
+            document.getElementById('wh-kpi-received').textContent = formatLargeNumber(summary.total_received);
+            document.getElementById('wh-kpi-balance').textContent = formatLargeNumber(summary.total_balance);
+
+            // Populate filters
+            populateSelect('filterWHRegion', inventoryData.filters.regions);
+            populateSelect('filterWHType', inventoryData.filters.project_types);
+
+            // Set filtered data
+            filteredWarehouses = [...inventoryData.warehouses];
+
+            // Update charts
+            updateWarehouseCharts();
+
+            // Update tables
+            updateWarehousesTable();
+            updateLowStockTable();
+            updateRecentMovementsGrid();
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toLocaleString();
+        }
+
+        function formatLargeNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
+            return num.toLocaleString();
+        }
+
+        function updateWarehouseCharts() {
+            if (!inventoryData) return;
+
+            // Region Chart
+            const regionData = inventoryData.by_region;
+            const regionLabels = Object.keys(regionData);
+            const regionValues = regionLabels.map(r => regionData[r].warehouses);
+
+            if (charts.whRegionChart) charts.whRegionChart.destroy();
+            const ctx1 = document.getElementById('whRegionChart');
+            if (ctx1) {
+                charts.whRegionChart = new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: regionLabels,
+                        datasets: [{
+                            data: regionValues,
+                            backgroundColor: ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'right' }
+                        }
+                    }
+                });
+            }
+
+            // Type Chart
+            const typeData = inventoryData.by_project_type;
+            const typeLabels = Object.keys(typeData);
+            const typeValues = typeLabels.map(t => typeData[t].count);
+
+            if (charts.whTypeChart) charts.whTypeChart.destroy();
+            const ctx2 = document.getElementById('whTypeChart');
+            if (ctx2) {
+                charts.whTypeChart = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: typeLabels,
+                        datasets: [{
+                            label: 'Warehouses',
+                            data: typeValues,
+                            backgroundColor: '#10B981',
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateWarehousesTable() {
+            const tbody = document.getElementById('warehousesTableBody');
+            if (!tbody || !filteredWarehouses) return;
+
+            tbody.innerHTML = filteredWarehouses.map((wh, i) => `
+                <tr class="hover:bg-gray-50">
+                    <td>${i + 1}</td>
+                    <td class="font-medium">${wh.name}</td>
+                    <td>${wh.project}</td>
+                    <td><span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">${wh.region}</span></td>
+                    <td>${wh.city}</td>
+                    <td><span class="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-700">${wh.type}</span></td>
+                    <td class="text-right">${wh.total_items.toLocaleString()}</td>
+                    <td class="text-right text-blue-600">${formatNumber(wh.total_received)}</td>
+                    <td class="text-right text-orange-600">${formatNumber(wh.total_issued)}</td>
+                    <td class="text-right font-semibold text-green-600">${formatNumber(wh.balance)}</td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <div class="w-16 bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: ${Math.min(wh.utilization_rate, 100)}%"></div>
+                            </div>
+                            <span class="text-xs text-gray-600">${wh.utilization_rate}%</span>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateLowStockTable() {
+            const tbody = document.getElementById('lowStockTableBody');
+            if (!tbody || !inventoryData) return;
+
+            const alerts = inventoryData.low_stock_alerts || [];
+            tbody.innerHTML = alerts.map(alert => `
+                <tr class="hover:bg-gray-50">
+                    <td>
+                        <span class="px-2 py-1 rounded-full text-xs ${alert.priority === 'High' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'}">
+                            ${alert.priority}
+                        </span>
+                    </td>
+                    <td class="font-medium">${alert.warehouse}</td>
+                    <td class="text-sm">${alert.item}</td>
+                    <td class="text-right font-semibold ${alert.balance < 20 ? 'text-red-600' : 'text-amber-600'}">${alert.balance}</td>
+                    <td>${alert.project}</td>
+                    <td><span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">${alert.region}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function updateRecentMovementsGrid() {
+            const grid = document.getElementById('recentMovementsGrid');
+            if (!grid || !inventoryData) return;
+
+            const movements = inventoryData.recent_movements || [];
+            grid.innerHTML = movements.map(mov => `
+                <div class="card p-4 border-l-4 ${mov.type === 'Received' ? 'border-green-500' : 'border-orange-500'}">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="px-2 py-1 rounded-full text-xs ${mov.type === 'Received' ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}">
+                            ${mov.type}
+                        </span>
+                        <span class="text-xs text-gray-500">${mov.date}</span>
+                    </div>
+                    <p class="font-medium text-sm text-gray-800">${mov.warehouse}</p>
+                    <p class="text-xs text-gray-500 mt-1">${mov.project}</p>
+                    <p class="text-lg font-bold text-gray-900 mt-2">${mov.items} items</p>
+                </div>
+            `).join('');
+        }
+
+        function applyWarehouseFilters() {
+            if (!inventoryData) return;
+
+            const region = document.getElementById('filterWHRegion').value;
+            const type = document.getElementById('filterWHType').value;
+
+            filteredWarehouses = inventoryData.warehouses.filter(wh => {
+                if (region && wh.region !== region) return false;
+                if (type && wh.type !== type) return false;
+                return true;
+            });
+
+            updateWarehousesTable();
+        }
+
+        function resetWarehouseFilters() {
+            document.getElementById('filterWHRegion').value = '';
+            document.getElementById('filterWHType').value = '';
+            filteredWarehouses = [...inventoryData.warehouses];
+            updateWarehousesTable();
         }
 
         // ==========================================
