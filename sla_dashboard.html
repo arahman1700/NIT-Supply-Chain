@@ -705,6 +705,171 @@
             </div>
         </div>
 
+        <!-- SLA Services Compliance Section (New - Like Procurement) -->
+        <div class="card mb-6 lg:mb-8 p-4 lg:p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <h2 class="text-lg font-bold text-gray-800">SLA Services Compliance</h2>
+                    <button onclick="showSLAInfo('services-overview')" class="text-blue-600 hover:text-blue-800 transition-colors" title="SLA Requirements">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                    </button>
+                    <button onclick="showCalculationInfo('services-overview')" class="text-purple-600 hover:text-purple-800 transition-colors" title="Calculation Method">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+                    </button>
+                </div>
+                <span class="text-xs text-gray-500">NIT-SCM-SLA-KSA-001</span>
+            </div>
+            
+            <!-- SLA Service Cards Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <!-- Equipment Request -->
+                <div class="card p-4 cursor-pointer hover:shadow-lg transition-all border-l-4 border-green-500" onclick="showSLAServiceDetails('equipment-request')">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-gray-500">Equipment Request</span>
+                        <button onclick="event.stopPropagation(); showSLAInfo('equipment-request')" class="text-blue-500 hover:text-blue-700">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                        </button>
+                    </div>
+                    <p class="text-2xl font-bold text-green-600" id="sla-equipment-request">98.5%</p>
+                    <p class="text-xs text-gray-500 mt-1">Target: ≥95% within 1 day</p>
+                    <div class="mt-2 flex items-center text-xs text-green-600">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        <span>Meeting Target</span>
+                    </div>
+                </div>
+
+                <!-- Equipment Delivery -->
+                <div class="card p-4 cursor-pointer hover:shadow-lg transition-all border-l-4 border-amber-500" onclick="showSLAServiceDetails('equipment-delivery')">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-gray-500">Equipment Delivery</span>
+                        <button onclick="event.stopPropagation(); showSLAInfo('equipment-delivery')" class="text-blue-500 hover:text-blue-700">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                        </button>
+                    </div>
+                    <p class="text-2xl font-bold text-amber-600" id="sla-equipment-delivery">88.0%</p>
+                    <p class="text-xs text-gray-500 mt-1">Target: ≥95% within 2-3 days</p>
+                    <div class="mt-2 flex items-center text-xs text-amber-600">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clip-rule="evenodd"/></svg>
+                        <span>7% Below Target</span>
+                    </div>
+                </div>
+
+                <!-- Stock Confirmation -->
+                <div class="card p-4 cursor-pointer hover:shadow-lg transition-all border-l-4 border-cyan-500" onclick="showSLAServiceDetails('stock-confirmation')">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-gray-500">Stock Confirmation</span>
+                        <button onclick="event.stopPropagation(); showSLAInfo('stock-confirmation')" class="text-blue-500 hover:text-blue-700">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                        </button>
+                    </div>
+                    <p class="text-xl font-bold text-cyan-600" id="sla-stock-confirmation">Process Applied</p>
+                    <p class="text-xs text-gray-500 mt-1">Target: ≥95% within 1 day</p>
+                    <div class="mt-2 flex items-center text-xs text-cyan-600">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+                        <span>Under Improvement</span>
+                    </div>
+                </div>
+
+                <!-- Material Movement -->
+                <div class="card p-4 cursor-pointer hover:shadow-lg transition-all border-l-4 border-green-500" onclick="showSLAServiceDetails('material-movement')">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-gray-500">Material Movement</span>
+                        <button onclick="event.stopPropagation(); showSLAInfo('material-movement')" class="text-blue-500 hover:text-blue-700">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                        </button>
+                    </div>
+                    <p class="text-2xl font-bold text-green-600" id="sla-material-movement">95.7%</p>
+                    <p class="text-xs text-gray-500 mt-1">Target: ≥95% within 2 days</p>
+                    <div class="mt-2 flex items-center text-xs text-green-600">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        <span>Meeting Target</span>
+                    </div>
+                </div>
+
+                <!-- Scrap Removal -->
+                <div class="card p-4 cursor-pointer hover:shadow-lg transition-all border-l-4 border-blue-500" onclick="showSLAServiceDetails('scrap-removal')">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-gray-500">Scrap Removal</span>
+                        <button onclick="event.stopPropagation(); showSLAInfo('scrap-removal')" class="text-blue-500 hover:text-blue-700">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                        </button>
+                    </div>
+                    <p class="text-2xl font-bold text-blue-600" id="sla-scrap-removal">97.8%</p>
+                    <p class="text-xs text-gray-500 mt-1">Target: ≥95% within 3 days</p>
+                    <div class="mt-2 flex items-center text-xs text-green-600">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        <span>Meeting Target</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scrap Summary Section (New) -->
+        <div class="card mb-6 lg:mb-8 p-4 lg:p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <h2 class="text-lg font-bold text-gray-800">Scrap Removal Summary</h2>
+                    <button onclick="showSLAInfo('scrap-summary')" class="text-blue-600 hover:text-blue-800 transition-colors" title="SLA Requirements">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                    </button>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="exportScrapToExcel()" class="export-btn export-excel text-xs">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M3 3h14v14H3V3zm2 2v10h10V5H5z"/></svg>
+                        Excel
+                    </button>
+                    <button onclick="exportScrapToPDF()" class="export-btn export-pdf text-xs">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12V6h-4V2H4v16zm8-16l4 4h-4V2z"/></svg>
+                        PDF
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <!-- Total Jobs -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl cursor-pointer hover:shadow-md transition-all" onclick="showScrapDetails('total')">
+                    <p class="text-xs text-blue-600 font-medium mb-1">Total Jobs</p>
+                    <p class="text-2xl font-bold text-blue-800" id="scrap-total-jobs">306</p>
+                    <p class="text-xs text-blue-500 mt-1">All scrap operations</p>
+                </div>
+
+                <!-- Completed -->
+                <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl cursor-pointer hover:shadow-md transition-all" onclick="showScrapDetails('completed')">
+                    <p class="text-xs text-green-600 font-medium mb-1">Completed</p>
+                    <p class="text-2xl font-bold text-green-800" id="scrap-completed">306</p>
+                    <p class="text-xs text-green-500 mt-1">100% completion</p>
+                </div>
+
+                <!-- Cable Scrap -->
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl cursor-pointer hover:shadow-md transition-all" onclick="showScrapDetails('cable')">
+                    <p class="text-xs text-purple-600 font-medium mb-1">Cable Scrap</p>
+                    <p class="text-2xl font-bold text-purple-800" id="scrap-cable-count">156</p>
+                    <p class="text-xs text-purple-500 mt-1" id="scrap-cable-amount">673,140 SAR</p>
+                </div>
+
+                <!-- Wood Scrap -->
+                <div class="bg-gradient-to-br from-amber-50 to-amber-100 p-4 rounded-xl cursor-pointer hover:shadow-md transition-all" onclick="showScrapDetails('wood')">
+                    <p class="text-xs text-amber-600 font-medium mb-1">Wood Scrap</p>
+                    <p class="text-2xl font-bold text-amber-800" id="scrap-wood-count">150</p>
+                    <p class="text-xs text-amber-500 mt-1" id="scrap-wood-amount">407,220 SAR</p>
+                </div>
+
+                <!-- Total Amount -->
+                <div class="bg-gradient-to-br from-[#2E3192]/10 to-[#0E2841]/10 p-4 rounded-xl cursor-pointer hover:shadow-md transition-all" onclick="showScrapDetails('amount')">
+                    <p class="text-xs text-[#2E3192] font-medium mb-1">Total Amount</p>
+                    <p class="text-xl font-bold text-[#0E2841]" id="scrap-total-amount">1.08M</p>
+                    <p class="text-xs text-gray-500 mt-1">SAR - All scrap</p>
+                </div>
+
+                <!-- SLA Rate -->
+                <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 p-4 rounded-xl">
+                    <p class="text-xs text-emerald-600 font-medium mb-1">SLA Rate</p>
+                    <p class="text-2xl font-bold text-emerald-800" id="scrap-sla-rate">97.8%</p>
+                    <p class="text-xs text-emerald-500 mt-1">Target: ≥95%</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Secondary KPIs -->
         <div id="sla-kpi-summary" class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6 lg:mb-8">
             <div class="card p-3 lg:p-4 text-center cursor-pointer hover:shadow-lg transition-shadow" onclick="showOrdersModal('done')">
@@ -2642,6 +2807,491 @@
 
             doc.save(`${currentModalData.id}_report_${new Date().toISOString().split('T')[0]}.pdf`);
         }
+
+        // ===== NEW SLA Functions =====
+        
+        // SLA Info Data
+        const SLA_INFO = {
+            'services-overview': {
+                title: 'SLA Services Overview',
+                document: 'NIT-SCM-SLA-KSA-001',
+                description: 'Service Level Agreement for Supply Chain Management Operations',
+                services: [
+                    { name: 'Equipment Request', standard: '≤1 Business Day', target: '≥95%' },
+                    { name: 'Equipment Delivery', standard: '≤2-3 Business Days', target: '≥95%' },
+                    { name: 'Stock Confirmation', standard: '≤1 Business Day', target: '≥95%' },
+                    { name: 'Material Movement', standard: '≤2 Business Days', target: '≥95%' },
+                    { name: 'Scrap Removal', standard: '≤3 Business Days', target: '≥95%' },
+                    { name: 'Storage Compliance', standard: 'Audit Based', target: '≥98%' },
+                    { name: 'Incident Reporting', standard: 'Immediate', target: '100%' }
+                ]
+            },
+            'equipment-request': {
+                title: 'Equipment Request SLA',
+                document: 'NIT-SCM-SLA-KSA-001',
+                standard: '≤1 Business Day from approved MenaME request',
+                target: '≥95%',
+                description: 'Equipment requests must be approved within 1 business day',
+                calculation: 'On-Time Rate = (Requests approved within 1 day / Total Requests) × 100',
+                columns: ['request_date', 'approval_date', 'duration']
+            },
+            'equipment-delivery': {
+                title: 'Equipment Delivery SLA',
+                document: 'NIT-SCM-SLA-KSA-001',
+                standard: '≤2 days (in-city) / ≤3 days (out-of-city)',
+                target: '≥95%',
+                description: 'Equipment delivery from approval to site',
+                calculation: 'On-Time Rate = (Deliveries within threshold / Total Deliveries) × 100',
+                columns: ['request_date', 'actual_date', 'duration', 'location_type']
+            },
+            'stock-confirmation': {
+                title: 'Stock Confirmation SLA',
+                document: 'NIT-SCM-SLA-KSA-001',
+                standard: '≤1 Business Day from receipt of request',
+                target: '≥95%',
+                description: 'Reply to stock confirmation requests within 1 business day',
+                calculation: 'On-Time Rate = (SC replies within 1 day / Total SC requests) × 100',
+                columns: ['request_date', 'reply_date', 'response_time_hours']
+            },
+            'material-movement': {
+                title: 'Material Movement SLA',
+                document: 'NIT-SCM-SLA-KSA-001',
+                standard: '≤2 Business Days from approved request',
+                target: '≥95%',
+                description: 'Material transfer/delivery within 2 business days of approval',
+                calculation: 'On-Time Rate = (Transfers within 2 days / Total Transfers) × 100',
+                columns: ['approval_date', 'delivery_date', 'delivery_time_days']
+            },
+            'scrap-removal': {
+                title: 'Scrap Removal SLA',
+                document: 'NIT-SCM-SLA-KSA-001',
+                standard: '≤3 Business Days from request',
+                target: '≥95%',
+                description: 'Scrap removal operations within 3 business days',
+                calculation: 'On-Time Rate = (Removals within 3 days / Total Removals) × 100',
+                columns: ['request_date', 'complete_date', 'days_to_complete']
+            },
+            'scrap-summary': {
+                title: 'Scrap Removal Operations',
+                document: 'NIT-SCM-SLA-KSA-001',
+                standard: '≤3 Business Days',
+                target: '≥95%',
+                description: 'Summary of all cable and wood scrap removal operations',
+                dataSource: 'Smartsheet - Cable & Wood Scrap Removal sheets',
+                metrics: ['Total Jobs', 'Completed', 'Total Amount', 'Cable vs Wood breakdown']
+            }
+        };
+
+        // Scrap Data Store
+        let scrapData = null;
+
+        // Load Scrap Data
+        async function loadScrapData() {
+            try {
+                const response = await fetch('data/scrap_removal_data.json');
+                if (response.ok) {
+                    scrapData = await response.json();
+                    updateScrapKPIs();
+                }
+            } catch (error) {
+                console.log('Scrap data not loaded:', error);
+            }
+        }
+
+        // Update Scrap KPIs
+        function updateScrapKPIs() {
+            if (!scrapData || !scrapData.summary) return;
+
+            const s = scrapData.summary;
+            
+            document.getElementById('scrap-total-jobs').textContent = s.total_jobs.toLocaleString();
+            document.getElementById('scrap-completed').textContent = s.completed.toLocaleString();
+            document.getElementById('scrap-cable-count').textContent = s.cable_jobs.toLocaleString();
+            document.getElementById('scrap-wood-count').textContent = s.wood_jobs.toLocaleString();
+            document.getElementById('scrap-cable-amount').textContent = (s.cable_amount / 1000).toFixed(0) + 'K SAR';
+            document.getElementById('scrap-wood-amount').textContent = (s.wood_amount / 1000).toFixed(0) + 'K SAR';
+            document.getElementById('scrap-total-amount').textContent = (s.total_amount / 1000000).toFixed(2) + 'M';
+            document.getElementById('scrap-sla-rate').textContent = s.sla_rate + '%';
+        }
+
+        // Show SLA Info Modal
+        function showSLAInfo(serviceId) {
+            const info = SLA_INFO[serviceId];
+            if (!info) return;
+
+            document.getElementById('modalTitle').textContent = info.title;
+            document.getElementById('modalSubtitle').textContent = 'SLA Requirement - ' + info.document;
+
+            let bodyHtml = `
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                    <p class="font-semibold text-blue-800">Standard: ${info.standard}</p>
+                    <p class="text-sm text-blue-600 mt-1">Target: ${info.target}</p>
+                </div>
+                <p class="text-gray-600 mb-4">${info.description}</p>
+            `;
+
+            if (info.calculation) {
+                bodyHtml += `
+                    <div class="bg-purple-50 p-4 rounded-lg mb-4">
+                        <p class="font-semibold text-purple-800 mb-2">Calculation Method:</p>
+                        <code class="text-sm text-purple-600">${info.calculation}</code>
+                    </div>
+                `;
+            }
+
+            if (info.columns) {
+                bodyHtml += `
+                    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                        <p class="font-semibold text-gray-800 mb-2">Data Columns Used:</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${info.columns.map(col => `<span class="bg-gray-200 px-2 py-1 rounded text-xs">${col}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (info.services) {
+                bodyHtml += `
+                    <h4 class="font-bold text-gray-800 mb-3">All Services:</h4>
+                    <div class="overflow-x-auto">
+                        <table class="data-table text-sm">
+                            <thead>
+                                <tr>
+                                    <th>Service</th>
+                                    <th>Standard</th>
+                                    <th>Target</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${info.services.map(s => `
+                                    <tr>
+                                        <td class="font-medium">${s.name}</td>
+                                        <td>${s.standard}</td>
+                                        <td>${s.target}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            document.getElementById('modalBody').innerHTML = bodyHtml;
+            document.getElementById('detailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Show Calculation Info Modal
+        function showCalculationInfo(serviceId) {
+            const info = SLA_INFO[serviceId];
+            if (!info) return;
+
+            document.getElementById('modalTitle').textContent = 'Calculation Method';
+            document.getElementById('modalSubtitle').textContent = info.title;
+
+            let bodyHtml = `
+                <div class="bg-purple-50 p-4 rounded-lg mb-4">
+                    <p class="font-semibold text-purple-800 mb-2">Formula:</p>
+                    <code class="text-sm text-purple-600 block bg-white p-2 rounded">
+                        On-Time Rate = (On-Time Count / Total Count) × 100
+                    </code>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <p class="font-semibold text-green-800">On-Time Definition</p>
+                        <p class="text-sm text-green-600 mt-1">${info.standard}</p>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <p class="font-semibold text-blue-800">Target</p>
+                        <p class="text-sm text-blue-600 mt-1">${info.target}</p>
+                    </div>
+                </div>
+            `;
+
+            if (info.services) {
+                bodyHtml += `
+                    <h4 class="font-bold text-gray-800 mb-3">Service Thresholds:</h4>
+                    <div class="space-y-2">
+                        ${info.services.map(s => `
+                            <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                                <span class="font-medium">${s.name}</span>
+                                <span class="text-sm text-gray-600">${s.standard}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            document.getElementById('modalBody').innerHTML = bodyHtml;
+            document.getElementById('detailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Show SLA Service Details
+        function showSLAServiceDetails(serviceId) {
+            const info = SLA_INFO[serviceId];
+            if (!info) {
+                showServiceDetails(serviceId.replace('-', '_'));
+                return;
+            }
+
+            document.getElementById('modalTitle').textContent = info.title;
+            document.getElementById('modalSubtitle').textContent = 'Service Performance Details';
+
+            let currentRate = '0%';
+            let status = 'unknown';
+            
+            // Get current rate from DOM
+            const rateElement = document.getElementById('sla-' + serviceId);
+            if (rateElement) {
+                currentRate = rateElement.textContent;
+                const rateNum = parseFloat(currentRate);
+                const targetNum = parseFloat(info.target);
+                status = rateNum >= targetNum ? 'Meeting Target' : 'Below Target';
+            }
+
+            let bodyHtml = `
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label>Current Rate</label>
+                        <div class="value">${currentRate}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Target</label>
+                        <div class="value">${info.target}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Time Standard</label>
+                        <div class="value">${info.standard}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Status</label>
+                        <div class="value">${status}</div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                    <p class="text-sm text-blue-800">${info.description}</p>
+                </div>
+            `;
+
+            if (info.calculation) {
+                bodyHtml += `
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="font-semibold text-gray-800 mb-2">Calculation:</p>
+                        <code class="text-xs text-gray-600">${info.calculation}</code>
+                    </div>
+                `;
+            }
+
+            document.getElementById('modalBody').innerHTML = bodyHtml;
+            document.getElementById('detailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Show Scrap Details Modal
+        function showScrapDetails(type) {
+            if (!scrapData || !scrapData.records) {
+                alert('Loading scrap data...');
+                return;
+            }
+
+            let records = scrapData.records;
+            let titleText = 'Scrap Operations';
+            let subtitleText = '';
+
+            switch(type) {
+                case 'total':
+                    titleText = 'All Scrap Operations';
+                    subtitleText = 'Complete list of all scrap removal jobs';
+                    break;
+                case 'completed':
+                    titleText = 'Completed Operations';
+                    records = records.filter(r => r.status === 'Completed');
+                    subtitleText = 'All completed scrap removal jobs';
+                    break;
+                case 'cable':
+                    titleText = 'Cable Scrap Operations';
+                    records = records.filter(r => r.type === 'Cable');
+                    subtitleText = 'Cable scrap removal jobs only';
+                    break;
+                case 'wood':
+                    titleText = 'Wood Scrap Operations';
+                    records = records.filter(r => r.type === 'Wood');
+                    subtitleText = 'Wood scrap removal jobs only';
+                    break;
+                case 'amount':
+                    titleText = 'Operations by Amount';
+                    records = records.sort((a, b) => b.total_amount - a.total_amount);
+                    subtitleText = 'Sorted by total amount';
+                    break;
+            }
+
+            currentModalData = { type: 'scrap', records: records };
+
+            document.getElementById('modalTitle').textContent = titleText;
+            document.getElementById('modalSubtitle').textContent = subtitleText + ` (${records.length} records)`;
+            document.getElementById('modalBody').innerHTML = generateScrapTable(records);
+            document.getElementById('detailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Generate Scrap Table
+        function generateScrapTable(records) {
+            if (!records || records.length === 0) {
+                return '<p class="text-center py-8 text-gray-500">No records found</p>';
+            }
+
+            const totalAmount = records.reduce((sum, r) => sum + (r.total_amount || 0), 0);
+
+            const rows = records.slice(0, 100).map((r, i) => {
+                const statusClass = r.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800';
+                const typeClass = r.type === 'Cable' ? 'bg-purple-100 text-purple-800' : 'bg-amber-100 text-amber-800';
+                return `
+                    <tr>
+                        <td class="text-center text-gray-500">${i + 1}</td>
+                        <td><span class="px-2 py-1 rounded text-xs ${typeClass}">${r.type || '-'}</span></td>
+                        <td>${r.request_date || '-'}</td>
+                        <td class="max-w-[150px] truncate" title="${r.pickup_location}">${r.pickup_location || '-'}</td>
+                        <td>${r.equipment_name || '-'}</td>
+                        <td class="text-right font-medium">${r.total_amount ? r.total_amount.toLocaleString() : '-'}</td>
+                        <td><span class="px-2 py-1 rounded text-xs ${statusClass}">${r.status || '-'}</span></td>
+                    </tr>
+                `;
+            }).join('');
+
+            return `
+                <div class="mb-4 p-3 bg-gray-50 rounded-lg flex justify-between items-center">
+                    <span class="text-sm font-medium">Total Amount: <span class="text-[#2E3192]">${totalAmount.toLocaleString()} SAR</span></span>
+                    <div class="flex gap-2">
+                        <button onclick="exportScrapToExcel()" class="export-btn export-excel text-xs">Excel</button>
+                        <button onclick="exportScrapToPDF()" class="export-btn export-pdf text-xs">PDF</button>
+                    </div>
+                </div>
+                <div class="scroll-container" style="max-height: 400px;">
+                    <table class="data-table text-sm w-full">
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Location</th>
+                                <th>Equipment</th>
+                                <th class="text-right">Amount (SAR)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+                ${records.length > 100 ? '<p class="text-xs text-gray-400 mt-2 text-center">Showing first 100 records</p>' : ''}
+            `;
+        }
+
+        // Export Scrap to Excel
+        function exportScrapToExcel() {
+            if (!scrapData || !scrapData.records) return;
+
+            const wb = XLSX.utils.book_new();
+
+            // Summary Sheet
+            const summarySheet = [
+                ['Scrap Removal Summary'],
+                ['Generated: ' + new Date().toLocaleString()],
+                [''],
+                ['Metric', 'Value'],
+                ['Total Jobs', scrapData.summary.total_jobs],
+                ['Completed', scrapData.summary.completed],
+                ['Cable Jobs', scrapData.summary.cable_jobs],
+                ['Wood Jobs', scrapData.summary.wood_jobs],
+                ['Total Amount (SAR)', scrapData.summary.total_amount],
+                ['Cable Amount (SAR)', scrapData.summary.cable_amount],
+                ['Wood Amount (SAR)', scrapData.summary.wood_amount],
+                ['SLA Rate', scrapData.summary.sla_rate + '%']
+            ];
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summarySheet), 'Summary');
+
+            // Records Sheet
+            const headers = ['ID', 'Type', 'Date', 'Description', 'Pickup Location', 'Drop Location', 'Equipment', 'Status', 'Amount (SAR)'];
+            const recordsData = [headers];
+            scrapData.records.forEach(r => {
+                recordsData.push([
+                    r.id, r.type, r.request_date, r.description, r.pickup_location, 
+                    r.drop_location, r.equipment_name, r.status, r.total_amount
+                ]);
+            });
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(recordsData), 'Records');
+
+            XLSX.writeFile(wb, `NESMA_Scrap_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+
+        // Export Scrap to PDF
+        function exportScrapToPDF() {
+            if (!scrapData || !scrapData.records) return;
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+
+            // Header
+            doc.setFontSize(18);
+            doc.setTextColor(46, 49, 146);
+            doc.text('NESMA Scrap Removal Report', 105, 20, { align: 'center' });
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text('Generated: ' + new Date().toLocaleString(), 105, 28, { align: 'center' });
+
+            // Summary Table
+            doc.setFontSize(12);
+            doc.setTextColor(46, 49, 146);
+            doc.text('Summary', 14, 40);
+
+            doc.autoTable({
+                startY: 45,
+                head: [['Metric', 'Value']],
+                body: [
+                    ['Total Jobs', scrapData.summary.total_jobs.toString()],
+                    ['Completed', scrapData.summary.completed.toString()],
+                    ['Cable Jobs', scrapData.summary.cable_jobs.toString()],
+                    ['Wood Jobs', scrapData.summary.wood_jobs.toString()],
+                    ['Total Amount', scrapData.summary.total_amount.toLocaleString() + ' SAR'],
+                    ['SLA Rate', scrapData.summary.sla_rate + '%']
+                ],
+                theme: 'grid',
+                headStyles: { fillColor: [46, 49, 146] }
+            });
+
+            // Records Table (first 30)
+            doc.setFontSize(12);
+            doc.setTextColor(46, 49, 146);
+            doc.text('Recent Operations (Top 30)', 14, doc.lastAutoTable.finalY + 15);
+
+            const recordsForPDF = scrapData.records.slice(0, 30).map(r => [
+                r.type, r.request_date || '-', 
+                (r.pickup_location || '-').substring(0, 20),
+                r.equipment_name || '-',
+                (r.total_amount || 0).toLocaleString()
+            ]);
+
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 20,
+                head: [['Type', 'Date', 'Location', 'Equipment', 'Amount']],
+                body: recordsForPDF,
+                theme: 'grid',
+                headStyles: { fillColor: [128, 209, 233] },
+                styles: { fontSize: 8 }
+            });
+
+            // Footer
+            doc.setFontSize(8);
+            doc.setTextColor(150);
+            doc.text('NESMA Infrastructure & Technology - Supply Chain Performance System', 105, 285, { align: 'center' });
+
+            doc.save(`NESMA_Scrap_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+        }
+
+        // Load scrap data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadScrapData();
+        });
     </script>
 </body>
 </html>
