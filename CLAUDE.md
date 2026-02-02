@@ -1,7 +1,9 @@
 # NESMA Dashboard - Development Guide
 
 ## Project Overview
-NESMA Supply Chain Management Portal - A dashboard system for logistics, procurement, and warehouse management.
+NESMA Supply Chain Management Portal - Dashboard system for procurement management with SLA tracking.
+
+**Current Status:** Procurement dashboard is the main template. Other dashboards (Transportation, Payments, SLA, Warehouse, Fleet, Maintenance) are planned for future development.
 
 ## Quick Start
 ```bash
@@ -12,134 +14,214 @@ python -m http.server 8000
 open http://localhost:8000
 ```
 
-## Architecture
+## Current Architecture
 
 ### Folder Structure
 ```
-├── js/
-│   ├── core/           # Config, translations
-│   ├── components/     # Reusable classes
-│   ├── pages/          # Page-specific code
-│   └── utils/          # Helpers
-├── css/
-│   ├── base/           # Variables, reset
-│   └── components/     # Component styles
-├── data/               # JSON data files
-├── assets/             # Static assets
-└── scripts/            # Python scripts
+nesma-sla-dashboard/
+├── index.html                    # Main portal (entry point)
+├── procurement_dashboard.html    # Procurement dashboard (TEMPLATE)
+│
+├── data/                         # JSON data files
+│   ├── pr_data.json             # Procurement data (6,738 PRs)
+│   └── vendor_data.json         # Vendor evaluation data (45 vendors)
+│
+├── assets/                       # Static assets
+│   ├── nesma-theme.css          # Main theme (used by all pages)
+│   ├── logo-white.svg           # NESMA logo (white)
+│   └── nit-logistics.png        # NIT Logistics image
+│
+├── scripts/                      # Python scripts
+│   ├── export_procurement_data.py
+│   └── export_warehouse_data.py
+│
+├── attachments/                  # Document attachments
+│   └── vendor_evaluations/      # Vendor evaluation PDFs
+│
+└── .github/                      # GitHub configuration
+    └── workflows/               # GitHub Actions
 ```
 
-### Core Components
+### Active Pages
+| File | Description | Status |
+|------|-------------|--------|
+| `index.html` | Main portal | Active |
+| `procurement_dashboard.html` | PR Reports & Vendor Evaluation | Active (Template) |
 
-#### DataService (`js/components/DataService.js`)
-- Data fetching with caching
-- Methods: `loadTransportation()`, `loadPayments()`, `loadProcurement()`, `loadVendors()`, `loadWarehouse()`
+### Planned Dashboards (To Build)
+- Transportation Dashboard
+- Payments Dashboard  
+- SLA Dashboard
+- Warehouse Dashboard
+- Fleet Dashboard
+- Maintenance Dashboard
 
-#### ChartManager (`js/components/ChartManager.js`)
-- Chart creation and management
-- Methods: `createDoughnut()`, `createBar()`, `createLine()`, `createPie()`
+## Procurement Dashboard Features
 
-#### FilterManager (`js/components/FilterManager.js`)
-- Filter state management
-- Methods: `init()`, `applyFilters()`, `reset()`, `search()`
+The procurement dashboard serves as the **template** for future dashboards. Key features:
 
-#### TableManager (`js/components/TableManager.js`)
-- Pagination and table rendering
-- Methods: `setRecords()`, `goToPage()`, `renderTable()`
+### 1. SLA Compliance Section
+- Traffic light indicators (Green/Yellow/Red)
+- PR Processing SLA (≤2 days target)
+- PO Issuance SLA (≤30 days high value, ≤21 days standard)
+- Overall compliance tracking
 
-### Configuration
+### 2. Multiple Tabs
+- **PR Return Report**: PR status, return analysis, aging
+- **PR to PO Report**: Conversion tracking, cycle time
+- **Vendor Evaluation**: Vendor scores, categories
 
-Edit `js/core/config.js`:
-```javascript
-NesmaConfig.api.endpoints.myData = 'data/my_data.json';
-NesmaConfig.features.enableExport = true;
-```
+### 3. Interactive Features
+- Filters: Year, Month, Status, Vendor, Project
+- Clickable KPIs with detail modals
+- Export: PDF & Excel
+- Settings modal for customization
 
-### Adding New Dashboard
-
-1. Create HTML file based on existing template
-2. Import required scripts:
-```html
-<script src="js/core/config.js"></script>
-<script src="js/core/translations.js"></script>
-<script src="js/utils/helpers.js"></script>
-<script src="js/components/DataService.js"></script>
-<script src="js/components/ChartManager.js"></script>
-<script src="js/components/FilterManager.js"></script>
-<script src="js/components/TableManager.js"></script>
-<script src="js/components/UIComponents.js"></script>
-<script src="js/pages/BaseDashboard.js"></script>
-```
-
-3. Extend BaseDashboard:
-```javascript
-class MyDashboard extends BaseDashboard {
-    constructor() {
-        super({ dataUrl: 'data/my_data.json' });
-    }
-    
-    getFilterConfig() {
-        return {
-            project: { field: 'project', type: 'exact' },
-            dateFrom: { field: 'date', type: 'date-from' }
-        };
-    }
-    
-    updateKPIs() {
-        // Custom KPI logic
-    }
-}
-```
+### 4. Charts (Chart.js)
+- Monthly trends
+- Status distribution
+- Aging analysis
+- Cycle time distribution
 
 ## Data Format
 
-### Expected JSON Structure
+### PR Data Structure (`data/pr_data.json`)
 ```json
 {
-    "metadata": {
-        "last_update": "2025-01-06T10:00:00"
-    },
-    "filters": {
-        "projects": ["Project A", "Project B"],
-        "suppliers": ["Supplier 1", "Supplier 2"]
-    },
-    "records": [
-        { "id": 1, "project": "Project A", "amount": 1000 }
-    ]
+  "last_updated": "2026-02-02T13:28:41",
+  "summary": {
+    "total_prs": 6738,
+    "total_approved": 5219,
+    "total_returned": 767,
+    "avg_pr_to_po_days": 47.5
+  },
+  "monthly": {
+    "2025-01": { "approved": 191, "returned": 26, "rejected": 21 }
+  },
+  "filters": {
+    "projects": ["Project A", "Project B"],
+    "vendors": ["Vendor 1", "Vendor 2"]
+  },
+  "records": [
+    {
+      "pr_num": "PR-001",
+      "project": "Project A",
+      "vendor": "Vendor 1",
+      "status": "APPROVED",
+      "pr_value": 50000,
+      "pr_to_po_days": 15
+    }
+  ]
+}
+```
+
+### Vendor Data Structure (`data/vendor_data.json`)
+```json
+{
+  "summary": {
+    "total_vendors": 45,
+    "average_score": 60.2
+  },
+  "vendors": [
+    {
+      "name": "Vendor Name",
+      "category": "Electromechnical",
+      "score": 84.7,
+      "attachments": []
+    }
+  ]
 }
 ```
 
 ## Styling
 
-### CSS Variables
-Use variables from `css/base/variables.css`:
+### Theme File
+All styling is in `assets/nesma-theme.css`. Key CSS variables:
 ```css
-.my-class {
-    color: var(--nesma-primary);
-    background: var(--gradient-primary);
-    border-radius: var(--radius-lg);
+:root {
+    --nesma-primary: #2E3192;
+    --nesma-secondary: #80D1E9;
+    --nesma-dark: #0E2841;
 }
 ```
 
 ### Badge Classes
-- `badge-success` - Green (completed/approved)
-- `badge-warning` - Yellow (pending/in-progress)
-- `badge-danger` - Red (rejected/failed)
-- `badge-info` - Blue (informational)
+- `.badge-success` - Green (completed/approved)
+- `.badge-warning` - Yellow (pending/in-progress)  
+- `.badge-danger` - Red (rejected/failed)
+- `.badge-info` - Blue (informational)
+
+### SLA Classes
+- `.sla-green` - Meeting target (≥95%)
+- `.sla-yellow` - Warning (85-94%)
+- `.sla-red` - Below target (<85%)
+
+## Adding New Dashboard
+
+1. **Copy** `procurement_dashboard.html` as template
+2. **Update** title, header, data URL
+3. **Modify** tab structure for new content
+4. **Create** data JSON file in `data/`
+5. **Update** `index.html` to link new dashboard
+
+### Template Structure
+```html
+<!-- Header with back button and title -->
+<header class="nesma-header">...</header>
+
+<!-- Tab Navigation -->
+<div class="card">
+    <div class="border-b">
+        <button class="tab-btn active" onclick="switchTab('tab1')">Tab 1</button>
+        <button class="tab-btn" onclick="switchTab('tab2')">Tab 2</button>
+    </div>
+    
+    <!-- Tab Content -->
+    <div id="tab-tab1" class="tab-content active">
+        <!-- Filters -->
+        <div class="filter-section">...</div>
+        
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-4">...</div>
+        
+        <!-- Charts -->
+        <div class="chart-container">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Data loading
+    async function loadData() {
+        const response = await fetch('data/my_data.json');
+        const data = await response.json();
+        // Process and display
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', loadData);
+</script>
+```
 
 ## Commands
 
-### Deploy
+### Deploy to GitHub Pages
 ```bash
-git add . && git commit -m "Update" && git push origin main
+git add .
+git commit -m "Update dashboard"
+git push origin main
 ```
 
-### Update Data
-Python scripts in `/scripts/` for Smartsheet sync.
+### Local Development
+```bash
+python -m http.server 8000
+```
 
-## Best Practices
+## Live URL
+https://arahman1700.github.io/nesma-sla-dashboard/
 
-1. **Use helpers**: `NesmaHelpers.formatNumber()`, `NesmaHelpers.formatCurrency()`
-2. **Use chartManager**: Don't create charts directly, use `chartManager.createBar()`
-3. **Use translations**: Access via `NesmaTranslations.en.common.all`
-4. **Extend BaseDashboard**: For new dashboards, don't copy/paste code
+## Version History
+- **v3.0.0** - Cleanup: Removed unused files, procurement as main template
+- **v2.0.0** - Modular architecture (deprecated)
+- **v1.0.0** - Initial release
