@@ -166,134 +166,178 @@
             display: none;
         }
 
-        /* Enhanced Glowing Logo Styles */
+        /* OPTIMIZED Glowing Logo Styles - Performance focused */
         .logo-glow-container {
             position: relative;
             display: inline-block;
         }
 
+        /* Simple glow - single filter for performance */
         .logo-glow {
-            filter: drop-shadow(0 0 15px rgba(128, 209, 233, 1))
-                    drop-shadow(0 0 30px rgba(128, 209, 233, 0.8))
-                    drop-shadow(0 0 60px rgba(128, 209, 233, 0.6))
-                    drop-shadow(0 0 100px rgba(128, 209, 233, 0.4));
-            animation: logoGlow 2.5s ease-in-out infinite alternate, logoGentleFloat 5s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(128, 209, 233, 0.6));
+            will-change: filter;
+        }
+
+        /* Desktop only: enhanced glow animation */
+        @media (min-width: 769px) {
+            .logo-glow {
+                animation: logoGlow 3s ease-in-out infinite alternate;
+            }
         }
 
         @keyframes logoGlow {
-            0% {
-                filter: drop-shadow(0 0 15px rgba(128, 209, 233, 0.8))
-                        drop-shadow(0 0 30px rgba(128, 209, 233, 0.5))
-                        drop-shadow(0 0 60px rgba(128, 209, 233, 0.3))
-                        drop-shadow(0 0 100px rgba(128, 209, 233, 0.2));
-            }
-            100% {
-                filter: drop-shadow(0 0 25px rgba(128, 209, 233, 1))
-                        drop-shadow(0 0 50px rgba(128, 209, 233, 0.9))
-                        drop-shadow(0 0 90px rgba(128, 209, 233, 0.7))
-                        drop-shadow(0 0 140px rgba(128, 209, 233, 0.5));
-            }
+            0% { filter: drop-shadow(0 0 15px rgba(128, 209, 233, 0.5)); }
+            100% { filter: drop-shadow(0 0 30px rgba(128, 209, 233, 0.8)); }
         }
 
-        @keyframes logoGentleFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        /* Outer glow ring - stronger */
+        /* Simple outer glow - static on mobile */
         .logo-glow-container::before {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 130%;
-            height: 160%;
-            background: radial-gradient(ellipse, rgba(128, 209, 233, 0.25) 0%, rgba(128, 209, 233, 0.1) 40%, transparent 70%);
-            animation: pulseGlow 3s ease-in-out infinite;
+            width: 120%;
+            height: 140%;
+            background: radial-gradient(ellipse, rgba(128, 209, 233, 0.15) 0%, transparent 60%);
             pointer-events: none;
             z-index: -1;
             border-radius: 50%;
         }
 
+        /* Desktop only: animated glow ring */
+        @media (min-width: 769px) {
+            .logo-glow-container::before {
+                animation: pulseGlow 4s ease-in-out infinite;
+            }
+        }
+
         @keyframes pulseGlow {
-            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
         }
 
-        /* Sparkle effects around logo */
+        /* Sparkle effects - desktop only */
         .sparkle {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            animation: sparkle 2.5s ease-in-out infinite;
-            box-shadow: 0 0 15px rgba(128, 209, 233, 1), 0 0 30px rgba(128, 209, 233, 0.8);
+            display: none;
         }
 
-        @keyframes sparkle {
-            0%, 100% { opacity: 0; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1.2); }
+        @media (min-width: 769px) {
+            .sparkle {
+                display: block;
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                background: white;
+                border-radius: 50%;
+                animation: sparkle 3s ease-in-out infinite;
+                box-shadow: 0 0 10px rgba(128, 209, 233, 0.8);
+            }
+
+            @keyframes sparkle {
+                0%, 100% { opacity: 0; transform: scale(0); }
+                50% { opacity: 0.8; transform: scale(1); }
+            }
+
+            .sparkle:nth-child(1) { top: 5%; left: 10%; animation-delay: 0s; }
+            .sparkle:nth-child(2) { top: 0%; right: 15%; animation-delay: 0.5s; }
+            .sparkle:nth-child(3) { bottom: 10%; left: 5%; animation-delay: 1s; }
+            .sparkle:nth-child(4) { bottom: 5%; right: 10%; animation-delay: 1.5s; }
+            .sparkle:nth-child(5) { top: 40%; left: 0%; animation-delay: 0.25s; }
+            .sparkle:nth-child(6) { top: 40%; right: 0%; animation-delay: 0.75s; }
         }
 
-        .sparkle:nth-child(1) { top: 5%; left: 10%; animation-delay: 0s; }
-        .sparkle:nth-child(2) { top: 0%; right: 15%; animation-delay: 0.4s; }
-        .sparkle:nth-child(3) { bottom: 10%; left: 5%; animation-delay: 0.8s; }
-        .sparkle:nth-child(4) { bottom: 5%; right: 10%; animation-delay: 1.2s; }
-        .sparkle:nth-child(5) { top: 40%; left: 0%; animation-delay: 0.2s; }
-        .sparkle:nth-child(6) { top: 40%; right: 0%; animation-delay: 0.6s; }
+        /* Respect reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            .logo-glow, .logo-glow-container::before, .sparkle,
+            .fade-in-up, .glass-card, .enter-btn svg {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
 
-        /* ========== MOBILE RESPONSIVE STYLES ========== */
+        /* ========== MOBILE RESPONSIVE STYLES - OPTIMIZED ========== */
         @media (max-width: 768px) {
+            /* Disable heavy effects on mobile */
+            .glass-card::before { display: none !important; }
+            .glass-card:hover { transform: none !important; box-shadow: none !important; }
+
             /* Header adjustments */
-            header { padding-top: 1rem !important; padding-bottom: 0.5rem !important; }
-            header img { height: 32px !important; }
+            header { padding-top: 0.75rem !important; padding-bottom: 0.5rem !important; }
+            header img { height: 28px !important; }
             header .gap-4 { gap: 0.5rem !important; }
 
-            /* Logo section */
-            .logo-glow-container { padding: 15px !important; }
-            .logo-glow-container img { height: 160px !important; max-width: 90% !important; }
-            .sparkle { width: 5px; height: 5px; }
+            /* Logo section - simplified */
+            .logo-glow-container { padding: 10px !important; }
+            .logo-glow-container img { height: 140px !important; max-width: 85% !important; }
 
             /* Hero text */
-            section .text-2xl { font-size: 1rem !important; }
-            section .text-sm { font-size: 0.7rem !important; }
-            .h-px.w-16 { width: 2rem !important; }
+            section .text-2xl { font-size: 0.9rem !important; }
+            section .text-sm { font-size: 0.65rem !important; }
+            .h-px.w-16 { width: 1.5rem !important; }
 
-            /* Cards */
-            .department-card { min-height: 220px !important; padding: 1.25rem !important; }
-            .icon-box { width: 56px !important; height: 56px !important; margin-bottom: 12px !important; }
-            .icon-box svg { width: 28px !important; height: 28px !important; }
-            .department-card h3 { font-size: 1.25rem !important; margin-bottom: 0.5rem !important; }
-            .department-card p { font-size: 0.75rem !important; margin-bottom: 0.75rem !important; }
-            .feature-tag { font-size: 9px !important; padding: 3px 8px !important; }
-            .status-badge { font-size: 9px !important; padding: 4px 10px !important; }
-            .enter-btn { font-size: 12px !important; }
+            /* Cards - touch optimized */
+            .department-card { min-height: 180px !important; padding: 1rem !important; }
+            .icon-box { width: 50px !important; height: 50px !important; margin-bottom: 10px !important; }
+            .icon-box svg { width: 24px !important; height: 24px !important; }
+            .department-card h3 { font-size: 1.1rem !important; margin-bottom: 0.4rem !important; }
+            .department-card p { font-size: 0.7rem !important; margin-bottom: 0.5rem !important; line-height: 1.3 !important; }
+            .feature-tag { font-size: 8px !important; padding: 2px 6px !important; }
+            .status-badge { font-size: 8px !important; padding: 3px 8px !important; }
+            .enter-btn { font-size: 11px !important; }
 
             /* Links section */
-            .icon-link-card { padding: 0.75rem !important; }
-            .icon-link-card svg { width: 20px !important; height: 20px !important; }
-            .icon-link-card span { font-size: 0.7rem !important; }
+            section.container.mx-auto.px-6.py-8 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+            section.container.mx-auto.px-6.pb-4 { padding-bottom: 0.25rem !important; }
+            section.container.mx-auto.px-6.pb-8 { padding-bottom: 0.5rem !important; }
+            .glass-card.p-6 { padding: 0.75rem !important; }
+            .glass-card .w-14 { width: 2.5rem !important; height: 2.5rem !important; }
+            .glass-card .w-7 { width: 1.25rem !important; height: 1.25rem !important; }
+            .glass-card .text-lg { font-size: 0.85rem !important; }
+            .glass-card .text-sm { font-size: 0.65rem !important; }
 
             /* Grid */
-            .grid.gap-5 { gap: 0.75rem !important; }
-            .container { padding-left: 1rem !important; padding-right: 1rem !important; }
+            .grid.gap-5 { gap: 0.5rem !important; }
+            .container { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
 
-            /* Buttons */
-            #particlesToggleBtn, #themeToggleBtn { padding: 0.4rem !important; }
-            #particlesToggleBtn svg, #themeToggleBtn svg { width: 18px !important; height: 18px !important; }
+            /* Buttons - touch friendly (min 44px) */
+            #particlesToggleBtn, #themeToggleBtn {
+                padding: 0.5rem !important;
+                min-width: 44px !important;
+                min-height: 44px !important;
+            }
+            #particlesToggleBtn svg, #themeToggleBtn svg { width: 20px !important; height: 20px !important; }
+
+            /* Footer */
+            footer { padding: 1rem !important; }
+            footer .text-sm { font-size: 0.7rem !important; }
+            footer .text-xs { font-size: 0.6rem !important; }
         }
 
         @media (max-width: 480px) {
-            .logo-glow-container img { height: 120px !important; }
-            .logo-glow-container { padding: 10px !important; }
-            .department-card { min-height: 180px !important; padding: 1rem !important; }
-            .icon-box { width: 48px !important; height: 48px !important; }
-            .department-card h3 { font-size: 1.1rem !important; }
-            section .text-2xl { font-size: 0.875rem !important; }
-            header img { height: 28px !important; }
-            #currentTime { font-size: 0.65rem !important; }
+            .logo-glow-container img { height: 100px !important; }
+            .logo-glow-container { padding: 5px !important; }
+            .department-card { min-height: 160px !important; padding: 0.75rem !important; }
+            .icon-box { width: 44px !important; height: 44px !important; }
+            .department-card h3 { font-size: 1rem !important; }
+            .department-card p { font-size: 0.65rem !important; }
+            section .text-2xl { font-size: 0.8rem !important; }
+            header img { height: 24px !important; }
+            #currentTime { font-size: 0.6rem !important; }
+
+            /* Link cards */
+            .glass-card .gap-4 { gap: 0.5rem !important; }
+            .glass-card .flex-1 h3 { font-size: 0.75rem !important; }
+            .glass-card .flex-1 p { font-size: 0.6rem !important; }
+        }
+
+        /* Touch-friendly interactions */
+        @media (hover: none) and (pointer: coarse) {
+            .glass-card:active {
+                transform: scale(0.98) !important;
+                background: rgba(255, 255, 255, 0.1) !important;
+            }
+            .enter-btn:active { color: #5BBCD9 !important; }
         }
     </style>
 </head>

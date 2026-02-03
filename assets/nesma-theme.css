@@ -2510,11 +2510,6 @@ input,
   .hide-mobile {
     display: none !important;
   }
-
-  /* Particles - reduce on mobile for performance */
-  .logo-particle {
-    opacity: 0.5 !important;
-  }
 }
 
 @media (max-width: 480px) {
@@ -2579,4 +2574,67 @@ input,
     min-height: 44px;
     min-width: 44px;
   }
+}
+
+/* ==========================================
+   PERFORMANCE OPTIMIZATIONS
+   ========================================== */
+
+/* Disable particles on mobile for performance */
+@media (max-width: 768px) {
+  .particles,
+  .particles-always {
+    display: none !important;
+  }
+
+  /* Disable heavy hover effects */
+  .glass-card::before,
+  .nesma-card:hover::before {
+    display: none !important;
+  }
+
+  /* Simplify animations */
+  .glass-card:hover,
+  .department-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .particles,
+  .particles-always,
+  .logo-particle {
+    display: none !important;
+  }
+
+  .logo-glow {
+    filter: none !important;
+  }
+
+  .sparkle {
+    display: none !important;
+  }
+}
+
+/* GPU acceleration hints */
+.logo-particle {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize particle container */
+.particles {
+  contain: strict;
+  content-visibility: auto;
 }

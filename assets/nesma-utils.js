@@ -111,7 +111,17 @@ const NesmaTheme = {
         return palette.slice(0, count);
     },
 
-    // ---- Particle system for NIT theme ----
+    // ---- OPTIMIZED Particle system for NIT theme ----
+    // Performance-focused: fewer particles, mobile detection, reduced motion support
+
+    isMobile() {
+        return window.innerWidth <= 768 ||
+               /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    },
+
+    prefersReducedMotion() {
+        return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    },
 
     ensureParticlesContainer() {
         if (!document.getElementById('particles')) {
@@ -126,14 +136,13 @@ const NesmaTheme = {
         var ns = 'http://www.w3.org/2000/svg';
         var svg = document.createElementNS(ns, 'svg');
         svg.setAttribute('viewBox', '0 0 80.8 30.65');
+        // Simplified SVG - fewer shapes for better performance
         var shapes = [
             {tag:'rect', attrs:{x:'46.4',y:'.04',width:'10.53',height:'30.52',fill:fill1}},
             {tag:'rect', attrs:{x:'0',y:'.02',width:'10.52',height:'30.56',fill:fill1}},
             {tag:'path', attrs:{d:'M30.89,16.55v13.93s0,.02,0,0L13.01,13.47s0,0,0,0V.06s0-.02,0,0l17.88,16.49s0,0,0,0',fill:fill1}},
             {tag:'rect', attrs:{x:'33.38',y:'10.69',width:'10.53',height:'19.87',fill:fill1}},
-            {tag:'polygon', attrs:{points:'33.38 8.75 33.38 .02 43.91 .02 33.38 8.75',fill:fill2}},
-            {tag:'rect', attrs:{x:'58.95',y:'11.2',width:'9.4',height:'7.32',fill:fill1}},
-            {tag:'rect', attrs:{x:'80.45',y:'0',width:'.35',height:'30.65',fill:fill1}}
+            {tag:'polygon', attrs:{points:'33.38 8.75 33.38 .02 43.91 .02 33.38 8.75',fill:fill2}}
         ];
         shapes.forEach(function(s) {
             var el = document.createElementNS(ns, s.tag);
@@ -146,43 +155,46 @@ const NesmaTheme = {
     createParticles(container) {
         if (!container) return;
 
-        // Nesma brand colors - FULL SOLID colors for visibility
+        // Skip particles if user prefers reduced motion
+        if (this.prefersReducedMotion()) {
+            return;
+        }
+
+        // Nesma brand colors - reduced set for better performance
         var colorSets = [
             { fill1: '#FFFFFF', fill2: '#80D1E9' },
             { fill1: '#80D1E9', fill2: '#0E2841' },
-            { fill1: '#0E2841', fill2: '#80D1E9' },
             { fill1: '#2E3192', fill2: '#80D1E9' },
-            { fill1: '#80D1E9', fill2: '#2E3192' },
-            { fill1: '#FFFFFF', fill2: '#0E2841' },
-            { fill1: '#FFFFFF', fill2: '#2E3192' },
-            { fill1: '#0E2841', fill2: '#FFFFFF' },
-            { fill1: '#2E3192', fill2: '#FFFFFF' }
+            { fill1: '#0E2841', fill2: '#FFFFFF' }
         ];
 
-        // Layers with SLOWER speeds and HIGHER visibility
+        // OPTIMIZED: Much fewer particles, slower animations
+        // Desktop: 18 particles, Mobile: 0 (disabled for performance)
+        var isMobile = this.isMobile();
+
+        if (isMobile) {
+            // No particles on mobile for best performance
+            return;
+        }
+
+        // Desktop-only: lightweight particle config
         var layers = [
-            { sizes: [100, 120, 140, 160], opacities: [0.04, 0.06, 0.08, 0.10], speeds: [150, 180, 200, 240], count: 12 },
-            { sizes: [70, 85, 100, 115], opacities: [0.12, 0.16, 0.20, 0.25], speeds: [100, 120, 140, 160], count: 15 },
-            { sizes: [45, 55, 65, 80], opacities: [0.28, 0.35, 0.42, 0.50], speeds: [70, 85, 100, 120], count: 20 },
-            { sizes: [30, 38, 48, 58], opacities: [0.50, 0.60, 0.70, 0.80], speeds: [50, 60, 75, 90], count: 18 },
-            { sizes: [20, 28, 35, 45], opacities: [0.75, 0.85, 0.90, 0.95], speeds: [35, 45, 55, 70], count: 15 },
-            { sizes: [15, 20, 26, 32], opacities: [0.90, 0.95, 1.0, 1.0], speeds: [25, 35, 45, 55], count: 10 }
+            { sizes: [60, 80, 100], opacities: [0.08, 0.12, 0.18], speeds: [80, 100, 120], count: 6 },
+            { sizes: [40, 55, 70], opacities: [0.20, 0.30, 0.40], speeds: [60, 80, 100], count: 6 },
+            { sizes: [25, 35, 45], opacities: [0.45, 0.55, 0.65], speeds: [45, 60, 75], count: 6 }
         ];
 
-        // Animation types
-        var animations = [
-            'logoMoveRight', 'logoMoveLeft', 'logoMoveDown', 'logoMoveUp',
-            'logoDiagonalDR', 'logoDiagonalDL', 'logoDiagonalUR', 'logoDiagonalUL'
-        ];
+        // Only 4 animation types for simplicity
+        var animations = ['logoMoveRight', 'logoMoveLeft', 'logoMoveDown', 'logoMoveUp'];
 
         // Create particles for each layer
         layers.forEach(function(layer, layerIndex) {
             for (var i = 0; i < layer.count; i++) {
-                var colors = colorSets[Math.floor(Math.random() * colorSets.length)];
-                var anim = animations[Math.floor(Math.random() * animations.length)];
-                var size = layer.sizes[Math.floor(Math.random() * layer.sizes.length)];
-                var duration = layer.speeds[Math.floor(Math.random() * layer.speeds.length)];
-                var opacity = layer.opacities[Math.floor(Math.random() * layer.opacities.length)];
+                var colors = colorSets[i % colorSets.length];
+                var anim = animations[i % animations.length];
+                var size = layer.sizes[i % layer.sizes.length];
+                var duration = layer.speeds[i % layer.speeds.length];
+                var opacity = layer.opacities[i % layer.opacities.length];
 
                 var segment = i / layer.count;
                 var animOffset = -segment * duration;
@@ -197,34 +209,18 @@ const NesmaTheme = {
                 } else if (anim === 'logoMoveDown') {
                     startX = (segment * 90) + 5;
                     startY = -5;
-                } else if (anim === 'logoMoveUp') {
+                } else {
                     startX = (segment * 90) + 5;
                     startY = 105;
-                } else if (anim === 'logoDiagonalDR') {
-                    startX = -5 + (segment * 30);
-                    startY = -5 + (segment * 20);
-                } else if (anim === 'logoDiagonalDL') {
-                    startX = 105 - (segment * 30);
-                    startY = -5 + (segment * 20);
-                } else if (anim === 'logoDiagonalUR') {
-                    startX = -5 + (segment * 30);
-                    startY = 105 - (segment * 20);
-                } else {
-                    startX = 105 - (segment * 30);
-                    startY = 105 - (segment * 20);
                 }
 
-                startX += (Math.random() - 0.5) * 15;
-                startY += (Math.random() - 0.5) * 15;
+                startX += (Math.random() - 0.5) * 10;
+                startY += (Math.random() - 0.5) * 10;
 
                 var particle = document.createElement('div');
                 particle.className = 'logo-particle';
-                particle.style.left = startX + '%';
-                particle.style.top = startY + '%';
-                particle.style.width = size + 'px';
+                particle.style.cssText = 'left:' + startX + '%;top:' + startY + '%;width:' + size + 'px;z-index:' + layerIndex + ';animation:' + anim + ' ' + duration + 's linear ' + animOffset + 's infinite;';
                 particle.style.setProperty('--p-opacity', String(opacity));
-                particle.style.zIndex = String(layerIndex);
-                particle.style.animation = anim + ' ' + duration + 's linear ' + animOffset + 's infinite';
                 particle.appendChild(this.createLogoSVG(colors.fill1, colors.fill2));
                 container.appendChild(particle);
             }
