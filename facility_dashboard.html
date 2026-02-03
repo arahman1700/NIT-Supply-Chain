@@ -8,6 +8,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="assets/nesma-utils.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/nesma-theme.css">
     <style>
@@ -349,6 +352,9 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="text-xs text-white/60 hidden md:inline" id="lastUpdated">Loading...</span>
+                    <button id="themeToggle" onclick="NesmaTheme.toggle()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Toggle theme">
+                        <svg id="themeIcon" class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -422,10 +428,9 @@
                         </div>
                         <div class="ml-auto flex gap-2">
                             <button onclick="resetAccFilters()" class="btn-reset">Reset</button>
-                            <button onclick="exportAccommodation()" class="btn-export">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                Export
-                            </button>
+                            <button onclick="exportAccommodation()" class="btn-export btn-excel">Excel</button>
+                            <button onclick="exportAccommodationCSV()" class="btn-export btn-csv">CSV</button>
+                            <button onclick="NesmaExport.toPDF('tab-accommodation','Facility_Accommodation')" class="btn-export btn-pdf">PDF</button>
                         </div>
                     </div>
                 </div>
@@ -495,7 +500,9 @@
                         </div>
                         <div class="ml-auto flex gap-2">
                             <button onclick="resetDrivingFilters()" class="btn-reset">Reset</button>
-                            <button onclick="exportDriving()" class="btn-export">Export</button>
+                            <button onclick="exportDriving()" class="btn-export btn-excel">Excel</button>
+                            <button onclick="exportDrivingCSV()" class="btn-export btn-csv">CSV</button>
+                            <button onclick="NesmaExport.toPDF('tab-driving','Facility_Fleet')" class="btn-export btn-pdf">PDF</button>
                         </div>
                     </div>
                 </div>
@@ -542,7 +549,9 @@
                         </div>
                         <div class="ml-auto flex gap-2">
                             <button onclick="resetFuelFilters()" class="btn-reset">Reset</button>
-                            <button onclick="exportFuel()" class="btn-export">Export</button>
+                            <button onclick="exportFuel()" class="btn-export btn-excel">Excel</button>
+                            <button onclick="exportFuelCSV()" class="btn-export btn-csv">CSV</button>
+                            <button onclick="NesmaExport.toPDF('tab-fuel','Facility_Fuel')" class="btn-export btn-pdf">PDF</button>
                         </div>
                     </div>
                 </div>
@@ -600,7 +609,9 @@
                         </div>
                         <div class="ml-auto flex gap-2">
                             <button onclick="resetMaintFilters()" class="btn-reset">Reset</button>
-                            <button onclick="exportMaintenance()" class="btn-export">Export</button>
+                            <button onclick="exportMaintenance()" class="btn-export btn-excel">Excel</button>
+                            <button onclick="exportMaintenanceCSV()" class="btn-export btn-csv">CSV</button>
+                            <button onclick="NesmaExport.toPDF('tab-maintenance','Facility_Maintenance')" class="btn-export btn-pdf">PDF</button>
                         </div>
                     </div>
                 </div>
@@ -662,7 +673,9 @@
                         </div>
                         <div class="ml-auto flex gap-2">
                             <button onclick="resetSafetyFilters()" class="btn-reset">Reset</button>
-                            <button onclick="exportSafety()" class="btn-export">Export</button>
+                            <button onclick="exportSafety()" class="btn-export btn-excel">Excel</button>
+                            <button onclick="exportSafetyCSV()" class="btn-export btn-csv">CSV</button>
+                            <button onclick="NesmaExport.toPDF('tab-safety','Facility_Safety')" class="btn-export btn-pdf">PDF</button>
                         </div>
                     </div>
                 </div>
@@ -813,22 +826,29 @@
             const avgOcc = s.rooms > 0 ? Math.round(s.residents / (s.rooms * 4) * 100) : 0;
 
             // SLA Cards
+            const accCols = [
+                { key: 'city', label: 'City' }, { key: 'project_name', label: 'Project' },
+                { key: 'rooms', label: 'Rooms' }, { key: 'residents', label: 'Residents' },
+                { key: 'empty_beds', label: 'Empty Beds' }, { key: 'occupancy_rate', label: 'Occupancy %' },
+                { key: 'end_date', label: 'End Date' }, { key: 'remaining_days', label: 'Days Left' },
+                { key: 'status', label: 'Status' }, { key: 'annual_payment', label: 'Annual Payment' }
+            ];
             const sla = document.getElementById('accSLACards');
-            sla.innerHTML = '';
-            sla.appendChild(createSLACard('green', 'Active', s.active, '>180 days', () => showDetails('Active', data)));
-            sla.appendChild(createSLACard(s.warning > 0 ? 'yellow' : 'green', 'Warning', s.warning, '90-180 days', () => showDetails('Warning', data)));
-            sla.appendChild(createSLACard(s.critical > 0 ? 'red' : 'green', 'Critical', s.critical, '<90 days', () => showDetails('Critical', data)));
-            sla.appendChild(createSLACard(s.expired > 0 ? 'red' : 'green', 'Expired', s.expired, 'Needs renewal', () => showDetails('Expired', data)));
+            sla.textContent = '';
+            sla.appendChild(createSLACard('green', 'Active', s.active, '>180 days', () => NesmaModal.show('Active Contracts', data.filter(r => r.status === 'Active'), accCols)));
+            sla.appendChild(createSLACard(s.warning > 0 ? 'yellow' : 'green', 'Warning', s.warning, '90-180 days', () => NesmaModal.show('Warning Contracts', data.filter(r => r.status === 'Warning'), accCols)));
+            sla.appendChild(createSLACard(s.critical > 0 ? 'red' : 'green', 'Critical', s.critical, '<90 days', () => NesmaModal.show('Critical Contracts', data.filter(r => r.status === 'Critical'), accCols)));
+            sla.appendChild(createSLACard(s.expired > 0 ? 'red' : 'green', 'Expired', s.expired, 'Needs renewal', () => NesmaModal.show('Expired Contracts', data.filter(r => r.status === 'Expired'), accCols)));
 
             // KPIs
             const kpi = document.getElementById('accKPIs');
-            kpi.innerHTML = '';
-            kpi.appendChild(createKPI('bg-primary-gradient', 'home', 'Accommodations', s.total, s.rooms + ' rooms', () => showModal('All Accommodations', data.length + ' total records')));
-            kpi.appendChild(createKPI('bg-cyan-gradient', 'users', 'Residents', s.residents.toLocaleString(), avgOcc + '% occupancy', null));
-            kpi.appendChild(createKPI('bg-warning-gradient', 'bed', 'Empty Beds', s.empty.toLocaleString(), 'Available', null));
-            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Active', s.active, 'No action needed', () => showDetails('Active', data)));
-            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'At Risk', s.warning + s.critical, 'Needs attention', () => showDetails('Warning', data)));
-            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Annual Cost', 'SAR ' + (s.cost / 1000000).toFixed(1) + 'M', 'Total payments', null));
+            kpi.textContent = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'home', 'Accommodations', s.total, s.rooms + ' rooms', () => NesmaModal.show('All Accommodations', data, accCols, s.total + ' records')));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'users', 'Residents', s.residents.toLocaleString(), avgOcc + '% occupancy', () => NesmaModal.show('Residents by Location', data.filter(r => r.residents > 0), accCols)));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'bed', 'Empty Beds', s.empty.toLocaleString(), 'Available', () => NesmaModal.show('Empty Beds', data.filter(r => r.empty_beds > 0), accCols)));
+            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Active', s.active, 'No action needed', () => NesmaModal.show('Active Contracts', data.filter(r => r.status === 'Active'), accCols)));
+            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'At Risk', s.warning + s.critical, 'Needs attention', () => NesmaModal.show('At Risk Contracts', data.filter(r => r.status === 'Warning' || r.status === 'Critical'), accCols)));
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Annual Cost', 'SAR ' + (s.cost / 1000000).toFixed(1) + 'M', 'Total payments', () => NesmaModal.show('Cost Breakdown', data.sort((a, b) => b.annual_payment - a.annual_payment), accCols)));
 
             // Aging
             const aging = document.getElementById('accAgingBuckets');
@@ -855,6 +875,8 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, cutout: '65%' }
             });
 
+            NesmaChartDrill.attach(charts.accStatus, (label) => data.filter(r => r.status === label), accCols, 'Accommodation');
+
             const cityData = {};
             data.forEach(r => { cityData[r.city] = (cityData[r.city] || 0) + r.residents; });
             const cities = Object.entries(cityData).sort((a, b) => b[1] - a[1]).slice(0, 6);
@@ -864,6 +886,8 @@
                 data: { labels: cities.map(c => c[0]), datasets: [{ label: 'Residents', data: cities.map(c => c[1]), backgroundColor: '#2E3192' }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
+
+            NesmaChartDrill.attach(charts.accCity, (label) => data.filter(r => r.city === label), accCols, 'Accommodation');
 
             // Table
             document.getElementById('accTableCount').textContent = data.length + ' records';
@@ -912,21 +936,27 @@
             const avgScore = s.total > 0 ? Math.round(s.score / s.total) : 0;
             const excellentPct = s.total > 0 ? Math.round(s.excellent / s.total * 100) : 0;
 
+            const drivCols = [
+                { key: 'plate_number', label: 'Plate' }, { key: 'distance_km', label: 'Distance (km)' },
+                { key: 'working_hours', label: 'Hours' }, { key: 'overspeed_count', label: 'Overspeed' },
+                { key: 'harsh_braking', label: 'Harsh Brake' }, { key: 'max_speed', label: 'Max Speed' },
+                { key: 'dat_score', label: 'DAT Score' }, { key: 'rating', label: 'Rating' }
+            ];
             const sla = document.getElementById('drivingSLACards');
-            sla.innerHTML = '';
-            sla.appendChild(createSLACard(excellentPct >= 50 ? 'green' : excellentPct >= 30 ? 'yellow' : 'red', 'Excellent Drivers', excellentPct + '%', 'Target: ≥50%', null));
-            sla.appendChild(createSLACard(avgScore >= 80 ? 'green' : avgScore >= 60 ? 'yellow' : 'red', 'Avg DAT Score', avgScore, 'Target: ≥80', null));
-            sla.appendChild(createSLACard(s.poor === 0 ? 'green' : 'red', 'Poor Ratings', s.poor, 'Target: 0', null));
-            sla.appendChild(createSLACard('green', 'Total Vehicles', s.total, 'Monitored', null));
+            sla.textContent = '';
+            sla.appendChild(createSLACard(excellentPct >= 50 ? 'green' : excellentPct >= 30 ? 'yellow' : 'red', 'Excellent Drivers', excellentPct + '%', 'Target: ≥50%', () => NesmaModal.show('Excellent Drivers', data.filter(r => r.rating === 'Excellent'), drivCols)));
+            sla.appendChild(createSLACard(avgScore >= 80 ? 'green' : avgScore >= 60 ? 'yellow' : 'red', 'Avg DAT Score', avgScore, 'Target: ≥80', () => NesmaModal.show('All Drivers by Score', [...data].sort((a, b) => b.dat_score - a.dat_score), drivCols)));
+            sla.appendChild(createSLACard(s.poor === 0 ? 'green' : 'red', 'Poor Ratings', s.poor, 'Target: 0', () => NesmaModal.show('Poor Rated Drivers', data.filter(r => r.rating === 'Poor'), drivCols)));
+            sla.appendChild(createSLACard('green', 'Total Vehicles', s.total, 'Monitored', () => NesmaModal.show('All Vehicles', data, drivCols)));
 
             const kpi = document.getElementById('drivingKPIs');
-            kpi.innerHTML = '';
-            kpi.appendChild(createKPI('bg-primary-gradient', 'car', 'Vehicles', s.total, 'Monitored', null));
-            kpi.appendChild(createKPI('bg-cyan-gradient', 'road', 'Distance', Math.round(s.dist / 1000) + 'K km', 'Avg: ' + Math.round(s.dist / Math.max(s.total, 1)).toLocaleString() + ' km', null));
-            kpi.appendChild(createKPI('bg-danger-gradient', 'speed', 'Overspeed', s.overspeed.toLocaleString(), 'Events', null));
-            kpi.appendChild(createKPI('bg-success-gradient', 'star', 'Excellent', s.excellent, 'Score ≥90', null));
-            kpi.appendChild(createKPI('bg-warning-gradient', 'star', 'Average', s.average, 'Score 50-69', null));
-            kpi.appendChild(createKPI('bg-rose-gradient', 'alert', 'Poor', s.poor, 'Score <50', null));
+            kpi.textContent = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'car', 'Vehicles', s.total, 'Monitored', () => NesmaModal.show('All Vehicles', data, drivCols)));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'road', 'Distance', Math.round(s.dist / 1000) + 'K km', 'Avg: ' + Math.round(s.dist / Math.max(s.total, 1)).toLocaleString() + ' km', () => NesmaModal.show('Distance Rankings', [...data].sort((a, b) => b.distance_km - a.distance_km), drivCols)));
+            kpi.appendChild(createKPI('bg-danger-gradient', 'speed', 'Overspeed', s.overspeed.toLocaleString(), 'Events', () => NesmaModal.show('Overspeed Vehicles', data.filter(r => r.overspeed_count > 0).sort((a, b) => b.overspeed_count - a.overspeed_count), drivCols)));
+            kpi.appendChild(createKPI('bg-success-gradient', 'star', 'Excellent', s.excellent, 'Score ≥90', () => NesmaModal.show('Excellent Drivers', data.filter(r => r.rating === 'Excellent'), drivCols)));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'star', 'Average', s.average, 'Score 50-69', () => NesmaModal.show('Average Drivers', data.filter(r => r.rating === 'Average'), drivCols)));
+            kpi.appendChild(createKPI('bg-rose-gradient', 'alert', 'Poor', s.poor, 'Score <50', () => NesmaModal.show('Poor Drivers', data.filter(r => r.rating === 'Poor'), drivCols)));
 
             if (charts.drivingRating) charts.drivingRating.destroy();
             charts.drivingRating = new Chart(document.getElementById('drivingRatingChart').getContext('2d'), {
@@ -935,6 +965,8 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, cutout: '65%' }
             });
 
+            NesmaChartDrill.attach(charts.drivingRating, (label) => data.filter(r => r.rating === label), drivCols, 'Fleet');
+
             const top10 = [...data].sort((a, b) => b.distance_km - a.distance_km).slice(0, 10);
             if (charts.drivingDistance) charts.drivingDistance.destroy();
             charts.drivingDistance = new Chart(document.getElementById('drivingDistanceChart').getContext('2d'), {
@@ -942,6 +974,7 @@
                 data: { labels: top10.map(r => r.plate_number), datasets: [{ label: 'km', data: top10.map(r => r.distance_km), backgroundColor: '#2E3192' }] },
                 options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
+            NesmaChartDrill.attach(charts.drivingDistance, (label) => data.filter(r => r.plate_number === label), drivCols, 'Fleet');
 
             document.getElementById('drivingTableCount').textContent = data.length + ' records';
             const tbody = document.getElementById('drivingTableBody');
@@ -982,12 +1015,17 @@
             const s = { total: data.length, dist: 0, fuel: 0, cost: 0 };
             data.forEach(r => { s.dist += r.distance_km; s.fuel += r.fuel_liters; s.cost += r.fuel_cost; });
 
+            const fuelCols = [
+                { key: 'plate_number', label: 'Plate' }, { key: 'distance_km', label: 'Distance (km)' },
+                { key: 'fuel_liters', label: 'Fuel (L)' }, { key: 'fuel_cost', label: 'Cost (SAR)' },
+                { key: 'fuel_efficiency', label: 'Efficiency (km/L)' }
+            ];
             const kpi = document.getElementById('fuelKPIs');
-            kpi.innerHTML = '';
-            kpi.appendChild(createKPI('bg-primary-gradient', 'car', 'Vehicles', s.total, 'With data', null));
-            kpi.appendChild(createKPI('bg-cyan-gradient', 'road', 'Distance', Math.round(s.dist / 1000) + 'K km', 'Total', null));
-            kpi.appendChild(createKPI('bg-warning-gradient', 'fuel', 'Fuel', s.fuel.toLocaleString() + ' L', 'Consumed', null));
-            kpi.appendChild(createKPI('bg-danger-gradient', 'money', 'Cost', 'SAR ' + s.cost.toLocaleString(), 'Total', null));
+            kpi.textContent = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'car', 'Vehicles', s.total, 'With data', () => NesmaModal.show('All Fuel Records', data, fuelCols)));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'road', 'Distance', Math.round(s.dist / 1000) + 'K km', 'Total', () => NesmaModal.show('Distance Rankings', [...data].sort((a, b) => b.distance_km - a.distance_km), fuelCols)));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'fuel', 'Fuel', s.fuel.toLocaleString() + ' L', 'Consumed', () => NesmaModal.show('Fuel Consumption', [...data].sort((a, b) => b.fuel_liters - a.fuel_liters), fuelCols)));
+            kpi.appendChild(createKPI('bg-danger-gradient', 'money', 'Cost', 'SAR ' + s.cost.toLocaleString(), 'Total', () => NesmaModal.show('Cost Breakdown', [...data].sort((a, b) => b.fuel_cost - a.fuel_cost), fuelCols)));
 
             const top10 = [...data].sort((a, b) => b.distance_km - a.distance_km).slice(0, 10);
             if (charts.fuelDistance) charts.fuelDistance.destroy();
@@ -996,6 +1034,7 @@
                 data: { labels: top10.map(r => r.plate_number), datasets: [{ label: 'km', data: top10.map(r => r.distance_km), backgroundColor: '#2E3192' }] },
                 options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
+            NesmaChartDrill.attach(charts.fuelDistance, (label) => data.filter(r => r.plate_number === label), fuelCols, 'Fuel');
 
             const dist = { Low: 0, Medium: 0, High: 0 };
             data.forEach(r => { if (r.distance_km < 5000) dist.Low++; else if (r.distance_km <= 10000) dist.Medium++; else dist.High++; });
@@ -1005,6 +1044,11 @@
                 data: { labels: ['Low (<5K)', 'Medium (5-10K)', 'High (>10K)'], datasets: [{ data: [dist.Low, dist.Medium, dist.High], backgroundColor: ['#10B981', '#FBBF24', '#EF4444'], borderWidth: 0 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, cutout: '65%' }
             });
+            NesmaChartDrill.attach(charts.fuelDist, (label) => {
+                if (label.includes('Low')) return data.filter(r => r.distance_km < 5000);
+                if (label.includes('Medium')) return data.filter(r => r.distance_km >= 5000 && r.distance_km <= 10000);
+                return data.filter(r => r.distance_km > 10000);
+            }, fuelCols, 'Fuel');
 
             document.getElementById('fuelTableCount').textContent = data.length + ' records';
             const tbody = document.getElementById('fuelTableBody');
@@ -1041,19 +1085,25 @@
             s.pending = s.total - s.completed;
             s.rate = s.total > 0 ? Math.round(s.completed / s.total * 100) : 0;
 
+            const maintCols = [
+                { key: 'date', label: 'Date' }, { key: 'region', label: 'Region' },
+                { key: 'city', label: 'City' }, { key: 'location', label: 'Location' },
+                { key: 'vendor', label: 'Vendor' }, { key: 'description', label: 'Description' },
+                { key: 'status', label: 'Status' }
+            ];
             const sla = document.getElementById('maintSLACards');
-            sla.innerHTML = '';
-            sla.appendChild(createSLACard(s.rate >= 95 ? 'green' : s.rate >= 85 ? 'yellow' : 'red', 'Completion Rate', s.rate + '%', 'Target: ≥95%', null));
-            sla.appendChild(createSLACard('green', 'Completed', s.completed, 'Requests done', null));
-            sla.appendChild(createSLACard(s.pending === 0 ? 'green' : 'yellow', 'Pending', s.pending, 'Awaiting', null));
-            sla.appendChild(createSLACard('green', 'Total', s.total, 'This period', null));
+            sla.textContent = '';
+            sla.appendChild(createSLACard(s.rate >= 95 ? 'green' : s.rate >= 85 ? 'yellow' : 'red', 'Completion Rate', s.rate + '%', 'Target: ≥95%', () => NesmaModal.show('All Maintenance', data, maintCols)));
+            sla.appendChild(createSLACard('green', 'Completed', s.completed, 'Requests done', () => NesmaModal.show('Completed Requests', data.filter(r => r.status === 'Completed'), maintCols)));
+            sla.appendChild(createSLACard(s.pending === 0 ? 'green' : 'yellow', 'Pending', s.pending, 'Awaiting', () => NesmaModal.show('Pending Requests', data.filter(r => r.status !== 'Completed'), maintCols)));
+            sla.appendChild(createSLACard('green', 'Total', s.total, 'This period', () => NesmaModal.show('All Requests', data, maintCols)));
 
             const kpi = document.getElementById('maintKPIs');
-            kpi.innerHTML = '';
-            kpi.appendChild(createKPI('bg-primary-gradient', 'wrench', 'Total', s.total, 'Requests', null));
-            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Completed', s.completed, s.rate + '%', null));
-            kpi.appendChild(createKPI('bg-warning-gradient', 'clock', 'Pending', s.pending, 'Awaiting', null));
-            kpi.appendChild(createKPI('bg-cyan-gradient', 'star', 'SLA', s.rate >= 95 ? '✓ Met' : '✗ Not Met', 'Target: ≥95%', null));
+            kpi.textContent = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'wrench', 'Total', s.total, 'Requests', () => NesmaModal.show('All Maintenance Requests', data, maintCols)));
+            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Completed', s.completed, s.rate + '%', () => NesmaModal.show('Completed Requests', data.filter(r => r.status === 'Completed'), maintCols)));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'clock', 'Pending', s.pending, 'Awaiting', () => NesmaModal.show('Pending Requests', data.filter(r => r.status !== 'Completed'), maintCols)));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'star', 'SLA', s.rate >= 95 ? '✓ Met' : '✗ Not Met', 'Target: ≥95%', () => NesmaModal.show('All Maintenance', data, maintCols)));
 
             const rc = {};
             data.forEach(r => { rc[r.region || 'Unknown'] = (rc[r.region || 'Unknown'] || 0) + 1; });
@@ -1064,6 +1114,8 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
 
+            NesmaChartDrill.attach(charts.maintRegion, (label) => data.filter(r => (r.region || 'Unknown') === label), maintCols, 'Maintenance');
+
             const vc = {};
             data.forEach(r => { vc[r.vendor || 'Unknown'] = (vc[r.vendor || 'Unknown'] || 0) + 1; });
             if (charts.maintVendor) charts.maintVendor.destroy();
@@ -1072,6 +1124,8 @@
                 data: { labels: Object.keys(vc), datasets: [{ data: Object.values(vc), backgroundColor: ['#2E3192', '#80D1E9', '#10B981', '#FBBF24', '#EF4444'], borderWidth: 0 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, cutout: '65%' }
             });
+
+            NesmaChartDrill.attach(charts.maintVendor, (label) => data.filter(r => (r.vendor || 'Unknown') === label), maintCols, 'Maintenance');
 
             document.getElementById('maintTableCount').textContent = data.length + ' records';
             const tbody = document.getElementById('maintTableBody');
@@ -1119,13 +1173,18 @@
             document.getElementById('safetyAlertTitle').textContent = s.extreme > 0 ? 'CRITICAL: ' + s.extreme + ' Extreme Violations' : s.total > 0 ? 'Safety Violations Recorded' : 'No Violations';
             document.getElementById('safetyAlertText').textContent = s.total + ' total violations. ' + s.extreme + ' extreme (≥140), ' + s.high + ' high (120-139). Max: ' + s.max.toFixed(0) + ' km/h.';
 
+            const safetyCols = [
+                { key: 'datetime', label: 'Date/Time' }, { key: 'plate_number', label: 'Plate' },
+                { key: 'speed', label: 'Speed (km/h)' }, { key: 'severity', label: 'Severity' },
+                { key: 'address', label: 'Location' }
+            ];
             const kpi = document.getElementById('safetyKPIs');
-            kpi.innerHTML = '';
-            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'Violations', s.total.toLocaleString(), 'Total', null));
-            kpi.appendChild(createKPI('bg-primary-gradient', 'car', 'Vehicles', s.vehicles, 'With violations', null));
-            kpi.appendChild(createKPI('bg-rose-gradient', 'speed', 'Max Speed', s.max.toFixed(0) + ' km/h', 'Highest', null));
-            kpi.appendChild(createKPI('bg-warning-gradient', 'speed', 'Avg Speed', avgSpeed + ' km/h', 'Average', null));
-            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'Extreme', s.extreme, '≥140 km/h', null));
+            kpi.textContent = '';
+            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'Violations', s.total.toLocaleString(), 'Total', () => NesmaModal.show('All Violations', data, safetyCols)));
+            kpi.appendChild(createKPI('bg-primary-gradient', 'car', 'Vehicles', s.vehicles, 'With violations', () => NesmaModal.show('Vehicles with Violations', data, safetyCols)));
+            kpi.appendChild(createKPI('bg-rose-gradient', 'speed', 'Max Speed', s.max.toFixed(0) + ' km/h', 'Highest', () => NesmaModal.show('Top Speed Violations', [...data].sort((a, b) => b.speed - a.speed).slice(0, 50), safetyCols)));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'speed', 'Avg Speed', avgSpeed + ' km/h', 'Average', () => NesmaModal.show('All Violations', data, safetyCols)));
+            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'Extreme', s.extreme, '≥140 km/h', () => NesmaModal.show('Extreme Violations', data.filter(r => r.severity === 'Extreme'), safetyCols)));
 
             const sc = { Extreme: 0, High: 0, Medium: 0, Low: 0 };
             data.forEach(r => sc[r.severity]++);
@@ -1136,6 +1195,8 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, cutout: '65%' }
             });
 
+            NesmaChartDrill.attach(charts.safetySeverity, (label) => data.filter(r => r.severity === label), safetyCols, 'Safety');
+
             const oc = {};
             data.forEach(r => { oc[r.plate_number] = (oc[r.plate_number] || 0) + 1; });
             const top10 = Object.entries(oc).sort((a, b) => b[1] - a[1]).slice(0, 10);
@@ -1145,6 +1206,8 @@
                 data: { labels: top10.map(o => o[0]), datasets: [{ label: 'Violations', data: top10.map(o => o[1]), backgroundColor: '#EF4444' }] },
                 options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
+
+            NesmaChartDrill.attach(charts.safetyOffenders, (label) => data.filter(r => r.plate_number === label), safetyCols, 'Safety');
 
             document.getElementById('safetyTableCount').textContent = data.length + ' records';
             const tbody = document.getElementById('safetyTableBody');
@@ -1208,7 +1271,14 @@
         function exportMaintenance() { exportToExcel(filteredData.maintenance, 'Maintenance', ['date', 'region', 'city', 'location', 'vendor', 'description', 'status']); }
         function exportSafety() { exportToExcel(filteredData.overspeed, 'Safety', ['datetime', 'plate_number', 'speed', 'severity', 'address']); }
 
-        document.addEventListener('DOMContentLoaded', loadData);
+        // CSV exports
+        function exportAccommodationCSV() { NesmaExport.toCSV(filteredData.accommodation.map(r => ({ City: r.city, Project: r.project_name, Rooms: r.rooms, Residents: r.residents, 'Empty Beds': r.empty_beds, 'Occupancy %': r.occupancy_rate, 'End Date': r.end_date, 'Days Left': r.remaining_days, Status: r.status, 'Annual Payment': r.annual_payment })), 'Accommodation'); }
+        function exportDrivingCSV() { NesmaExport.toCSV(filteredData.driving.map(r => ({ Plate: r.plate_number, 'Distance (km)': r.distance_km, Overspeed: r.overspeed_count, 'Harsh Braking': r.harsh_braking, 'Max Speed': r.max_speed, 'DAT Score': r.dat_score, Rating: r.rating })), 'Fleet'); }
+        function exportFuelCSV() { NesmaExport.toCSV(filteredData.fuel.map(r => ({ Plate: r.plate_number, 'Distance (km)': r.distance_km, 'Fuel (L)': r.fuel_liters, 'Cost (SAR)': r.fuel_cost })), 'Fuel'); }
+        function exportMaintenanceCSV() { NesmaExport.toCSV(filteredData.maintenance.map(r => ({ Date: r.date, Region: r.region, City: r.city, Location: r.location, Vendor: r.vendor, Description: r.description, Status: r.status })), 'Maintenance'); }
+        function exportSafetyCSV() { NesmaExport.toCSV(filteredData.overspeed.map(r => ({ 'Date/Time': r.datetime, Plate: r.plate_number, 'Speed (km/h)': r.speed, Severity: r.severity, Location: r.address })), 'Safety'); }
+
+        document.addEventListener('DOMContentLoaded', function() { loadData(); if (typeof NesmaTheme !== 'undefined') NesmaTheme.init(); });
         document.getElementById('detailModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
     </script>
 </body>

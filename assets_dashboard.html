@@ -8,8 +8,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/nesma-theme.css">
+    <script src="assets/nesma-utils.js"></script>
     <style>
         :root {
             --nesma-primary: #2E3192;
@@ -97,6 +100,9 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="text-xs text-white/60 hidden md:inline" id="lastUpdated">Loading...</span>
+                    <button id="themeToggleBtn" onclick="NesmaTheme.toggle()" class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Toggle Theme">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -127,6 +133,8 @@
                         <div><label class="block text-xs font-medium text-gray-500 mb-1">City</label><select id="filterEquipmentCity" class="filter-select" onchange="filterEquipment()"><option value="">All Cities</option></select></div>
                         <div><label class="block text-xs font-medium text-gray-500 mb-1">Status</label><select id="filterEquipmentStatus" class="filter-select" onchange="filterEquipment()"><option value="">All Statuses</option></select></div>
                         <button onclick="exportToExcel('equipment')" class="btn-export btn-excel">Excel</button>
+                        <button onclick="NesmaExport.toCSV(filteredData.equipment,'Equipment')" class="btn-export btn-csv">CSV</button>
+                        <button onclick="NesmaExport.toPDF('tab-equipment','Assets_Equipment')" class="btn-export btn-pdf">PDF</button>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="equipmentKPIs"></div>
@@ -145,6 +153,8 @@
                         <div><label class="block text-xs font-medium text-gray-500 mb-1">Region</label><select id="filterFleetRegion" class="filter-select" onchange="filterFleet()"><option value="">All Regions</option></select></div>
                         <div><label class="block text-xs font-medium text-gray-500 mb-1">Make</label><select id="filterFleetMake" class="filter-select" onchange="filterFleet()"><option value="">All Makes</option></select></div>
                         <button onclick="exportToExcel('fleet')" class="btn-export btn-excel">Excel</button>
+                        <button onclick="NesmaExport.toCSV(filteredData.fleet,'Fleet')" class="btn-export btn-csv">CSV</button>
+                        <button onclick="NesmaExport.toPDF('tab-fleet','Assets_Fleet')" class="btn-export btn-pdf">PDF</button>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="fleetKPIs"></div>
@@ -162,6 +172,8 @@
                         <div><label class="block text-xs font-medium text-gray-500 mb-1">Location</label><select id="filterGenLocation" class="filter-select" onchange="filterGenerators()"><option value="">All Locations</option></select></div>
                         <div><label class="block text-xs font-medium text-gray-500 mb-1">Status</label><select id="filterGenStatus" class="filter-select" onchange="filterGenerators()"><option value="">All Statuses</option></select></div>
                         <button onclick="exportToExcel('generators')" class="btn-export btn-excel">Excel</button>
+                        <button onclick="NesmaExport.toCSV(filteredData.generators,'Generators')" class="btn-export btn-csv">CSV</button>
+                        <button onclick="NesmaExport.toPDF('tab-generators','Assets_Generators')" class="btn-export btn-pdf">PDF</button>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="generatorKPIs"></div>
@@ -173,7 +185,11 @@
                 <div class="filter-section no-print">
                     <div class="flex flex-wrap items-end gap-4">
                         <div class="flex-1 min-w-[200px]"><label class="block text-xs font-medium text-gray-500 mb-1">Search</label><div class="search-box"><input type="text" id="acsSearch" placeholder="Search AC units..." onkeyup="filterACs()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div></div>
+                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Project</label><select id="filterAcsProject" class="filter-select" onchange="filterACs()"><option value="">All Projects</option></select></div>
+                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Status</label><select id="filterAcsStatus" class="filter-select" onchange="filterACs()"><option value="">All Statuses</option></select></div>
                         <button onclick="exportToExcel('acs')" class="btn-export btn-excel">Excel</button>
+                        <button onclick="NesmaExport.toCSV(filteredData.acs,'Stand_ACs')" class="btn-export btn-csv">CSV</button>
+                        <button onclick="NesmaExport.toPDF('tab-acs','Assets_StandACs')" class="btn-export btn-pdf">PDF</button>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="acsKPIs"></div>
@@ -184,7 +200,12 @@
                 <div class="filter-section no-print">
                     <div class="flex flex-wrap items-end gap-4">
                         <div class="flex-1 min-w-[200px]"><label class="block text-xs font-medium text-gray-500 mb-1">Search</label><div class="search-box"><input type="text" id="testingSearch" placeholder="Search equipment..." onkeyup="filterTesting()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div></div>
+                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Supplier</label><select id="filterTestingSupplier" class="filter-select" onchange="filterTesting()"><option value="">All Suppliers</option></select></div>
+                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Location</label><select id="filterTestingLocation" class="filter-select" onchange="filterTesting()"><option value="">All Locations</option></select></div>
+                        <div><label class="block text-xs font-medium text-gray-500 mb-1">TUV Status</label><select id="filterTestingTUV" class="filter-select" onchange="filterTesting()"><option value="">All TUV</option></select></div>
                         <button onclick="exportToExcel('testing')" class="btn-export btn-excel">Excel</button>
+                        <button onclick="NesmaExport.toCSV(filteredData.testing,'Testing_Equipment')" class="btn-export btn-csv">CSV</button>
+                        <button onclick="NesmaExport.toPDF('tab-testing','Assets_TestingEquipment')" class="btn-export btn-pdf">PDF</button>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="testingKPIs"></div>
@@ -196,7 +217,10 @@
                     <div class="flex flex-wrap items-end gap-4">
                         <div class="flex-1 min-w-[200px]"><label class="block text-xs font-medium text-gray-500 mb-1">Search</label><div class="search-box"><input type="text" id="toolsSearch" placeholder="Search tools..." onkeyup="filterTools()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div></div>
                         <div><label class="block text-xs font-medium text-gray-500 mb-1">Type</label><select id="filterToolType" class="filter-select" onchange="filterTools()"><option value="">All Types</option></select></div>
+                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Location</label><select id="filterToolLocation" class="filter-select" onchange="filterTools()"><option value="">All Locations</option></select></div>
                         <button onclick="exportToExcel('tools')" class="btn-export btn-excel">Excel</button>
+                        <button onclick="NesmaExport.toCSV(filteredData.tools,'Tools')" class="btn-export btn-csv">CSV</button>
+                        <button onclick="NesmaExport.toPDF('tab-tools','Assets_Tools')" class="btn-export btn-pdf">PDF</button>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="toolsKPIs"></div>
@@ -241,16 +265,19 @@
             const container = document.getElementById('overviewCards');
             container.textContent = '';
             const cards = [
-                { cls: 'bg-equipment', label: 'Equipment', value: s.equipment.total, sub: 'SAR ' + (s.equipment.total_cost/1e6).toFixed(1) + 'M' },
-                { cls: 'bg-fleet', label: 'Fleet Vehicles', value: s.fleet.total, sub: 'SAR ' + (s.fleet.total_cost/1e6).toFixed(1) + 'M' },
-                { cls: 'bg-generators', label: 'Generators', value: s.generators.total, sub: s.generators.total_capacity_kw.toLocaleString() + ' kW' },
-                { cls: 'bg-acs', label: 'Stand ACs', value: s.stand_acs.total, sub: s.stand_acs.total_available + ' available' },
-                { cls: 'bg-testing', label: 'Testing Equip', value: s.testing_equipment.total, sub: 'SAR ' + (s.testing_equipment.total_value/1e6).toFixed(1) + 'M' },
-                { cls: 'bg-tools', label: 'Tools', value: s.tools.total, sub: s.tools.total_qty.toLocaleString() + ' qty' }
+                { cls: 'bg-equipment', label: 'Equipment', value: s.equipment.total, sub: 'SAR ' + (s.equipment.total_cost/1e6).toFixed(1) + 'M', dataKey: 'equipment', cols: [{key:'description',label:'Description'},{key:'brand',label:'Brand'},{key:'city',label:'City'},{key:'project',label:'Project'},{key:'status',label:'Status'},{key:'cost',label:'Cost',align:'right'}] },
+                { cls: 'bg-fleet', label: 'Fleet Vehicles', value: s.fleet.total, sub: 'SAR ' + (s.fleet.total_cost/1e6).toFixed(1) + 'M', dataKey: 'fleet', cols: [{key:'plate_no_eng',label:'Plate'},{key:'make',label:'Make'},{key:'model',label:'Model'},{key:'vehicle_type',label:'Type'},{key:'region',label:'Region'},{key:'availability',label:'Status'}] },
+                { cls: 'bg-generators', label: 'Generators', value: s.generators.total, sub: s.generators.total_capacity_kw.toLocaleString() + ' kW', dataKey: 'generators', cols: [{key:'name',label:'Name'},{key:'type',label:'Type'},{key:'max_kw',label:'Max kW',align:'right'},{key:'location',label:'Location'},{key:'status',label:'Status'}] },
+                { cls: 'bg-acs', label: 'Stand ACs', value: s.stand_acs.total, sub: s.stand_acs.total_available + ' available', dataKey: 'acs', cols: [{key:'description',label:'Description'},{key:'project_code',label:'Project'},{key:'capacity',label:'Capacity'},{key:'qty_available',label:'Available',align:'right'},{key:'cost',label:'Cost',align:'right'}] },
+                { cls: 'bg-testing', label: 'Testing Equip', value: s.testing_equipment.total, sub: 'SAR ' + (s.testing_equipment.total_value/1e6).toFixed(1) + 'M', dataKey: 'testing', cols: [{key:'description',label:'Description'},{key:'supplier',label:'Supplier'},{key:'location',label:'Location'},{key:'tuv',label:'TUV'},{key:'qty',label:'Qty',align:'right'},{key:'total_price',label:'Value',align:'right'}] },
+                { cls: 'bg-tools', label: 'Tools', value: s.tools.total, sub: s.tools.total_qty.toLocaleString() + ' qty', dataKey: 'tools', cols: [{key:'description',label:'Description'},{key:'type',label:'Type'},{key:'supplier',label:'Supplier'},{key:'location',label:'Location'},{key:'quantity',label:'Qty',align:'right'},{key:'tuv_status',label:'TUV'}] }
             ];
             cards.forEach(c => {
                 const div = document.createElement('div');
                 div.className = 'overview-card ' + c.cls;
+                div.onclick = function() {
+                    NesmaModal.show('All ' + c.label, filteredData[c.dataKey], c.cols, filteredData[c.dataKey].length + ' records');
+                };
                 const valueEl = document.createElement('div');
                 valueEl.className = 'value';
                 valueEl.textContent = c.value.toLocaleString();
@@ -277,6 +304,19 @@
             populateSelect('filterGenLocation', f.generator_locations);
             populateSelect('filterGenStatus', f.generator_statuses);
             populateSelect('filterToolType', f.tool_types);
+            // New filters
+            var acsProjects = [...new Set(assetsData.records.stand_acs.map(r => r.project_code).filter(Boolean))].sort();
+            var acsStatuses = [...new Set(assetsData.records.stand_acs.map(r => r.status).filter(Boolean))].sort();
+            populateSelect('filterAcsProject', acsProjects);
+            populateSelect('filterAcsStatus', acsStatuses);
+            var testingSuppliers = [...new Set(assetsData.records.testing_equipment.map(r => r.supplier).filter(Boolean))].sort();
+            var testingLocations = [...new Set(assetsData.records.testing_equipment.map(r => r.location).filter(Boolean))].sort();
+            var testingTUVs = [...new Set(assetsData.records.testing_equipment.map(r => r.tuv).filter(Boolean))].sort();
+            populateSelect('filterTestingSupplier', testingSuppliers);
+            populateSelect('filterTestingLocation', testingLocations);
+            populateSelect('filterTestingTUV', testingTUVs);
+            var toolLocations = [...new Set(assetsData.records.tools.map(r => r.location).filter(Boolean))].sort();
+            populateSelect('filterToolLocation', toolLocations);
         }
 
         function populateSelect(id, options) {
@@ -325,16 +365,19 @@
             const active = data.filter(r => r.status === 'Active').length;
             const cities = new Set(data.map(r => r.city).filter(c => c)).size;
 
+            const equipCols = [{key:'description',label:'Description'},{key:'brand',label:'Brand'},{key:'city',label:'City'},{key:'project',label:'Project'},{key:'responsible',label:'Responsible'},{key:'status',label:'Status'},{key:'cost',label:'Cost',align:'right'}];
             const kpisContainer = document.getElementById('equipmentKPIs');
             kpisContainer.textContent = '';
             [
-                { value: total, label: 'Total Equipment' },
-                { value: active, label: 'Active Units', color: '#059669' },
-                { value: cities, label: 'Cities' },
-                { value: 'SAR ' + (totalCost/1e6).toFixed(2) + 'M', label: 'Total Value' }
+                { value: total, label: 'Total Equipment', click: function() { NesmaModal.show('All Equipment', data, equipCols); } },
+                { value: active, label: 'Active Units', color: '#059669', click: function() { NesmaModal.show('Active Equipment', data.filter(function(r){return r.status==='Active';}), equipCols); } },
+                { value: cities, label: 'Cities', click: function() { var cityStats = {}; data.forEach(function(r){ if(r.city){ if(!cityStats[r.city]) cityStats[r.city]={city:r.city,count:0,cost:0}; cityStats[r.city].count++; cityStats[r.city].cost+=r.cost; }}); NesmaModal.show('Equipment by City', Object.values(cityStats), [{key:'city',label:'City'},{key:'count',label:'Count',align:'right'},{key:'cost',label:'Total Cost',align:'right'}]); } },
+                { value: 'SAR ' + (totalCost/1e6).toFixed(2) + 'M', label: 'Total Value', click: function() { NesmaModal.show('Equipment by Value', data.slice().sort(function(a,b){return b.cost-a.cost;}), equipCols, 'SAR ' + totalCost.toLocaleString() + ' total'); } }
             ].forEach(k => {
                 const div = document.createElement('div');
                 div.className = 'kpi-mini';
+                div.style.cursor = 'pointer';
+                if (k.click) div.onclick = k.click;
                 const val = document.createElement('div');
                 val.className = 'value';
                 val.textContent = typeof k.value === 'number' ? k.value.toLocaleString() : k.value;
@@ -369,6 +412,15 @@
                 type: 'doughnut',
                 data: { labels: brandSorted.map(d => d[0]), datasets: [{ data: brandSorted.map(d => d[1]), backgroundColor: ['#2E3192', '#80D1E9', '#0E2841', '#059669', '#D97706', '#DC2626', '#8B5CF6', '#06B6D4'] }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12 } } } }
+            });
+
+            NesmaChartDrill.attach(charts.equipmentByCity, function(label) {
+                var recs = data.filter(function(r){ return r.city === label; });
+                return { title: 'Equipment in ' + label, data: recs, columns: equipCols, subtitle: recs.length + ' items' };
+            });
+            NesmaChartDrill.attach(charts.equipmentByBrand, function(label) {
+                var recs = data.filter(function(r){ return r.brand === label; });
+                return { title: label + ' Equipment', data: recs, columns: equipCols, subtitle: recs.length + ' items' };
             });
 
             document.getElementById('equipmentCount').textContent = data.length + ' items';
@@ -418,11 +470,19 @@
             const types = new Set(data.map(r => r.vehicle_type).filter(t => t)).size;
             const totalCost = data.reduce((s, r) => s + r.cost, 0);
 
+            const fleetCols = [{key:'plate_no_eng',label:'Plate'},{key:'make',label:'Make'},{key:'model',label:'Model'},{key:'vehicle_type',label:'Type'},{key:'year',label:'Year'},{key:'region',label:'Region'},{key:'city',label:'City'},{key:'user_name',label:'User'},{key:'availability',label:'Status'}];
             const kpisContainer = document.getElementById('fleetKPIs');
             kpisContainer.textContent = '';
-            [{ value: total, label: 'Total Vehicles' }, { value: active, label: 'Active', color: '#059669' }, { value: types, label: 'Vehicle Types' }, { value: 'SAR ' + (totalCost/1e6).toFixed(1) + 'M', label: 'Total Value' }].forEach(k => {
+            [
+                { value: total, label: 'Total Vehicles', click: function(){ NesmaModal.show('All Fleet Vehicles', data, fleetCols); } },
+                { value: active, label: 'Active', color: '#059669', click: function(){ NesmaModal.show('Active Vehicles', data.filter(function(r){return r.availability==='ACTIVE';}), fleetCols); } },
+                { value: types, label: 'Vehicle Types', click: function(){ var ts={}; data.forEach(function(r){if(r.vehicle_type){if(!ts[r.vehicle_type])ts[r.vehicle_type]={type:r.vehicle_type,count:0}; ts[r.vehicle_type].count++;}}); NesmaModal.show('Vehicle Types', Object.values(ts), [{key:'type',label:'Type'},{key:'count',label:'Count',align:'right'}]); } },
+                { value: 'SAR ' + (totalCost/1e6).toFixed(1) + 'M', label: 'Total Value', click: function(){ NesmaModal.show('Fleet by Value', data.slice().sort(function(a,b){return b.cost-a.cost;}), fleetCols); } }
+            ].forEach(k => {
                 const div = document.createElement('div');
                 div.className = 'kpi-mini';
+                div.style.cursor = 'pointer';
+                if (k.click) div.onclick = k.click;
                 const val = document.createElement('div');
                 val.className = 'value';
                 val.textContent = typeof k.value === 'number' ? k.value.toLocaleString() : k.value;
@@ -456,6 +516,15 @@
                 type: 'pie',
                 data: { labels: regionSorted.map(d => d[0]), datasets: [{ data: regionSorted.map(d => d[1]), backgroundColor: ['#2E3192', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'] }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+            });
+
+            NesmaChartDrill.attach(charts.fleetByType, function(label) {
+                var recs = data.filter(function(r){ return r.vehicle_type === label; });
+                return { title: label + ' Vehicles', data: recs, columns: fleetCols, subtitle: recs.length + ' vehicles' };
+            });
+            NesmaChartDrill.attach(charts.fleetByRegion, function(label) {
+                var recs = data.filter(function(r){ return r.region === label; });
+                return { title: 'Fleet in ' + label, data: recs, columns: fleetCols, subtitle: recs.length + ' vehicles' };
             });
 
             document.getElementById('fleetCount').textContent = data.length + ' vehicles';
@@ -505,11 +574,19 @@
             const active = data.filter(r => r.status === 'Active').length;
             const locations = new Set(data.map(r => r.location).filter(l => l)).size;
 
+            const genCols = [{key:'name',label:'Name'},{key:'type',label:'Type'},{key:'capacity',label:'Capacity'},{key:'max_kw',label:'Max kW',align:'right'},{key:'location',label:'Location'},{key:'condition',label:'Condition'},{key:'responsible',label:'Responsible'},{key:'status',label:'Status'}];
             const kpisContainer = document.getElementById('generatorKPIs');
             kpisContainer.textContent = '';
-            [{ value: total, label: 'Total Generators' }, { value: totalKW.toLocaleString(), label: 'Total kW', color: '#F59E0B' }, { value: active, label: 'Active', color: '#059669' }, { value: locations, label: 'Locations' }].forEach(k => {
+            [
+                { value: total, label: 'Total Generators', click: function(){ NesmaModal.show('All Generators', data, genCols); } },
+                { value: totalKW.toLocaleString(), label: 'Total kW', color: '#F59E0B', click: function(){ NesmaModal.show('Generators by Capacity', data.slice().sort(function(a,b){return b.max_kw-a.max_kw;}), genCols, totalKW.toLocaleString() + ' kW total'); } },
+                { value: active, label: 'Active', color: '#059669', click: function(){ NesmaModal.show('Active Generators', data.filter(function(r){return r.status==='Active';}), genCols); } },
+                { value: locations, label: 'Locations', click: function(){ var ls={}; data.forEach(function(r){if(r.location){if(!ls[r.location])ls[r.location]={location:r.location,count:0,total_kw:0}; ls[r.location].count++; ls[r.location].total_kw+=r.max_kw;}}); NesmaModal.show('Generators by Location', Object.values(ls), [{key:'location',label:'Location'},{key:'count',label:'Count',align:'right'},{key:'total_kw',label:'Total kW',align:'right'}]); } }
+            ].forEach(k => {
                 const div = document.createElement('div');
                 div.className = 'kpi-mini';
+                div.style.cursor = 'pointer';
+                if (k.click) div.onclick = k.click;
                 const val = document.createElement('div');
                 val.className = 'value';
                 val.textContent = k.value;
@@ -537,6 +614,11 @@
                 type: 'bar',
                 data: { labels: locSorted.map(d => d[0]), datasets: [{ label: 'Capacity (kW)', data: locSorted.map(d => d[1].kw), backgroundColor: 'rgba(245,158,11,0.8)', borderRadius: 6 }, { label: 'Count', data: locSorted.map(d => d[1].count), backgroundColor: 'rgba(46,49,146,0.8)', borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            });
+
+            NesmaChartDrill.attach(charts.generatorsByLocation, function(label) {
+                var recs = data.filter(function(r){ return r.location === label; });
+                return { title: 'Generators at ' + label, data: recs, columns: genCols, subtitle: recs.length + ' generators' };
             });
 
             document.getElementById('generatorCount').textContent = data.length + ' generators';
@@ -572,7 +654,14 @@
 
         function filterACs() {
             const search = document.getElementById('acsSearch').value.toLowerCase();
-            filteredData.acs = assetsData.records.stand_acs.filter(r => !search || r.description.toLowerCase().includes(search));
+            const project = document.getElementById('filterAcsProject').value;
+            const status = document.getElementById('filterAcsStatus').value;
+            filteredData.acs = assetsData.records.stand_acs.filter(r => {
+                const matchSearch = !search || (r.description || '').toLowerCase().includes(search);
+                const matchProject = !project || r.project_code === project;
+                const matchStatus = !status || r.status === status;
+                return matchSearch && matchProject && matchStatus;
+            });
             renderACsTab();
         }
 
@@ -583,11 +672,19 @@
             const required = data.reduce((s, r) => s + r.qty_required, 0);
             const totalCost = data.reduce((s, r) => s + r.cost, 0);
 
+            const acsCols = [{key:'description',label:'Description'},{key:'project_code',label:'Project'},{key:'capacity',label:'Capacity'},{key:'qty_required',label:'Required',align:'right'},{key:'qty_available',label:'Available',align:'right'},{key:'cost',label:'Cost',align:'right'},{key:'status',label:'Status'}];
             const kpisContainer = document.getElementById('acsKPIs');
             kpisContainer.textContent = '';
-            [{ value: total, label: 'Total Units' }, { value: available, label: 'Available', color: '#059669' }, { value: required, label: 'Required', color: '#D97706' }, { value: 'SAR ' + totalCost.toLocaleString(), label: 'Total Cost' }].forEach(k => {
+            [
+                { value: total, label: 'Total Units', click: function(){ NesmaModal.show('All Stand ACs', data, acsCols); } },
+                { value: available, label: 'Available', color: '#059669', click: function(){ NesmaModal.show('Available ACs', data.filter(function(r){return r.qty_available > 0;}), acsCols, available + ' units available'); } },
+                { value: required, label: 'Required', color: '#D97706', click: function(){ NesmaModal.show('Required ACs', data.filter(function(r){return r.qty_required > 0;}), acsCols, required + ' units required'); } },
+                { value: 'SAR ' + totalCost.toLocaleString(), label: 'Total Cost', click: function(){ NesmaModal.show('ACs by Cost', data.slice().sort(function(a,b){return b.cost-a.cost;}), acsCols, 'SAR ' + totalCost.toLocaleString() + ' total'); } }
+            ].forEach(k => {
                 const div = document.createElement('div');
                 div.className = 'kpi-mini';
+                div.style.cursor = 'pointer';
+                if (k.click) div.onclick = k.click;
                 const val = document.createElement('div');
                 val.className = 'value';
                 val.textContent = k.value;
@@ -633,7 +730,16 @@
 
         function filterTesting() {
             const search = document.getElementById('testingSearch').value.toLowerCase();
-            filteredData.testing = assetsData.records.testing_equipment.filter(r => !search || r.description.toLowerCase().includes(search) || r.supplier.toLowerCase().includes(search));
+            const supplier = document.getElementById('filterTestingSupplier').value;
+            const location = document.getElementById('filterTestingLocation').value;
+            const tuv = document.getElementById('filterTestingTUV').value;
+            filteredData.testing = assetsData.records.testing_equipment.filter(r => {
+                const matchSearch = !search || r.description.toLowerCase().includes(search) || r.supplier.toLowerCase().includes(search);
+                const matchSupplier = !supplier || r.supplier === supplier;
+                const matchLocation = !location || r.location === location;
+                const matchTUV = !tuv || r.tuv === tuv;
+                return matchSearch && matchSupplier && matchLocation && matchTUV;
+            });
             renderTestingTab();
         }
 
@@ -643,11 +749,20 @@
             const totalValue = data.reduce((s, r) => s + r.total_price, 0);
             const calibrated = data.filter(r => r.calibration === 'New' || r.calibration === 'Valid').length;
 
+            const testCols = [{key:'description',label:'Description'},{key:'supplier',label:'Supplier'},{key:'location',label:'Location'},{key:'tuv',label:'TUV'},{key:'calibration',label:'Calibration'},{key:'qty',label:'Qty',align:'right'},{key:'total_price',label:'Value',align:'right'}];
+            const totalQtyTesting = data.reduce((s, r) => s + r.qty, 0);
             const kpisContainer = document.getElementById('testingKPIs');
             kpisContainer.textContent = '';
-            [{ value: total, label: 'Total Items' }, { value: calibrated, label: 'Calibrated', color: '#8B5CF6' }, { value: 'SAR ' + (totalValue/1e6).toFixed(2) + 'M', label: 'Total Value' }, { value: data.reduce((s, r) => s + r.qty, 0), label: 'Total Qty' }].forEach(k => {
+            [
+                { value: total, label: 'Total Items', click: function(){ NesmaModal.show('All Testing Equipment', data, testCols); } },
+                { value: calibrated, label: 'Calibrated', color: '#8B5CF6', click: function(){ NesmaModal.show('Calibrated Equipment', data.filter(function(r){return r.calibration==='New'||r.calibration==='Valid';}), testCols); } },
+                { value: 'SAR ' + (totalValue/1e6).toFixed(2) + 'M', label: 'Total Value', click: function(){ NesmaModal.show('Equipment by Value', data.slice().sort(function(a,b){return b.total_price-a.total_price;}), testCols, 'SAR ' + totalValue.toLocaleString() + ' total'); } },
+                { value: totalQtyTesting, label: 'Total Qty', click: function(){ NesmaModal.show('All Testing Equipment', data, testCols, totalQtyTesting + ' total quantity'); } }
+            ].forEach(k => {
                 const div = document.createElement('div');
                 div.className = 'kpi-mini';
+                div.style.cursor = 'pointer';
+                if (k.click) div.onclick = k.click;
                 const val = document.createElement('div');
                 val.className = 'value';
                 val.textContent = k.value;
@@ -688,10 +803,12 @@
         function filterTools() {
             const search = document.getElementById('toolsSearch').value.toLowerCase();
             const type = document.getElementById('filterToolType').value;
+            const location = document.getElementById('filterToolLocation').value;
             filteredData.tools = assetsData.records.tools.filter(r => {
                 const matchSearch = !search || r.description.toLowerCase().includes(search);
                 const matchType = !type || r.type === type;
-                return matchSearch && matchType;
+                const matchLocation = !location || r.location === location;
+                return matchSearch && matchType && matchLocation;
             });
             renderToolsTab();
         }
@@ -703,11 +820,19 @@
             const types = new Set(data.map(r => r.type).filter(t => t)).size;
             const valid = data.filter(r => r.tuv_status === 'Valid').length;
 
+            const toolsCols = [{key:'description',label:'Description'},{key:'type',label:'Type'},{key:'supplier',label:'Supplier'},{key:'measurement',label:'Measurement'},{key:'location',label:'Location'},{key:'quantity',label:'Qty',align:'right'},{key:'tuv_status',label:'TUV Status'}];
             const kpisContainer = document.getElementById('toolsKPIs');
             kpisContainer.textContent = '';
-            [{ value: total, label: 'Total Tools' }, { value: totalQty.toLocaleString(), label: 'Total Quantity', color: '#EF4444' }, { value: types, label: 'Types' }, { value: valid, label: 'TUV Valid', color: '#059669' }].forEach(k => {
+            [
+                { value: total, label: 'Total Tools', click: function(){ NesmaModal.show('All Tools', data, toolsCols); } },
+                { value: totalQty.toLocaleString(), label: 'Total Quantity', color: '#EF4444', click: function(){ NesmaModal.show('Tools by Quantity', data.slice().sort(function(a,b){return b.quantity-a.quantity;}), toolsCols, totalQty.toLocaleString() + ' total qty'); } },
+                { value: types, label: 'Types', click: function(){ var ts={}; data.forEach(function(r){if(r.type){if(!ts[r.type])ts[r.type]={type:r.type,count:0,qty:0}; ts[r.type].count++; ts[r.type].qty+=r.quantity;}}); NesmaModal.show('Tool Types', Object.values(ts), [{key:'type',label:'Type'},{key:'count',label:'Items',align:'right'},{key:'qty',label:'Qty',align:'right'}]); } },
+                { value: valid, label: 'TUV Valid', color: '#059669', click: function(){ NesmaModal.show('TUV Valid Tools', data.filter(function(r){return r.tuv_status==='Valid';}), toolsCols); } }
+            ].forEach(k => {
                 const div = document.createElement('div');
                 div.className = 'kpi-mini';
+                div.style.cursor = 'pointer';
+                if (k.click) div.onclick = k.click;
                 const val = document.createElement('div');
                 val.className = 'value';
                 val.textContent = k.value;
@@ -768,7 +893,7 @@
             XLSX.writeFile(wb, filename);
         }
 
-        document.addEventListener('DOMContentLoaded', loadData);
+        document.addEventListener('DOMContentLoaded', function() { loadData(); if (typeof NesmaTheme !== 'undefined') NesmaTheme.init(); });
     </script>
 </body>
 </html>

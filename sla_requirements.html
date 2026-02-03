@@ -6,6 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <title>NESMA | SLA Requirements Documentation</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/nesma-utils.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/nesma-theme.css">
     <style>
@@ -225,6 +226,9 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="text-sm text-blue-100 hidden sm:inline">Document ID: NIT-SCM-SLA-KSA-v1.0A</span>
+                    <button id="themeToggle" onclick="NesmaTheme.toggle()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Toggle theme">
+                        <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </button>
                     <button onclick="window.print()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Print">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
@@ -1026,6 +1030,7 @@
                 }
             });
         });
+        if (typeof NesmaTheme !== 'undefined') NesmaTheme.init();
     </script>
 </body>
 </html>

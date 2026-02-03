@@ -8,8 +8,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/nesma-theme.css">
+    <script src="assets/nesma-utils.js"></script>
     <style>
         :root {
             --nesma-primary: #2E3192;
@@ -337,6 +340,9 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="text-xs text-white/60 hidden md:inline" id="lastUpdated">Loading...</span>
+                    <button id="themeToggleBtn" onclick="NesmaTheme.toggle()" class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Toggle Theme">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -399,13 +405,9 @@
                         </div>
                         <div class="ml-auto flex gap-2">
                             <button onclick="resetFilters()" class="btn-reset">Reset</button>
-                            <button onclick="exportToPDF()" class="btn-export btn-export-pdf">
-                                <svg fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12V6h-4V2H4v16zm8-16l4 4h-4V2z"/></svg>
-                                PDF
-                            </button>
-                            <button onclick="exportToExcel()" class="btn-export btn-export-excel">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                Excel
+                            <button onclick="NesmaExport.toPDF('tab-overview','Transportation_Overview')" class="btn-export btn-pdf">PDF</button>
+                            <button onclick="exportToExcel()" class="btn-export btn-excel">Excel</button>
+                            <button onclick="NesmaExport.toCSV(filteredRecords,'Transportation')" class="btn-export btn-csv">CSV
                             </button>
                         </div>
                     </div>
@@ -771,14 +773,15 @@
             sla.appendChild(createSLACard(delayed === 0 ? 'green' : delayed <= 10 ? 'yellow' : 'red', 'Delayed', delayed, 'Need attention', null, function() { showDelayedDetails(); }));
 
             // KPIs
+            var transportCols = [{key:'job_order',label:'Job Order'},{key:'request_date',label:'Date'},{key:'project',label:'Project'},{key:'supplier',label:'Supplier'},{key:'equipment',label:'Equipment'},{key:'rent_type',label:'Rent Type'},{key:'total_amount',label:'Amount',align:'right'},{key:'status',label:'Status'},{key:'sla_status',label:'SLA'}];
             var kpi = document.getElementById('overviewKPIs');
-            kpi.innerHTML = '';
-            kpi.appendChild(createKPI('bg-primary-gradient', 'truck', 'Total Jobs', total.toLocaleString(), 'Requests', function() { showModal('All Jobs', total + ' total job orders'); }));
-            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Completed', done.toLocaleString(), completionRate + '% rate', function() { showDetails('Done'); }));
-            kpi.appendChild(createKPI('bg-warning-gradient', 'clock', 'In Progress', inProgress.toLocaleString(), 'Active', function() { showDetails('In Progress'); }));
-            kpi.appendChild(createKPI('bg-cyan-gradient', 'check', 'On Time', onTime.toLocaleString(), onTimeRate + '% of completed', null));
-            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'Delayed', delayed.toLocaleString(), 'Past SLA', function() { showDelayedDetails(); }));
-            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + (amount / 1000000).toFixed(2) + 'M', 'All jobs', null));
+            kpi.textContent = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'truck', 'Total Jobs', total.toLocaleString(), 'Requests', function() { NesmaModal.show('All Job Orders', data, transportCols, total + ' total requests'); }));
+            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Completed', done.toLocaleString(), completionRate + '% rate', function() { NesmaModal.show('Completed Jobs', data.filter(function(r){return r.status==='Done';}), transportCols); }));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'clock', 'In Progress', inProgress.toLocaleString(), 'Active', function() { NesmaModal.show('In Progress Jobs', data.filter(function(r){return r.status==='In Progress';}), transportCols); }));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'check', 'On Time', onTime.toLocaleString(), onTimeRate + '% of completed', function() { NesmaModal.show('On Time Jobs', data.filter(function(r){return r.sla_status==='On Time';}), transportCols); }));
+            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'Delayed', delayed.toLocaleString(), 'Past SLA', function() { NesmaModal.show('Delayed Jobs', data.filter(function(r){return r.sla_status==='Delayed';}), transportCols, delayed + ' jobs past SLA target of 2 days'); }));
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + (amount / 1000000).toFixed(2) + 'M', 'All jobs', function() { NesmaModal.show('Jobs by Spend', data.slice().sort(function(a,b){return b.total_amount-a.total_amount;}), transportCols, 'SAR ' + amount.toLocaleString() + ' total'); }));
 
             // Status Chart
             var statusCounts = {};
@@ -869,6 +872,26 @@
                 type: 'doughnut',
                 data: { labels: Object.keys(supplierCount), datasets: [{ data: Object.values(supplierCount), backgroundColor: ['#2E3192', '#80D1E9', '#10B981', '#FBBF24', '#EF4444', '#8B5CF6', '#EC4899', '#F97316', '#06B6D4', '#14B8A6', '#6366F1'], borderWidth: 0 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 } } } }, cutout: '50%' }
+            });
+
+            // Chart drill-down handlers
+            NesmaChartDrill.attach(charts.status, function(label) {
+                var recs = data.filter(function(r){ return r.status === label; });
+                return { title: label + ' Jobs', data: recs, columns: transportCols, subtitle: recs.length + ' jobs' };
+            });
+            NesmaChartDrill.attach(charts.monthly, function(label) {
+                var monthKey = label;
+                var recs = data.filter(function(r){ return r.month && r.month.slice(5) === monthKey; });
+                return { title: 'Jobs in ' + label, data: recs, columns: transportCols, subtitle: recs.length + ' jobs' };
+            });
+            NesmaChartDrill.attach(charts.project, function(label) {
+                var fullLabel = label.replace('...', '');
+                var recs = data.filter(function(r){ return r.project && r.project.indexOf(fullLabel) === 0; });
+                return { title: 'Project: ' + label, data: recs, columns: transportCols, subtitle: recs.length + ' jobs' };
+            });
+            NesmaChartDrill.attach(charts.supplier, function(label) {
+                var recs = data.filter(function(r){ return r.supplier === label; });
+                return { title: label + ' Jobs', data: recs, columns: transportCols, subtitle: recs.length + ' jobs' };
             });
         }
 
@@ -1000,8 +1023,17 @@
                 options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
+            NesmaChartDrill.attach(charts.supplierJobs, function(label) {
+                var recs = filteredRecords.filter(function(r){ return r.supplier === label; });
+                return { title: label + ' Jobs', data: recs, columns: [{key:'job_order',label:'Job Order'},{key:'request_date',label:'Date'},{key:'project',label:'Project'},{key:'equipment',label:'Equipment'},{key:'total_amount',label:'Amount',align:'right'},{key:'status',label:'Status'},{key:'sla_status',label:'SLA'}], subtitle: recs.length + ' jobs' };
+            });
+            NesmaChartDrill.attach(charts.supplierSpend, function(label) {
+                var recs = filteredRecords.filter(function(r){ return r.supplier === label; });
+                return { title: label + ' Spend Details', data: recs, columns: [{key:'job_order',label:'Job Order'},{key:'project',label:'Project'},{key:'equipment',label:'Equipment'},{key:'rent_type',label:'Rent'},{key:'total_amount',label:'Amount',align:'right'}], subtitle: recs.length + ' jobs' };
+            });
+
             var tbody = document.getElementById('suppliersTableBody');
-            tbody.innerHTML = '';
+            tbody.textContent = '';
             for (var i = 0; i < sorted.length; i++) {
                 var name = sorted[i][0];
                 var s = sorted[i][1];
@@ -1061,8 +1093,18 @@
                 options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
+            NesmaChartDrill.attach(charts.equipmentCat, function(label) {
+                var recs = filteredRecords.filter(function(r){ return r.equipment_category === label; });
+                return { title: label + ' Category', data: recs, columns: [{key:'job_order',label:'Job Order'},{key:'equipment',label:'Equipment'},{key:'supplier',label:'Supplier'},{key:'rent_type',label:'Rent'},{key:'total_amount',label:'Amount',align:'right'},{key:'status',label:'Status'}], subtitle: recs.length + ' jobs' };
+            });
+            NesmaChartDrill.attach(charts.equipmentUsage, function(label) {
+                var fullLabel = label.replace('...', '');
+                var recs = filteredRecords.filter(function(r){ return r.equipment && r.equipment.indexOf(fullLabel) === 0; });
+                return { title: label + ' Usage', data: recs, columns: [{key:'job_order',label:'Job Order'},{key:'project',label:'Project'},{key:'supplier',label:'Supplier'},{key:'rent_type',label:'Rent'},{key:'total_amount',label:'Amount',align:'right'},{key:'status',label:'Status'}], subtitle: recs.length + ' jobs' };
+            });
+
             var tbody = document.getElementById('equipmentTableBody');
-            tbody.innerHTML = '';
+            tbody.textContent = '';
             var displayEquip = sorted.slice(0, 50);
             for (var i = 0; i < displayEquip.length; i++) {
                 var name = displayEquip[i][0];
@@ -1260,10 +1302,10 @@
         }
 
         function exportToPDF() {
-            window.print();
+            NesmaExport.toPDF('tab-overview', 'Transportation_Dashboard');
         }
 
-        document.addEventListener('DOMContentLoaded', loadData);
+        document.addEventListener('DOMContentLoaded', function() { loadData(); if (typeof NesmaTheme !== 'undefined') NesmaTheme.init(); });
         document.getElementById('detailModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
     </script>
 </body>

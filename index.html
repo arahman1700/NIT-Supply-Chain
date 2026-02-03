@@ -8,6 +8,7 @@
     <meta http-equiv="Expires" content="0">
     <title>NESMA | Supply Chain Management Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/nesma-utils.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/nesma-theme.css">
     <style>
@@ -288,6 +289,9 @@
                     <span class="text-gray-400 text-sm hidden md:inline">Supply Chain Management</span>
                     <div class="h-6 w-px bg-gray-700 hidden md:block"></div>
                     <span class="text-cyan-400 text-sm" id="currentTime"></span>
+                    <button id="themeToggle" onclick="NesmaTheme.toggle()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Toggle theme">
+                        <svg id="themeIcon" class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </button>
                 </div>
             </nav>
         </header>
@@ -522,6 +526,7 @@
             createParticles();
             updateTime();
             setInterval(updateTime, 1000);
+            if (typeof NesmaTheme !== 'undefined') NesmaTheme.init();
         });
     </script>
 </body>

@@ -9,6 +9,10 @@
     <title>NESMA | Procurement Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="assets/nesma-utils.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/nesma-theme.css">
     <style>
@@ -456,6 +460,10 @@
                         <p class="text-xs text-blue-100">Last Update</p>
                         <p class="text-sm font-semibold" id="lastUpdateDate">December 8, 2025</p>
                     </div>
+                    <!-- Theme Toggle -->
+                    <button id="themeToggle" onclick="NesmaTheme.toggle()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Toggle theme">
+                        <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </button>
                     <!-- Settings Button -->
                     <button onclick="openSettingsModal()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Settings">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1570,6 +1578,11 @@
         let filteredPRData = [];
         let currentModalData = [];
         let currentModalType = ''; // Track current modal type for column selection
+        const prDrillCols = [
+            { key: 'pr_num', label: 'PR #' }, { key: 'project', label: 'Project' },
+            { key: 'vendor', label: 'Vendor' }, { key: 'pr_value', label: 'Value' },
+            { key: 'status', label: 'Status' }, { key: 'pr_to_po_days', label: 'Days to PO' }
+        ];
 
         // ==========================================
         // SLA INFORMATION DICTIONARY
@@ -2104,7 +2117,10 @@
         // Initialize Dashboard
         document.addEventListener('DOMContentLoaded', async () => {
             console.log('Dashboard initialization started...');
-            
+
+            // Initialize theme
+            if (typeof NesmaTheme !== 'undefined') NesmaTheme.init();
+
             // Load dashboard settings first
             loadSettings();
 
@@ -2444,6 +2460,10 @@
                         plugins: { legend: { position: 'bottom' } }
                     }
                 });
+                NesmaChartDrill.attach(charts.prStatus, (label) => {
+                    const m = { 'Approved': 'APPROVED', 'Returned': 'RETURNED', 'Rejected': 'REJECTED', 'Incomplete': 'INCOMPLETE', 'In Process': 'IN PROCESS' };
+                    return prData.all_prs.filter(pr => pr.status === (m[label] || label));
+                }, prDrillCols, 'Procurement');
             }
 
             // Return Rate Chart
@@ -2510,6 +2530,10 @@
                         scales: { x: { beginAtZero: true } }
                     }
                 });
+
+                NesmaChartDrill.attach(charts.pendingWith, (label) => {
+                    return prData.all_prs.filter(pr => pr.status === 'RETURNED' && (pr.pending_with || 'Not Specified').substring(0, 20) === label);
+                }, prDrillCols, 'Procurement');
 
                 // Update pending duration list
                 updatePendingDurationList(returnedPRs);
@@ -3846,6 +3870,32 @@
                         plugins: { legend: { display: false } }
                     }
                 });
+            }
+
+            // Chart drill-down for vendor analytics
+            if (charts.topVendorsPR) {
+                NesmaChartDrill.attach(charts.topVendorsPR, (label) => {
+                    const fullName = topVendors.find(v => v[0].substring(0, 20) === label.substring(0, 20));
+                    return allPRs.filter(pr => pr.vendor && pr.vendor.trim() === (fullName ? fullName[0] : label));
+                }, prDrillCols, 'Procurement');
+            }
+            if (charts.vendorValue) {
+                NesmaChartDrill.attach(charts.vendorValue, (label) => {
+                    const fullName = topValueVendors.find(v => (v[0].length > 18 ? v[0].substring(0, 18) + '...' : v[0]) === label);
+                    return allPRs.filter(pr => pr.vendor && pr.vendor.trim() === (fullName ? fullName[0] : label));
+                }, prDrillCols, 'Procurement');
+            }
+            if (charts.vendorAvgDays) {
+                NesmaChartDrill.attach(charts.vendorAvgDays, (label) => {
+                    const fullName = vendorAvgDays.find(v => (v[0].length > 18 ? v[0].substring(0, 18) + '...' : v[0]) === label);
+                    return allPRs.filter(pr => pr.vendor && pr.vendor.trim() === (fullName ? fullName[0] : label) && pr.pr_to_po_days > 0);
+                }, prDrillCols, 'Procurement');
+            }
+            if (charts.projectVendor) {
+                NesmaChartDrill.attach(charts.projectVendor, (label) => {
+                    const fullName = topProjects.find(p => (p[0].length > 25 ? p[0].substring(0, 25) + '...' : p[0]) === label);
+                    return allPRs.filter(pr => pr.project === (fullName ? fullName[0] : label));
+                }, prDrillCols, 'Procurement');
             }
         }
 
