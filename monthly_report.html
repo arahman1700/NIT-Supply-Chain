@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Report | NESMA Supply Chain</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/nesma-utils.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/nesma-theme.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f8;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .report-header {
+            background: linear-gradient(135deg, #0E2841 0%, #2E3192 100%);
+            color: white;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+            z-index: 20;
+        }
+
+        .report-header .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #80D1E9;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .report-header .back-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .report-header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .header-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(128, 209, 233, 0.2);
+            border: 1px solid rgba(128, 209, 233, 0.4);
+            color: #80D1E9;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .header-btn:hover {
+            background: rgba(128, 209, 233, 0.3);
+        }
+
+        /* Main layout */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* PPTX Viewer */
+        .pptx-viewer {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #1a1a2e;
+            position: relative;
+        }
+
+        .pptx-viewer iframe {
+            flex: 1;
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .pptx-loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            z-index: 5;
+            background: #1a1a2e;
+        }
+
+        .pptx-loading .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #334155;
+            border-top-color: #2E3192;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Side panel */
+        .side-panel {
+            width: 320px;
+            background: #f8fafc;
+            border-left: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .side-panel-header {
+            padding: 20px 20px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .side-panel-header h2 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #334155;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .excel-card {
+            margin: 12px 16px;
+            background: white;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            transition: all 0.2s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .excel-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            border-color: #cbd5e1;
+        }
+
+        .excel-card-body {
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .excel-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .excel-icon.green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .excel-icon.blue { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+        .excel-icon.amber { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+
+        .excel-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .excel-info h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .excel-info p {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .excel-actions {
+            display: flex;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .excel-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.15s;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .excel-action-btn:first-child {
+            border-right: 1px solid #f1f5f9;
+        }
+
+        .excel-action-btn:hover {
+            background: #f8fafc;
+            color: #2E3192;
+        }
+
+        .excel-action-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Responsive: stack on mobile */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .side-panel {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid #e2e8f0;
+                max-height: 40vh;
+            }
+            .pptx-viewer {
+                min-height: 50vh;
+            }
+        }
+
+        /* Dark theme */
+        [data-theme="dark"] body,
+        [data-theme="nit"] body {
+            background: #0f172a;
+        }
+
+        [data-theme="dark"] .side-panel,
+        [data-theme="nit"] .side-panel {
+            background: #1e293b;
+            border-left-color: #334155;
+        }
+
+        [data-theme="dark"] .side-panel-header,
+        [data-theme="nit"] .side-panel-header {
+            border-bottom-color: #334155;
+        }
+
+        [data-theme="dark"] .side-panel-header h2,
+        [data-theme="nit"] .side-panel-header h2 {
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .excel-card,
+        [data-theme="nit"] .excel-card {
+            background: #0f172a;
+            border-color: #334155;
+        }
+
+        [data-theme="dark"] .excel-card:hover,
+        [data-theme="nit"] .excel-card:hover {
+            border-color: #475569;
+        }
+
+        [data-theme="dark"] .excel-info h3,
+        [data-theme="nit"] .excel-info h3 {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .excel-info p,
+        [data-theme="nit"] .excel-info p {
+            color: #64748b;
+        }
+
+        [data-theme="dark"] .excel-actions,
+        [data-theme="nit"] .excel-actions {
+            border-top-color: #334155;
+        }
+
+        [data-theme="dark"] .excel-action-btn,
+        [data-theme="nit"] .excel-action-btn {
+            color: #94a3b8;
+        }
+
+        [data-theme="dark"] .excel-action-btn:first-child,
+        [data-theme="nit"] .excel-action-btn:first-child {
+            border-right-color: #334155;
+        }
+
+        [data-theme="dark"] .excel-action-btn:hover,
+        [data-theme="nit"] .excel-action-btn:hover {
+            background: #1e293b;
+            color: #80D1E9;
+        }
+
+        [data-theme="dark"] .pptx-viewer,
+        [data-theme="nit"] .pptx-viewer {
+            background: #0f172a;
+        }
+
+        [data-theme="dark"] .pptx-loading,
+        [data-theme="nit"] .pptx-loading {
+            background: #0f172a;
+        }
+
+        @media print {
+            .side-panel { display: none; }
+            .report-header .back-btn, .header-btn { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="report-header">
+        <a href="index.html" class="back-btn">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Portal
+        </a>
+        <h1>Monthly Report — February 2026</h1>
+        <button id="themeToggleBtn" onclick="NesmaTheme.toggle()" class="header-btn" title="Toggle theme">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+        <a href="reports/supply-chain-monthly-report-feb-2026.pptx" download class="header-btn">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Download PPTX
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- PPTX Viewer (main area) -->
+        <div class="pptx-viewer">
+            <div class="pptx-loading" id="pptxLoading">
+                <div class="spinner"></div>
+                <p>Loading presentation...</p>
+            </div>
+            <iframe id="pptxFrame" style="opacity:0; transition: opacity 0.3s;"></iframe>
+        </div>
+
+        <!-- Side Panel: Excel Files -->
+        <div class="side-panel">
+            <div class="side-panel-header">
+                <h2>Attachments</h2>
+            </div>
+
+            <!-- Excel 1: Monthly Report JAN 2026 -->
+            <div class="excel-card">
+                <div class="excel-card-body">
+                    <div class="excel-icon green">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="excel-info">
+                        <h3>Monthly Report JAN 2026</h3>
+                        <p>Shipping & clearance data</p>
+                    </div>
+                </div>
+                <div class="excel-actions">
+                    <a href="report_viewer.html?file=reports/monthly-report-jan-2026.xlsx&title=Monthly Report JAN 2026" class="excel-action-btn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        View
+                    </a>
+                    <a href="reports/monthly-report-jan-2026.xlsx" download class="excel-action-btn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Download
+                    </a>
+                </div>
+            </div>
+
+            <!-- Excel 2: Monthly Report 03-02-26 -->
+            <div class="excel-card">
+                <div class="excel-card-body">
+                    <div class="excel-icon blue">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="excel-info">
+                        <h3>Monthly Report 03-02-26</h3>
+                        <p>Detailed monthly analytics</p>
+                    </div>
+                </div>
+                <div class="excel-actions">
+                    <a href="report_viewer.html?file=reports/monthly-report-03-02-26.xlsx&title=Monthly Report 03-02-26" class="excel-action-btn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        View
+                    </a>
+                    <a href="reports/monthly-report-03-02-26.xlsx" download class="excel-action-btn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Download
+                    </a>
+                </div>
+            </div>
+
+            <!-- Excel 3: Local Content for POs -->
+            <div class="excel-card">
+                <div class="excel-card-body">
+                    <div class="excel-icon amber">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="excel-info">
+                        <h3>Local Content for POs</h3>
+                        <p>January 2026 PO local content</p>
+                    </div>
+                </div>
+                <div class="excel-actions">
+                    <a href="report_viewer.html?file=reports/local-content-pos-jan-2026.xlsx&title=Local Content for POs - January 2026" class="excel-action-btn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        View
+                    </a>
+                    <a href="reports/local-content-pos-jan-2026.xlsx" download class="excel-action-btn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Download
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Build the Office Online viewer URL
+        var pptxFile = 'reports/supply-chain-monthly-report-feb-2026.pptx';
+        var baseUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
+        var fileUrl = encodeURIComponent(baseUrl + pptxFile);
+        var viewerUrl = 'https://view.officeapps.live.com/op/embed.aspx?src=' + fileUrl;
+
+        var frame = document.getElementById('pptxFrame');
+        var loading = document.getElementById('pptxLoading');
+
+        frame.addEventListener('load', function() {
+            loading.style.display = 'none';
+            frame.style.opacity = '1';
+        });
+
+        frame.src = viewerUrl;
+
+        // Fallback: hide loading after 8 seconds regardless
+        setTimeout(function() {
+            loading.style.display = 'none';
+            frame.style.opacity = '1';
+        }, 8000);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof NesmaTheme !== 'undefined') NesmaTheme.init();
+        });
+    </script>
+</body>
+</html>
