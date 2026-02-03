@@ -387,10 +387,14 @@
             .nesma-header { flex-wrap: wrap; gap: 8px; }
             .nesma-header img { height: 24px !important; }
 
-            .grid-cols-5, .grid-cols-4, .grid-cols-3, .grid-cols-2 { grid-template-columns: 1fr !important; }
+            /* 2 columns on small screens for KPIs */
+            .grid-cols-6, .grid-cols-5, .grid-cols-4, .grid-cols-3 { grid-template-columns: repeat(2, 1fr) !important; }
 
             .kpi-card { padding: 10px !important; }
-            .kpi-value { font-size: 1.1rem !important; }
+            .kpi-value { font-size: 1rem !important; }
+            .kpi-label { font-size: 0.6rem !important; }
+            .kpi-icon { width: 32px !important; height: 32px !important; }
+            .kpi-icon svg { width: 16px !important; height: 16px !important; }
 
             .contract-card { padding: 10px !important; }
 

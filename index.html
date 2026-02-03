@@ -263,46 +263,63 @@
             .glass-card:hover { transform: none !important; box-shadow: none !important; }
 
             /* Header adjustments */
-            header { padding-top: 0.75rem !important; padding-bottom: 0.5rem !important; }
+            header { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
             header img { height: 28px !important; }
             header .gap-4 { gap: 0.5rem !important; }
 
-            /* Logo section - simplified */
+            /* Logo section */
             .logo-glow-container { padding: 10px !important; }
-            .logo-glow-container img { height: 140px !important; max-width: 85% !important; }
+            .logo-glow-container img { height: 120px !important; max-width: 80% !important; }
 
             /* Hero text */
-            section .text-2xl { font-size: 0.9rem !important; }
-            section .text-sm { font-size: 0.65rem !important; }
+            section .text-2xl { font-size: 0.85rem !important; }
+            section .text-sm { font-size: 0.6rem !important; }
             .h-px.w-16 { width: 1.5rem !important; }
 
-            /* Cards - touch optimized */
-            .department-card { min-height: 180px !important; padding: 1rem !important; }
-            .icon-box { width: 50px !important; height: 50px !important; margin-bottom: 10px !important; }
-            .icon-box svg { width: 24px !important; height: 24px !important; }
-            .department-card h3 { font-size: 1.1rem !important; margin-bottom: 0.4rem !important; }
-            .department-card p { font-size: 0.7rem !important; margin-bottom: 0.5rem !important; line-height: 1.3 !important; }
-            .feature-tag { font-size: 8px !important; padding: 2px 6px !important; }
+            /* Department Cards Grid - 2 per row */
+            .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3.xl\:grid-cols-5 {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+
+            /* Cards - larger icons, better touch */
+            .department-card {
+                min-height: auto !important;
+                padding: 16px !important;
+            }
+            .icon-box {
+                width: 64px !important;
+                height: 64px !important;
+                margin-bottom: 12px !important;
+                border-radius: 16px !important;
+            }
+            .icon-box svg { width: 32px !important; height: 32px !important; }
+            .icon-box img { width: 64px !important; height: 64px !important; }
+            .department-card h3 { font-size: 1rem !important; margin-bottom: 0.25rem !important; }
+            .department-card p { font-size: 0.65rem !important; margin-bottom: 0.5rem !important; line-height: 1.2 !important; }
+            .feature-tag { font-size: 7px !important; padding: 2px 5px !important; }
             .status-badge { font-size: 8px !important; padding: 3px 8px !important; }
-            .enter-btn { font-size: 11px !important; }
+            .enter-btn { font-size: 11px !important; margin-top: 8px !important; }
+            .flex.flex-wrap.justify-center.gap-2.mb-6 { margin-bottom: 0.5rem !important; gap: 4px !important; }
 
             /* Links section */
             section.container.mx-auto.px-6.py-8 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
             section.container.mx-auto.px-6.pb-4 { padding-bottom: 0.25rem !important; }
             section.container.mx-auto.px-6.pb-8 { padding-bottom: 0.5rem !important; }
-            .glass-card.p-6 { padding: 0.75rem !important; }
-            .glass-card .w-14 { width: 2.5rem !important; height: 2.5rem !important; }
-            .glass-card .w-7 { width: 1.25rem !important; height: 1.25rem !important; }
-            .glass-card .text-lg { font-size: 0.85rem !important; }
-            .glass-card .text-sm { font-size: 0.65rem !important; }
+            .glass-card.p-6 { padding: 12px !important; }
+            .glass-card .w-14 { width: 40px !important; height: 40px !important; flex-shrink: 0 !important; }
+            .glass-card .w-7 { width: 20px !important; height: 20px !important; }
+            .glass-card .text-lg { font-size: 0.8rem !important; }
+            .glass-card .text-sm { font-size: 0.6rem !important; }
 
             /* Grid */
-            .grid.gap-5 { gap: 0.5rem !important; }
-            .container { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+            .grid.gap-5 { gap: 10px !important; }
+            .container { padding-left: 12px !important; padding-right: 12px !important; }
 
             /* Buttons - touch friendly (min 44px) */
             #particlesToggleBtn, #themeToggleBtn {
-                padding: 0.5rem !important;
+                padding: 8px !important;
                 min-width: 44px !important;
                 min-height: 44px !important;
             }
@@ -315,20 +332,24 @@
         }
 
         @media (max-width: 480px) {
-            .logo-glow-container img { height: 100px !important; }
+            .logo-glow-container img { height: 90px !important; }
             .logo-glow-container { padding: 5px !important; }
-            .department-card { min-height: 160px !important; padding: 0.75rem !important; }
-            .icon-box { width: 44px !important; height: 44px !important; }
-            .department-card h3 { font-size: 1rem !important; }
-            .department-card p { font-size: 0.65rem !important; }
-            section .text-2xl { font-size: 0.8rem !important; }
+
+            /* Still 2 per row but smaller */
+            .department-card { padding: 12px !important; }
+            .icon-box { width: 56px !important; height: 56px !important; }
+            .icon-box svg { width: 28px !important; height: 28px !important; }
+            .icon-box img { width: 56px !important; height: 56px !important; }
+            .department-card h3 { font-size: 0.9rem !important; }
+            .department-card p { font-size: 0.6rem !important; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+            section .text-2xl { font-size: 0.75rem !important; }
             header img { height: 24px !important; }
-            #currentTime { font-size: 0.6rem !important; }
+            #currentTime { font-size: 0.55rem !important; }
 
             /* Link cards */
-            .glass-card .gap-4 { gap: 0.5rem !important; }
-            .glass-card .flex-1 h3 { font-size: 0.75rem !important; }
-            .glass-card .flex-1 p { font-size: 0.6rem !important; }
+            .glass-card .gap-4 { gap: 8px !important; }
+            .glass-card .flex-1 h3 { font-size: 0.7rem !important; }
+            .glass-card .flex-1 p { font-size: 0.55rem !important; }
         }
 
         /* Touch-friendly interactions */

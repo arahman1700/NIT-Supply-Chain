@@ -160,37 +160,40 @@ const NesmaTheme = {
             return;
         }
 
-        // Nesma brand colors - reduced set for better performance
+        // Nesma brand colors
         var colorSets = [
             { fill1: '#FFFFFF', fill2: '#80D1E9' },
             { fill1: '#80D1E9', fill2: '#0E2841' },
             { fill1: '#2E3192', fill2: '#80D1E9' },
-            { fill1: '#0E2841', fill2: '#FFFFFF' }
+            { fill1: '#0E2841', fill2: '#FFFFFF' },
+            { fill1: '#FFFFFF', fill2: '#2E3192' }
         ];
 
-        // OPTIMIZED: Much fewer particles, slower animations
-        // Desktop: 18 particles, Mobile: 0 (disabled for performance)
         var isMobile = this.isMobile();
 
+        // Different configs for mobile vs desktop
+        var layers;
         if (isMobile) {
-            // No particles on mobile for best performance
-            return;
+            // Mobile: 8 particles only, larger sizes, slower
+            layers = [
+                { sizes: [40, 50, 60], opacities: [0.15, 0.25, 0.35], speeds: [60, 80, 100], count: 4 },
+                { sizes: [25, 35, 45], opacities: [0.30, 0.45, 0.55], speeds: [50, 70, 90], count: 4 }
+            ];
+        } else {
+            // Desktop: 24 particles
+            layers = [
+                { sizes: [80, 100, 120], opacities: [0.06, 0.10, 0.15], speeds: [90, 110, 130], count: 6 },
+                { sizes: [50, 65, 80], opacities: [0.18, 0.28, 0.38], speeds: [70, 90, 110], count: 8 },
+                { sizes: [30, 40, 50], opacities: [0.40, 0.55, 0.70], speeds: [55, 70, 85], count: 10 }
+            ];
         }
 
-        // Desktop-only: lightweight particle config
-        var layers = [
-            { sizes: [60, 80, 100], opacities: [0.08, 0.12, 0.18], speeds: [80, 100, 120], count: 6 },
-            { sizes: [40, 55, 70], opacities: [0.20, 0.30, 0.40], speeds: [60, 80, 100], count: 6 },
-            { sizes: [25, 35, 45], opacities: [0.45, 0.55, 0.65], speeds: [45, 60, 75], count: 6 }
-        ];
-
-        // Only 4 animation types for simplicity
         var animations = ['logoMoveRight', 'logoMoveLeft', 'logoMoveDown', 'logoMoveUp'];
 
-        // Create particles for each layer
+        // Create particles
         layers.forEach(function(layer, layerIndex) {
             for (var i = 0; i < layer.count; i++) {
-                var colors = colorSets[i % colorSets.length];
+                var colors = colorSets[Math.floor(Math.random() * colorSets.length)];
                 var anim = animations[i % animations.length];
                 var size = layer.sizes[i % layer.sizes.length];
                 var duration = layer.speeds[i % layer.speeds.length];
@@ -201,21 +204,21 @@ const NesmaTheme = {
 
                 var startX, startY;
                 if (anim === 'logoMoveRight') {
-                    startX = -5;
-                    startY = (segment * 80) + 10;
+                    startX = -8;
+                    startY = (segment * 85) + 5;
                 } else if (anim === 'logoMoveLeft') {
-                    startX = 105;
-                    startY = (segment * 80) + 10;
+                    startX = 108;
+                    startY = (segment * 85) + 5;
                 } else if (anim === 'logoMoveDown') {
                     startX = (segment * 90) + 5;
-                    startY = -5;
+                    startY = -8;
                 } else {
                     startX = (segment * 90) + 5;
-                    startY = 105;
+                    startY = 108;
                 }
 
-                startX += (Math.random() - 0.5) * 10;
-                startY += (Math.random() - 0.5) * 10;
+                startX += (Math.random() - 0.5) * 12;
+                startY += (Math.random() - 0.5) * 12;
 
                 var particle = document.createElement('div');
                 particle.className = 'logo-particle';

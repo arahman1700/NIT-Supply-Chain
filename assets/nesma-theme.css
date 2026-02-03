@@ -2580,20 +2580,21 @@ input,
    PERFORMANCE OPTIMIZATIONS
    ========================================== */
 
-/* Disable particles on mobile for performance */
+/* Mobile: enable particles with optimizations */
 @media (max-width: 768px) {
+  /* Keep particles visible */
   .particles,
   .particles-always {
-    display: none !important;
+    display: block !important;
   }
 
-  /* Disable heavy hover effects */
+  /* Disable heavy hover effects only */
   .glass-card::before,
   .nesma-card:hover::before {
     display: none !important;
   }
 
-  /* Simplify animations */
+  /* Simplify hover animations */
   .glass-card:hover,
   .department-card:hover {
     transform: none !important;
@@ -2627,14 +2628,14 @@ input,
   }
 }
 
-/* GPU acceleration hints */
+/* GPU acceleration for smooth animations */
 .logo-particle {
   transform: translateZ(0);
   backface-visibility: hidden;
+  will-change: transform;
 }
 
 /* Optimize particle container */
 .particles {
-  contain: strict;
-  content-visibility: auto;
+  contain: layout style;
 }
