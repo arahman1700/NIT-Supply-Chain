@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>NESMA | Lease & Rental Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="assets/nesma-utils.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/nesma-theme.css">
+    <style>
+        :root {
+            --nesma-primary: #2E3192;
+            --nesma-cyan: #80D1E9;
+            --nesma-navy: #0E2841;
+            --nesma-dark-blue: #203366;
+            --nesma-light-gray: #E8E8E8;
+            --nesma-gray: #B3B3B3;
+            --success: #059669;
+            --warning: #D97706;
+            --danger: #DC2626;
+            --info: #0284C7;
+        }
+        * { font-family: 'Inter', 'Cairo', sans-serif; box-sizing: border-box; }
+        body { background: #F2F2F4; min-height: 100vh; margin: 0; }
+
+        .nesma-header {
+            background: linear-gradient(90deg, #0E2841 0%, #2E3192 45%, #5B2D8E 100%);
+            box-shadow: 0 2px 8px rgba(46, 49, 146, 0.15);
+            position: relative;
+        }
+        .nesma-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #80D1E9 0%, #DEC18C 100%);
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(14, 40, 65, 0.08);
+            border: 1px solid var(--nesma-light-gray);
+        }
+
+        /* KPI Cards */
+        .kpi-card {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 16px;
+            border: none;
+            padding: 20px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .kpi-icon svg { width: 24px; height: 24px; }
+        .kpi-value { font-size: 1.75rem; font-weight: 800; line-height: 1.2; }
+        .kpi-label { font-size: 0.8rem; opacity: 0.9; margin-bottom: 4px; }
+        .kpi-subtitle { font-size: 0.7rem; opacity: 0.7; margin-top: 4px; }
+        .kpi-card .click-hint { font-size: 0.6rem; opacity: 0.5; margin-top: 8px; }
+
+        /* Gradients */
+        .bg-primary-gradient { background: linear-gradient(135deg, #2E3192 0%, #5B2D8E 100%); }
+        .bg-olive-gradient { background: linear-gradient(135deg, #92A185 0%, #7A8B6E 100%); }
+        .bg-gold-gradient { background: linear-gradient(135deg, #DEC18C 0%, #C5A66E 100%); color: #0E2841; }
+        .bg-rose-gradient { background: linear-gradient(135deg, #AD8082 0%, #956A6C 100%); }
+        .bg-cyan-gradient { background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%); }
+        .bg-success-gradient { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+        .bg-warning-gradient { background: linear-gradient(135deg, #D97706 0%, #B45309 100%); }
+        .bg-danger-gradient { background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); }
+        .bg-purple-gradient { background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); }
+        .bg-indigo-gradient { background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%); }
+        .bg-blue-gradient { background: linear-gradient(135deg, #4472C4 0%, #2852A4 100%); }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--nesma-light-gray);
+        }
+        .filter-select {
+            border: 1px solid var(--nesma-light-gray);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.85rem;
+            background: white;
+            min-width: 140px;
+            cursor: pointer;
+        }
+        .filter-select:focus { outline: none; border-color: var(--nesma-primary); box-shadow: 0 0 0 3px rgba(46, 49, 146, 0.1); }
+        .btn-reset {
+            background: var(--nesma-light-gray);
+            color: var(--nesma-navy);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-reset:hover { background: #D1D5DB; }
+        .btn-export {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            background: var(--success);
+            color: white;
+        }
+        .btn-export:hover { background: #047857; }
+        .btn-export svg { width: 16px; height: 16px; }
+
+        /* Tables */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th {
+            background: var(--nesma-primary);
+            padding: 12px 14px;
+            font-weight: 600;
+            color: white;
+            text-align: left;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .data-table th:first-child { border-radius: 8px 0 0 0; }
+        .data-table th:last-child { border-radius: 0 8px 0 0; }
+        .data-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--nesma-light-gray);
+            font-size: 0.85rem;
+        }
+        .data-table tr { cursor: pointer; transition: background 0.2s; }
+        .data-table tr:hover td { background: rgba(128, 209, 233, 0.08); }
+        .scroll-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid var(--nesma-light-gray);
+            border-radius: 8px;
+        }
+        .scroll-container::-webkit-scrollbar { width: 6px; }
+        .scroll-container::-webkit-scrollbar-thumb { background: var(--nesma-cyan); border-radius: 4px; }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-warning { background: #FEF3C7; color: #92400E; }
+        .badge-danger { background: #FEE2E2; color: #991B1B; }
+        .badge-info { background: #DBEAFE; color: #1E40AF; }
+
+        /* Charts */
+        .chart-container { position: relative; height: 280px; }
+
+        /* Exit Opportunities Section */
+        .exit-section {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border: 2px solid #F59E0B;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .exit-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: #92400E;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+        }
+        .exit-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid;
+            transition: all 0.2s;
+        }
+        .exit-card:hover { transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .exit-expired { border-left-color: #DC2626; }
+        .exit-critical { border-left-color: #F97316; }
+        .exit-warning { border-left-color: #FBBF24; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(14, 40, 65, 0.6); backdrop-filter: blur(4px); }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; border-radius: 16px; width: 95%; max-width: 700px; max-height: 85vh; overflow: hidden; }
+        .modal-header { padding: 16px 20px; background: var(--nesma-primary); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
+        .close-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; }
+        .close-btn:hover { background: rgba(255,255,255,0.3); }
+
+        /* Progress bar */
+        .progress-bar { height: 8px; background: #E5E7EB; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+        .progress-green { background: var(--success); }
+        .progress-yellow { background: var(--warning); }
+        .progress-red { background: var(--danger); }
+
+        /* Detail info rows */
+        .detail-row { display: flex; padding: 12px 0; border-bottom: 1px solid var(--nesma-light-gray); }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { width: 140px; font-weight: 600; color: #6B7280; font-size: 0.85rem; }
+        .detail-value { flex: 1; color: #1F2937; font-size: 0.9rem; }
+
+        /* Contract Cards */
+        .contract-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--nesma-light-gray);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .contract-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+            border-color: var(--nesma-cyan);
+        }
+        .contract-card-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--nesma-light-gray);
+            position: relative;
+        }
+        .contract-card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+        .contract-card.status-active .contract-card-header::before { background: var(--success); }
+        .contract-card.status-expiring .contract-card-header::before { background: var(--warning); }
+        .contract-card.status-expired .contract-card-header::before { background: var(--danger); }
+        .contract-card-body { padding: 16px; }
+        .contract-card-footer {
+            padding: 12px 16px;
+            background: #F9FAFB;
+            border-top: 1px solid var(--nesma-light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .contract-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--nesma-light-gray);
+            font-size: 0.85rem;
+        }
+        .contract-info-row:last-child { border-bottom: none; }
+        .contract-info-label { color: #6B7280; }
+        .contract-info-value { font-weight: 600; color: #1F2937; }
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .type-warehouse { background: #DBEAFE; color: #1E40AF; }
+        .type-land { background: #D1FAE5; color: #065F46; }
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            background: var(--nesma-light-gray);
+            padding: 4px;
+            border-radius: 8px;
+        }
+        .view-toggle button {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #6B7280;
+            transition: all 0.2s;
+        }
+        .view-toggle button.active {
+            background: white;
+            color: var(--nesma-primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body>
+    <header class="nesma-header text-white no-print">
+        <div class="container mx-auto px-4 lg:px-6">
+            <div class="flex items-center justify-between py-4">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="flex items-center gap-2 text-white/80 hover:text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        <span class="text-sm font-medium hidden sm:inline">Back to Portal</span>
+                    </a>
+                    <div class="h-6 w-px bg-white/20"></div>
+                    <img src="assets/logo-white.svg" alt="NESMA" class="h-8 lg:h-10">
+                </div>
+                <div class="text-center flex-1 px-4">
+                    <h1 class="text-lg lg:text-xl font-bold">Lease & Rental Management</h1>
+                    <p class="text-xs lg:text-sm text-white/70 hidden sm:block">Warehouses & Land Contracts</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs text-white/60 hidden md:inline" id="lastUpdated">Loading...</span>
+                    <button onclick="exportPDF()" class="btn-export bg-white/10 hover:bg-white/20" title="Export PDF">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </button>
+                    <button onclick="exportExcel()" class="btn-export bg-white/10 hover:bg-white/20" title="Export Excel">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </button>
+                    <button id="particlesToggleBtn" onclick="NesmaTheme.toggleParticles()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Toggle particles">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                    </button>
+                    <button id="themeToggleBtn" onclick="NesmaTheme.toggle()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Toggle theme">
+                        <svg id="themeIcon" class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 lg:px-6 py-6">
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6" id="kpiCards"></div>
+
+        <!-- Filters -->
+        <div class="filter-section no-print">
+            <div class="flex flex-wrap items-center gap-3">
+                <select id="regionFilter" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Regions</option>
+                    <option value="Central">Central</option>
+                    <option value="Eastern">Eastern</option>
+                    <option value="Western">Western</option>
+                    <option value="Northern">Northern</option>
+                    <option value="Southern">Southern</option>
+                </select>
+                <select id="cityFilter" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Cities</option>
+                </select>
+                <select id="typeFilter" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Types</option>
+                    <option value="Warehouse">Warehouse</option>
+                    <option value="Land">Land</option>
+                </select>
+                <select id="contractTypeFilter" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Contract Types</option>
+                    <option value="Project">Project</option>
+                    <option value="Overhead">Overhead</option>
+                    <option value="Warehouse">Warehouse</option>
+                </select>
+                <select id="registrationFilter" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Registration</option>
+                    <option value="EJAR">EJAR</option>
+                    <option value="MANUAL">MANUAL</option>
+                </select>
+                <select id="statusFilter" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Status</option>
+                    <option value="active">Active (>180 days)</option>
+                    <option value="expiring">Expiring Soon (0-180)</option>
+                    <option value="expired">Expired</option>
+                </select>
+                <select id="pmFilter" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Project Managers</option>
+                </select>
+                <button onclick="resetFilters()" class="btn-reset">Reset</button>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+            <div class="card p-4">
+                <h3 class="font-bold text-gray-700 text-sm mb-3">By Region</h3>
+                <div class="chart-container">
+                    <canvas id="regionChart"></canvas>
+                </div>
+            </div>
+            <div class="card p-4">
+                <h3 class="font-bold text-gray-700 text-sm mb-3">Expiry Status</h3>
+                <div class="chart-container">
+                    <canvas id="expiryChart"></canvas>
+                </div>
+            </div>
+            <div class="card p-4">
+                <h3 class="font-bold text-gray-700 text-sm mb-3">By City</h3>
+                <div class="chart-container">
+                    <canvas id="cityChart"></canvas>
+                </div>
+            </div>
+            <div class="card p-4">
+                <h3 class="font-bold text-gray-700 text-sm mb-3">Type Distribution</h3>
+                <div class="chart-container">
+                    <canvas id="typeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exit Opportunities Section -->
+        <div class="exit-section" id="exitSection">
+            <div class="exit-section-title">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <span>Exit Opportunities</span>
+                <span class="text-sm font-normal text-amber-700 ml-2">(Contracts expiring within 365 days)</span>
+            </div>
+            <div id="exitCards"></div>
+        </div>
+
+        <!-- Contracts Section -->
+        <div class="card">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center flex-wrap gap-3">
+                <div class="flex items-center gap-3">
+                    <h3 class="font-bold text-gray-700 text-sm">All Contracts</h3>
+                    <span class="text-xs text-gray-500" id="tableCount">0 contracts</span>
+                </div>
+                <div class="view-toggle no-print">
+                    <button id="viewCards" class="active" onclick="setView('cards')">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                        Cards
+                    </button>
+                    <button id="viewTable" onclick="setView('table')">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Table
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cards View -->
+            <div id="cardsView" class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="contractCards"></div>
+            </div>
+
+            <!-- Table View -->
+            <div id="tableView" class="hidden">
+                <div class="scroll-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th>City</th>
+                                <th>Type</th>
+                                <th>Contract Type</th>
+                                <th>Registration</th>
+                                <th>End Date</th>
+                                <th>Days Left</th>
+                                <th>Annual Cost</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" class="font-bold">Contract Details</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        let leaseData = null;
+        let filteredContracts = [];
+        let charts = {};
+
+        async function loadData() {
+            try {
+                const response = await fetch('data/lease_data.json?t=' + Date.now());
+                leaseData = await response.json();
+                document.getElementById('lastUpdated').textContent = 'Updated: ' + leaseData.last_updated;
+                filteredContracts = [...leaseData.contracts];
+                populateFilters();
+                render();
+            } catch (e) {
+                console.error('Error loading data:', e);
+            }
+        }
+
+        function populateFilters() {
+            const cities = [...new Set(leaseData.contracts.map(c => c.city))].sort();
+            const pms = [...new Set(leaseData.contracts.map(c => c.project_manager))].sort();
+
+            const citySelect = document.getElementById('cityFilter');
+            cities.forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = city;
+                opt.textContent = city;
+                citySelect.appendChild(opt);
+            });
+
+            const pmSelect = document.getElementById('pmFilter');
+            pms.forEach(pm => {
+                const opt = document.createElement('option');
+                opt.value = pm;
+                opt.textContent = pm;
+                pmSelect.appendChild(opt);
+            });
+        }
+
+        function applyFilters() {
+            const region = document.getElementById('regionFilter').value;
+            const city = document.getElementById('cityFilter').value;
+            const type = document.getElementById('typeFilter').value;
+            const contractType = document.getElementById('contractTypeFilter').value;
+            const registration = document.getElementById('registrationFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const pm = document.getElementById('pmFilter').value;
+
+            filteredContracts = leaseData.contracts.filter(c => {
+                if (region && c.region !== region) return false;
+                if (city && c.city !== city) return false;
+                if (type && c.type !== type) return false;
+                if (contractType && c.contract_type !== contractType) return false;
+                if (registration && c.registration !== registration) return false;
+                if (pm && c.project_manager !== pm) return false;
+                if (status === 'active' && c.remaining_days <= 180) return false;
+                if (status === 'expiring' && (c.remaining_days < 0 || c.remaining_days > 180)) return false;
+                if (status === 'expired' && c.remaining_days >= 0) return false;
+                return true;
+            });
+            render();
+        }
+
+        function resetFilters() {
+            document.getElementById('regionFilter').value = '';
+            document.getElementById('cityFilter').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('contractTypeFilter').value = '';
+            document.getElementById('registrationFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('pmFilter').value = '';
+            filteredContracts = [...leaseData.contracts];
+            render();
+        }
+
+        function getStatus(days) {
+            if (days < 0) return { label: 'Expired', badge: 'badge-danger', color: '#DC2626' };
+            if (days <= 180) return { label: 'Expiring Soon', badge: 'badge-warning', color: '#D97706' };
+            return { label: 'Active', badge: 'badge-success', color: '#059669' };
+        }
+
+        let currentView = 'cards';
+
+        function setView(view) {
+            currentView = view;
+            document.getElementById('viewCards').classList.toggle('active', view === 'cards');
+            document.getElementById('viewTable').classList.toggle('active', view === 'table');
+            document.getElementById('cardsView').classList.toggle('hidden', view !== 'cards');
+            document.getElementById('tableView').classList.toggle('hidden', view !== 'table');
+        }
+
+        function render() {
+            renderKPIs();
+            renderCharts();
+            renderExitOpportunities();
+            renderContractCards();
+            renderTable();
+        }
+
+        function renderKPIs() {
+            const data = filteredContracts;
+            const stats = {
+                total: data.length,
+                warehouses: data.filter(c => c.type === 'Warehouse').length,
+                lands: data.filter(c => c.type === 'Land').length,
+                expiring: data.filter(c => c.remaining_days >= 0 && c.remaining_days <= 180).length,
+                expired: data.filter(c => c.remaining_days < 0).length,
+                totalAnnualCost: data.reduce((sum, c) => sum + (c.annual_payment || 0), 0)
+            };
+
+            const kpiContainer = document.getElementById('kpiCards');
+            kpiContainer.textContent = '';
+
+            const formatCurrency = (val) => {
+                if (val >= 1000000) return 'SAR ' + (val / 1000000).toFixed(1) + 'M';
+                if (val >= 1000) return 'SAR ' + (val / 1000).toFixed(0) + 'K';
+                return 'SAR ' + val.toLocaleString();
+            };
+
+            const kpis = [
+                { gradient: 'bg-primary-gradient', icon: 'building', label: 'Total Contracts', value: stats.total, subtitle: 'All leases', filter: () => data },
+                { gradient: 'bg-blue-gradient', icon: 'warehouse', label: 'Warehouses', value: stats.warehouses, subtitle: 'Storage facilities', filter: () => data.filter(c => c.type === 'Warehouse') },
+                { gradient: 'bg-olive-gradient', icon: 'land', label: 'Lands', value: stats.lands, subtitle: 'Land parcels', filter: () => data.filter(c => c.type === 'Land') },
+                { gradient: 'bg-warning-gradient', icon: 'clock', label: 'Expiring Soon', value: stats.expiring, subtitle: '0-180 days', filter: () => data.filter(c => c.remaining_days >= 0 && c.remaining_days <= 180) },
+                { gradient: 'bg-danger-gradient', icon: 'alert', label: 'Expired', value: stats.expired, subtitle: 'Needs action', filter: () => data.filter(c => c.remaining_days < 0) },
+                { gradient: 'bg-gold-gradient', icon: 'money', label: 'Annual Cost', value: formatCurrency(stats.totalAnnualCost), subtitle: 'Total payments', filter: () => data.sort((a, b) => (b.annual_payment || 0) - (a.annual_payment || 0)) }
+            ];
+
+            const iconSVGs = {
+                building: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>',
+                warehouse: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/></svg>',
+                land: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>',
+                clock: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+                alert: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>',
+                money: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+            };
+
+            // Define columns for NesmaModal
+            const modalColumns = [
+                { key: 'project', label: 'Project' },
+                { key: 'city', label: 'City' },
+                { key: 'region', label: 'Region' },
+                { key: 'type', label: 'Type' },
+                { key: 'contract_type', label: 'Contract Type' },
+                { key: 'registration', label: 'Registration' },
+                { key: 'project_manager', label: 'Project Manager' },
+                { key: 'end_date', label: 'End Date' },
+                { key: 'remaining_days', label: 'Days Left' },
+                { key: 'annual_payment', label: 'Annual Cost', format: v => v ? 'SAR ' + v.toLocaleString() : '-', align: 'right' },
+                { key: 'total_contract_cost', label: 'Total Cost', format: v => v ? 'SAR ' + v.toLocaleString() : '-', align: 'right' }
+            ];
+
+            kpis.forEach(kpi => {
+                const div = document.createElement('div');
+                div.className = 'kpi-card ' + kpi.gradient;
+
+                // Add click handler to show filtered data in modal
+                div.onclick = function() {
+                    const filteredData = kpi.filter();
+                    if (filteredData.length > 0) {
+                        NesmaModal.show(kpi.label, filteredData, modalColumns, filteredData.length + ' contracts');
+                    }
+                };
+
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'kpi-icon';
+                iconDiv.innerHTML = iconSVGs[kpi.icon];
+
+                const labelP = document.createElement('p');
+                labelP.className = 'kpi-label';
+                labelP.textContent = kpi.label;
+
+                const valueP = document.createElement('p');
+                valueP.className = 'kpi-value';
+                valueP.textContent = kpi.value;
+
+                const subtitleP = document.createElement('p');
+                subtitleP.className = 'kpi-subtitle';
+                subtitleP.textContent = kpi.subtitle;
+
+                const hintP = document.createElement('span');
+                hintP.className = 'click-hint';
+                hintP.textContent = 'Click for details';
+
+                div.appendChild(iconDiv);
+                div.appendChild(labelP);
+                div.appendChild(valueP);
+                div.appendChild(subtitleP);
+                div.appendChild(hintP);
+                kpiContainer.appendChild(div);
+            });
+        }
+
+        function renderCharts() {
+            const data = filteredContracts;
+
+            // Region Chart
+            const regionCounts = {};
+            data.forEach(c => { regionCounts[c.region] = (regionCounts[c.region] || 0) + 1; });
+            if (charts.region) charts.region.destroy();
+            charts.region = new Chart(document.getElementById('regionChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(regionCounts),
+                    datasets: [{
+                        data: Object.values(regionCounts),
+                        backgroundColor: ['#2E3192', '#0891B2', '#059669', '#D97706', '#DC2626'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+                    cutout: '60%'
+                }
+            });
+
+            // Expiry Status Chart
+            const active = data.filter(c => c.remaining_days > 180).length;
+            const expiring = data.filter(c => c.remaining_days >= 0 && c.remaining_days <= 180).length;
+            const expired = data.filter(c => c.remaining_days < 0).length;
+            if (charts.expiry) charts.expiry.destroy();
+            charts.expiry = new Chart(document.getElementById('expiryChart').getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: ['Active', 'Expiring Soon', 'Expired'],
+                    datasets: [{
+                        data: [active, expiring, expired],
+                        backgroundColor: ['#059669', '#FBBF24', '#DC2626'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } }
+                }
+            });
+
+            // City Chart
+            const cityCounts = {};
+            data.forEach(c => { cityCounts[c.city] = (cityCounts[c.city] || 0) + 1; });
+            const sortedCities = Object.entries(cityCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+            if (charts.city) charts.city.destroy();
+            charts.city = new Chart(document.getElementById('cityChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: sortedCities.map(c => c[0]),
+                    datasets: [{
+                        label: 'Contracts',
+                        data: sortedCities.map(c => c[1]),
+                        backgroundColor: '#2E3192'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+
+            // Type Chart
+            const typeCounts = {};
+            data.forEach(c => { typeCounts[c.type] = (typeCounts[c.type] || 0) + 1; });
+            if (charts.type) charts.type.destroy();
+            charts.type = new Chart(document.getElementById('typeChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(typeCounts),
+                    datasets: [{
+                        data: Object.values(typeCounts),
+                        backgroundColor: ['#4472C4', '#92A185'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+                    cutout: '60%'
+                }
+            });
+        }
+
+        function renderExitOpportunities() {
+            const exitContracts = filteredContracts
+                .filter(c => c.remaining_days < 365)
+                .sort((a, b) => a.remaining_days - b.remaining_days);
+
+            const container = document.getElementById('exitCards');
+            container.textContent = '';
+
+            if (exitContracts.length === 0) {
+                const p = document.createElement('p');
+                p.className = 'text-amber-700 text-sm';
+                p.textContent = 'No contracts requiring immediate attention.';
+                container.appendChild(p);
+                return;
+            }
+
+            exitContracts.forEach(c => {
+                const status = getStatus(c.remaining_days);
+                let exitClass = 'exit-warning';
+                if (c.remaining_days < 0) exitClass = 'exit-expired';
+                else if (c.remaining_days < 180) exitClass = 'exit-critical';
+
+                let recommendation = 'Review for renewal';
+                if (c.remaining_days < 0) recommendation = 'Urgent: Contract expired - immediate action required';
+                else if (c.remaining_days < 90) recommendation = 'Critical: Start exit/renewal negotiations';
+                else if (c.remaining_days < 180) recommendation = 'Consider exit strategy or renewal terms';
+
+                const div = document.createElement('div');
+                div.className = 'exit-card ' + exitClass;
+                div.style.cursor = 'pointer';
+
+                // Build structure with DOM methods
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'flex justify-between items-start';
+
+                const leftDiv = document.createElement('div');
+                const h4 = document.createElement('h4');
+                h4.className = 'font-bold text-gray-800';
+                h4.textContent = c.project;
+                const p1 = document.createElement('p');
+                p1.className = 'text-sm text-gray-600';
+                p1.textContent = c.city + ', ' + c.region + ' - ' + c.type;
+                leftDiv.appendChild(h4);
+                leftDiv.appendChild(p1);
+
+                const rightDiv = document.createElement('div');
+                rightDiv.className = 'text-right';
+                const badge = document.createElement('span');
+                badge.className = 'badge ' + status.badge;
+                badge.textContent = c.remaining_days < 0 ? Math.abs(c.remaining_days) + ' days overdue' : c.remaining_days + ' days left';
+                rightDiv.appendChild(badge);
+
+                headerDiv.appendChild(leftDiv);
+                headerDiv.appendChild(rightDiv);
+
+                const footerDiv = document.createElement('div');
+                footerDiv.className = 'mt-3 pt-3 border-t border-gray-200';
+                const recP = document.createElement('p');
+                recP.className = 'text-sm font-medium';
+                recP.style.color = status.color;
+                recP.textContent = recommendation;
+                const metaP = document.createElement('p');
+                metaP.className = 'text-xs text-gray-500 mt-1';
+                metaP.textContent = 'End Date: ' + c.end_date + ' | PM: ' + c.project_manager;
+                footerDiv.appendChild(recP);
+                footerDiv.appendChild(metaP);
+
+                div.appendChild(headerDiv);
+                div.appendChild(footerDiv);
+
+                div.onclick = () => showContractDetail(c);
+                container.appendChild(div);
+            });
+        }
+
+        function renderContractCards() {
+            const container = document.getElementById('contractCards');
+            container.textContent = '';
+
+            filteredContracts.forEach(c => {
+                const status = getStatus(c.remaining_days);
+                let statusClass = 'status-active';
+                if (c.remaining_days < 0) statusClass = 'status-expired';
+                else if (c.remaining_days <= 180) statusClass = 'status-expiring';
+
+                const formatCost = (val) => val ? 'SAR ' + val.toLocaleString() : '-';
+                const typeClass = c.type === 'Warehouse' ? 'type-warehouse' : 'type-land';
+                const typeIcon = c.type === 'Warehouse'
+                    ? '<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" clip-rule="evenodd"/></svg>'
+                    : '<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>';
+
+                const card = document.createElement('div');
+                card.className = 'contract-card ' + statusClass;
+                card.onclick = () => showContractDetail(c);
+
+                // Header
+                const header = document.createElement('div');
+                header.className = 'contract-card-header';
+
+                const headerTop = document.createElement('div');
+                headerTop.className = 'flex justify-between items-start mb-2';
+
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'flex-1 pr-2';
+                const title = document.createElement('h4');
+                title.className = 'font-bold text-gray-800 text-sm leading-tight';
+                title.textContent = c.project;
+                const location = document.createElement('p');
+                location.className = 'text-xs text-gray-500 mt-1';
+                location.textContent = c.city + ', ' + c.region;
+                titleDiv.appendChild(title);
+                titleDiv.appendChild(location);
+
+                const typeBadge = document.createElement('span');
+                typeBadge.className = 'type-badge ' + typeClass;
+                typeBadge.innerHTML = typeIcon + ' ' + c.type;
+
+                headerTop.appendChild(titleDiv);
+                headerTop.appendChild(typeBadge);
+                header.appendChild(headerTop);
+
+                // Status Badge
+                const statusBadge = document.createElement('span');
+                statusBadge.className = 'badge ' + status.badge;
+                statusBadge.textContent = status.label;
+                header.appendChild(statusBadge);
+
+                // Body
+                const body = document.createElement('div');
+                body.className = 'contract-card-body';
+
+                const infoRows = [
+                    ['Contract Type', c.contract_type],
+                    ['Registration', c.registration],
+                    ['Project Manager', c.project_manager],
+                    ['End Date', c.end_date],
+                    ['Days Remaining', c.remaining_days < 0 ? Math.abs(c.remaining_days) + ' overdue' : c.remaining_days + ' days']
+                ];
+
+                infoRows.forEach(([label, value]) => {
+                    const row = document.createElement('div');
+                    row.className = 'contract-info-row';
+                    const labelSpan = document.createElement('span');
+                    labelSpan.className = 'contract-info-label';
+                    labelSpan.textContent = label;
+                    const valueSpan = document.createElement('span');
+                    valueSpan.className = 'contract-info-value';
+                    if (label === 'Days Remaining') {
+                        valueSpan.style.color = status.color;
+                    }
+                    valueSpan.textContent = value;
+                    row.appendChild(labelSpan);
+                    row.appendChild(valueSpan);
+                    body.appendChild(row);
+                });
+
+                // Footer
+                const footer = document.createElement('div');
+                footer.className = 'contract-card-footer';
+
+                const costDiv = document.createElement('div');
+                const costLabel = document.createElement('span');
+                costLabel.className = 'text-xs text-gray-500 block';
+                costLabel.textContent = 'Annual Cost';
+                const costValue = document.createElement('span');
+                costValue.className = 'font-bold text-gray-800';
+                costValue.textContent = formatCost(c.annual_payment);
+                costDiv.appendChild(costLabel);
+                costDiv.appendChild(costValue);
+
+                const viewBtn = document.createElement('span');
+                viewBtn.className = 'text-xs text-blue-600 font-medium';
+                viewBtn.textContent = 'View Details →';
+
+                footer.appendChild(costDiv);
+                footer.appendChild(viewBtn);
+
+                card.appendChild(header);
+                card.appendChild(body);
+                card.appendChild(footer);
+                container.appendChild(card);
+            });
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.textContent = '';
+            document.getElementById('tableCount').textContent = filteredContracts.length + ' contracts';
+
+            filteredContracts.forEach(c => {
+                const status = getStatus(c.remaining_days);
+                const tr = document.createElement('tr');
+                tr.onclick = () => showContractDetail(c);
+
+                const formatCost = (val) => val ? 'SAR ' + val.toLocaleString() : '-';
+                const cells = [
+                    { text: c.project, className: 'font-medium' },
+                    { text: c.city },
+                    { text: c.type },
+                    { text: c.contract_type },
+                    { text: c.registration, isBadge: true, badgeClass: c.registration === 'EJAR' ? 'badge-info' : 'badge-success' },
+                    { text: c.end_date },
+                    { text: c.remaining_days, style: 'color:' + status.color + ';font-weight:600' },
+                    { text: formatCost(c.annual_payment), className: 'text-right' },
+                    { text: status.label, isBadge: true, badgeClass: status.badge }
+                ];
+
+                cells.forEach(cell => {
+                    const td = document.createElement('td');
+                    if (cell.className) td.className = cell.className;
+                    if (cell.style) td.setAttribute('style', cell.style);
+
+                    if (cell.isBadge) {
+                        const span = document.createElement('span');
+                        span.className = 'badge ' + cell.badgeClass;
+                        span.textContent = cell.text;
+                        td.appendChild(span);
+                    } else {
+                        td.textContent = cell.text;
+                    }
+                    tr.appendChild(td);
+                });
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function showContractDetail(contract) {
+            const status = getStatus(contract.remaining_days);
+            const progressPct = Math.max(0, Math.min(100, (contract.remaining_days / 365) * 100));
+            let progressColor = 'progress-green';
+            if (contract.remaining_days < 0) progressColor = 'progress-red';
+            else if (contract.remaining_days < 180) progressColor = 'progress-yellow';
+
+            const modal = document.getElementById('detailModal');
+            document.getElementById('modalTitle').textContent = contract.project;
+
+            const modalBody = document.getElementById('modalBody');
+            modalBody.textContent = '';
+
+            // Status section
+            const statusSection = document.createElement('div');
+            statusSection.className = 'mb-4 p-4 rounded-lg';
+            statusSection.style.background = status.color + '10';
+            statusSection.style.borderLeft = '4px solid ' + status.color;
+
+            const statusHeader = document.createElement('div');
+            statusHeader.className = 'flex justify-between items-center mb-2';
+            const statusLabel = document.createElement('span');
+            statusLabel.className = 'font-medium';
+            statusLabel.style.color = status.color;
+            statusLabel.textContent = status.label;
+            const statusBadge = document.createElement('span');
+            statusBadge.className = 'badge ' + status.badge;
+            statusBadge.textContent = contract.remaining_days < 0 ? Math.abs(contract.remaining_days) + ' days overdue' : contract.remaining_days + ' days remaining';
+            statusHeader.appendChild(statusLabel);
+            statusHeader.appendChild(statusBadge);
+
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            const progressFill = document.createElement('div');
+            progressFill.className = 'progress-fill ' + progressColor;
+            progressFill.style.width = progressPct + '%';
+            progressBar.appendChild(progressFill);
+
+            statusSection.appendChild(statusHeader);
+            statusSection.appendChild(progressBar);
+            modalBody.appendChild(statusSection);
+
+            const formatMoney = (val) => val ? 'SAR ' + val.toLocaleString() : '-';
+
+            // Detail rows
+            const details = [
+                ['Region / City', contract.region + ' - ' + contract.city],
+                ['Type', contract.type + ' (' + contract.contract_type + ')'],
+                ['Registration', contract.registration],
+                ['Contract Period', contract.start_date + ' to ' + contract.end_date],
+                ['Contract Number', contract.contract_number],
+                ['Project Manager', contract.project_manager],
+                ['Total Contract Cost', formatMoney(contract.total_contract_cost)],
+                ['Annual Payment', formatMoney(contract.annual_payment)],
+                ['Auto Renewal', contract.auto_renewal || 'Not specified'],
+                ['Additional Clause', contract.additional_clause || 'None']
+            ];
+
+            details.forEach(([label, value]) => {
+                const row = document.createElement('div');
+                row.className = 'detail-row';
+                const labelSpan = document.createElement('span');
+                labelSpan.className = 'detail-label';
+                labelSpan.textContent = label;
+                const valueSpan = document.createElement('span');
+                valueSpan.className = 'detail-value';
+                if (label === 'Registration') {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge ' + (contract.registration === 'EJAR' ? 'badge-info' : 'badge-success');
+                    badge.textContent = value;
+                    valueSpan.appendChild(badge);
+                } else {
+                    valueSpan.textContent = value;
+                }
+                row.appendChild(labelSpan);
+                row.appendChild(valueSpan);
+                modalBody.appendChild(row);
+            });
+
+            // Owner section header
+            const ownerHeader = document.createElement('h4');
+            ownerHeader.className = 'font-bold text-gray-700 mt-6 mb-3';
+            ownerHeader.textContent = 'Owner Information';
+            modalBody.appendChild(ownerHeader);
+
+            const ownerDetails = [
+                ['Owner Name', contract.owner_name],
+                ['Mobile', contract.owner_mobile, true],
+                ['Vendor Number', contract.vendor_number],
+                ['Brokerage', contract.brokerage]
+            ];
+
+            ownerDetails.forEach(([label, value, isPhone]) => {
+                const row = document.createElement('div');
+                row.className = 'detail-row';
+                const labelSpan = document.createElement('span');
+                labelSpan.className = 'detail-label';
+                labelSpan.textContent = label;
+                const valueSpan = document.createElement('span');
+                valueSpan.className = 'detail-value';
+                if (isPhone) {
+                    const link = document.createElement('a');
+                    link.href = 'tel:' + value;
+                    link.className = 'text-blue-600 hover:underline';
+                    link.textContent = value;
+                    valueSpan.appendChild(link);
+                } else {
+                    valueSpan.textContent = value;
+                }
+                row.appendChild(labelSpan);
+                row.appendChild(valueSpan);
+                modalBody.appendChild(row);
+            });
+
+            // Location section
+            const locationSection = document.createElement('div');
+            locationSection.className = 'mt-6 p-4 bg-blue-50 rounded-lg';
+            const locHeader = document.createElement('div');
+            locHeader.className = 'flex items-center gap-2 mb-2';
+            const locIcon = document.createElement('span');
+            locIcon.innerHTML = '<svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
+            const locLabel = document.createElement('span');
+            locLabel.className = 'font-medium text-blue-700';
+            locLabel.textContent = 'Location';
+            locHeader.appendChild(locIcon);
+            locHeader.appendChild(locLabel);
+            const locLink = document.createElement('a');
+            locLink.href = 'https://www.google.com/maps?q=' + contract.location;
+            locLink.target = '_blank';
+            locLink.className = 'text-blue-600 hover:underline text-sm';
+            locLink.textContent = 'Open in Google Maps (' + contract.location + ')';
+            locationSection.appendChild(locHeader);
+            locationSection.appendChild(locLink);
+            modalBody.appendChild(locationSection);
+
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('show');
+        }
+
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            html2canvas(document.querySelector('main')).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('l', 'mm', 'a4');
+                const width = pdf.internal.pageSize.getWidth();
+                const height = (canvas.height * width) / canvas.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+                pdf.save('lease_contracts_' + new Date().toISOString().slice(0, 10) + '.pdf');
+            });
+        }
+
+        function exportExcel() {
+            const data = filteredContracts.map(c => ({
+                'Project': c.project,
+                'City': c.city,
+                'Region': c.region,
+                'Type': c.type,
+                'Contract Type': c.contract_type,
+                'Registration': c.registration,
+                'Project Manager': c.project_manager,
+                'Start Date': c.start_date,
+                'End Date': c.end_date,
+                'Remaining Days': c.remaining_days,
+                'Total Contract Cost': c.total_contract_cost,
+                'Annual Payment': c.annual_payment,
+                'Auto Renewal': c.auto_renewal,
+                'Additional Clause': c.additional_clause,
+                'Contract Number': c.contract_number,
+                'Location': c.location
+            }));
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Lease Contracts');
+            XLSX.writeFile(wb, 'lease_contracts_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+        }
+
+        // Close modal on outside click
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            if (typeof NesmaTheme !== 'undefined') NesmaTheme.init();
+        });
+    </script>
+</body>
+</html>

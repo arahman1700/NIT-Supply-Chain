@@ -145,39 +145,139 @@ const NesmaTheme = {
 
     createParticles(container) {
         if (!container) return;
-        var colorSets = [
-            { fill1: '#2E3192', fill2: '#80D1E9' },
-            { fill1: 'rgba(255,255,255,0.9)', fill2: 'rgba(255,255,255,0.6)' },
-            { fill1: '#80D1E9', fill2: '#2E3192' }
-        ];
-        var animations = ['logoFloat', 'logoPop', 'logoFall'];
-        for (var i = 0; i < 15; i++) {
-            var colors = colorSets[i % 3];
-            var anim = animations[Math.floor(Math.random() * animations.length)];
-            var size = 16 + Math.random() * 24;
-            var opacity = 0.04 + Math.random() * 0.1;
-            var duration = 18 + Math.random() * 22;
-            var delay = Math.random() * 25;
-            var driftDur = 8 + Math.random() * 6;
 
-            var particle = document.createElement('div');
-            particle.className = 'logo-particle';
-            particle.style.left = (Math.random() * 100) + '%';
-            particle.style.top = (Math.random() * 100) + '%';
-            particle.style.width = size + 'px';
-            particle.style.setProperty('--p-opacity', String(opacity));
-            particle.style.animation = anim + ' ' + duration + 's ease-in-out ' + delay + 's infinite, logoDrift ' + driftDur + 's ease-in-out ' + delay + 's infinite';
-            particle.appendChild(this.createLogoSVG(colors.fill1, colors.fill2));
-            container.appendChild(particle);
-        }
+        // Nesma brand colors - FULL SOLID colors for visibility
+        var colorSets = [
+            { fill1: '#FFFFFF', fill2: '#80D1E9' },
+            { fill1: '#80D1E9', fill2: '#0E2841' },
+            { fill1: '#0E2841', fill2: '#80D1E9' },
+            { fill1: '#2E3192', fill2: '#80D1E9' },
+            { fill1: '#80D1E9', fill2: '#2E3192' },
+            { fill1: '#FFFFFF', fill2: '#0E2841' },
+            { fill1: '#FFFFFF', fill2: '#2E3192' },
+            { fill1: '#0E2841', fill2: '#FFFFFF' },
+            { fill1: '#2E3192', fill2: '#FFFFFF' }
+        ];
+
+        // Layers with SLOWER speeds and HIGHER visibility
+        var layers = [
+            { sizes: [100, 120, 140, 160], opacities: [0.04, 0.06, 0.08, 0.10], speeds: [150, 180, 200, 240], count: 12 },
+            { sizes: [70, 85, 100, 115], opacities: [0.12, 0.16, 0.20, 0.25], speeds: [100, 120, 140, 160], count: 15 },
+            { sizes: [45, 55, 65, 80], opacities: [0.28, 0.35, 0.42, 0.50], speeds: [70, 85, 100, 120], count: 20 },
+            { sizes: [30, 38, 48, 58], opacities: [0.50, 0.60, 0.70, 0.80], speeds: [50, 60, 75, 90], count: 18 },
+            { sizes: [20, 28, 35, 45], opacities: [0.75, 0.85, 0.90, 0.95], speeds: [35, 45, 55, 70], count: 15 },
+            { sizes: [15, 20, 26, 32], opacities: [0.90, 0.95, 1.0, 1.0], speeds: [25, 35, 45, 55], count: 10 }
+        ];
+
+        // Animation types
+        var animations = [
+            'logoMoveRight', 'logoMoveLeft', 'logoMoveDown', 'logoMoveUp',
+            'logoDiagonalDR', 'logoDiagonalDL', 'logoDiagonalUR', 'logoDiagonalUL'
+        ];
+
+        // Create particles for each layer
+        layers.forEach(function(layer, layerIndex) {
+            for (var i = 0; i < layer.count; i++) {
+                var colors = colorSets[Math.floor(Math.random() * colorSets.length)];
+                var anim = animations[Math.floor(Math.random() * animations.length)];
+                var size = layer.sizes[Math.floor(Math.random() * layer.sizes.length)];
+                var duration = layer.speeds[Math.floor(Math.random() * layer.speeds.length)];
+                var opacity = layer.opacities[Math.floor(Math.random() * layer.opacities.length)];
+
+                var segment = i / layer.count;
+                var animOffset = -segment * duration;
+
+                var startX, startY;
+                if (anim === 'logoMoveRight') {
+                    startX = -5;
+                    startY = (segment * 80) + 10;
+                } else if (anim === 'logoMoveLeft') {
+                    startX = 105;
+                    startY = (segment * 80) + 10;
+                } else if (anim === 'logoMoveDown') {
+                    startX = (segment * 90) + 5;
+                    startY = -5;
+                } else if (anim === 'logoMoveUp') {
+                    startX = (segment * 90) + 5;
+                    startY = 105;
+                } else if (anim === 'logoDiagonalDR') {
+                    startX = -5 + (segment * 30);
+                    startY = -5 + (segment * 20);
+                } else if (anim === 'logoDiagonalDL') {
+                    startX = 105 - (segment * 30);
+                    startY = -5 + (segment * 20);
+                } else if (anim === 'logoDiagonalUR') {
+                    startX = -5 + (segment * 30);
+                    startY = 105 - (segment * 20);
+                } else {
+                    startX = 105 - (segment * 30);
+                    startY = 105 - (segment * 20);
+                }
+
+                startX += (Math.random() - 0.5) * 15;
+                startY += (Math.random() - 0.5) * 15;
+
+                var particle = document.createElement('div');
+                particle.className = 'logo-particle';
+                particle.style.left = startX + '%';
+                particle.style.top = startY + '%';
+                particle.style.width = size + 'px';
+                particle.style.setProperty('--p-opacity', String(opacity));
+                particle.style.zIndex = String(layerIndex);
+                particle.style.animation = anim + ' ' + duration + 's linear ' + animOffset + 's infinite';
+                particle.appendChild(this.createLogoSVG(colors.fill1, colors.fill2));
+                container.appendChild(particle);
+            }
+        }, this);
     },
 
-    updateParticles() {
+    particlesVisible: true,
+
+    toggleParticles: function() {
+        this.particlesVisible = !this.particlesVisible;
+        if (this.particlesVisible) {
+            document.body.classList.remove('particles-hidden');
+        } else {
+            document.body.classList.add('particles-hidden');
+        }
+        this.updateParticlesButtonIcon();
+        return this.particlesVisible;
+    },
+
+    createParticleIconSVG: function(visible) {
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'w-5 h-5 text-white');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        path.setAttribute('stroke-width', '2');
+        if (visible) {
+            path.setAttribute('d', 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z');
+        } else {
+            path.setAttribute('d', 'M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636');
+        }
+        svg.appendChild(path);
+        return svg;
+    },
+
+    updateParticlesButtonIcon: function() {
+        var btn = document.getElementById('particlesToggleBtn');
+        if (!btn) return;
+        var oldSvg = btn.querySelector('svg');
+        if (oldSvg) oldSvg.remove();
+        btn.insertBefore(this.createParticleIconSVG(this.particlesVisible), btn.firstChild);
+    },
+
+    updateParticles(forceRefresh) {
         this.ensureParticlesContainer();
         var container = document.getElementById('particles');
         if (!container) return;
-        // Only populate if empty (particles persist across toggles; CSS controls visibility)
-        if (container.children.length === 0) {
+        // Clear and regenerate if forceRefresh or empty
+        if (forceRefresh || container.children.length === 0) {
+            container.textContent = '';
             this.createParticles(container);
         }
     }

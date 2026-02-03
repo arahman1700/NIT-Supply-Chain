@@ -1926,39 +1926,158 @@ input,
   display: block;
 }
 
-/* Float up slowly */
-@keyframes logoFloat {
-  0% { transform: translateY(110vh) rotate(0deg) scale(0.5); opacity: 0; }
-  8% { opacity: var(--p-opacity); transform: translateY(90vh) rotate(15deg) scale(0.8); }
-  50% { opacity: var(--p-opacity); }
-  85% { opacity: var(--p-opacity); transform: translateY(10vh) rotate(-10deg) scale(1); }
-  100% { transform: translateY(-15vh) rotate(20deg) scale(0.6); opacity: 0; }
+/* ========================================
+   SIMPLE DIRECTIONAL ANIMATIONS
+   Clean movements: horizontal & vertical
+   ======================================== */
+
+/* Move from left to right */
+@keyframes logoMoveRight {
+  0% {
+    transform: translateX(-10vw);
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--p-opacity);
+  }
+  95% {
+    opacity: var(--p-opacity);
+  }
+  100% {
+    transform: translateX(110vw);
+    opacity: 0;
+  }
 }
 
-/* Drift and pulse */
-@keyframes logoDrift {
-  0%, 100% { transform: translateX(0px); }
-  25% { transform: translateX(15px); }
-  75% { transform: translateX(-15px); }
+/* Move from right to left */
+@keyframes logoMoveLeft {
+  0% {
+    transform: translateX(10vw);
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--p-opacity);
+  }
+  95% {
+    opacity: var(--p-opacity);
+  }
+  100% {
+    transform: translateX(-110vw);
+    opacity: 0;
+  }
 }
 
-/* Pop in and fade */
-@keyframes logoPop {
-  0% { transform: scale(0); opacity: 0; }
-  15% { transform: scale(1.3); opacity: var(--p-opacity); }
-  25% { transform: scale(0.9); }
-  35% { transform: scale(1); }
-  70% { opacity: var(--p-opacity); }
-  100% { transform: scale(0.5); opacity: 0; }
+/* Move from top to bottom */
+@keyframes logoMoveDown {
+  0% {
+    transform: translateY(-10vh);
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--p-opacity);
+  }
+  95% {
+    opacity: var(--p-opacity);
+  }
+  100% {
+    transform: translateY(110vh);
+    opacity: 0;
+  }
 }
 
-/* Gentle sway fall */
-@keyframes logoFall {
-  0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
-  10% { opacity: var(--p-opacity); }
-  50% { transform: translateY(45vh) translateX(30px) rotate(15deg); opacity: var(--p-opacity); }
-  90% { opacity: var(--p-opacity); }
-  100% { transform: translateY(110vh) translateX(-20px) rotate(-10deg); opacity: 0; }
+/* Move from bottom to top */
+@keyframes logoMoveUp {
+  0% {
+    transform: translateY(10vh);
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--p-opacity);
+  }
+  95% {
+    opacity: var(--p-opacity);
+  }
+  100% {
+    transform: translateY(-110vh);
+    opacity: 0;
+  }
+}
+
+/* Diagonal: top-left to bottom-right */
+@keyframes logoDiagonalDR {
+  0% {
+    transform: translate(-10vw, -10vh);
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--p-opacity);
+  }
+  95% {
+    opacity: var(--p-opacity);
+  }
+  100% {
+    transform: translate(110vw, 110vh);
+    opacity: 0;
+  }
+}
+
+/* Diagonal: top-right to bottom-left */
+@keyframes logoDiagonalDL {
+  0% {
+    transform: translate(10vw, -10vh);
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--p-opacity);
+  }
+  95% {
+    opacity: var(--p-opacity);
+  }
+  100% {
+    transform: translate(-110vw, 110vh);
+    opacity: 0;
+  }
+}
+
+/* Diagonal: bottom-left to top-right */
+@keyframes logoDiagonalUR {
+  0% {
+    transform: translate(-10vw, 10vh);
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--p-opacity);
+  }
+  95% {
+    opacity: var(--p-opacity);
+  }
+  100% {
+    transform: translate(110vw, -110vh);
+    opacity: 0;
+  }
+}
+
+/* Diagonal: bottom-right to top-left */
+@keyframes logoDiagonalUL {
+  0% {
+    transform: translate(10vw, 10vh);
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--p-opacity);
+  }
+  95% {
+    opacity: var(--p-opacity);
+  }
+  100% {
+    transform: translate(-110vw, -110vh);
+    opacity: 0;
+  }
+}
+
+/* Hide particles class */
+.particles-hidden .particles {
+  display: none !important;
 }
 
 /* ==========================================

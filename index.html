@@ -261,6 +261,9 @@
                     <span class="text-gray-400 text-sm hidden md:inline">Supply Chain Management</span>
                     <div class="h-6 w-px bg-gray-700 hidden md:block"></div>
                     <span class="text-cyan-400 text-sm" id="currentTime"></span>
+                    <button id="particlesToggleBtn" onclick="NesmaTheme.toggleParticles()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Toggle particles">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                    </button>
                     <button id="themeToggleBtn" onclick="NesmaTheme.toggle()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Toggle theme">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                     </button>
@@ -476,6 +479,28 @@
                     <div class="text-cyan-400">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </section>
+
+        <!-- Leases & Monthly Report Links -->
+        <section class="container mx-auto px-6 pb-4">
+            <a href="lease_dashboard.html" class="block glass-card p-6 fade-in-up stagger-5 hover:border-cyan-400/50 transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #DEC18C 0%, #B08F55 100%)">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-white mb-1">Lease & Rental Management</h3>
+                        <p class="text-sm text-gray-400">Warehouse & land contracts — 22 active leases</p>
+                    </div>
+                    <div class="text-cyan-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
                     </div>
                 </div>

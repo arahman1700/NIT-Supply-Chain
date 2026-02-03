@@ -5605,7 +5605,7 @@
             if (!info) return;
             
             const infoModal = document.createElement('div');
-            infoModal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[60]';
+            infoModal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[200]';
             infoModal.id = 'slaInfoModal';
             infoModal.onclick = (e) => { if (e.target === infoModal) infoModal.remove(); };
             
@@ -5674,7 +5674,7 @@
             const calc = info.calculation;
             
             const infoModal = document.createElement('div');
-            infoModal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[60]';
+            infoModal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[200]';
             infoModal.id = 'calcInfoModal';
             infoModal.onclick = (e) => { if (e.target === infoModal) infoModal.remove(); };
             
@@ -5745,7 +5745,7 @@
             const currentColumns = getModalColumns(modalType);
             
             const selectorModal = document.createElement('div');
-            selectorModal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[60]';
+            selectorModal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[200]';
             selectorModal.id = 'columnSelectorModal';
             selectorModal.onclick = (e) => { if (e.target === selectorModal) selectorModal.remove(); };
             
