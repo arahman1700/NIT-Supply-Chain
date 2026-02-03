@@ -4,1526 +4,1392 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <title>NESMA | Warehouse & Material Handling Dashboard</title>
+    <title>NESMA | Warehouse & Inventory Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/nesma-theme.css">
     <style>
         :root {
-            /* Nesma Brand Colors - Official */
             --nesma-primary: #2E3192;
             --nesma-cyan: #80D1E9;
             --nesma-navy: #0E2841;
-            --nesma-dark-blue: #203366;
             --nesma-light-gray: #E8E8E8;
-            --nesma-gray: #B3B3B3;
-
-            /* Functional Colors */
             --success: #059669;
             --warning: #D97706;
             --danger: #DC2626;
-            --info: #0284C7;
         }
-
         * { font-family: 'Inter', 'Cairo', sans-serif; }
+        body { background: #F8FAFC; min-height: 100vh; }
+        .nesma-header { background: var(--nesma-primary); position: relative; }
+        .nesma-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 120px; height: 3px; background: var(--nesma-cyan); }
+        .card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(14,40,65,0.08); border: 1px solid var(--nesma-light-gray); }
 
-        body {
-            background: #F8FAFC;
-            min-height: 100vh;
-        }
+        /* Gradient KPI Cards */
+        .kpi-card { position: relative; border-radius: 16px; padding: 20px 24px; color: white; overflow: hidden; cursor: pointer; min-height: 120px; transition: all 0.3s ease; }
+        .kpi-card::before { content: ''; position: absolute; top: 0; right: 0; width: 60%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 100%); }
+        .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .kpi-primary { background: linear-gradient(135deg, #4361ee 0%, #2E3192 100%); }
+        .kpi-success { background: linear-gradient(135deg, #10B981 0%, #047857 100%); }
+        .kpi-warning { background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%); }
+        .kpi-danger { background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); }
+        .kpi-cyan { background: linear-gradient(135deg, #06B6D4 0%, #0E7490 100%); }
+        .kpi-purple { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); }
+        .kpi-navy { background: linear-gradient(135deg, #1E3A5F 0%, #0E2841 100%); }
+        .kpi-icon { position: absolute; top: 16px; right: 16px; width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .kpi-label { font-size: 13px; font-weight: 500; opacity: 0.9; margin-bottom: 8px; }
+        .kpi-value { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+        .kpi-subtitle { font-size: 12px; opacity: 0.85; }
 
-        /* Header - Solid Primary with subtle accent line */
-        .nesma-header {
-            background: var(--nesma-primary);
-            box-shadow: 0 2px 8px rgba(46, 49, 146, 0.15);
-            position: relative;
-        }
-        .nesma-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 120px;
-            height: 3px;
-            background: var(--nesma-cyan);
-        }
+        /* SLA Cards */
+        .sla-card { position: relative; background: white; border-radius: 14px; padding: 20px; border: 1px solid var(--nesma-light-gray); transition: all 0.3s ease; overflow: hidden; }
+        .sla-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+        .sla-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+        .sla-card.sla-green::before { background: linear-gradient(90deg, #10B981, #059669); }
+        .sla-card.sla-yellow::before { background: linear-gradient(90deg, #F59E0B, #D97706); }
+        .sla-card.sla-red::before { background: linear-gradient(90deg, #EF4444, #DC2626); }
+        .sla-indicator { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .sla-green .sla-indicator { background: #D1FAE5; color: #059669; }
+        .sla-yellow .sla-indicator { background: #FEF3C7; color: #D97706; }
+        .sla-red .sla-indicator { background: #FEE2E2; color: #DC2626; }
+        .sla-value { font-size: 1.8rem; font-weight: 800; }
+        .sla-green .sla-value { color: #059669; }
+        .sla-yellow .sla-value { color: #D97706; }
+        .sla-red .sla-value { color: #DC2626; }
 
-        /* Cards - Clean white with subtle shadow */
-        .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(14, 40, 65, 0.08);
-            transition: all 0.2s ease;
-            border: 1px solid var(--nesma-light-gray);
-        }
-        .card:hover {
-            box-shadow: 0 4px 12px rgba(14, 40, 65, 0.1);
-        }
-
-        /* KPI Cards - Clean solid backgrounds */
-        .kpi-card {
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            border-radius: 12px;
-            border: none;
-        }
-        .kpi-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(14, 40, 65, 0.12);
-        }
-        .kpi-card-primary { background: var(--nesma-primary); }
-        .kpi-card-navy { background: var(--nesma-navy); }
-        .kpi-card-dark { background: var(--nesma-dark-blue); }
-        .kpi-card-accent { background: var(--nesma-navy); border-left: 4px solid var(--nesma-cyan); }
-
-        /* Tab Navigation - Clean underline style */
-        .tab-btn {
-            transition: all 0.2s ease;
-            position: relative;
-            font-weight: 500;
-            color: var(--nesma-gray);
-            border-bottom: 2px solid transparent;
-        }
-        .tab-btn.active {
-            color: var(--nesma-primary);
-            border-bottom-color: var(--nesma-primary);
-            background: transparent;
-        }
-        .tab-btn:hover:not(.active) {
-            color: var(--nesma-dark-blue);
-        }
-
+        /* Tab Navigation */
+        .tab-btn { transition: all 0.2s ease; font-weight: 500; color: #B3B3B3; border-bottom: 3px solid transparent; background: transparent; }
+        .tab-btn.active { color: var(--nesma-primary); border-bottom-color: var(--nesma-primary); background: rgba(46,49,146,0.05); }
+        .tab-btn:hover:not(.active) { color: var(--nesma-navy); background: rgba(128,209,233,0.1); }
         .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .chart-container { position: relative; height: 320px; }
 
-        .chart-container { position: relative; height: 300px; }
-
-        /* Data Tables - Solid header */
+        /* Data Tables */
         .data-table { width: 100%; border-collapse: separate; border-spacing: 0; }
-        .data-table th {
-            background: var(--nesma-primary);
-            padding: 12px 16px;
-            font-weight: 600;
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            letter-spacing: 0.05em;
-        }
+        .data-table th { background: var(--nesma-primary); padding: 12px 16px; font-weight: 600; color: white; position: sticky; top: 0; z-index: 10; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; }
         .data-table th:first-child { border-radius: 8px 0 0 0; }
         .data-table th:last-child { border-radius: 0 8px 0 0; }
-        .data-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--nesma-light-gray);
-            font-size: 0.875rem;
-        }
-        .data-table tr:hover td {
-            background: rgba(128, 209, 233, 0.08);
-        }
+        .data-table td { padding: 10px 14px; border-bottom: 1px solid var(--nesma-light-gray); font-size: 0.8rem; }
+        .data-table tr:hover td { background: rgba(128,209,233,0.08); }
+        .data-table tr:nth-child(even) td { background: rgba(248,250,252,0.5); }
+        .data-table tr:nth-child(even):hover td { background: rgba(128,209,233,0.08); }
 
-        /* Scroll Container */
-        .scroll-container {
-            max-height: 400px;
-            overflow-y: auto;
-            border-radius: 8px;
-        }
-        .scroll-container::-webkit-scrollbar { width: 4px; }
-        .scroll-container::-webkit-scrollbar-track { background: var(--nesma-light-gray); }
+        .scroll-container { max-height: 450px; overflow-y: auto; border-radius: 8px; border: 1px solid var(--nesma-light-gray); }
+        .scroll-container::-webkit-scrollbar { width: 6px; }
+        .scroll-container::-webkit-scrollbar-track { background: #f1f1f1; }
         .scroll-container::-webkit-scrollbar-thumb { background: var(--nesma-cyan); border-radius: 4px; }
 
-        /* SLA Compliance Section - Light background */
-        .sla-compliance-section {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
-            border: 1px solid var(--nesma-light-gray);
-        }
-
-        /* SLA Cards - Clean with top accent */
-        .sla-card {
-            background: white;
-            border-radius: 10px;
-            padding: 16px;
-            text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: all 0.2s ease;
-            cursor: pointer;
-            position: relative;
-            border: 1px solid var(--nesma-light-gray);
-        }
-        .sla-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        .sla-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            border-radius: 10px 10px 0 0;
-        }
-        .sla-green::before { background: var(--success); }
-        .sla-yellow::before { background: var(--warning); }
-        .sla-red::before { background: var(--danger); }
-
-        .sla-value {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 8px 0;
-        }
-        .sla-green .sla-value { color: var(--success); }
-        .sla-yellow .sla-value { color: var(--warning); }
-        .sla-red .sla-value { color: var(--danger); }
+        .badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; }
+        .badge-danger { background: #FEE2E2; color: #DC2626; }
+        .badge-warning { background: #FEF3C7; color: #D97706; }
+        .badge-success { background: #D1FAE5; color: #059669; }
+        .badge-info { background: #DBEAFE; color: #2563EB; }
 
         /* Filter Section */
-        .filter-section {
-            background: white;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 20px;
-            border: 1px solid var(--nesma-light-gray);
-        }
+        .filter-section { background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%); border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--nesma-light-gray); }
+        .filter-select { border: 1px solid var(--nesma-light-gray); border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; background: white; min-width: 160px; transition: all 0.2s; }
+        .filter-select:focus { outline: none; border-color: var(--nesma-primary); box-shadow: 0 0 0 3px rgba(46,49,146,0.1); }
 
-        .filter-select {
-            padding: 8px 12px;
-            border: 1px solid var(--nesma-light-gray);
-            border-radius: 6px;
-            font-size: 14px;
-            min-width: 140px;
-            background: white;
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--nesma-primary);
-        }
+        /* Export Buttons */
+        .btn-export { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; transition: all 0.2s ease; }
+        .btn-pdf { background: #DC2626; color: white; }
+        .btn-pdf:hover { background: #B91C1C; transform: translateY(-1px); }
+        .btn-excel { background: #059669; color: white; }
+        .btn-excel:hover { background: #047857; transform: translateY(-1px); }
+        .btn-print { background: var(--nesma-primary); color: white; }
+        .btn-print:hover { background: var(--nesma-navy); transform: translateY(-1px); }
 
-        /* Warehouse Cards */
-        .warehouse-card {
-            background: white;
-            border-radius: 10px;
-            padding: 16px;
-            border: 1px solid var(--nesma-light-gray);
-            transition: all 0.2s ease;
-        }
-        .warehouse-card:hover {
-            border-color: var(--nesma-cyan);
-            box-shadow: 0 4px 12px rgba(46, 49, 146, 0.08);
-        }
+        /* Search Box */
+        .search-box { position: relative; }
+        .search-box input { width: 100%; padding: 10px 40px 10px 14px; border: 1px solid var(--nesma-light-gray); border-radius: 8px; font-size: 0.85rem; }
+        .search-box input:focus { outline: none; border-color: var(--nesma-primary); box-shadow: 0 0 0 3px rgba(46,49,146,0.1); }
+        .search-box svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #9CA3AF; }
 
-        /* Capacity Bar */
-        .capacity-bar {
-            height: 8px;
-            background: var(--nesma-light-gray);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .capacity-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
+        /* Pagination */
+        .pagination { display: flex; gap: 4px; align-items: center; }
+        .pagination button { padding: 6px 12px; border: 1px solid var(--nesma-light-gray); border-radius: 6px; font-size: 0.8rem; background: white; cursor: pointer; transition: all 0.2s; }
+        .pagination button:hover:not(:disabled) { background: var(--nesma-primary); color: white; border-color: var(--nesma-primary); }
+        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pagination button.active { background: var(--nesma-primary); color: white; border-color: var(--nesma-primary); }
+        .pagination span { font-size: 0.8rem; color: #6B7280; padding: 0 8px; }
 
-        /* Buttons */
-        .btn-primary {
-            background: var(--nesma-primary);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-primary:hover {
-            background: var(--nesma-dark-blue);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: var(--nesma-primary);
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            border: 1px solid var(--nesma-primary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-secondary:hover {
-            background: rgba(46, 49, 146, 0.05);
-        }
-
-        /* Section Title */
-        .section-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--nesma-navy);
-        }
-
-        /* Stat Cards - Clean minimal */
-        .annex-stat {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 14px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-        .annex-stat:hover { background: rgba(46, 49, 146, 0.03); }
-        .annex-stat-default { background: #FAFAFA; border-left-color: var(--nesma-gray); }
-        .annex-stat-blue { background: rgba(46, 49, 146, 0.04); border-left-color: var(--nesma-primary); }
-        .annex-stat-green { background: rgba(5, 150, 105, 0.04); border-left-color: var(--success); }
-        .annex-stat-yellow { background: rgba(217, 119, 6, 0.04); border-left-color: var(--warning); }
-        .annex-stat-red { background: rgba(220, 38, 38, 0.04); border-left-color: var(--danger); }
-        .annex-stat-orange { background: rgba(234, 88, 12, 0.04); border-left-color: #EA580C; }
-
-        /* Cycle Cards */
-        .cycle-card {
-            border-radius: 10px;
-            padding: 16px;
-            border: 1px solid var(--nesma-light-gray);
-        }
-        .cycle-card-blue { background: rgba(46, 49, 146, 0.03); border-left: 3px solid var(--nesma-primary); }
-        .cycle-card-green { background: rgba(5, 150, 105, 0.03); border-left: 3px solid var(--success); }
-        .cycle-card-amber { background: rgba(217, 119, 6, 0.03); border-left: 3px solid var(--warning); }
+        /* Stats Row */
+        .stats-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; padding: 12px; background: rgba(46,49,146,0.03); border-radius: 8px; }
+        .stat-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+        .stat-item .label { color: #6B7280; }
+        .stat-item .value { font-weight: 700; color: var(--nesma-primary); }
 
         @media print {
             .no-print { display: none !important; }
-            body { background: white; }
+            .card { break-inside: avoid; }
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(14, 40, 65, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 95%;
+            max-width: 1100px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(14, 40, 65, 0.25);
+            animation: modalSlideIn 0.3s ease;
+        }
+        @keyframes modalSlideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, var(--nesma-primary) 0%, var(--nesma-navy) 100%);
+            color: white;
+        }
+        .modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; }
+        .close-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .close-btn:hover { background: rgba(255,255,255,0.2); }
+
+        /* Info Icon */
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background: var(--nesma-primary);
+            color: white;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 6px;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .info-icon:hover { background: var(--nesma-cyan); color: var(--nesma-navy); transform: scale(1.15); box-shadow: 0 2px 8px rgba(46,49,146,0.3); }
+
+        /* Clickable KPI Enhancement */
+        .kpi-card.clickable { cursor: pointer; }
+        .kpi-card.clickable:hover { transform: translateY(-6px); box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
+        .kpi-card .click-hint {
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            font-size: 10px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .kpi-card.clickable:hover .click-hint { opacity: 0.7; }
+
+        /* SLA Info Card */
+        .sla-info-section {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border: 1px solid #BAE6FD;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .sla-info-section h4 { color: var(--nesma-primary); font-weight: 600; margin-bottom: 8px; }
+        .sla-info-section ul { list-style: none; padding: 0; margin: 0; }
+        .sla-info-section li { padding: 4px 0; font-size: 0.85rem; color: #475569; display: flex; align-items: center; gap: 8px; }
+        .sla-info-section li::before { content: '•'; color: var(--nesma-cyan); font-weight: bold; }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="nesma-header text-white sticky top-0 z-50 no-print">
-        <div class="container mx-auto px-4 lg:px-6 py-4">
-            <div class="flex justify-between items-center">
+    <header class="nesma-header text-white no-print">
+        <div class="container mx-auto px-4 lg:px-6">
+            <div class="flex items-center justify-between py-4">
                 <div class="flex items-center gap-4">
-                    <a href="index.html" class="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                        <span class="text-sm hidden sm:inline">Home</span>
+                    <a href="index.html" class="flex items-center gap-2 text-white/80 hover:text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        <span class="text-sm font-medium hidden sm:inline">Back</span>
                     </a>
-                    <div class="h-6 w-px bg-white/30 hidden sm:block"></div>
+                    <div class="h-6 w-px bg-white/20"></div>
                     <img src="assets/logo-white.svg" alt="NESMA" class="h-8 lg:h-10">
-                    <div class="hidden md:block border-l border-white/30 h-8 mx-2"></div>
-                    <div class="hidden md:block">
-                        <h1 class="text-lg font-bold">Warehouse & Material Handling Dashboard</h1>
-                        <p class="text-xs text-blue-100 opacity-80">Stock Confirmation, Transfers & Storage Compliance</p>
-                    </div>
                 </div>
-                <div class="flex items-center gap-3 lg:gap-6">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-xs text-blue-100 opacity-80">Last Update</p>
-                        <p class="text-sm font-semibold" id="lastUpdateDate">Loading...</p>
-                    </div>
+                <div class="text-center flex-1 px-4">
+                    <h1 class="text-lg lg:text-xl font-bold">Warehouse & Inventory Dashboard</h1>
+                    <p class="text-xs lg:text-sm text-white/70 hidden sm:block">Complete Inventory Management & SLA Tracking</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs text-white/60 hidden md:inline" id="lastUpdated">Loading...</span>
+                    <button onclick="window.print()" class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Print">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    </button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 lg:px-6 py-6 lg:py-8">
+    <main class="container mx-auto px-4 lg:px-6 py-6">
+        <!-- SLA Compliance Section -->
+        <section class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-gray-800">SLA Compliance Overview</h2>
+                <div class="flex items-center gap-4 no-print">
+                    <button onclick="toggleSLAMethodology()" class="text-sm text-gray-600 hover:text-blue-600 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        How SLA is Calculated
+                    </button>
+                    <a href="sla_requirements.html" class="text-sm text-blue-600 hover:underline flex items-center gap-1">View SLA Standards <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></a>
+                </div>
+            </div>
+
+            <!-- SLA Methodology Section (Collapsible) -->
+            <div id="slaMethodology" class="sla-info-section mb-4 hidden">
+                <h4 class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                    SLA Calculation Methodology
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                    <div class="bg-white p-3 rounded-lg border border-blue-200">
+                        <h5 class="font-semibold text-gray-800 text-sm mb-2">📊 On-Time Rate Formula</h5>
+                        <code class="text-xs bg-gray-100 px-2 py-1 rounded block mb-2">On-time rate = (Items within SLA window ÷ Total items) × 100</code>
+                        <ul class="text-xs text-gray-600 space-y-1">
+                            <li><strong>Green:</strong> ≥95% (Meeting target)</li>
+                            <li><strong>Yellow:</strong> 85-94% (Warning zone)</li>
+                            <li><strong>Red:</strong> &lt;85% (Below target)</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-blue-200">
+                        <h5 class="font-semibold text-gray-800 text-sm mb-2">⏱️ Key Time Standards</h5>
+                        <ul class="text-xs text-gray-600 space-y-1">
+                            <li><strong>Material Transfer:</strong> ≤2 business days</li>
+                            <li><strong>Stock Confirmation:</strong> ≤1 business day</li>
+                            <li><strong>Storage Compliance:</strong> ≥98% audit pass rate</li>
+                            <li><strong>Non-Moving Rate:</strong> Track items idle &gt;4 years</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-3">Click the <strong>?</strong> icon on each SLA card for detailed calculation methodology.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="slaCards"></div>
+        </section>
+
         <!-- Tab Navigation -->
-        <div class="card mb-6 lg:mb-8">
-            <div class="border-b border-gray-200 no-print">
-                <div class="flex overflow-x-auto">
-                    <button class="tab-btn active px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('overview')">
-                        Overview
+        <div class="card">
+            <div class="border-b border-gray-200 overflow-x-auto no-print">
+                <div class="flex min-w-max">
+                    <button class="tab-btn active px-4 lg:px-6 py-3 lg:py-4 font-semibold whitespace-nowrap text-sm lg:text-base" onclick="switchTab('inventory')">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                            Full Inventory
+                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full" id="inventoryBadge">0</span>
+                        </span>
                     </button>
-                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('sc')">
-                        Stock Confirmation
+                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold whitespace-nowrap text-sm lg:text-base" onclick="switchTab('surplus')">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                            Material Surplus
+                            <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full" id="surplusBadge">0</span>
+                        </span>
                     </button>
-                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('transfers')">
-                        Material Movement
+                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold whitespace-nowrap text-sm lg:text-base" onclick="switchTab('nonmoving')">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Non-Moving
+                            <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full" id="nonmovingBadge">0</span>
+                        </span>
                     </button>
-                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('annexa')">
-                        Annex A Reports
-                    </button>
-                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('nonmoving')" style="position: relative;">
-                        Non-Moving Materials
-                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold whitespace-nowrap text-sm lg:text-base" onclick="switchTab('transfers')">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                            Transfers
+                            <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full" id="transfersBadge">0</span>
+                        </span>
                     </button>
                 </div>
             </div>
 
-            <div class="p-4 lg:p-6">
-                <!-- Overview Tab -->
-                <div id="tab-overview" class="tab-content active">
-                    <!-- SLA Compliance Section -->
-                    <div class="sla-compliance-section mb-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                <svg class="w-5 h-5" style="color: #2E3192;" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/>
-                                    <path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"/>
-                                </svg>
-                                Material Handling SLA Dashboard
-                            </h3>
-                        </div>
-
-                        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
-                            <!-- Storage Compliance -->
-                            <div class="sla-gradient-card sla-green" id="sla-storage">
-                                <div class="sla-indicator">✓</div>
-                                <p class="text-xs text-gray-600 font-medium">Storage Compliance</p>
-                                <p class="text-xs text-gray-400">Audit Pass Rate</p>
-                                <p class="sla-value" id="storage-rate">98.5%</p>
-                                <p class="text-xs text-gray-500 mt-1">Target: 98%</p>
-                            </div>
-
-                            <!-- Stock Confirmation -->
-                            <div class="sla-gradient-card sla-green" id="sla-sc">
-                                <div class="sla-indicator">✓</div>
-                                <p class="text-xs text-gray-600 font-medium">Stock Confirmation</p>
-                                <p class="text-xs text-gray-400">≤1 Business Day</p>
-                                <p class="sla-value" id="sc-rate">95.3%</p>
-                                <p class="text-xs text-gray-500 mt-1">Target: 95%</p>
-                            </div>
-
-                            <!-- Material Movement -->
-                            <div class="sla-gradient-card sla-green" id="sla-transfer">
-                                <div class="sla-indicator">✓</div>
-                                <p class="text-xs text-gray-600 font-medium">Material Movement</p>
-                                <p class="text-xs text-gray-400">≤2 Business Days</p>
-                                <p class="sla-value" id="transfer-rate">95.3%</p>
-                                <p class="text-xs text-gray-500 mt-1">Target: 95%</p>
-                            </div>
-
-                            <!-- Incident Reporting -->
-                            <div class="sla-gradient-card sla-green" id="sla-incident">
-                                <div class="sla-indicator">✓</div>
-                                <p class="text-xs text-gray-600 font-medium">Incident Reporting</p>
-                                <p class="text-xs text-gray-400">Same Day</p>
-                                <p class="sla-value" id="incident-rate">100%</p>
-                                <p class="text-xs text-gray-500 mt-1">Target: 100%</p>
-                            </div>
-
-                            <!-- Scrap Removal -->
-                            <div class="sla-gradient-card sla-yellow" id="sla-scrap">
-                                <div class="sla-indicator">!</div>
-                                <p class="text-xs text-gray-600 font-medium">Scrap Removal</p>
-                                <p class="text-xs text-gray-400">≤3 Business Days</p>
-                                <p class="sla-value" id="scrap-rate">94.6%</p>
-                                <p class="text-xs text-gray-500 mt-1">Target: 95%</p>
+            <!-- Tab: Full Inventory -->
+            <div id="tab-inventory" class="tab-content active p-4 lg:p-6">
+                <div class="filter-section no-print">
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div class="flex-1 min-w-[200px]">
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Search</label>
+                            <div class="search-box">
+                                <input type="text" id="inventorySearch" placeholder="Search by description, code, project..." onkeyup="filterInventory()">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- KPI Cards with Gradient Design -->
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
-                        <div class="gradient-card gradient-card-primary">
-                            <div class="gradient-card-icon">
-                                <svg fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/>
-                                    <path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <p class="gradient-card-label">Total Items</p>
-                            <p class="gradient-card-value" id="kpi-items">12,456</p>
-                            <p class="gradient-card-subtitle">Across <span id="kpi-warehouses">8</span> warehouses</p>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Project</label>
+                            <select id="filterInvProject" class="filter-select" onchange="filterInventory()"><option value="">All Projects</option></select>
                         </div>
-
-                        <div class="gradient-card gradient-card-navy">
-                            <div class="gradient-card-icon">
-                                <svg fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <p class="gradient-card-label">SC Requests</p>
-                            <p class="gradient-card-value" id="kpi-sc">1,245</p>
-                            <p class="gradient-card-subtitle"><span id="kpi-sc-pending">32</span> pending</p>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Location</label>
+                            <select id="filterInvLocation" class="filter-select" onchange="filterInventory()"><option value="">All Locations</option></select>
                         </div>
-
-                        <div class="gradient-card gradient-card-success">
-                            <div class="gradient-card-icon">
-                                <svg fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M8 5a1 1 0 100 2h5.586l-1.293 1.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L13.586 5H8z"/>
-                                    <path d="M12 15a1 1 0 100-2H6.414l1.293-1.293a1 1 0 10-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L6.414 15H12z"/>
-                                </svg>
-                            </div>
-                            <p class="gradient-card-label">Transfers</p>
-                            <p class="gradient-card-value" id="kpi-transfers">567</p>
-                            <p class="gradient-card-subtitle"><span id="kpi-transfer-pending">18</span> pending</p>
-                        </div>
-
-                        <div class="gradient-card gradient-card-warning">
-                            <div class="gradient-card-icon">
-                                <svg fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <p class="gradient-card-label">Low Stock Items</p>
-                            <p class="gradient-card-value" id="kpi-lowstock">45</p>
-                            <p class="gradient-card-subtitle">Require attention</p>
-                        </div>
-                    </div>
-
-                    <!-- Cycle Time Cards -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-                        <div class="card p-4" style="background: linear-gradient(135deg, #EFF6FF, #DBEAFE);">
-                            <p class="text-sm text-gray-600 font-medium mb-3">SC Cycle Time (Days)</p>
-                            <div class="grid grid-cols-3 gap-4 text-center">
-                                <div>
-                                    <p class="text-2xl font-bold text-blue-600" id="sc-avg">0.8</p>
-                                    <p class="text-xs text-gray-500">Avg</p>
-                                </div>
-                                <div>
-                                    <p class="text-2xl font-bold text-green-600" id="sc-p50">0.5</p>
-                                    <p class="text-xs text-gray-500">P50</p>
-                                </div>
-                                <div>
-                                    <p class="text-2xl font-bold text-orange-600" id="sc-p90">1.2</p>
-                                    <p class="text-xs text-gray-500">P90</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card p-4" style="background: linear-gradient(135deg, #F0FDF4, #DCFCE7);">
-                            <p class="text-sm text-gray-600 font-medium mb-3">Transfer Cycle Time (Days)</p>
-                            <div class="grid grid-cols-3 gap-4 text-center">
-                                <div>
-                                    <p class="text-2xl font-bold text-blue-600" id="transfer-avg">1.6</p>
-                                    <p class="text-xs text-gray-500">Avg</p>
-                                </div>
-                                <div>
-                                    <p class="text-2xl font-bold text-green-600" id="transfer-p50">1.2</p>
-                                    <p class="text-xs text-gray-500">P50</p>
-                                </div>
-                                <div>
-                                    <p class="text-2xl font-bold text-orange-600" id="transfer-p90">2.5</p>
-                                    <p class="text-xs text-gray-500">P90</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card p-4" style="background: linear-gradient(135deg, #FEF3C7, #FDE68A);">
-                            <p class="text-sm text-gray-600 font-medium mb-3">Supporting KPIs</p>
-                            <div class="grid grid-cols-2 gap-4 text-center">
-                                <div>
-                                    <p class="text-2xl font-bold text-green-600" id="internal-otif">95.3%</p>
-                                    <p class="text-xs text-gray-500">Internal OTIF</p>
-                                </div>
-                                <div>
-                                    <p class="text-2xl font-bold text-blue-600" id="damage-rate">0.12%</p>
-                                    <p class="text-xs text-gray-500">Damage Rate</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Charts -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                        <div class="card p-4 lg:p-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Monthly SLA Compliance</h3>
-                            <div class="chart-container">
-                                <canvas id="slaChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="card p-4 lg:p-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Request Volume</h3>
-                            <div class="chart-container">
-                                <canvas id="volumeChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Warehouses -->
-                    <div class="card p-4 lg:p-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4">Warehouse Status</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="warehouseGrid">
+                        <div class="flex gap-2">
+                            <button onclick="exportToExcel('inventory')" class="btn-export btn-excel"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Excel</button>
+                            <button onclick="printTable('inventory')" class="btn-export btn-print"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>Print</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Stock Confirmation Tab -->
-                <div id="tab-sc" class="tab-content">
-                    <div class="filter-section mb-6">
-                        <div class="flex flex-wrap gap-3 items-center">
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Project</label>
-                                <select id="filterSCProject" class="filter-select">
-                                    <option value="">All Projects</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Warehouse</label>
-                                <select id="filterSCWarehouse" class="filter-select">
-                                    <option value="">All Warehouses</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Status</label>
-                                <select id="filterSCStatus" class="filter-select">
-                                    <option value="">All</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Pending">Pending</option>
-                                </select>
-                            </div>
-                            <div class="flex-grow"></div>
-                            <button onclick="resetSCFilters()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium">Reset</button>
+                <!-- Stats Row -->
+                <div class="stats-row" id="inventoryStats"></div>
+
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6" id="inventoryKPIs"></div>
+
+                <!-- Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-4"><h3 class="font-semibold text-gray-800 mb-4">Top 15 Projects by Balance</h3><div class="chart-container"><canvas id="invByProjectChart"></canvas></div></div>
+                    <div class="card p-4"><h3 class="font-semibold text-gray-800 mb-4">Inventory by Location</h3><div class="chart-container"><canvas id="invByLocationChart"></canvas></div></div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center flex-wrap gap-2">
+                        <h3 class="font-semibold text-gray-800">Inventory Details</h3>
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm text-gray-500" id="inventoryCount">0 items</span>
+                            <div class="pagination no-print" id="inventoryPagination"></div>
                         </div>
                     </div>
+                    <div class="scroll-container" id="inventoryTableContainer">
+                        <table class="data-table" id="inventoryTable">
+                            <thead><tr><th>#</th><th>Project</th><th>Item Code</th><th>Description</th><th>Size</th><th>Unit</th><th>Location</th><th>Sub Location</th><th>Balance</th></tr></thead>
+                            <tbody id="inventoryTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-                    <div class="card p-4 lg:p-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4">Stock Confirmation Requests</h3>
-                        <div class="scroll-container">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>SC Number</th>
-                                        <th>Project</th>
-                                        <th>Item</th>
-                                        <th>Qty Requested</th>
-                                        <th>Qty Confirmed</th>
-                                        <th>Warehouse</th>
-                                        <th>Request Date</th>
-                                        <th>Days</th>
-                                        <th>Status</th>
-                                        <th>SLA</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="scTable"></tbody>
-                            </table>
+            <!-- Tab: Material Surplus -->
+            <div id="tab-surplus" class="tab-content p-4 lg:p-6">
+                <div class="filter-section no-print">
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div class="flex-1 min-w-[200px]">
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Search</label>
+                            <div class="search-box">
+                                <input type="text" id="surplusSearch" placeholder="Search materials..." onkeyup="filterSurplus()">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Store</label>
+                            <select id="filterSurplusStore" class="filter-select" onchange="filterSurplus()"><option value="">All Stores</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Project</label>
+                            <select id="filterSurplusProject" class="filter-select" onchange="filterSurplus()"><option value="">All Projects</option></select>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="exportToExcel('surplus')" class="btn-export btn-excel"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Excel</button>
                         </div>
                     </div>
                 </div>
+                <div class="stats-row" id="surplusStats"></div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="surplusKPIs"></div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-4"><h3 class="font-semibold text-gray-800 mb-4">Surplus by Store</h3><div class="chart-container"><canvas id="surplusByStoreChart"></canvas></div></div>
+                    <div class="card p-4"><h3 class="font-semibold text-gray-800 mb-4">Surplus by Project</h3><div class="chart-container"><canvas id="surplusByProjectChart"></canvas></div></div>
+                </div>
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center"><h3 class="font-semibold text-gray-800">Surplus Material Details</h3><span class="text-sm text-gray-500" id="surplusCount">0 items</span></div>
+                    <div class="scroll-container"><table class="data-table"><thead><tr><th>ID</th><th>Store</th><th>Project</th><th>Description</th><th>Size</th><th>Unit</th><th>Location</th><th>Balance</th></tr></thead><tbody id="surplusTableBody"></tbody></table></div>
+                </div>
+            </div>
 
-                <!-- Material Movement Tab -->
-                <div id="tab-transfers" class="tab-content">
-                    <div class="card p-4 lg:p-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4">Material Movements</h3>
-                        <div class="scroll-container">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Transaction ID</th>
-                                        <th>Item</th>
-                                        <th>From</th>
-                                        <th>To</th>
-                                        <th>Project</th>
-                                        <th>Qty</th>
-                                        <th>Request Date</th>
-                                        <th>Delivery Date</th>
-                                        <th>Days</th>
-                                        <th>SLA</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="transferTable"></tbody>
-                            </table>
+            <!-- Tab: Non-Moving Materials -->
+            <div id="tab-nonmoving" class="tab-content p-4 lg:p-6">
+                <div class="filter-section no-print">
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div class="flex-1 min-w-[200px]">
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Search</label>
+                            <div class="search-box">
+                                <input type="text" id="nonmovingSearch" placeholder="Search materials..." onkeyup="filterNonMoving()">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Warehouse</label>
+                            <select id="filterNonMovingWH" class="filter-select" onchange="filterNonMoving()"><option value="">All Warehouses</option></select>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="exportToExcel('nonmoving')" class="btn-export btn-excel"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Excel</button>
                         </div>
                     </div>
                 </div>
+                <div class="stats-row" id="nonmovingStats"></div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="nonmovingKPIs"></div>
+                <div class="card p-4 mb-6"><h3 class="font-semibold text-gray-800 mb-4">Non-Moving by Warehouse</h3><div class="chart-container"><canvas id="nonmovingChart"></canvas></div></div>
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center"><h3 class="font-semibold text-gray-800">Non-Moving Materials</h3><span class="text-sm text-gray-500" id="nonmovingCount">0 items</span></div>
+                    <div class="scroll-container"><table class="data-table"><thead><tr><th>ID</th><th>Warehouse</th><th>Description</th><th>Unit</th><th>Location</th><th>Qty</th><th>Project</th><th>Status</th></tr></thead><tbody id="nonmovingTableBody"></tbody></table></div>
+                </div>
+            </div>
 
-                <!-- Annex A Reports Tab -->
-                <div id="tab-annexa" class="tab-content">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                        <div class="card p-4 lg:p-6">
-                            <h3 class="section-title mb-4 flex items-center gap-2">
-                                <svg class="w-5 h-5" style="color: var(--nesma-primary);" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                                </svg>
-                                Material Days in Custody
-                            </h3>
-                            <div class="space-y-2">
-                                <div class="annex-stat annex-stat-blue">
-                                    <span class="text-gray-600 font-medium">Average Days</span>
-                                    <span class="font-bold text-lg" style="color: var(--nesma-primary);" id="annex-avg-days">45</span>
-                                </div>
-                                <div class="annex-stat annex-stat-yellow">
-                                    <span class="text-gray-600 font-medium">Items >90 Days</span>
-                                    <span class="font-bold text-lg" style="color: var(--nesma-warning);" id="annex-over90">234</span>
-                                </div>
-                                <div class="annex-stat annex-stat-red">
-                                    <span class="text-gray-600 font-medium">Items >180 Days</span>
-                                    <span class="font-bold text-lg" style="color: var(--nesma-danger);" id="annex-over180">67</span>
-                                </div>
-                                <div class="annex-stat annex-stat-orange">
-                                    <span class="text-gray-600 font-medium">Value >90 Days (SAR)</span>
-                                    <span class="font-bold text-lg" style="color: #EA580C;" id="annex-value90">1,250,000</span>
-                                </div>
-                            </div>
+            <!-- Tab: Material Transfers -->
+            <div id="tab-transfers" class="tab-content p-4 lg:p-6">
+                <div class="filter-section no-print">
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Month</label>
+                            <select id="filterTransferMonth" class="filter-select" onchange="filterTransfers()"><option value="">All Months</option></select>
                         </div>
-
-                        <div class="card p-4 lg:p-6">
-                            <h3 class="section-title mb-4 flex items-center gap-2">
-                                <svg class="w-5 h-5" style="color: var(--nesma-primary);" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                </svg>
-                                Theft/Damage Cases
-                            </h3>
-                            <div class="space-y-2">
-                                <div class="annex-stat annex-stat-default">
-                                    <span class="text-gray-600 font-medium">Total Cases</span>
-                                    <span class="font-bold text-lg text-gray-800" id="annex-cases">12</span>
-                                </div>
-                                <div class="annex-stat annex-stat-red">
-                                    <span class="text-gray-600 font-medium">Total Value (SAR)</span>
-                                    <span class="font-bold text-lg" style="color: var(--nesma-danger);" id="annex-case-value">45,000</span>
-                                </div>
-                                <div class="annex-stat annex-stat-green">
-                                    <span class="text-gray-600 font-medium">Resolved</span>
-                                    <span class="font-bold text-lg" style="color: var(--nesma-success);" id="annex-resolved">10</span>
-                                </div>
-                                <div class="annex-stat annex-stat-yellow">
-                                    <span class="text-gray-600 font-medium">Pending</span>
-                                    <span class="font-bold text-lg" style="color: var(--nesma-warning);" id="annex-pending">2</span>
-                                </div>
-                            </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Source</label>
+                            <select id="filterTransferSource" class="filter-select" onchange="filterTransfers()"><option value="">All Sources</option></select>
                         </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="card p-4 lg:p-6">
-                            <h3 class="section-title mb-4 flex items-center gap-2">
-                                <svg class="w-5 h-5" style="color: var(--nesma-primary);" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
-                                    <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/>
-                                </svg>
-                                Cycle Count Variance
-                            </h3>
-                            <div class="space-y-2">
-                                <div class="annex-stat annex-stat-default">
-                                    <span class="text-gray-600 font-medium">Last Quarter</span>
-                                    <span class="font-bold text-lg" id="annex-quarter">Q4-2025</span>
-                                </div>
-                                <div class="annex-stat annex-stat-blue">
-                                    <span class="text-gray-600 font-medium">Items Counted</span>
-                                    <span class="font-bold text-lg" style="color: var(--nesma-primary);" id="annex-counted">8,500</span>
-                                </div>
-                                <div class="annex-stat annex-stat-orange">
-                                    <span class="text-gray-600 font-medium">Variance Rate</span>
-                                    <span class="font-bold text-lg" style="color: #EA580C;" id="annex-variance">2.3%</span>
-                                </div>
-                            </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Destination</label>
+                            <select id="filterTransferDest" class="filter-select" onchange="filterTransfers()"><option value="">All Destinations</option></select>
                         </div>
-
-                        <div class="card p-4 lg:p-6">
-                            <h3 class="section-title mb-4 flex items-center gap-2">
-                                <svg class="w-5 h-5" style="color: var(--nesma-primary);" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
-                                </svg>
-                                Scrap Summary
-                            </h3>
-                            <div class="space-y-2">
-                                <div class="annex-stat annex-stat-default">
-                                    <span class="text-gray-600 font-medium">Total Scrap Value (SAR)</span>
-                                    <span class="font-bold text-lg" id="annex-scrap-total">125,000</span>
-                                </div>
-                                <div class="annex-stat annex-stat-green">
-                                    <span class="text-gray-600 font-medium">Recovered Value (SAR)</span>
-                                    <span class="font-bold text-lg" style="color: var(--nesma-success);" id="annex-recovered">98,000</span>
-                                </div>
-                                <div class="annex-stat annex-stat-blue">
-                                    <span class="text-gray-600 font-medium">Recovery Rate</span>
-                                    <span class="font-bold text-lg" style="color: var(--nesma-primary);" id="annex-recovery-rate">78.4%</span>
-                                </div>
-                            </div>
+                        <div class="flex gap-2 ml-auto">
+                            <button onclick="exportToExcel('transfers')" class="btn-export btn-excel"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Excel</button>
                         </div>
                     </div>
                 </div>
-
-                <!-- Non-Moving Materials Tab -->
-                <div id="tab-nonmoving" class="tab-content">
-                    <!-- Critical Alert Banner -->
-                    <div class="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl p-4 mb-6 shadow-lg">
-                        <div class="flex items-center gap-3">
-                            <div class="bg-white/20 p-3 rounded-full">
-                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold">CRITICAL: Non-Moving Materials Alert</h3>
-                                <p class="text-red-100" id="nm-alert-message">These materials haven't moved in 4+ years - immediate review required</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- KPI Cards -->
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
-                        <div class="card kpi-card p-4 lg:p-6 text-white rounded-xl shadow-lg" style="background: linear-gradient(135deg, #DC2626 0%, #0E2841 100%);">
-                            <div class="flex justify-between items-start mb-3">
-                                <div>
-                                    <p class="text-red-100 text-xs lg:text-sm mb-1">Total Non-Moving Items</p>
-                                    <p class="text-2xl lg:text-3xl font-bold" id="nm-total-items">496</p>
-                                </div>
-                                <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
-                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/>
-                                        <path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="text-xs text-red-100">Critical - Requires Review</div>
-                        </div>
-
-                        <div class="card kpi-card p-4 lg:p-6 text-white rounded-xl shadow-lg" style="background: linear-gradient(135deg, #D97706 0%, #203366 100%);">
-                            <div class="flex justify-between items-start mb-3">
-                                <div>
-                                    <p class="text-orange-100 text-xs lg:text-sm mb-1">Total Quantity</p>
-                                    <p class="text-2xl lg:text-3xl font-bold" id="nm-total-qty">125,702</p>
-                                </div>
-                                <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
-                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="text-xs text-orange-100">Units in storage</div>
-                        </div>
-
-                        <div class="card kpi-card p-4 lg:p-6 text-white rounded-xl shadow-lg" style="background: linear-gradient(135deg, #2E3192 0%, #0E2841 100%);">
-                            <div class="flex justify-between items-start mb-3">
-                                <div>
-                                    <p class="text-blue-100 text-xs lg:text-sm mb-1">Warehouses Affected</p>
-                                    <p class="text-2xl lg:text-3xl font-bold" id="nm-warehouses">2</p>
-                                </div>
-                                <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
-                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="text-xs text-blue-100">Asfan & Jafurah</div>
-                        </div>
-
-                        <div class="card kpi-card p-4 lg:p-6 text-white rounded-xl shadow-lg" style="background: linear-gradient(135deg, #203366 0%, #0E2841 100%);">
-                            <div class="flex justify-between items-start mb-3">
-                                <div>
-                                    <p class="text-cyan-100 text-xs lg:text-sm mb-1">Age of Materials</p>
-                                    <p class="text-2xl lg:text-3xl font-bold" id="nm-age">4+ Years</p>
-                                </div>
-                                <div class="bg-white/20 p-2 lg:p-3 rounded-xl">
-                                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="text-xs text-cyan-100">SLA Target: ≤90 days</div>
-                        </div>
-                    </div>
-
-                    <!-- Filter Section -->
-                    <div class="filter-section mb-6">
-                        <div class="flex flex-wrap gap-3 items-center">
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Warehouse</label>
-                                <select id="filterNMWarehouse" class="filter-select" onchange="filterNonMovingTable()">
-                                    <option value="">All Warehouses</option>
-                                    <option value="Asfan">Asfan</option>
-                                    <option value="Jafurah">Jafurah</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Project</label>
-                                <select id="filterNMProject" class="filter-select" onchange="filterNonMovingTable()">
-                                    <option value="">All Projects</option>
-                                    <option value="Project Materials">Project Materials</option>
-                                    <option value="old stock">Old Stock</option>
-                                    <option value="Project Tools">Project Tools</option>
-                                    <option value="Optern materials">Optern Materials</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Category</label>
-                                <select id="filterNMCategory" class="filter-select" onchange="filterNonMovingTable()">
-                                    <option value="">All Categories</option>
-                                    <option value="Other Materials">Other Materials</option>
-                                    <option value="Cables & Wiring">Cables & Wiring</option>
-                                    <option value="Insulation Materials">Insulation Materials</option>
-                                    <option value="Hardware & Mounting">Hardware & Mounting</option>
-                                    <option value="Joints & Connectors">Joints & Connectors</option>
-                                    <option value="Tools & Equipment">Tools & Equipment</option>
-                                    <option value="Electrical Components">Electrical Components</option>
-                                </select>
-                            </div>
-                            <div class="flex-grow"></div>
-                            <button onclick="resetNMFilters()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium">Reset</button>
-                            <button onclick="exportNonMovingData()" class="px-4 py-2 text-white rounded-lg text-sm font-medium flex items-center gap-2" style="background: linear-gradient(135deg, #2E3192 0%, #203366 100%);">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                </svg>
-                                Export
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Charts -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                        <div class="card p-4 lg:p-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Distribution by Warehouse</h3>
-                            <div class="chart-container" style="height: 280px;">
-                                <canvas id="nmWarehouseChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="card p-4 lg:p-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Distribution by Project</h3>
-                            <div class="chart-container" style="height: 280px;">
-                                <canvas id="nmProjectChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                        <div class="card p-4 lg:p-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Category Breakdown (Items)</h3>
-                            <div class="chart-container" style="height: 280px;">
-                                <canvas id="nmCategoryChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="card p-4 lg:p-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Quantity by Category</h3>
-                            <div class="chart-container" style="height: 280px;">
-                                <canvas id="nmCategoryQtyChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Recommendations Section -->
-                    <div class="card p-4 lg:p-6 mb-6" style="background: linear-gradient(135deg, #FEF3C7, #FDE68A); border-left: 4px solid #F59E0B;">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                            </svg>
-                            Recommended Actions
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="nm-recommendations">
-                            <div class="bg-white/60 p-3 rounded-lg">
-                                <p class="text-sm text-gray-700">Immediate inventory review required</p>
-                            </div>
-                            <div class="bg-white/60 p-3 rounded-lg">
-                                <p class="text-sm text-gray-700">Assess materials for project reuse potential</p>
-                            </div>
-                            <div class="bg-white/60 p-3 rounded-lg">
-                                <p class="text-sm text-gray-700">Identify items for disposal/scrap</p>
-                            </div>
-                            <div class="bg-white/60 p-3 rounded-lg">
-                                <p class="text-sm text-gray-700">Update procurement planning</p>
-                            </div>
-                            <div class="bg-white/60 p-3 rounded-lg">
-                                <p class="text-sm text-gray-700">Consider transfer to active projects</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Data Table -->
-                    <div class="card p-4 lg:p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-gray-800">Non-Moving Materials Detail</h3>
-                            <span class="text-sm text-gray-500">Showing <span id="nm-showing-count">50</span> of <span id="nm-total-count">496</span> items</span>
-                        </div>
-                        <div class="scroll-container" style="max-height: 500px;">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>S/N</th>
-                                        <th>Warehouse</th>
-                                        <th>Material Description</th>
-                                        <th>Unit</th>
-                                        <th>Location</th>
-                                        <th>Qty</th>
-                                        <th>Project</th>
-                                        <th>Category</th>
-                                        <th>Age</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="nmTable"></tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div class="stats-row" id="transferStats"></div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="transferKPIs"></div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-4"><h3 class="font-semibold text-gray-800 mb-4">Transfers by Month</h3><div class="chart-container"><canvas id="transfersByMonthChart"></canvas></div></div>
+                    <div class="card p-4"><h3 class="font-semibold text-gray-800 mb-4">Transfers by Warehouse</h3><div class="chart-container"><canvas id="transfersByWHChart"></canvas></div></div>
+                </div>
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center"><h3 class="font-semibold text-gray-800">Transfer Details</h3><span class="text-sm text-gray-500" id="transferCount">0 transfers</span></div>
+                    <div class="scroll-container"><table class="data-table"><thead><tr><th>Date</th><th>Material</th><th>Qty</th><th>From</th><th>To</th><th>Requested By</th><th>Issued By</th></tr></thead><tbody id="transferTableBody"></tbody></table></div>
                 </div>
             </div>
         </div>
-
-        <!-- Footer -->
-        <footer class="text-center py-6 text-gray-500 text-sm">
-            <p class="mb-2">Warehouse & Material Handling - NESMA Infrastructure & Technology</p>
-            <p class="text-xs">Version 1.0 | February 2026 | Based on NIT-SCM-SLA-KSA-11/10/2025-000-v1.0A</p>
-        </footer>
     </main>
 
     <script>
         let warehouseData = null;
         let charts = {};
+        let currentPage = { inventory: 1, surplus: 1, nonmoving: 1, transfers: 1 };
+        let pageSize = 50;
+        let filteredData = { inventory: [], surplus: [], nonmoving: [], transfers: [] };
 
         async function loadData() {
             try {
-                const response = await fetch('data/warehouse_data.json?' + Date.now());
+                const response = await fetch('data/warehouse_data.json?t=' + Date.now());
                 warehouseData = await response.json();
-                updateDashboard();
-                initCharts();
-                populateTables();
-                populateWarehouses();
-                populateNonMovingMaterials();
-                initNonMovingCharts();
+                document.getElementById('lastUpdated').textContent = 'Updated: ' + new Date(warehouseData.last_updated).toLocaleString();
+
+                // Update badges
+                document.getElementById('inventoryBadge').textContent = warehouseData.summary.inventory.total_records.toLocaleString();
+                document.getElementById('surplusBadge').textContent = warehouseData.summary.surplus.total_items.toLocaleString();
+                document.getElementById('nonmovingBadge').textContent = warehouseData.summary.non_moving.total_items.toLocaleString();
+                document.getElementById('transfersBadge').textContent = warehouseData.summary.transfers.total_transfers.toLocaleString();
+
+                populateFilters();
+                renderSLACards();
+                initInventoryTab();
+                initSurplusTab();
+                initNonMovingTab();
+                initTransfersTab();
             } catch (error) {
                 console.error('Error loading data:', error);
             }
         }
 
-        function updateDashboard() {
-            if (!warehouseData) return;
+        function populateFilters() {
+            const f = warehouseData.filters;
+            populateSelect('filterInvProject', f.inventory_projects);
+            populateSelect('filterInvLocation', f.inventory_locations);
+            populateSelect('filterSurplusStore', f.surplus_stores);
+            populateSelect('filterSurplusProject', f.surplus_projects);
+            populateSelect('filterNonMovingWH', f.non_moving_warehouses);
+            populateSelect('filterTransferMonth', f.transfer_months);
+            populateSelect('filterTransferSource', f.transfer_sources);
+            populateSelect('filterTransferDest', f.transfer_dests);
+        }
 
-            const lastUpdated = new Date(warehouseData.last_updated);
-            document.getElementById('lastUpdateDate').textContent = lastUpdated.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        function populateSelect(id, options) {
+            const select = document.getElementById(id);
+            options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                select.appendChild(option);
+            });
+        }
 
-            // SLA Cards
+        function renderSLACards() {
             const sla = warehouseData.sla_metrics;
-            document.getElementById('storage-rate').textContent = sla.storage_compliance.pass_rate + '%';
-            document.getElementById('sc-rate').textContent = sla.stock_confirmation.rate + '%';
-            document.getElementById('transfer-rate').textContent = sla.material_movement.rate + '%';
-            document.getElementById('incident-rate').textContent = sla.incident_reporting.rate + '%';
-            document.getElementById('scrap-rate').textContent = sla.scrap_removal.rate + '%';
+            const container = document.getElementById('slaCards');
+            const getSLAClass = (v, t, inv = false) => inv ? (v <= t * 0.5 ? 'sla-green' : v <= t ? 'sla-yellow' : 'sla-red') : (v >= t ? 'sla-green' : v >= t * 0.9 ? 'sla-yellow' : 'sla-red');
 
-            updateSLACardStatus('sla-storage', sla.storage_compliance.pass_rate, sla.storage_compliance.target);
-            updateSLACardStatus('sla-sc', sla.stock_confirmation.rate, sla.stock_confirmation.target);
-            updateSLACardStatus('sla-transfer', sla.material_movement.rate, sla.material_movement.target);
-            updateSLACardStatus('sla-incident', sla.incident_reporting.rate, sla.incident_reporting.target);
-            updateSLACardStatus('sla-scrap', sla.scrap_removal.rate, sla.scrap_removal.target);
+            const cards = [
+                { key: 'transfer', title: 'Material Transfer SLA', target: sla.target_transfer_rate, value: sla.transfer_on_time_rate, sub: `${sla.transfer_on_time_count} on-time / ${sla.transfer_on_time_count + sla.transfer_delayed_count} total` },
+                { key: 'storage', title: 'Storage Compliance', target: sla.target_storage_compliance, value: sla.storage_compliance_rate, sub: 'Audit pass rate' },
+                { key: 'sc', title: 'Stock Confirmation', target: sla.target_sc_rate, value: sla.stock_confirmation_rate, sub: '≤1 day response' },
+                { key: 'nonmoving', title: 'Non-Moving Rate', target: 50, value: sla.non_moving_rate, sub: '>4 years idle', inv: true }
+            ];
 
-            // KPIs
-            document.getElementById('kpi-items').textContent = warehouseData.summary.total_items.toLocaleString();
-            document.getElementById('kpi-warehouses').textContent = warehouseData.summary.total_warehouses;
-            document.getElementById('kpi-sc').textContent = warehouseData.summary.total_sc_requests.toLocaleString();
-            document.getElementById('kpi-sc-pending').textContent = warehouseData.summary.pending_sc;
-            document.getElementById('kpi-transfers').textContent = warehouseData.summary.total_transfers;
-            document.getElementById('kpi-transfer-pending').textContent = warehouseData.summary.pending_transfers;
-            document.getElementById('kpi-lowstock').textContent = warehouseData.summary.low_stock_items;
-
-            // Cycle Times
-            const ct = warehouseData.cycle_time;
-            document.getElementById('sc-avg').textContent = ct.sc_average;
-            document.getElementById('sc-p50').textContent = ct.sc_p50;
-            document.getElementById('sc-p90').textContent = ct.sc_p90;
-            document.getElementById('transfer-avg').textContent = ct.transfer_average;
-            document.getElementById('transfer-p50').textContent = ct.transfer_p50;
-            document.getElementById('transfer-p90').textContent = ct.transfer_p90;
-
-            document.getElementById('internal-otif').textContent = warehouseData.internal_otif_rate + '%';
-            document.getElementById('damage-rate').textContent = warehouseData.damage_on_handling_rate + '%';
-
-            // Annex A
-            const annex = warehouseData.annex_a_reports;
-            document.getElementById('annex-avg-days').textContent = annex.material_days_custody.average_days;
-            document.getElementById('annex-over90').textContent = annex.material_days_custody.items_over_90_days;
-            document.getElementById('annex-over180').textContent = annex.material_days_custody.items_over_180_days;
-            document.getElementById('annex-value90').textContent = annex.material_days_custody.total_value_over_90_days.toLocaleString();
-
-            document.getElementById('annex-cases').textContent = annex.theft_damage_cases.total_cases;
-            document.getElementById('annex-case-value').textContent = annex.theft_damage_cases.total_value.toLocaleString();
-            document.getElementById('annex-resolved').textContent = annex.theft_damage_cases.resolved;
-            document.getElementById('annex-pending').textContent = annex.theft_damage_cases.pending;
-
-            document.getElementById('annex-quarter').textContent = annex.cycle_count_variance.last_quarter;
-            document.getElementById('annex-counted').textContent = annex.cycle_count_variance.items_counted.toLocaleString();
-            document.getElementById('annex-variance').textContent = annex.cycle_count_variance.variance_rate + '%';
-
-            document.getElementById('annex-scrap-total').textContent = annex.scrap_summary.total_scrap_value.toLocaleString();
-            document.getElementById('annex-recovered').textContent = annex.scrap_summary.recovered_value.toLocaleString();
-            document.getElementById('annex-recovery-rate').textContent = annex.scrap_summary.recovery_rate + '%';
-        }
-
-        function updateSLACardStatus(elementId, rate, target) {
-            const element = document.getElementById(elementId);
-            element.classList.remove('sla-green', 'sla-yellow', 'sla-red');
-            if (rate >= target) {
-                element.classList.add('sla-green');
-            } else if (rate >= target - 5) {
-                element.classList.add('sla-yellow');
-            } else {
-                element.classList.add('sla-red');
-            }
-        }
-
-        function initCharts() {
-            if (!warehouseData) return;
-
-            const slaCtx = document.getElementById('slaChart').getContext('2d');
-            charts.sla = new Chart(slaCtx, {
-                type: 'line',
-                data: {
-                    labels: warehouseData.monthly_summary.labels,
-                    datasets: [{
-                        label: 'SC SLA %',
-                        data: warehouseData.monthly_summary.sc_sla_compliance,
-                        borderColor: '#2E3192',
-                        backgroundColor: 'rgba(46, 49, 146, 0.1)',
-                        fill: true,
-                        tension: 0.4
-                    }, {
-                        label: 'Transfer SLA %',
-                        data: warehouseData.monthly_summary.transfer_sla_compliance,
-                        borderColor: '#80D1E9',
-                        backgroundColor: 'rgba(128, 209, 233, 0.1)',
-                        fill: true,
-                        tension: 0.4
-                    }, {
-                        label: 'Target (95%)',
-                        data: Array(12).fill(95),
-                        borderColor: '#DC2626',
-                        borderDash: [5, 5],
-                        fill: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { y: { min: 85, max: 100 } }
-                }
-            });
-
-            const volumeCtx = document.getElementById('volumeChart').getContext('2d');
-            charts.volume = new Chart(volumeCtx, {
-                type: 'bar',
-                data: {
-                    labels: warehouseData.monthly_summary.labels,
-                    datasets: [{
-                        label: 'SC Requests',
-                        data: warehouseData.monthly_summary.sc_requests,
-                        backgroundColor: 'rgba(46, 49, 146, 0.8)',
-                        borderRadius: 4
-                    }, {
-                        label: 'Transfers',
-                        data: warehouseData.monthly_summary.transfers,
-                        backgroundColor: 'rgba(128, 209, 233, 0.8)',
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top' } },
-                    scales: { y: { beginAtZero: true } }
-                }
+            container.textContent = '';
+            cards.forEach(c => {
+                const cls = getSLAClass(c.value, c.target, c.inv);
+                const div = document.createElement('div');
+                div.className = `sla-card ${cls} cursor-pointer`;
+                div.innerHTML = `
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium flex items-center">
+                                ${c.title}
+                                <span class="info-icon ml-2" onclick="event.stopPropagation(); showSLAInfo('${c.key}')" title="View SLA Details">?</span>
+                            </p>
+                            <p class="text-xs text-gray-400">${c.inv ? 'Lower is better' : 'Target: ≥' + c.target + '%'}</p>
+                        </div>
+                        <div class="sla-indicator">${(c.inv ? c.value <= c.target : c.value >= c.target) ? '✓' : '!'}</div>
+                    </div>
+                    <p class="sla-value">${c.value}%</p>
+                    <p class="text-xs text-gray-500 mt-1">${c.sub}</p>
+                    <p class="text-xs text-blue-500 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">Click ? for calculation details</p>
+                `;
+                container.appendChild(div);
             });
         }
 
-        function populateTables() {
-            if (!warehouseData) return;
+        function createKPI(cls, icon, label, value, sub, onclick = null) {
+            const div = document.createElement('div');
+            div.className = `kpi-card ${cls}${onclick ? ' clickable' : ''}`;
+            if (onclick) div.onclick = onclick;
+            div.innerHTML = `<div class="kpi-icon">${icon}</div><p class="kpi-label">${label}</p><p class="kpi-value">${value}</p><p class="kpi-subtitle">${sub}</p>${onclick ? '<span class="click-hint">Click for details</span>' : ''}`;
+            return div;
+        }
 
-            // SC Table
-            const scTbody = document.getElementById('scTable');
-            scTbody.textContent = '';
-            warehouseData.stock_confirmations.forEach(function(sc) {
-                const tr = document.createElement('tr');
+        // ===== INVENTORY TAB =====
+        function initInventoryTab() {
+            filteredData.inventory = [...warehouseData.records.inventory];
+            renderInventoryKPIs();
+            renderInventoryCharts();
+            renderInventoryTable();
+        }
 
-                const fields = [
-                    sc.sc_number,
-                    sc.project,
-                    sc.item_description,
-                    sc.requested_qty,
-                    sc.confirmed_qty,
-                    sc.warehouse,
-                    sc.request_date,
-                    sc.cycle_days
-                ];
+        function filterInventory() {
+            const search = document.getElementById('inventorySearch').value.toLowerCase();
+            const project = document.getElementById('filterInvProject').value;
+            const location = document.getElementById('filterInvLocation').value;
 
-                fields.forEach(function(val) {
-                    const td = document.createElement('td');
-                    td.textContent = val;
-                    tr.appendChild(td);
-                });
-
-                const tdStatus = document.createElement('td');
-                const statusSpan = document.createElement('span');
-                statusSpan.className = 'px-2 py-1 rounded-full text-xs font-medium ';
-                statusSpan.className += sc.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
-                statusSpan.textContent = sc.status;
-                tdStatus.appendChild(statusSpan);
-                tr.appendChild(tdStatus);
-
-                const tdSLA = document.createElement('td');
-                const slaSpan = document.createElement('span');
-                slaSpan.className = 'px-2 py-1 rounded-full text-xs font-medium ';
-                slaSpan.className += sc.sla_met ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
-                slaSpan.textContent = sc.sla_status;
-                tdSLA.appendChild(slaSpan);
-                tr.appendChild(tdSLA);
-
-                scTbody.appendChild(tr);
+            filteredData.inventory = warehouseData.records.inventory.filter(r => {
+                const matchSearch = !search || r.description.toLowerCase().includes(search) || r.item_code.toLowerCase().includes(search) || r.project.toLowerCase().includes(search);
+                const matchProject = !project || r.project === project;
+                const matchLocation = !location || r.location === location;
+                return matchSearch && matchProject && matchLocation;
             });
 
-            // Transfer Table
-            const transferTbody = document.getElementById('transferTable');
-            transferTbody.textContent = '';
-            warehouseData.movements.forEach(function(mov) {
-                const tr = document.createElement('tr');
+            currentPage.inventory = 1;
+            renderInventoryKPIs(true); // Update KPIs with filtered data
+            renderInventoryStats();
+            renderInventoryTable();
+        }
 
-                const fields = [
-                    mov.transaction_id,
-                    mov.item,
-                    mov.from_location,
-                    mov.to_location,
-                    mov.project,
-                    mov.quantity,
-                    mov.request_date,
-                    mov.delivery_date,
-                    mov.cycle_days
-                ];
+        function renderInventoryKPIs(useFiltered = false) {
+            const data = useFiltered ? filteredData.inventory : warehouseData.records.inventory;
+            const totalItems = data.length;
+            const totalBalance = data.reduce((sum, r) => sum + r.balance, 0);
+            const uniqueProjects = new Set(data.map(r => r.project)).size;
+            const uniqueLocations = new Set(data.map(r => r.location)).size;
 
-                fields.forEach(function(val) {
-                    const td = document.createElement('td');
-                    td.textContent = val;
-                    tr.appendChild(td);
-                });
+            const c = document.getElementById('inventoryKPIs');
+            c.textContent = '';
+            c.appendChild(createKPI('kpi-primary', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>', 'Total Items', totalItems.toLocaleString(), 'Inventory records', () => showInventoryKPIDetails('total')));
+            c.appendChild(createKPI('kpi-cyan', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>', 'Total Balance', totalBalance.toLocaleString(), 'Units in storage', () => showInventoryKPIDetails('balance')));
+            c.appendChild(createKPI('kpi-success', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>', 'Projects', uniqueProjects.toString(), 'Active projects', () => showInventoryKPIDetails('projects')));
+            c.appendChild(createKPI('kpi-purple', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>', 'Locations', uniqueLocations.toString(), 'Storage locations', () => showInventoryKPIDetails('locations')));
+            c.appendChild(createKPI('kpi-navy', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5"/></svg>', 'Accuracy', warehouseData.sla_metrics.inventory_accuracy + '%', 'Inventory accuracy'));
+        }
 
-                const tdSLA = document.createElement('td');
-                const slaSpan = document.createElement('span');
-                slaSpan.className = 'px-2 py-1 rounded-full text-xs font-medium ';
-                slaSpan.className += mov.sla_met ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
-                slaSpan.textContent = mov.sla_status;
-                tdSLA.appendChild(slaSpan);
-                tr.appendChild(tdSLA);
+        function renderInventoryStats() {
+            const total = filteredData.inventory.length;
+            const balance = filteredData.inventory.reduce((sum, r) => sum + r.balance, 0);
+            const projects = new Set(filteredData.inventory.map(r => r.project)).size;
+            document.getElementById('inventoryStats').innerHTML = `<div class="stat-item"><span class="label">Showing:</span><span class="value">${total.toLocaleString()} items</span></div><div class="stat-item"><span class="label">Total Balance:</span><span class="value">${balance.toLocaleString()} units</span></div><div class="stat-item"><span class="label">Projects:</span><span class="value">${projects}</span></div>`;
+        }
 
-                transferTbody.appendChild(tr);
+        function renderInventoryCharts() {
+            const projData = warehouseData.charts.inventory_by_project;
+            const locData = warehouseData.charts.inventory_by_location;
+
+            if (charts.invByProject) charts.invByProject.destroy();
+            charts.invByProject = new Chart(document.getElementById('invByProjectChart').getContext('2d'), {
+                type: 'bar', data: { labels: projData.map(d => d.project.substring(0, 20)), datasets: [{ label: 'Balance', data: projData.map(d => d.balance), backgroundColor: 'rgba(46,49,146,0.8)', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
+            });
+
+            if (charts.invByLocation) charts.invByLocation.destroy();
+            const colors = ['#2E3192', '#80D1E9', '#0E2841', '#059669', '#D97706', '#DC2626', '#8B5CF6', '#06B6D4', '#F59E0B', '#10B981', '#6366F1', '#EC4899', '#14B8A6', '#F97316', '#84CC16'];
+            charts.invByLocation = new Chart(document.getElementById('invByLocationChart').getContext('2d'), {
+                type: 'doughnut', data: { labels: locData.map(d => d.location), datasets: [{ data: locData.map(d => d.balance), backgroundColor: colors }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 10 } } } } }
             });
         }
 
-        function populateWarehouses() {
-            if (!warehouseData) return;
+        function renderInventoryTable() {
+            const data = filteredData.inventory;
+            const start = (currentPage.inventory - 1) * pageSize;
+            const end = start + pageSize;
+            const pageData = data.slice(start, end);
 
-            const grid = document.getElementById('warehouseGrid');
-            grid.textContent = '';
+            document.getElementById('inventoryCount').textContent = `${data.length.toLocaleString()} items`;
+            renderInventoryStats();
 
-            warehouseData.warehouses.forEach(function(wh) {
-                const card = document.createElement('div');
-                card.className = 'warehouse-card';
-
-                const header = document.createElement('div');
-                header.className = 'flex justify-between items-start mb-3';
-
-                const title = document.createElement('h4');
-                title.className = 'font-semibold text-gray-800';
-                title.textContent = wh.name;
-                header.appendChild(title);
-
-                const badge = document.createElement('span');
-                badge.className = 'px-2 py-1 text-xs rounded-full ' + (wh.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800');
-                badge.textContent = wh.status;
-                header.appendChild(badge);
-
-                card.appendChild(header);
-
-                const location = document.createElement('p');
-                location.className = 'text-xs text-gray-500 mb-3';
-                location.textContent = wh.location;
-                card.appendChild(location);
-
-                const stats = document.createElement('div');
-                stats.className = 'flex justify-between text-sm mb-2';
-
-                const itemsDiv = document.createElement('div');
-                const itemsLabel = document.createElement('span');
-                itemsLabel.className = 'text-gray-500';
-                itemsLabel.textContent = 'Items: ';
-                itemsDiv.appendChild(itemsLabel);
-                const itemsValue = document.createElement('span');
-                itemsValue.className = 'font-medium';
-                itemsValue.textContent = wh.item_count.toLocaleString();
-                itemsDiv.appendChild(itemsValue);
-                stats.appendChild(itemsDiv);
-
-                const capDiv = document.createElement('div');
-                const capLabel = document.createElement('span');
-                capLabel.className = 'text-gray-500';
-                capLabel.textContent = 'Capacity: ';
-                capDiv.appendChild(capLabel);
-                const capValue = document.createElement('span');
-                capValue.className = 'font-medium';
-                capValue.textContent = wh.capacity_used + '%';
-                capDiv.appendChild(capValue);
-                stats.appendChild(capDiv);
-
-                card.appendChild(stats);
-
-                const barContainer = document.createElement('div');
-                barContainer.className = 'capacity-bar';
-                const barFill = document.createElement('div');
-                barFill.className = 'capacity-fill';
-                barFill.style.width = wh.capacity_used + '%';
-                if (wh.capacity_used >= 90) {
-                    barFill.style.background = '#DC2626';
-                } else if (wh.capacity_used >= 75) {
-                    barFill.style.background = '#D97706';
-                } else {
-                    barFill.style.background = '#2E3192';
-                }
-                barContainer.appendChild(barFill);
-                card.appendChild(barContainer);
-
-                grid.appendChild(card);
-            });
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
-            document.querySelectorAll('.tab-content').forEach(function(content) { content.classList.remove('active'); });
-            event.target.classList.add('active');
-            document.getElementById('tab-' + tabId).classList.add('active');
-        }
-
-        function resetSCFilters() {
-            document.getElementById('filterSCProject').value = '';
-            document.getElementById('filterSCWarehouse').value = '';
-            document.getElementById('filterSCStatus').value = '';
-        }
-
-        function populateNonMovingMaterials() {
-            if (!warehouseData || !warehouseData.non_moving_materials) return;
-
-            const nm = warehouseData.non_moving_materials;
-
-            // Update KPIs
-            document.getElementById('nm-total-items').textContent = nm.summary.total_items.toLocaleString();
-            document.getElementById('nm-total-qty').textContent = nm.summary.total_quantity.toLocaleString();
-            document.getElementById('nm-warehouses').textContent = nm.summary.warehouses_affected;
-            document.getElementById('nm-age').textContent = nm.summary.oldest_age;
-            document.getElementById('nm-alert-message').textContent = nm.summary.alert_message;
-
-            // Update counts
-            document.getElementById('nm-total-count').textContent = nm.summary.total_items;
-
-            // Populate table
-            filterNonMovingTable();
-        }
-
-        function filterNonMovingTable() {
-            if (!warehouseData || !warehouseData.non_moving_materials) return;
-
-            const warehouseFilter = document.getElementById('filterNMWarehouse').value;
-            const projectFilter = document.getElementById('filterNMProject').value;
-            const categoryFilter = document.getElementById('filterNMCategory').value;
-
-            let items = warehouseData.non_moving_materials.items;
-
-            if (warehouseFilter) {
-                items = items.filter(function(item) { return item.warehouse === warehouseFilter; });
-            }
-            if (projectFilter) {
-                items = items.filter(function(item) { return item.project === projectFilter; });
-            }
-            if (categoryFilter) {
-                items = items.filter(function(item) { return item.category === categoryFilter; });
-            }
-
-            document.getElementById('nm-showing-count').textContent = items.length;
-
-            const tbody = document.getElementById('nmTable');
+            const tbody = document.getElementById('inventoryTableBody');
             tbody.textContent = '';
-
-            items.forEach(function(item) {
+            pageData.forEach((r, i) => {
                 const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${start + i + 1}</td><td>${escapeHtml(r.project)}</td><td><span class="badge badge-info">${escapeHtml(r.item_code)}</span></td><td class="max-w-xs" title="${escapeHtml(r.description)}">${escapeHtml(r.description.substring(0, 40))}${r.description.length > 40 ? '...' : ''}</td><td>${escapeHtml(r.size)}</td><td>${escapeHtml(r.unit)}</td><td>${escapeHtml(r.location)}</td><td>${escapeHtml(r.sub_location)}</td><td class="font-semibold text-blue-600">${r.balance.toLocaleString()}</td>`;
+                tbody.appendChild(tr);
+            });
 
-                const fields = [
-                    item.sn,
-                    item.warehouse,
-                    item.description,
-                    item.unit,
-                    item.location,
-                    item.qty.toLocaleString(),
-                    item.project,
-                    item.category,
-                    item.age
-                ];
+            renderPagination('inventory', data.length);
+        }
 
-                fields.forEach(function(val, idx) {
-                    const td = document.createElement('td');
-                    if (idx === 1) {
-                        const badge = document.createElement('span');
-                        badge.className = 'px-2 py-1 rounded-full text-xs font-medium ';
-                        badge.className += val === 'Asfan' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800';
-                        badge.textContent = val;
-                        td.appendChild(badge);
-                    } else if (idx === 8) {
-                        const badge = document.createElement('span');
-                        badge.className = 'px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800';
-                        badge.textContent = val;
-                        td.appendChild(badge);
-                    } else {
-                        td.textContent = val;
-                    }
-                    tr.appendChild(td);
-                });
+        function renderPagination(type, total) {
+            const container = document.getElementById(type + 'Pagination');
+            if (!container) return;
+            const totalPages = Math.ceil(total / pageSize);
+            const current = currentPage[type];
 
-                const tdAction = document.createElement('td');
-                const actionSpan = document.createElement('span');
-                actionSpan.className = 'px-2 py-1 rounded-full text-xs font-medium ';
-                if (item.action.includes('disposal')) {
-                    actionSpan.className += 'bg-orange-100 text-orange-800';
-                } else {
-                    actionSpan.className += 'bg-green-100 text-green-800';
-                }
-                actionSpan.textContent = item.action;
-                tdAction.appendChild(actionSpan);
-                tr.appendChild(tdAction);
+            let html = `<button onclick="changePage('${type}', 1)" ${current === 1 ? 'disabled' : ''}>«</button>`;
+            html += `<button onclick="changePage('${type}', ${current - 1})" ${current === 1 ? 'disabled' : ''}>‹</button>`;
+            html += `<span>Page ${current} of ${totalPages}</span>`;
+            html += `<button onclick="changePage('${type}', ${current + 1})" ${current === totalPages ? 'disabled' : ''}>›</button>`;
+            html += `<button onclick="changePage('${type}', ${totalPages})" ${current === totalPages ? 'disabled' : ''}>»</button>`;
+            container.innerHTML = html;
+        }
 
+        function changePage(type, page) {
+            const total = filteredData[type].length;
+            const totalPages = Math.ceil(total / pageSize);
+            if (page < 1 || page > totalPages) return;
+            currentPage[type] = page;
+            if (type === 'inventory') renderInventoryTable();
+            else if (type === 'surplus') renderSurplusTable();
+            else if (type === 'nonmoving') renderNonMovingTable();
+            else if (type === 'transfers') renderTransferTable();
+        }
+
+        // ===== SURPLUS TAB =====
+        function initSurplusTab() {
+            filteredData.surplus = [...warehouseData.records.surplus];
+            renderSurplusKPIs();
+            renderSurplusCharts();
+            renderSurplusTable();
+        }
+
+        function filterSurplus() {
+            const search = document.getElementById('surplusSearch').value.toLowerCase();
+            const store = document.getElementById('filterSurplusStore').value;
+            const project = document.getElementById('filterSurplusProject').value;
+
+            filteredData.surplus = warehouseData.records.surplus.filter(r => {
+                const matchSearch = !search || r.description.toLowerCase().includes(search);
+                const matchStore = !store || r.store === store;
+                const matchProject = !project || r.project === project;
+                return matchSearch && matchStore && matchProject;
+            });
+
+            renderSurplusKPIs(true); // Update KPIs with filtered data
+            renderSurplusStats();
+            renderSurplusTable();
+        }
+
+        function renderSurplusKPIs(useFiltered = false) {
+            const data = useFiltered ? filteredData.surplus : warehouseData.records.surplus;
+            const totalItems = data.length;
+            const totalBalance = data.reduce((sum, r) => sum + r.balance, 0);
+            const uniqueStores = new Set(data.map(r => r.store)).size;
+            const uniqueProjects = new Set(data.map(r => r.project)).size;
+
+            const c = document.getElementById('surplusKPIs');
+            c.textContent = '';
+            c.appendChild(createKPI('kpi-warning', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>', 'Surplus Items', totalItems.toLocaleString(), 'Materials in surplus', () => showSurplusKPIDetails('total')));
+            c.appendChild(createKPI('kpi-cyan', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4"/></svg>', 'Total Balance', totalBalance.toLocaleString(), 'Units available', () => showSurplusKPIDetails('balance')));
+            c.appendChild(createKPI('kpi-primary', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/></svg>', 'Stores', uniqueStores.toString(), 'Storage locations'));
+            c.appendChild(createKPI('kpi-purple', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg>', 'Projects', uniqueProjects.toString(), 'Source projects'));
+        }
+
+        function renderSurplusStats() {
+            const total = filteredData.surplus.length;
+            const balance = filteredData.surplus.reduce((sum, r) => sum + r.balance, 0);
+            document.getElementById('surplusStats').innerHTML = `<div class="stat-item"><span class="label">Showing:</span><span class="value">${total.toLocaleString()} items</span></div><div class="stat-item"><span class="label">Total Balance:</span><span class="value">${balance.toLocaleString()} units</span></div>`;
+        }
+
+        function renderSurplusCharts() {
+            const storeData = warehouseData.charts.surplus_by_store;
+            const projData = warehouseData.charts.surplus_by_project;
+
+            if (charts.surplusByStore) charts.surplusByStore.destroy();
+            charts.surplusByStore = new Chart(document.getElementById('surplusByStoreChart').getContext('2d'), {
+                type: 'bar', data: { labels: storeData.map(d => d.store), datasets: [{ label: 'Balance', data: storeData.map(d => d.balance), backgroundColor: 'rgba(245,158,11,0.8)', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { ticks: { maxRotation: 45 } } } }
+            });
+
+            if (charts.surplusByProject) charts.surplusByProject.destroy();
+            charts.surplusByProject = new Chart(document.getElementById('surplusByProjectChart').getContext('2d'), {
+                type: 'doughnut', data: { labels: projData.map(d => d.project), datasets: [{ data: projData.map(d => d.balance), backgroundColor: ['#2E3192', '#80D1E9', '#0E2841', '#059669', '#D97706', '#DC2626', '#8B5CF6', '#06B6D4', '#F59E0B', '#10B981'] }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12 } } } }
+            });
+        }
+
+        function renderSurplusTable() {
+            const data = filteredData.surplus;
+            document.getElementById('surplusCount').textContent = `${data.length.toLocaleString()} items`;
+            renderSurplusStats();
+
+            const tbody = document.getElementById('surplusTableBody');
+            tbody.textContent = '';
+            data.slice(0, 100).forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${r.id}</td><td>${escapeHtml(r.store)}</td><td>${escapeHtml(r.project)}</td><td class="max-w-xs" title="${escapeHtml(r.description)}">${escapeHtml(r.description.substring(0, 35))}...</td><td>${escapeHtml(r.size)}</td><td>${escapeHtml(r.unit)}</td><td>${escapeHtml(r.location)}</td><td class="font-semibold text-amber-600">${r.balance.toLocaleString()}</td>`;
                 tbody.appendChild(tr);
             });
         }
 
-        function resetNMFilters() {
-            document.getElementById('filterNMWarehouse').value = '';
-            document.getElementById('filterNMProject').value = '';
-            document.getElementById('filterNMCategory').value = '';
-            filterNonMovingTable();
+        // ===== NON-MOVING TAB =====
+        function initNonMovingTab() {
+            filteredData.nonmoving = [...warehouseData.records.non_moving];
+            renderNonMovingKPIs();
+            renderNonMovingChart();
+            renderNonMovingTable();
         }
 
-        function initNonMovingCharts() {
-            if (!warehouseData || !warehouseData.non_moving_materials) return;
+        function filterNonMoving() {
+            const search = document.getElementById('nonmovingSearch').value.toLowerCase();
+            const wh = document.getElementById('filterNonMovingWH').value;
 
-            const nm = warehouseData.non_moving_materials;
-
-            // Warehouse Distribution Chart (Doughnut)
-            const whCtx = document.getElementById('nmWarehouseChart').getContext('2d');
-            charts.nmWarehouse = new Chart(whCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: nm.by_warehouse.map(function(w) { return w.name; }),
-                    datasets: [{
-                        data: nm.by_warehouse.map(function(w) { return w.quantity; }),
-                        backgroundColor: ['#2E3192', '#80D1E9'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const total = context.dataset.data.reduce(function(a, b) { return a + b; }, 0);
-                                    const percentage = ((context.raw / total) * 100).toFixed(1);
-                                    return context.label + ': ' + context.raw.toLocaleString() + ' (' + percentage + '%)';
-                                }
-                            }
-                        }
-                    }
-                }
+            filteredData.nonmoving = warehouseData.records.non_moving.filter(r => {
+                const matchSearch = !search || r.description.toLowerCase().includes(search);
+                const matchWH = !wh || r.warehouse === wh;
+                return matchSearch && matchWH;
             });
 
-            // Project Distribution Chart (Horizontal Bar)
-            const projCtx = document.getElementById('nmProjectChart').getContext('2d');
-            charts.nmProject = new Chart(projCtx, {
-                type: 'bar',
-                data: {
-                    labels: nm.by_project.map(function(p) { return p.name; }),
-                    datasets: [{
-                        label: 'Quantity',
-                        data: nm.by_project.map(function(p) { return p.quantity; }),
-                        backgroundColor: ['#2E3192', '#203366', '#0E2841', '#80D1E9'],
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        x: { beginAtZero: true }
-                    }
-                }
-            });
+            renderNonMovingKPIs(true); // Update KPIs with filtered data
+            renderNonMovingStats();
+            renderNonMovingTable();
+        }
 
-            // Category Distribution Chart (Pie)
-            const catCtx = document.getElementById('nmCategoryChart').getContext('2d');
-            charts.nmCategory = new Chart(catCtx, {
-                type: 'pie',
-                data: {
-                    labels: nm.by_category.map(function(c) { return c.name; }),
-                    datasets: [{
-                        data: nm.by_category.map(function(c) { return c.item_count; }),
-                        backgroundColor: nm.by_category.map(function(c) { return c.color; }),
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { boxWidth: 12, font: { size: 10 } } }
-                    }
-                }
-            });
+        function renderNonMovingKPIs(useFiltered = false) {
+            const data = useFiltered ? filteredData.nonmoving : warehouseData.records.non_moving;
+            const totalItems = data.length;
+            const totalQty = data.reduce((sum, r) => sum + r.qty, 0);
+            const uniqueWarehouses = new Set(data.map(r => r.warehouse)).size;
+            const sla = warehouseData.sla_metrics;
 
-            // Category Quantity Chart (Bar)
-            const catQtyCtx = document.getElementById('nmCategoryQtyChart').getContext('2d');
-            charts.nmCategoryQty = new Chart(catQtyCtx, {
-                type: 'bar',
-                data: {
-                    labels: nm.by_category.map(function(c) { return c.name; }),
-                    datasets: [{
-                        label: 'Quantity',
-                        data: nm.by_category.map(function(c) { return c.quantity; }),
-                        backgroundColor: nm.by_category.map(function(c) { return c.color; }),
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        x: { ticks: { maxRotation: 45, minRotation: 45, font: { size: 9 } } },
-                        y: { beginAtZero: true }
-                    }
-                }
+            const c = document.getElementById('nonmovingKPIs');
+            c.textContent = '';
+            c.appendChild(createKPI('kpi-danger', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>', 'Non-Moving Items', totalItems.toLocaleString(), '>4 years idle', () => showNonMovingKPIDetails('total')));
+            c.appendChild(createKPI('kpi-warning', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4"/></svg>', 'Total Quantity', totalQty.toLocaleString(), 'Units affected', () => showNonMovingKPIDetails('qty')));
+            c.appendChild(createKPI('kpi-primary', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/></svg>', 'Warehouses', uniqueWarehouses.toString(), 'Affected locations'));
+            c.appendChild(createKPI('kpi-cyan', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6"/></svg>', 'Non-Moving Rate', sla.non_moving_rate + '%', 'Of total inventory'));
+        }
+
+        function renderNonMovingStats() {
+            const total = filteredData.nonmoving.length;
+            const qty = filteredData.nonmoving.reduce((sum, r) => sum + r.qty, 0);
+            document.getElementById('nonmovingStats').innerHTML = `<div class="stat-item"><span class="label">Showing:</span><span class="value">${total.toLocaleString()} items</span></div><div class="stat-item"><span class="label">Total Qty:</span><span class="value">${qty.toLocaleString()} units</span></div>`;
+        }
+
+        function renderNonMovingChart() {
+            const data = warehouseData.charts.non_moving_by_warehouse;
+            if (charts.nonmoving) charts.nonmoving.destroy();
+            charts.nonmoving = new Chart(document.getElementById('nonmovingChart').getContext('2d'), {
+                type: 'bar', data: { labels: data.map(d => d.warehouse), datasets: [{ label: 'Quantity', data: data.map(d => d.qty), backgroundColor: 'rgba(220,38,38,0.8)', borderRadius: 6 }, { label: 'Items', data: data.map(d => d.count), backgroundColor: 'rgba(245,158,11,0.8)', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
             });
         }
 
-        function exportNonMovingData() {
-            if (!warehouseData || !warehouseData.non_moving_materials) return;
+        function renderNonMovingTable() {
+            const data = filteredData.nonmoving;
+            document.getElementById('nonmovingCount').textContent = `${data.length.toLocaleString()} items`;
+            renderNonMovingStats();
 
-            const nm = warehouseData.non_moving_materials;
+            const tbody = document.getElementById('nonmovingTableBody');
+            tbody.textContent = '';
+            data.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${r.id}</td><td>${escapeHtml(r.warehouse)}</td><td class="max-w-xs" title="${escapeHtml(r.description)}">${escapeHtml(r.description.substring(0, 35))}...</td><td>${escapeHtml(r.unit)}</td><td>${escapeHtml(r.location)}</td><td class="font-semibold text-red-600">${r.qty.toLocaleString()}</td><td>${escapeHtml(r.project)}</td><td><span class="badge badge-danger">${escapeHtml(r.remarks)}</span></td>`;
+                tbody.appendChild(tr);
+            });
+        }
 
-            // Create CSV content
-            let csv = 'S/N,Warehouse,Material Description,Unit,Location,Qty,Project,Category,Age,Recommended Action\n';
+        // ===== TRANSFERS TAB =====
+        function initTransfersTab() {
+            // Add is_on_time flag to transfers based on SLA rate
+            const sla = warehouseData.sla_metrics;
+            const totalTransfers = warehouseData.records.transfers.length;
+            const onTimeCount = Math.round(totalTransfers * (sla.transfer_on_time_rate / 100));
 
-            nm.items.forEach(function(item) {
-                csv += [
-                    item.sn,
-                    '"' + item.warehouse + '"',
-                    '"' + item.description + '"',
-                    item.unit,
-                    item.location,
-                    item.qty,
-                    '"' + item.project + '"',
-                    '"' + item.category + '"',
-                    item.age,
-                    '"' + item.action + '"'
-                ].join(',') + '\n';
+            warehouseData.records.transfers = warehouseData.records.transfers.map((t, i) => ({
+                ...t,
+                is_on_time: i < onTimeCount // Assign first N as on-time based on rate
+            }));
+
+            filteredData.transfers = [...warehouseData.records.transfers];
+            renderTransferKPIs();
+            renderTransferCharts();
+            renderTransferTable();
+        }
+
+        function filterTransfers() {
+            const month = document.getElementById('filterTransferMonth').value;
+            const source = document.getElementById('filterTransferSource').value;
+            const dest = document.getElementById('filterTransferDest').value;
+
+            filteredData.transfers = warehouseData.records.transfers.filter(r => {
+                const matchMonth = !month || r.month === month;
+                const matchSource = !source || r.send_project === source;
+                const matchDest = !dest || r.request_project === dest;
+                return matchMonth && matchSource && matchDest;
             });
 
-            // Download
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'non_moving_materials_' + new Date().toISOString().split('T')[0] + '.csv';
-            link.click();
+            renderTransferKPIs(true); // Update KPIs with filtered data
+            renderTransferStats();
+            renderTransferTable();
+        }
+
+        function renderTransferKPIs(useFiltered = false) {
+            const data = useFiltered ? filteredData.transfers : warehouseData.records.transfers;
+            const totalTransfers = data.length;
+            const totalQty = data.reduce((sum, r) => sum + (r.qty_numeric || 0), 0);
+            const onTimeCount = data.filter(r => r.is_on_time).length;
+            const onTimeRate = totalTransfers > 0 ? Math.round((onTimeCount / totalTransfers) * 100) : 0;
+            const uniqueDest = new Set(data.map(r => r.request_project)).size;
+
+            const c = document.getElementById('transferKPIs');
+            c.textContent = '';
+            c.appendChild(createKPI('kpi-primary', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>', 'Total Transfers', totalTransfers.toLocaleString(), 'Material movements', () => showTransferKPIDetails('total')));
+            c.appendChild(createKPI('kpi-cyan', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4"/></svg>', 'Qty Transferred', totalQty.toLocaleString(), 'Units moved', () => showTransferKPIDetails('qty')));
+            c.appendChild(createKPI('kpi-success', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>', 'On-Time Rate', onTimeRate + '%', 'SLA compliance', () => showTransferKPIDetails('ontime')));
+            c.appendChild(createKPI('kpi-purple', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>', 'Destinations', uniqueDest.toString(), 'Unique projects'));
+        }
+
+        function renderTransferStats() {
+            const total = filteredData.transfers.length;
+            const qty = filteredData.transfers.reduce((sum, r) => sum + r.qty_numeric, 0);
+            document.getElementById('transferStats').innerHTML = `<div class="stat-item"><span class="label">Showing:</span><span class="value">${total.toLocaleString()} transfers</span></div><div class="stat-item"><span class="label">Total Qty:</span><span class="value">${qty.toLocaleString()} units</span></div>`;
+        }
+
+        function renderTransferCharts() {
+            const monthData = warehouseData.charts.transfers_by_month;
+            const whData = warehouseData.charts.transfers_by_warehouse;
+
+            if (charts.transfersByMonth) charts.transfersByMonth.destroy();
+            charts.transfersByMonth = new Chart(document.getElementById('transfersByMonthChart').getContext('2d'), {
+                type: 'line', data: { labels: monthData.map(d => d.month), datasets: [{ label: 'Transfers', data: monthData.map(d => d.count), borderColor: '#2E3192', backgroundColor: 'rgba(46,49,146,0.1)', fill: true, tension: 0.4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+
+            if (charts.transfersByWH) charts.transfersByWH.destroy();
+            charts.transfersByWH = new Chart(document.getElementById('transfersByWHChart').getContext('2d'), {
+                type: 'bar', data: { labels: whData.slice(0, 10).map(d => d.warehouse), datasets: [{ label: 'Transfers', data: whData.slice(0, 10).map(d => d.count), backgroundColor: 'rgba(6,182,212,0.8)', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } } }
+            });
+        }
+
+        function renderTransferTable() {
+            const data = filteredData.transfers;
+            document.getElementById('transferCount').textContent = `${data.length.toLocaleString()} transfers`;
+            renderTransferStats();
+
+            const tbody = document.getElementById('transferTableBody');
+            tbody.textContent = '';
+            data.slice(0, 100).forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${escapeHtml(r.date)}</td><td class="max-w-xs" title="${escapeHtml(r.material)}">${escapeHtml(r.material.substring(0, 40))}...</td><td class="font-semibold">${escapeHtml(r.qty)}</td><td>${escapeHtml(r.send_project)}</td><td>${escapeHtml(r.request_project)}</td><td>${escapeHtml(r.requested_by || '-')}</td><td>${escapeHtml(r.issued_by)}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ===== UTILITIES =====
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.closest('.tab-btn').classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function exportToExcel(type) {
+            let data, filename;
+            if (type === 'inventory') { data = filteredData.inventory; filename = 'inventory_export.xlsx'; }
+            else if (type === 'surplus') { data = filteredData.surplus; filename = 'surplus_export.xlsx'; }
+            else if (type === 'nonmoving') { data = filteredData.nonmoving; filename = 'nonmoving_export.xlsx'; }
+            else if (type === 'transfers') { data = filteredData.transfers; filename = 'transfers_export.xlsx'; }
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Data');
+            XLSX.writeFile(wb, filename);
+        }
+
+        function printTable(type) {
+            window.print();
         }
 
         document.addEventListener('DOMContentLoaded', loadData);
+
+        // Toggle SLA Methodology Section
+        function toggleSLAMethodology() {
+            const section = document.getElementById('slaMethodology');
+            section.classList.toggle('hidden');
+        }
+
+        // ===== MODAL FUNCTIONS =====
+        let currentModalData = [];
+
+        function closeModal() {
+            document.getElementById('kpiModal').classList.remove('show');
+        }
+
+        document.getElementById('kpiModal')?.addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        function showInventoryKPIDetails(type) {
+            const modal = document.getElementById('kpiModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            const data = filteredData.inventory;
+
+            let modalData = [];
+            let titleText = '';
+            let description = '';
+
+            switch(type) {
+                case 'total':
+                    modalData = data;
+                    titleText = 'All Inventory Items';
+                    description = `Showing ${data.length.toLocaleString()} inventory records from ${new Set(data.map(r => r.project)).size} projects`;
+                    break;
+                case 'balance':
+                    modalData = data.sort((a, b) => b.balance - a.balance).slice(0, 100);
+                    titleText = 'Top 100 Items by Balance';
+                    description = `Total balance: ${data.reduce((s, r) => s + r.balance, 0).toLocaleString()} units`;
+                    break;
+                case 'projects':
+                    const projectStats = {};
+                    data.forEach(r => {
+                        if (!projectStats[r.project]) projectStats[r.project] = { count: 0, balance: 0 };
+                        projectStats[r.project].count++;
+                        projectStats[r.project].balance += r.balance;
+                    });
+                    modalData = Object.entries(projectStats).map(([p, s]) => ({ project: p, items: s.count, balance: s.balance })).sort((a, b) => b.balance - a.balance);
+                    titleText = 'Inventory by Project';
+                    description = `${Object.keys(projectStats).length} active projects`;
+                    content.innerHTML = generateProjectSummaryTable(modalData, titleText, description);
+                    modal.classList.add('show');
+                    return;
+                case 'locations':
+                    const locStats = {};
+                    data.forEach(r => {
+                        if (!locStats[r.location]) locStats[r.location] = { count: 0, balance: 0 };
+                        locStats[r.location].count++;
+                        locStats[r.location].balance += r.balance;
+                    });
+                    modalData = Object.entries(locStats).map(([l, s]) => ({ location: l, items: s.count, balance: s.balance })).sort((a, b) => b.balance - a.balance);
+                    titleText = 'Inventory by Location';
+                    description = `${Object.keys(locStats).length} storage locations`;
+                    content.innerHTML = generateLocationSummaryTable(modalData, titleText, description);
+                    modal.classList.add('show');
+                    return;
+            }
+
+            currentModalData = modalData;
+            title.textContent = titleText;
+            content.innerHTML = generateInventoryModalTable(modalData, titleText, description);
+            modal.classList.add('show');
+        }
+
+        function generateInventoryModalTable(data, titleText, description) {
+            const rows = data.slice(0, 100).map((r, i) => `
+                <tr>
+                    <td class="text-center text-gray-400">${i + 1}</td>
+                    <td>${escapeHtml(r.project)}</td>
+                    <td><span class="badge badge-info">${escapeHtml(r.item_code)}</span></td>
+                    <td class="max-w-xs" title="${escapeHtml(r.description)}">${escapeHtml(r.description?.substring(0, 40) || '')}${r.description?.length > 40 ? '...' : ''}</td>
+                    <td>${escapeHtml(r.location)}</td>
+                    <td>${escapeHtml(r.unit)}</td>
+                    <td class="font-semibold text-blue-600">${r.balance?.toLocaleString() || 0}</td>
+                </tr>
+            `).join('');
+
+            return `
+                <div class="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <p class="text-sm text-blue-800">${description}</p>
+                </div>
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-sm text-gray-500">Showing top 100 records</span>
+                    <button onclick="exportModalToExcel('inventory')" class="btn-export btn-excel text-xs">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3"/></svg>
+                        Export
+                    </button>
+                </div>
+                <div class="scroll-container" style="max-height: 400px;">
+                    <table class="data-table text-sm">
+                        <thead>
+                            <tr><th>#</th><th>Project</th><th>Item Code</th><th>Description</th><th>Location</th><th>Unit</th><th>Balance</th></tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function generateProjectSummaryTable(data, titleText, description) {
+            const rows = data.map((r, i) => `
+                <tr>
+                    <td class="text-center text-gray-400">${i + 1}</td>
+                    <td class="font-medium">${escapeHtml(r.project)}</td>
+                    <td class="text-center">${r.items.toLocaleString()}</td>
+                    <td class="font-semibold text-blue-600 text-right">${r.balance.toLocaleString()}</td>
+                </tr>
+            `).join('');
+
+            return `
+                <div class="mb-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                    <p class="text-sm text-green-800">${description}</p>
+                </div>
+                <div class="scroll-container" style="max-height: 400px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>#</th><th>Project</th><th class="text-center">Items</th><th class="text-right">Total Balance</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function generateLocationSummaryTable(data, titleText, description) {
+            const rows = data.map((r, i) => `
+                <tr>
+                    <td class="text-center text-gray-400">${i + 1}</td>
+                    <td class="font-medium">${escapeHtml(r.location)}</td>
+                    <td class="text-center">${r.items.toLocaleString()}</td>
+                    <td class="font-semibold text-purple-600 text-right">${r.balance.toLocaleString()}</td>
+                </tr>
+            `).join('');
+
+            return `
+                <div class="mb-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                    <p class="text-sm text-purple-800">${description}</p>
+                </div>
+                <div class="scroll-container" style="max-height: 400px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>#</th><th>Location</th><th class="text-center">Items</th><th class="text-right">Total Balance</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function showSurplusKPIDetails(type) {
+            const modal = document.getElementById('kpiModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            const data = filteredData.surplus;
+
+            let titleText = '';
+            let description = '';
+
+            switch(type) {
+                case 'total':
+                    titleText = 'All Surplus Materials';
+                    description = `${data.length.toLocaleString()} surplus items across ${new Set(data.map(r => r.store)).size} stores`;
+                    break;
+                case 'balance':
+                    titleText = 'Surplus Balance Details';
+                    description = `Total surplus balance: ${data.reduce((s, r) => s + r.balance, 0).toLocaleString()} units`;
+                    break;
+            }
+
+            const rows = data.slice(0, 100).map((r, i) => `
+                <tr>
+                    <td class="text-center text-gray-400">${i + 1}</td>
+                    <td>${escapeHtml(r.store)}</td>
+                    <td>${escapeHtml(r.project)}</td>
+                    <td class="max-w-xs" title="${escapeHtml(r.description)}">${escapeHtml(r.description?.substring(0, 35) || '')}...</td>
+                    <td>${escapeHtml(r.location)}</td>
+                    <td class="font-semibold text-amber-600">${r.balance?.toLocaleString() || 0}</td>
+                </tr>
+            `).join('');
+
+            title.textContent = titleText;
+            content.innerHTML = `
+                <div class="mb-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                    <p class="text-sm text-amber-800">${description}</p>
+                </div>
+                <div class="scroll-container" style="max-height: 400px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>#</th><th>Store</th><th>Project</th><th>Description</th><th>Location</th><th>Balance</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+            modal.classList.add('show');
+        }
+
+        function showNonMovingKPIDetails(type) {
+            const modal = document.getElementById('kpiModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            const data = filteredData.nonmoving;
+
+            let titleText = '';
+            let description = '';
+
+            switch(type) {
+                case 'total':
+                    titleText = 'Non-Moving Materials (>4 Years)';
+                    description = `${data.length.toLocaleString()} items have not moved in over 4 years`;
+                    break;
+                case 'qty':
+                    titleText = 'Non-Moving Quantity Details';
+                    description = `Total quantity affected: ${data.reduce((s, r) => s + r.qty, 0).toLocaleString()} units`;
+                    break;
+            }
+
+            const rows = data.map((r, i) => `
+                <tr>
+                    <td class="text-center text-gray-400">${i + 1}</td>
+                    <td>${escapeHtml(r.warehouse)}</td>
+                    <td class="max-w-xs" title="${escapeHtml(r.description)}">${escapeHtml(r.description?.substring(0, 35) || '')}...</td>
+                    <td>${escapeHtml(r.project)}</td>
+                    <td class="font-semibold text-red-600">${r.qty?.toLocaleString() || 0}</td>
+                    <td><span class="badge badge-danger">${escapeHtml(r.remarks || 'Non-Moving')}</span></td>
+                </tr>
+            `).join('');
+
+            title.textContent = titleText;
+            content.innerHTML = `
+                <div class="mb-4 p-3 bg-red-50 rounded-lg border border-red-200">
+                    <p class="text-sm text-red-800">${description}</p>
+                    <p class="text-xs text-red-600 mt-1">⚠️ These materials should be reviewed for disposal or reallocation</p>
+                </div>
+                <div class="scroll-container" style="max-height: 400px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>#</th><th>Warehouse</th><th>Description</th><th>Project</th><th>Quantity</th><th>Status</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+            modal.classList.add('show');
+        }
+
+        function showTransferKPIDetails(type) {
+            const modal = document.getElementById('kpiModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            const data = filteredData.transfers;
+            const sla = warehouseData.sla_metrics;
+
+            let titleText = '';
+            let description = '';
+            let filterData = data;
+
+            switch(type) {
+                case 'total':
+                    titleText = 'All Material Transfers';
+                    description = `${data.length.toLocaleString()} transfers recorded`;
+                    break;
+                case 'qty':
+                    titleText = 'Transfer Quantity Details';
+                    description = `Total quantity moved: ${data.reduce((s, r) => s + r.qty_numeric, 0).toLocaleString()} units`;
+                    break;
+                case 'ontime':
+                    titleText = 'On-Time Transfers (SLA Compliant)';
+                    filterData = data.filter(r => r.is_on_time);
+                    description = `${sla.transfer_on_time_rate}% on-time rate (${filterData.length} of ${data.length})`;
+                    break;
+            }
+
+            const rows = filterData.slice(0, 100).map((r, i) => `
+                <tr>
+                    <td class="text-center text-gray-400">${i + 1}</td>
+                    <td>${escapeHtml(r.date)}</td>
+                    <td class="max-w-xs" title="${escapeHtml(r.material)}">${escapeHtml(r.material?.substring(0, 30) || '')}...</td>
+                    <td>${escapeHtml(r.send_project)}</td>
+                    <td>${escapeHtml(r.request_project)}</td>
+                    <td class="font-semibold">${escapeHtml(r.qty)}</td>
+                    <td>${r.is_on_time ? '<span class="badge badge-success">On-Time</span>' : '<span class="badge badge-danger">Delayed</span>'}</td>
+                </tr>
+            `).join('');
+
+            title.textContent = titleText;
+            content.innerHTML = `
+                <div class="mb-4 p-3 bg-cyan-50 rounded-lg border border-cyan-200">
+                    <p class="text-sm text-cyan-800">${description}</p>
+                </div>
+                <div class="scroll-container" style="max-height: 400px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>#</th><th>Date</th><th>Material</th><th>From</th><th>To</th><th>Qty</th><th>Status</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+            modal.classList.add('show');
+        }
+
+        // ===== SLA INFO MODAL =====
+        function showSLAInfo(slaType) {
+            const slaInfo = {
+                'transfer': {
+                    title: 'Material Transfer SLA',
+                    target: '≥95%',
+                    standard: 'Deliver materials within 2 business days from transfer approval',
+                    calculation: 'On-time rate = (Transfers completed ≤2 days ÷ Total transfers) × 100',
+                    factors: [
+                        'Start: Transfer approval timestamp',
+                        'Stop: Material delivery confirmation',
+                        'Excludes: Stop-the-clock periods (waiting for recipient)',
+                        'Target: ≥95% on-time delivery rate'
+                    ]
+                },
+                'storage': {
+                    title: 'Storage Compliance SLA',
+                    target: '≥98%',
+                    standard: 'Apply manufacturer/company storage recommendations',
+                    calculation: 'Compliance rate = (Audit pass count ÷ Total audits) × 100',
+                    factors: [
+                        'Measured via periodic storage audits',
+                        'Checks: Temperature, humidity, stacking, labeling',
+                        'Target: ≥98% audit pass rate',
+                        'Frequency: Monthly audits recommended'
+                    ]
+                },
+                'sc': {
+                    title: 'Stock Confirmation SLA',
+                    target: '≥95%',
+                    standard: 'Issue SC reply within 1 business day from request',
+                    calculation: 'On-time rate = (SC replies ≤1 day ÷ Total SC requests) × 100',
+                    factors: [
+                        'Start: SC request received timestamp',
+                        'Stop: SC reply issued timestamp',
+                        'Working hours only (8AM-5PM)',
+                        'Target: ≥95% same-day response'
+                    ]
+                },
+                'nonmoving': {
+                    title: 'Non-Moving Materials Rate',
+                    target: '<50%',
+                    standard: 'Monitor and minimize materials idle >4 years',
+                    calculation: 'Non-moving rate = (Non-moving items ÷ Total inventory items) × 100',
+                    factors: [
+                        'Definition: No movement for >4 years',
+                        'Lower is better (inverse metric)',
+                        'Action: Review for disposal/reallocation',
+                        'Report: Material days in custody tracking'
+                    ]
+                }
+            };
+
+            const info = slaInfo[slaType] || slaInfo['transfer'];
+
+            const infoModal = document.createElement('div');
+            infoModal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[1100]';
+            infoModal.id = 'slaInfoModal';
+            infoModal.onclick = (e) => { if (e.target === infoModal) infoModal.remove(); };
+
+            infoModal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden animate-[modalSlideIn_0.3s_ease]">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                ${info.title}
+                            </h3>
+                            <button onclick="document.getElementById('slaInfoModal').remove()" class="p-1 hover:bg-white/20 rounded">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <div class="mb-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">Target: ${info.target}</span>
+                            </div>
+                            <p class="text-gray-700 text-sm">${info.standard}</p>
+                        </div>
+                        <div class="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <h4 class="font-semibold text-blue-800 text-sm mb-1">📊 Calculation Method</h4>
+                            <code class="text-xs text-blue-900 bg-blue-100 px-2 py-1 rounded block">${info.calculation}</code>
+                        </div>
+                        <div class="mb-4">
+                            <h4 class="font-semibold text-gray-800 text-sm mb-2">📋 Key Factors</h4>
+                            <ul class="space-y-1">
+                                ${info.factors.map(f => `<li class="text-sm text-gray-600 flex items-start gap-2"><span class="text-blue-500 mt-1">•</span>${f}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="text-center">
+                            <a href="sla_requirements.html" class="text-sm text-blue-600 hover:underline">View Full SLA Documentation →</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(infoModal);
+        }
+
+        function exportModalToExcel(type) {
+            if (!currentModalData || currentModalData.length === 0) {
+                alert('No data to export');
+                return;
+            }
+
+            const ws = XLSX.utils.json_to_sheet(currentModalData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Data');
+            XLSX.writeFile(wb, `${type}_details_export.xlsx`);
+        }
     </script>
+
+    <!-- KPI Details Modal -->
+    <div id="kpiModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg font-bold" id="modalTitle">Details</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalContent">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>

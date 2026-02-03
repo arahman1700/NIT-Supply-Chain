@@ -200,97 +200,76 @@
         }
 
         .logo-glow {
-            filter: drop-shadow(0 0 25px rgba(128, 209, 233, 0.8))
-                    drop-shadow(0 0 50px rgba(128, 209, 233, 0.6))
-                    drop-shadow(0 0 80px rgba(128, 209, 233, 0.4))
-                    drop-shadow(0 0 120px rgba(46, 49, 146, 0.3));
-            animation: logoGlow 3s ease-in-out infinite alternate, logoFloat 6s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(128, 209, 233, 1))
+                    drop-shadow(0 0 30px rgba(128, 209, 233, 0.8))
+                    drop-shadow(0 0 60px rgba(128, 209, 233, 0.6))
+                    drop-shadow(0 0 100px rgba(128, 209, 233, 0.4));
+            animation: logoGlow 2.5s ease-in-out infinite alternate, logoFloat 5s ease-in-out infinite;
         }
 
         @keyframes logoGlow {
             0% {
-                filter: drop-shadow(0 0 25px rgba(128, 209, 233, 0.6))
-                        drop-shadow(0 0 50px rgba(128, 209, 233, 0.4))
-                        drop-shadow(0 0 80px rgba(128, 209, 233, 0.2))
-                        drop-shadow(0 0 120px rgba(46, 49, 146, 0.2));
+                filter: drop-shadow(0 0 15px rgba(128, 209, 233, 0.8))
+                        drop-shadow(0 0 30px rgba(128, 209, 233, 0.5))
+                        drop-shadow(0 0 60px rgba(128, 209, 233, 0.3))
+                        drop-shadow(0 0 100px rgba(128, 209, 233, 0.2));
             }
             100% {
-                filter: drop-shadow(0 0 40px rgba(128, 209, 233, 1))
-                        drop-shadow(0 0 80px rgba(128, 209, 233, 0.7))
-                        drop-shadow(0 0 120px rgba(128, 209, 233, 0.5))
-                        drop-shadow(0 0 160px rgba(46, 49, 146, 0.4));
+                filter: drop-shadow(0 0 25px rgba(128, 209, 233, 1))
+                        drop-shadow(0 0 50px rgba(128, 209, 233, 0.9))
+                        drop-shadow(0 0 90px rgba(128, 209, 233, 0.7))
+                        drop-shadow(0 0 140px rgba(128, 209, 233, 0.5));
             }
         }
 
         @keyframes logoFloat {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
+            50% { transform: translateY(-10px); }
         }
 
-        /* Outer glow ring */
+        /* Outer glow ring - stronger */
         .logo-glow-container::before {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 140%;
-            height: 140%;
-            background: radial-gradient(ellipse, rgba(128, 209, 233, 0.2) 0%, rgba(46, 49, 146, 0.1) 40%, transparent 70%);
-            animation: pulseGlow 4s ease-in-out infinite;
+            width: 130%;
+            height: 160%;
+            background: radial-gradient(ellipse, rgba(128, 209, 233, 0.25) 0%, rgba(128, 209, 233, 0.1) 40%, transparent 70%);
+            animation: pulseGlow 3s ease-in-out infinite;
             pointer-events: none;
             z-index: -1;
             border-radius: 50%;
         }
 
-        /* Inner shine effect */
-        .logo-glow-container::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 110%;
-            height: 110%;
-            background: radial-gradient(ellipse at 30% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
-            animation: shineRotate 8s linear infinite;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.6;
-        }
-
         @keyframes pulseGlow {
-            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
-        }
-
-        @keyframes shineRotate {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
         }
 
         /* Sparkle effects around logo */
         .sparkle {
             position: absolute;
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             background: white;
             border-radius: 50%;
-            animation: sparkle 2s ease-in-out infinite;
-            box-shadow: 0 0 10px rgba(128, 209, 233, 1), 0 0 20px rgba(128, 209, 233, 0.8);
+            animation: sparkle 2.5s ease-in-out infinite;
+            box-shadow: 0 0 15px rgba(128, 209, 233, 1), 0 0 30px rgba(128, 209, 233, 0.8);
         }
 
         @keyframes sparkle {
             0%, 100% { opacity: 0; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
 
-        .sparkle:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
-        .sparkle:nth-child(2) { top: 5%; right: 10%; animation-delay: 0.5s; }
-        .sparkle:nth-child(3) { bottom: 15%; left: 10%; animation-delay: 1s; }
-        .sparkle:nth-child(4) { bottom: 10%; right: 5%; animation-delay: 1.5s; }
-        .sparkle:nth-child(5) { top: 50%; left: -5%; animation-delay: 0.3s; }
-        .sparkle:nth-child(6) { top: 50%; right: -5%; animation-delay: 0.8s; }
+        .sparkle:nth-child(1) { top: 5%; left: 10%; animation-delay: 0s; }
+        .sparkle:nth-child(2) { top: 0%; right: 15%; animation-delay: 0.4s; }
+        .sparkle:nth-child(3) { bottom: 10%; left: 5%; animation-delay: 0.8s; }
+        .sparkle:nth-child(4) { bottom: 5%; right: 10%; animation-delay: 1.2s; }
+        .sparkle:nth-child(5) { top: 40%; left: 0%; animation-delay: 0.2s; }
+        .sparkle:nth-child(6) { top: 40%; right: 0%; animation-delay: 0.6s; }
     </style>
 </head>
 <body class="text-white">
@@ -326,7 +305,7 @@
                     <div class="sparkle"></div>
                     <div class="sparkle"></div>
                     <!-- Main Logo -->
-                    <img src="assets/nit-supply-chain-logo.png" alt="NIT Supply Chain" class="mx-auto logo-glow h-32 md:h-44 lg:h-56 xl:h-64" onerror="this.style.display='none'; document.getElementById('fallback-title').style.display='block';">
+                    <img src="assets/nit-supply-chain-logo.png" alt="NIT Supply Chain" class="mx-auto logo-glow h-40 md:h-56 lg:h-72 xl:h-80" onerror="this.style.display='none'; document.getElementById('fallback-title').style.display='block';">
                     <div id="fallback-title" style="display:none;">
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 glow-text">Supply Chain Management</h1>
                     </div>
@@ -419,28 +398,59 @@
                     </div>
                 </a>
 
-                <!-- Facility Management -->
-                <div class="glass-card card-disabled department-card p-8 fade-in-up stagger-5 block text-center">
+                <!-- Assets Management -->
+                <a href="assets_dashboard.html" class="glass-card department-card p-8 fade-in-up stagger-5 block text-center">
                     <div class="flex justify-center">
-                        <div class="icon-box disabled-gradient">
+                        <div class="icon-box" style="background: linear-gradient(135deg, #F59E0B 0%, #0E2841 100%);">
+                            <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7zm6 7a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm-3 1a1 1 0 10-2 0v2a1 1 0 102 0v-2zm-4 0a1 1 0 10-2 0v1a1 1 0 102 0v-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <span class="status-badge badge-active mb-4 inline-block">Active</span>
+                    <h3 class="text-2xl font-bold mb-3">Assets</h3>
+                    <p class="text-gray-400 text-sm mb-6">Equipment, fleet & tools tracking</p>
+
+                    <div class="flex flex-wrap justify-center gap-2 mb-6">
+                        <span class="feature-tag">Equipment</span>
+                        <span class="feature-tag">Fleet</span>
+                        <span class="feature-tag">Tools</span>
+                    </div>
+
+                    <div class="enter-btn">
+                        <span>Enter</span>
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- Facility Management -->
+                <a href="facility_dashboard.html" class="glass-card department-card p-8 fade-in-up stagger-5 block text-center">
+                    <div class="flex justify-center">
+                        <div class="icon-box" style="background: linear-gradient(135deg, #6366F1 0%, #0E2841 100%);">
                             <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/>
                             </svg>
                         </div>
                     </div>
-                    <span class="status-badge badge-coming mb-4 inline-block">Coming Soon</span>
-                    <h3 class="text-2xl font-bold mb-3 text-gray-400">Facility</h3>
-                    <p class="text-gray-500 text-sm mb-6">Fleet & vehicle management</p>
+                    <span class="status-badge badge-active mb-4 inline-block">Active</span>
+                    <h3 class="text-2xl font-bold mb-3">Facility</h3>
+                    <p class="text-gray-400 text-sm mb-6">Accommodation, fleet & maintenance</p>
 
                     <div class="flex flex-wrap justify-center gap-2 mb-6">
-                        <span class="feature-tag opacity-50">Fleet</span>
-                        <span class="feature-tag opacity-50">Vehicles</span>
+                        <span class="feature-tag">Accommodation</span>
+                        <span class="feature-tag">Fleet</span>
+                        <span class="feature-tag">Safety</span>
                     </div>
 
-                    <div class="text-gray-500 text-sm font-medium">
-                        Under Development
+                    <div class="enter-btn">
+                        <span>Enter</span>
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
                     </div>
-                </div>
+                </a>
 
             </div>
         </section>

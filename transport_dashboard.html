@@ -4,38 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>NESMA | Equipment & Logistics Dashboard</title>
+    <title>NESMA | Transportation Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/nesma-theme.css">
     <style>
         :root {
-            /* Nesma Brand Colors - Official */
             --nesma-primary: #2E3192;
             --nesma-cyan: #80D1E9;
             --nesma-navy: #0E2841;
             --nesma-dark-blue: #203366;
             --nesma-light-gray: #E8E8E8;
             --nesma-gray: #B3B3B3;
-
-            /* Functional Colors */
             --success: #059669;
             --warning: #D97706;
             --danger: #DC2626;
             --info: #0284C7;
         }
+        * { font-family: 'Inter', 'Cairo', sans-serif; box-sizing: border-box; }
+        body { background: #F8FAFC; min-height: 100vh; margin: 0; }
 
-        * { font-family: 'Inter', 'Cairo', sans-serif; }
-
-        body {
-            background: #F8FAFC;
-            min-height: 100vh;
-        }
-
-        /* Header - Solid Primary with subtle accent */
         .nesma-header {
             background: var(--nesma-primary);
             box-shadow: 0 2px 8px rgba(46, 49, 146, 0.15);
@@ -51,853 +41,1230 @@
             background: var(--nesma-cyan);
         }
 
-        /* Cards - Clean white */
         .card {
             background: white;
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(14, 40, 65, 0.08);
-            transition: all 0.2s ease;
             border: 1px solid var(--nesma-light-gray);
         }
-        .card:hover {
-            box-shadow: 0 4px 12px rgba(14, 40, 65, 0.1);
-        }
 
-        /* KPI Cards - Clean solid backgrounds */
         .kpi-card {
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 16px;
             border: none;
+            padding: 20px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
         }
         .kpi-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(14, 40, 65, 0.12);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
         }
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .kpi-icon svg { width: 24px; height: 24px; }
+        .kpi-value { font-size: 1.75rem; font-weight: 800; line-height: 1.2; }
+        .kpi-label { font-size: 0.8rem; opacity: 0.9; margin-bottom: 4px; }
+        .kpi-subtitle { font-size: 0.7rem; opacity: 0.7; margin-top: 4px; }
+        .kpi-card .click-hint { font-size: 0.6rem; opacity: 0.5; margin-top: 8px; }
 
-        /* Tab Navigation */
-        .tab-btn {
-            transition: all 0.2s ease;
-            position: relative;
-            font-weight: 500;
-            color: var(--nesma-gray);
-            border-bottom: 2px solid transparent;
+        .bg-primary-gradient { background: linear-gradient(135deg, #2E3192 0%, #0E2841 100%); }
+        .bg-cyan-gradient { background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%); }
+        .bg-success-gradient { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+        .bg-warning-gradient { background: linear-gradient(135deg, #D97706 0%, #B45309 100%); }
+        .bg-danger-gradient { background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); }
+        .bg-purple-gradient { background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); }
+        .bg-indigo-gradient { background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%); }
+        .bg-rose-gradient { background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%); }
+
+        .sla-section {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--nesma-light-gray);
         }
+        .sla-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            position: relative;
+            border: 1px solid var(--nesma-light-gray);
+            transition: all 0.3s ease;
+        }
+        .sla-card:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .sla-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            border-radius: 12px 12px 0 0;
+        }
+        .sla-green::before { background: var(--success); }
+        .sla-yellow::before { background: var(--warning); }
+        .sla-red::before { background: var(--danger); }
+        .sla-value { font-size: 2rem; font-weight: 800; margin: 8px 0; }
+        .sla-green .sla-value { color: var(--success); }
+        .sla-yellow .sla-value { color: var(--warning); }
+        .sla-red .sla-value { color: var(--danger); }
+        .sla-indicator {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            margin-bottom: 8px;
+        }
+        .sla-indicator svg { width: 18px; height: 18px; }
+        .sla-green .sla-indicator { background: #D1FAE5; color: var(--success); }
+        .sla-yellow .sla-indicator { background: #FEF3C7; color: var(--warning); }
+        .sla-red .sla-indicator { background: #FEE2E2; color: var(--danger); }
+        .sla-label { font-size: 0.85rem; font-weight: 500; color: #374151; }
+        .sla-target { font-size: 0.7rem; color: var(--nesma-gray); margin-top: 6px; }
+        .sla-trend { font-size: 0.75rem; font-weight: 600; margin-top: 6px; }
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+
+        .tabs-container {
+            display: flex;
+            border-bottom: 1px solid var(--nesma-light-gray);
+            overflow-x: auto;
+            background: white;
+        }
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 24px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--nesma-gray);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .tab-btn:hover { color: var(--nesma-navy); background: rgba(128, 209, 233, 0.1); }
         .tab-btn.active {
             color: var(--nesma-primary);
             border-bottom-color: var(--nesma-primary);
-            background: transparent;
+            background: rgba(46, 49, 146, 0.05);
         }
-        .tab-btn:hover:not(.active) {
-            color: var(--nesma-dark-blue);
+        .tab-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .tab-count {
+            background: var(--nesma-primary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            min-width: 28px;
+            text-align: center;
         }
+        .tab-btn.active .tab-count { background: var(--nesma-cyan); color: var(--nesma-navy); }
+        .tab-content { display: none; padding: 24px; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--nesma-light-gray);
         }
+        .filter-select {
+            border: 1px solid var(--nesma-light-gray);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.85rem;
+            background: white;
+            min-width: 150px;
+            cursor: pointer;
+        }
+        .filter-select:focus { outline: none; border-color: var(--nesma-primary); box-shadow: 0 0 0 3px rgba(46, 49, 146, 0.1); }
+        .btn-reset {
+            background: var(--nesma-light-gray);
+            color: var(--nesma-navy);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-reset:hover { background: #D1D5DB; }
+        .btn-export {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-export-pdf { background: #DC2626; color: white; }
+        .btn-export-pdf:hover { background: #B91C1C; }
+        .btn-export-excel { background: var(--success); color: white; }
+        .btn-export-excel:hover { background: #047857; }
+        .btn-export svg { width: 16px; height: 16px; }
 
-        .chart-container { position: relative; height: 300px; }
-
-        /* Data Tables */
-        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .data-table { width: 100%; border-collapse: collapse; }
         .data-table th {
             background: var(--nesma-primary);
-            padding: 12px 16px;
+            padding: 12px 14px;
             font-weight: 600;
             color: white;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            text-transform: uppercase;
+            text-align: left;
             font-size: 0.7rem;
+            text-transform: uppercase;
             letter-spacing: 0.05em;
         }
         .data-table th:first-child { border-radius: 8px 0 0 0; }
         .data-table th:last-child { border-radius: 0 8px 0 0; }
         .data-table td {
-            padding: 12px 16px;
+            padding: 12px 14px;
             border-bottom: 1px solid var(--nesma-light-gray);
-            font-size: 0.875rem;
+            font-size: 0.85rem;
         }
-        .data-table tr:hover td {
-            background: rgba(128, 209, 233, 0.08);
-        }
-
-        /* Scroll Container */
+        .data-table tr:hover td { background: rgba(128, 209, 233, 0.08); }
         .scroll-container {
             max-height: 400px;
             overflow-y: auto;
+            border: 1px solid var(--nesma-light-gray);
             border-radius: 8px;
         }
-        .scroll-container::-webkit-scrollbar { width: 4px; }
-        .scroll-container::-webkit-scrollbar-track { background: var(--nesma-light-gray); }
+        .scroll-container::-webkit-scrollbar { width: 6px; }
         .scroll-container::-webkit-scrollbar-thumb { background: var(--nesma-cyan); border-radius: 4px; }
 
-        /* SLA Section */
-        .sla-compliance-section {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
-            border: 1px solid var(--nesma-light-gray);
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
         }
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-warning { background: #FEF3C7; color: #92400E; }
+        .badge-danger { background: #FEE2E2; color: #991B1B; }
+        .badge-info { background: #DBEAFE; color: #1E40AF; }
+        .badge-gray { background: #F3F4F6; color: #374151; }
 
-        /* SLA Cards */
-        .sla-card {
-            background: white;
-            border-radius: 10px;
+        .chart-container { position: relative; height: 280px; }
+
+        .aging-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .aging-item:hover { transform: translateX(4px); }
+        .aging-green { background: rgba(5, 150, 105, 0.1); border-left: 4px solid var(--success); }
+        .aging-yellow { background: rgba(217, 119, 6, 0.1); border-left: 4px solid var(--warning); }
+        .aging-orange { background: rgba(234, 88, 12, 0.1); border-left: 4px solid #EA580C; }
+        .aging-red { background: rgba(220, 38, 38, 0.1); border-left: 4px solid var(--danger); }
+
+        .cycle-time-card {
+            background: rgba(46, 49, 146, 0.04);
+            border-radius: 12px;
             padding: 16px;
             text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: all 0.2s ease;
-            cursor: pointer;
-            position: relative;
-            border: 1px solid var(--nesma-light-gray);
+            border: 1px solid rgba(46, 49, 146, 0.1);
         }
-        .sla-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        .sla-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            border-radius: 10px 10px 0 0;
-        }
-        .sla-green::before { background: var(--success); }
-        .sla-yellow::before { background: var(--warning); }
-        .sla-red::before { background: var(--danger); }
-
-        .sla-value {
-            font-size: 2rem;
+        .cycle-time-value {
+            font-size: 1.75rem;
             font-weight: 700;
-            margin: 8px 0;
-        }
-        .sla-green .sla-value { color: var(--success); }
-        .sla-yellow .sla-value { color: var(--warning); }
-        .sla-red .sla-value { color: var(--danger); }
-
-        .sla-target { font-size: 0.75rem; color: var(--nesma-gray); margin-top: 4px; }
-        .sla-trend { font-size: 0.875rem; font-weight: 600; margin-top: 8px; }
-        .trend-up { color: var(--success); }
-        .trend-down { color: var(--danger); }
-
-        /* Filter Section */
-        .filter-section {
-            background: white;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 20px;
-            border: 1px solid var(--nesma-light-gray);
-        }
-
-        .filter-select {
-            padding: 8px 12px;
-            border: 1px solid var(--nesma-light-gray);
-            border-radius: 6px;
-            font-size: 14px;
-            min-width: 140px;
-            background: white;
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--nesma-primary);
-        }
-
-        /* Section Title */
-        .section-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--nesma-navy);
-        }
-
-        /* Stat Cards */
-        .stat-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 14px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-        .stat-card:hover { background: rgba(46, 49, 146, 0.03); }
-        .stat-card-default { background: #FAFAFA; border-left-color: var(--nesma-gray); }
-        .stat-card-blue { background: rgba(46, 49, 146, 0.04); border-left-color: var(--nesma-primary); }
-        .stat-card-green { background: rgba(5, 150, 105, 0.04); border-left-color: var(--success); }
-        .stat-card-yellow { background: rgba(217, 119, 6, 0.04); border-left-color: var(--warning); }
-        .stat-card-red { background: rgba(220, 38, 38, 0.04); border-left-color: var(--danger); }
-        .stat-card-orange { background: rgba(234, 88, 12, 0.04); border-left-color: #EA580C; }
-
-        /* Buttons */
-        .btn-primary {
-            background: var(--nesma-primary);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-primary:hover {
-            background: var(--nesma-dark-blue);
-        }
-
-        .btn-secondary {
-            background: white;
             color: var(--nesma-primary);
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            border: 1px solid var(--nesma-primary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-secondary:hover {
-            background: rgba(46, 49, 146, 0.05);
         }
 
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(14, 40, 65, 0.5);
-            animation: fadeIn 0.3s ease;
-        }
-        .modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 80vh;
-            overflow: hidden;
-            box-shadow: 0 16px 48px rgba(14, 40, 65, 0.2);
-        }
-        .modal-header {
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--nesma-primary);
-            color: white;
-        }
+        .modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(14, 40, 65, 0.6); backdrop-filter: blur(4px); }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; border-radius: 16px; width: 95%; max-width: 900px; max-height: 85vh; overflow: hidden; }
+        .modal-header { padding: 16px 20px; background: var(--nesma-primary); color: white; display: flex; justify-content: space-between; align-items: center; }
         .modal-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
-        .close-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            color: white;
-            transition: all 0.2s;
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .close-btn:hover { background: rgba(255, 255, 255, 0.25); }
+        .close-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; }
+        .close-btn:hover { background: rgba(255,255,255,0.3); }
 
-        /* Aging Buckets */
-        .aging-bucket {
-            display: flex;
-            align-items: center;
-            padding: 12px 14px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-        .aging-bucket:hover { background: rgba(46, 49, 146, 0.03); }
-        .aging-bucket-green { background: rgba(5, 150, 105, 0.04); border-left-color: var(--success); }
-        .aging-bucket-yellow { background: rgba(217, 119, 6, 0.04); border-left-color: var(--warning); }
-        .aging-bucket-red { background: rgba(220, 38, 38, 0.04); border-left-color: var(--danger); }
-
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; }
-            .card { box-shadow: none; border: 1px solid #e2e8f0; }
-        }
+        @media print { .no-print { display: none !important; } }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="nesma-header text-white sticky top-0 z-50 no-print">
-        <div class="container mx-auto px-4 lg:px-6 py-4">
-            <div class="flex justify-between items-center">
+    <header class="nesma-header text-white no-print">
+        <div class="container mx-auto px-4 lg:px-6">
+            <div class="flex items-center justify-between py-4">
                 <div class="flex items-center gap-4">
-                    <a href="index.html" class="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                        <span class="text-sm hidden sm:inline">Home</span>
+                    <a href="index.html" class="flex items-center gap-2 text-white/80 hover:text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        <span class="text-sm font-medium hidden sm:inline">Back to Portal</span>
                     </a>
-                    <div class="h-6 w-px bg-white/30 hidden sm:block"></div>
+                    <div class="h-6 w-px bg-white/20"></div>
                     <img src="assets/logo-white.svg" alt="NESMA" class="h-8 lg:h-10">
-                    <div class="hidden md:block border-l border-white/30 h-8 mx-2"></div>
-                    <div class="hidden md:block">
-                        <h1 class="text-lg font-bold">Equipment & Logistics Dashboard</h1>
-                        <p class="text-xs text-blue-100">Equipment Request, Approval & Delivery SLA</p>
-                    </div>
                 </div>
-                <div class="flex items-center gap-3 lg:gap-6">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-xs text-blue-100">Last Update</p>
-                        <p class="text-sm font-semibold" id="lastUpdateDate">Loading...</p>
-                    </div>
+                <div class="text-center flex-1 px-4">
+                    <h1 class="text-lg lg:text-xl font-bold">Transportation Dashboard</h1>
+                    <p class="text-xs lg:text-sm text-white/70 hidden sm:block">Equipment Rental & Job Orders Tracking</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs text-white/60 hidden md:inline" id="lastUpdated">Loading...</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 lg:px-6 py-6 lg:py-8">
-        <!-- Tab Navigation -->
-        <div class="card mb-6 lg:mb-8">
-            <div class="border-b border-gray-200 no-print">
-                <div class="flex overflow-x-auto">
-                    <button class="tab-btn active px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('equipment')">
-                        Equipment Delivery
-                    </button>
-                    <button class="tab-btn px-4 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 whitespace-nowrap text-sm lg:text-base" onclick="switchTab('reports')">
-                        SLA Reports
-                    </button>
+    <main class="container mx-auto px-4 lg:px-6 py-6">
+        <div class="card mb-6 overflow-hidden">
+            <div class="tabs-container">
+                <button class="tab-btn active" onclick="switchTab('overview', this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    <span>Overview</span>
+                    <span class="tab-count" id="overviewBadge">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('requests', this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    <span>Job Orders</span>
+                    <span class="tab-count" id="requestsBadge">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('suppliers', this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span>Suppliers</span>
+                    <span class="tab-count" id="suppliersBadge">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('equipment', this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    <span>Equipment</span>
+                    <span class="tab-count" id="equipmentBadge">0</span>
+                </button>
+            </div>
+
+            <div id="tab-overview" class="tab-content active">
+                <div class="sla-section">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                            SLA Compliance Dashboard
+                        </h3>
+                        <span class="text-xs text-gray-500">Equipment Delivery Target: 2 days | Overall Target: 95%</span>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="slaCards"></div>
+                </div>
+
+                <div class="filter-section no-print">
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Year</label>
+                            <select id="filterYear" class="filter-select" onchange="applyFilters()"><option value="">All Years</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Company</label>
+                            <select id="filterCompany" class="filter-select" onchange="applyFilters()"><option value="">All Companies</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Status</label>
+                            <select id="filterStatus" class="filter-select" onchange="applyFilters()"><option value="">All Statuses</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Supplier</label>
+                            <select id="filterSupplier" class="filter-select" onchange="applyFilters()"><option value="">All Suppliers</option></select>
+                        </div>
+                        <div class="ml-auto flex gap-2">
+                            <button onclick="resetFilters()" class="btn-reset">Reset</button>
+                            <button onclick="exportToPDF()" class="btn-export btn-export-pdf">
+                                <svg fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12V6h-4V2H4v16zm8-16l4 4h-4V2z"/></svg>
+                                PDF
+                            </button>
+                            <button onclick="exportToExcel()" class="btn-export btn-export-excel">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="overviewKPIs" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Status Breakdown</h3>
+                        <div class="chart-container" style="height:220px;"><canvas id="statusChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Monthly Trend</h3>
+                        <div class="chart-container" style="height:220px;"><canvas id="monthlyChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Cycle Time Distribution</h3>
+                        <div id="cycleTimeBuckets"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Top 10 Projects by Spend</h3>
+                        <div class="chart-container"><canvas id="projectChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Supplier Distribution</h3>
+                        <div class="chart-container"><canvas id="supplierChart"></canvas></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="p-4 lg:p-6">
-                <!-- Equipment Delivery Tab -->
-                <div id="tab-equipment" class="tab-content active">
-                    <!-- Equipment SLA Section -->
-                    <div class="sla-compliance-section mb-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                <svg class="w-5 h-5 text-cyan-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.321A1.5 1.5 0 0113 17.5H7a1.5 1.5 0 01-.507-2.912l.804-.32.123-.489H5a2 2 0 01-2-2V5z" clip-rule="evenodd"/>
-                                </svg>
-                                Equipment Delivery SLA
-                            </h3>
-                            <span class="text-xs text-gray-500">Target: ≥95%</span>
+            <div id="tab-requests" class="tab-content">
+                <div class="filter-section no-print">
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Project</label>
+                            <select id="filterProject" class="filter-select" onchange="filterRequests()"><option value="">All Projects</option></select>
                         </div>
-
-                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div class="sla-gradient-card sla-green" id="sla-equip-approval">
-                                <div class="sla-indicator">✓</div>
-                                <p class="text-xs text-gray-600 font-medium">Equipment Approval</p>
-                                <p class="text-xs text-gray-400">≤1 Business Day</p>
-                                <p class="sla-value" id="equip-approval-rate">95.7%</p>
-                                <p class="text-xs text-gray-500 mt-1">Target: 95%</p>
-                            </div>
-
-                            <div class="sla-gradient-card sla-yellow" id="sla-equip-city">
-                                <div class="sla-indicator">!</div>
-                                <p class="text-xs text-gray-600 font-medium">Delivery (In City)</p>
-                                <p class="text-xs text-gray-400">≤2 Business Days</p>
-                                <p class="sla-value" id="equip-city-rate">92.9%</p>
-                                <p class="text-xs text-gray-500 mt-1">Target: 95%</p>
-                            </div>
-
-                            <div class="sla-gradient-card sla-yellow" id="sla-equip-out">
-                                <div class="sla-indicator">!</div>
-                                <p class="text-xs text-gray-600 font-medium">Delivery (Out of City)</p>
-                                <p class="text-xs text-gray-400">≤3 Business Days</p>
-                                <p class="sla-value" id="equip-out-rate">93.7%</p>
-                                <p class="text-xs text-gray-500 mt-1">Target: 95%</p>
-                            </div>
-
-                            <div class="cycle-time-gradient">
-                                <p class="text-xs text-gray-600 font-medium mb-2">Cycle Time (Days)</p>
-                                <div class="grid grid-cols-3 gap-2 text-center">
-                                    <div>
-                                        <p class="text-xl font-bold text-blue-600" id="equip-avg">2.1</p>
-                                        <p class="text-xs text-gray-500">Avg</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-xl font-bold text-green-600" id="equip-p50">1.8</p>
-                                        <p class="text-xs text-gray-500">P50</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-xl font-bold text-orange-600" id="equip-p90">3.2</p>
-                                        <p class="text-xs text-gray-500">P90</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Equipment</label>
+                            <select id="filterEquipment" class="filter-select" onchange="filterRequests()"><option value="">All Equipment</option></select>
                         </div>
-                    </div>
-
-                    <!-- KPI Cards with Gradient Design -->
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
-                        <div class="gradient-card gradient-card-primary">
-                            <div class="gradient-card-icon">
-                                <svg fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
-                                    <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <p class="gradient-card-label">Total Requests</p>
-                            <p class="gradient-card-value" id="kpi-total-requests">847</p>
-                            <p class="gradient-card-subtitle">This period</p>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Rent Type</label>
+                            <select id="filterRentType" class="filter-select" onchange="filterRequests()"><option value="">All Types</option></select>
                         </div>
-
-                        <div class="gradient-card gradient-card-success">
-                            <div class="gradient-card-icon">
-                                <svg fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <p class="gradient-card-label">Completed</p>
-                            <p class="gradient-card-value" id="kpi-completed">789</p>
-                            <p class="gradient-card-subtitle"><span id="kpi-completed-pct">93.2%</span> completion rate</p>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">SLA Status</label>
+                            <select id="filterSLA" class="filter-select" onchange="filterRequests()">
+                                <option value="">All</option>
+                                <option value="On Time">On Time</option>
+                                <option value="Delayed">Delayed</option>
+                                <option value="In Progress">In Progress</option>
+                            </select>
                         </div>
-
-                        <div class="gradient-card gradient-card-warning">
-                            <div class="gradient-card-icon">
-                                <svg fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <p class="gradient-card-label">Pending</p>
-                            <p class="gradient-card-value" id="kpi-pending">42</p>
-                            <p class="gradient-card-subtitle">Awaiting processing</p>
-                        </div>
-
-                        <div class="gradient-card gradient-card-blue">
-                            <div class="gradient-card-icon">
-                                <svg fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <p class="gradient-card-label">In Progress</p>
-                            <p class="gradient-card-value" id="kpi-in-progress">16</p>
-                            <p class="gradient-card-subtitle">Being processed</p>
-                        </div>
-                    </div>
-
-                    <!-- Filters -->
-                    <div class="filter-section mb-6">
-                        <div class="flex flex-wrap gap-3 items-center">
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Project</label>
-                                <select id="filterProject" class="filter-select" onchange="applyFilters()">
-                                    <option value="">All Projects</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Equipment Type</label>
-                                <select id="filterEquipType" class="filter-select" onchange="applyFilters()">
-                                    <option value="">All Types</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Status</label>
-                                <select id="filterStatus" class="filter-select" onchange="applyFilters()">
-                                    <option value="">All</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Pending">Pending</option>
-                                    <option value="In Progress">In Progress</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Location</label>
-                                <select id="filterLocation" class="filter-select" onchange="applyFilters()">
-                                    <option value="">All</option>
-                                    <option value="In City">In City</option>
-                                    <option value="Out of City">Out of City</option>
-                                </select>
-                            </div>
-                            <div class="flex-grow"></div>
-                            <button onclick="resetFilters()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium transition-colors">Reset</button>
-                        </div>
-                    </div>
-
-                    <!-- Equipment Table -->
-                    <div class="card p-4 lg:p-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4">Equipment Requests</h3>
-                        <div class="scroll-container">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Request #</th>
-                                        <th>Project</th>
-                                        <th>Equipment</th>
-                                        <th>Supplier</th>
-                                        <th>Request Date</th>
-                                        <th>Delivery Date</th>
-                                        <th>Days</th>
-                                        <th>Status</th>
-                                        <th>SLA</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="equipmentTable">
-                                </tbody>
-                            </table>
+                        <div class="ml-auto flex gap-2">
+                            <button onclick="resetRequestFilters()" class="btn-reset">Reset</button>
+                            <button onclick="exportRequestsExcel()" class="btn-export btn-export-excel">Export</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- SLA Reports Tab -->
-                <div id="tab-reports" class="tab-content">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                        <div class="card p-4 lg:p-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">SLA Compliance Trend</h3>
-                            <div class="chart-container">
-                                <canvas id="slaComplianceChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="card p-4 lg:p-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Request Volume by Project</h3>
-                            <div class="chart-container">
-                                <canvas id="projectChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
+                <div id="requestsKPIs" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
 
-                    <!-- Summary Cards -->
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="card p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1">Early Utilization (7-day)</p>
-                            <p class="text-2xl font-bold text-cyan-600" id="early-util">87.5%</p>
-                        </div>
-                        <div class="card p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1">Database Up-to-date</p>
-                            <p class="text-2xl font-bold text-green-600" id="db-uptodate">98.5%</p>
-                        </div>
-                        <div class="card p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1">Total Value (SAR)</p>
-                            <p class="text-2xl font-bold text-blue-600" id="total-value">2.45M</p>
-                        </div>
-                        <div class="card p-4 text-center">
-                            <p class="text-gray-500 text-xs mb-1">Avg Request Value</p>
-                            <p class="text-2xl font-bold text-purple-600" id="avg-value">2,893</p>
-                        </div>
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-700 text-sm">Job Orders</h3>
+                        <span class="text-xs text-gray-500" id="requestsTableCount">0 records</span>
+                    </div>
+                    <div class="scroll-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Order</th>
+                                    <th>Date</th>
+                                    <th>Company</th>
+                                    <th>Project</th>
+                                    <th>Supplier</th>
+                                    <th>Equipment</th>
+                                    <th>Rent Type</th>
+                                    <th>Amount (SAR)</th>
+                                    <th>Status</th>
+                                    <th>SLA</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requestsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-suppliers" class="tab-content">
+                <div id="suppliersKPIs" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Jobs by Supplier</h3>
+                        <div class="chart-container"><canvas id="supplierJobsChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Spend by Supplier</h3>
+                        <div class="chart-container"><canvas id="supplierSpendChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="font-bold text-gray-700 text-sm">Supplier Performance</h3>
+                    </div>
+                    <div class="scroll-container">
+                        <table class="data-table">
+                            <thead><tr><th>Supplier</th><th>Total Jobs</th><th>On Time</th><th>Delayed</th><th>On-Time Rate</th><th>Total Spend</th><th>Avg Amount</th></tr></thead>
+                            <tbody id="suppliersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-equipment" class="tab-content">
+                <div id="equipmentKPIs" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Equipment Categories</h3>
+                        <div class="chart-container"><canvas id="equipmentCatChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Top Equipment by Usage</h3>
+                        <div class="chart-container"><canvas id="equipmentUsageChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="font-bold text-gray-700 text-sm">Equipment Details</h3>
+                    </div>
+                    <div class="scroll-container">
+                        <table class="data-table">
+                            <thead><tr><th>Equipment</th><th>Category</th><th>Usage Count</th><th>Total Spend</th><th>Avg Cost</th><th>Daily</th><th>Monthly</th></tr></thead>
+                            <tbody id="equipmentTableBody"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Footer -->
-        <footer class="text-center py-6 text-gray-500 text-sm">
-            <p class="mb-2">Transport & Equipment Management - NESMA Infrastructure & Technology</p>
-            <p class="text-xs">Version 1.0 | February 2026 | Based on NIT-SCM-SLA-KSA-11/10/2025-000-v1.0A</p>
-        </footer>
     </main>
 
-    <!-- Modal -->
     <div id="detailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="text-lg font-bold" id="modalTitle">Details</h3>
+                <h3 id="modalTitle" class="font-bold">Details</h3>
                 <button class="close-btn" onclick="closeModal()">&times;</button>
             </div>
-            <div class="modal-body" id="modalContent">
-            </div>
+            <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
 
     <script>
         let transportData = null;
+        let filteredRecords = [];
         let charts = {};
+
+        // SVG Icons as constants (safe static content)
+        const ICON_TRUCK = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m-8 5h8m-4-9l-2 4h6l-2-4M7 17a2 2 0 100-4 2 2 0 000 4zm10 0a2 2 0 100-4 2 2 0 000 4z"/></svg>';
+        const ICON_CHECK = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+        const ICON_CLOCK = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+        const ICON_ALERT = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
+        const ICON_MONEY = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+        const ICON_USERS = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+        const ICON_BOX = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>';
+
+        const ICONS = {
+            truck: ICON_TRUCK,
+            check: ICON_CHECK,
+            clock: ICON_CLOCK,
+            alert: ICON_ALERT,
+            money: ICON_MONEY,
+            users: ICON_USERS,
+            box: ICON_BOX
+        };
 
         async function loadData() {
             try {
-                const response = await fetch('data/transport_data.json?' + Date.now());
+                const response = await fetch('data/transport_data.json?t=' + Date.now());
                 transportData = await response.json();
-                updateDashboard();
-                initCharts();
+                document.getElementById('lastUpdated').textContent = 'Updated: ' + new Date(transportData.last_updated).toLocaleString();
+                document.getElementById('overviewBadge').textContent = transportData.summary.total_requests;
+                document.getElementById('requestsBadge').textContent = transportData.summary.total_requests;
+                document.getElementById('suppliersBadge').textContent = transportData.summary.unique_suppliers;
+                document.getElementById('equipmentBadge').textContent = Object.keys(transportData.summary.equipment_breakdown).length;
+                filteredRecords = transportData.records.slice();
                 populateFilters();
-                populateTable();
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
-        }
-
-        function updateDashboard() {
-            if (!transportData) return;
-
-            const lastUpdated = new Date(transportData.last_updated);
-            document.getElementById('lastUpdateDate').textContent = lastUpdated.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
-            document.getElementById('kpi-total-requests').textContent = transportData.summary.total_requests.toLocaleString();
-            document.getElementById('kpi-completed').textContent = transportData.summary.completed_requests.toLocaleString();
-            document.getElementById('kpi-pending').textContent = transportData.summary.pending_requests.toLocaleString();
-            document.getElementById('kpi-in-progress').textContent = transportData.summary.in_progress_requests.toLocaleString();
-
-            const completionRate = ((transportData.summary.completed_requests / transportData.summary.total_requests) * 100).toFixed(1);
-            document.getElementById('kpi-completed-pct').textContent = completionRate + '%';
-
-            const vehicleSLA = transportData.sla_metrics.vehicle_provision;
-            document.getElementById('vehicle-sla-rate').textContent = vehicleSLA.rate + '%';
-            document.getElementById('vehicle-ontime').textContent = vehicleSLA.on_time;
-            document.getElementById('vehicle-total').textContent = vehicleSLA.total;
-            updateSLACardStatus('sla-vehicle', vehicleSLA.rate, vehicleSLA.target);
-
-            document.getElementById('vehicle-avg').textContent = transportData.cycle_time.vehicle.average;
-            document.getElementById('vehicle-p50').textContent = transportData.cycle_time.vehicle.p50;
-            document.getElementById('vehicle-p90').textContent = transportData.cycle_time.vehicle.p90;
-            document.getElementById('first-time-ready').textContent = transportData.first_time_ready_rate + '%';
-
-            const equipApproval = transportData.sla_metrics.equipment_approval;
-            const equipCity = transportData.sla_metrics.equipment_delivery_city;
-            const equipOut = transportData.sla_metrics.equipment_delivery_out;
-
-            document.getElementById('equip-approval-rate').textContent = equipApproval.rate + '%';
-            document.getElementById('equip-city-rate').textContent = equipCity.rate + '%';
-            document.getElementById('equip-out-rate').textContent = equipOut.rate + '%';
-
-            updateSLACardStatus('sla-equip-approval', equipApproval.rate, equipApproval.target);
-            updateSLACardStatus('sla-equip-city', equipCity.rate, equipCity.target);
-            updateSLACardStatus('sla-equip-out', equipOut.rate, equipOut.target);
-
-            document.getElementById('equip-avg').textContent = transportData.cycle_time.equipment.average;
-            document.getElementById('equip-p50').textContent = transportData.cycle_time.equipment.p50;
-            document.getElementById('equip-p90').textContent = transportData.cycle_time.equipment.p90;
-
-            const aging = transportData.aging_buckets;
-            const totalAging = aging['0_1_days'] + aging['2_3_days'] + aging['4_5_days'] + aging['over_5_days'];
-
-            document.getElementById('aging-0-1').textContent = aging['0_1_days'];
-            document.getElementById('aging-2-3').textContent = aging['2_3_days'];
-            document.getElementById('aging-4-5').textContent = aging['4_5_days'];
-            document.getElementById('aging-5plus').textContent = aging['over_5_days'];
-
-            document.getElementById('aging-0-1-bar').style.width = ((aging['0_1_days'] / totalAging) * 100) + '%';
-            document.getElementById('aging-2-3-bar').style.width = ((aging['2_3_days'] / totalAging) * 100) + '%';
-            document.getElementById('aging-4-5-bar').style.width = ((aging['4_5_days'] / totalAging) * 100) + '%';
-            document.getElementById('aging-5plus-bar').style.width = ((aging['over_5_days'] / totalAging) * 100) + '%';
-
-            document.getElementById('early-util').textContent = transportData.early_utilization_7day + '%';
-            document.getElementById('db-uptodate').textContent = transportData.up_to_date_usage_database + '%';
-            document.getElementById('total-value').textContent = (transportData.summary.total_value / 1000000).toFixed(2) + 'M';
-            document.getElementById('avg-value').textContent = Math.round(transportData.summary.total_value / transportData.summary.total_requests).toLocaleString();
-        }
-
-        function updateSLACardStatus(elementId, rate, target) {
-            const element = document.getElementById(elementId);
-            element.classList.remove('sla-green', 'sla-yellow', 'sla-red');
-            if (rate >= target) {
-                element.classList.add('sla-green');
-            } else if (rate >= target - 5) {
-                element.classList.add('sla-yellow');
-            } else {
-                element.classList.add('sla-red');
-            }
-        }
-
-        function initCharts() {
-            if (!transportData) return;
-
-            const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
-            charts.monthly = new Chart(monthlyCtx, {
-                type: 'bar',
-                data: {
-                    labels: transportData.monthly_summary.labels,
-                    datasets: [
-                        {
-                            label: 'Requests',
-                            data: transportData.monthly_summary.requests,
-                            backgroundColor: 'rgba(8, 145, 178, 0.7)',
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Completed',
-                            data: transportData.monthly_summary.completed,
-                            backgroundColor: 'rgba(78, 167, 46, 0.7)',
-                            borderRadius: 4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top' } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-
-            const slaCtx = document.getElementById('slaComplianceChart').getContext('2d');
-            charts.sla = new Chart(slaCtx, {
-                type: 'line',
-                data: {
-                    labels: transportData.monthly_summary.labels,
-                    datasets: [{
-                        label: 'SLA Compliance %',
-                        data: transportData.monthly_summary.sla_compliance,
-                        borderColor: '#0891b2',
-                        backgroundColor: 'rgba(8, 145, 178, 0.1)',
-                        fill: true,
-                        tension: 0.4
-                    }, {
-                        label: 'Target (95%)',
-                        data: Array(12).fill(95),
-                        borderColor: '#FF2600',
-                        borderDash: [5, 5],
-                        fill: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { y: { min: 85, max: 100 } }
-                }
-            });
-
-            const projectCtx = document.getElementById('projectChart').getContext('2d');
-            const projectData = {};
-            transportData.equipment_requests.forEach(function(req) {
-                projectData[req.project] = (projectData[req.project] || 0) + 1;
-            });
-
-            charts.project = new Chart(projectCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(projectData),
-                    datasets: [{
-                        data: Object.values(projectData),
-                        backgroundColor: ['#0891b2', '#4EA72E', '#FF9200', '#6366f1', '#ec4899', '#14b8a6']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'right' } }
-                }
-            });
+                renderAll();
+            } catch (e) { console.error('Error loading data:', e); }
         }
 
         function populateFilters() {
-            if (!transportData) return;
-
-            const projectFilter = document.getElementById('filterProject');
-            transportData.filters.projects.forEach(function(project) {
-                const option = document.createElement('option');
-                option.value = project;
-                option.textContent = project;
-                projectFilter.appendChild(option);
-            });
-
-            const equipTypeFilter = document.getElementById('filterEquipType');
-            transportData.filters.equipment_types.forEach(function(type) {
-                const option = document.createElement('option');
-                option.value = type;
-                option.textContent = type;
-                equipTypeFilter.appendChild(option);
-            });
+            addOptions('filterYear', transportData.filters.years);
+            addOptions('filterCompany', transportData.filters.companies);
+            addOptions('filterStatus', transportData.filters.statuses);
+            addOptions('filterSupplier', transportData.filters.suppliers);
+            addOptions('filterProject', transportData.filters.projects.slice(0, 50));
+            addOptions('filterEquipment', transportData.filters.equipment_categories);
+            addOptions('filterRentType', transportData.filters.rent_types);
         }
 
-        function populateTable() {
-            if (!transportData) return;
-
-            const tbody = document.getElementById('equipmentTable');
-            tbody.textContent = '';
-
-            transportData.equipment_requests.forEach(function(req) {
-                const tr = document.createElement('tr');
-
-                const tdReqNum = document.createElement('td');
-                tdReqNum.className = 'font-medium';
-                tdReqNum.textContent = req.request_number;
-                tr.appendChild(tdReqNum);
-
-                const tdProject = document.createElement('td');
-                tdProject.textContent = req.project;
-                tr.appendChild(tdProject);
-
-                const tdEquip = document.createElement('td');
-                tdEquip.textContent = req.equipment_1;
-                tr.appendChild(tdEquip);
-
-                const tdSupplier = document.createElement('td');
-                tdSupplier.textContent = req.supplier;
-                tr.appendChild(tdSupplier);
-
-                const tdReqDate = document.createElement('td');
-                tdReqDate.textContent = req.request_date;
-                tr.appendChild(tdReqDate);
-
-                const tdDelDate = document.createElement('td');
-                tdDelDate.textContent = req.delivery_date || '-';
-                tr.appendChild(tdDelDate);
-
-                const tdDays = document.createElement('td');
-                tdDays.textContent = req.cycle_days;
-                tr.appendChild(tdDays);
-
-                const tdStatus = document.createElement('td');
-                const statusSpan = document.createElement('span');
-                statusSpan.className = 'px-2 py-1 rounded-full text-xs font-medium ';
-                if (req.status === 'Completed') {
-                    statusSpan.className += 'bg-green-100 text-green-800';
-                } else if (req.status === 'Pending') {
-                    statusSpan.className += 'bg-yellow-100 text-yellow-800';
-                } else {
-                    statusSpan.className += 'bg-blue-100 text-blue-800';
-                }
-                statusSpan.textContent = req.status;
-                tdStatus.appendChild(statusSpan);
-                tr.appendChild(tdStatus);
-
-                const tdSLA = document.createElement('td');
-                const slaSpan = document.createElement('span');
-                slaSpan.className = 'px-2 py-1 rounded-full text-xs font-medium ';
-                if (req.sla_met) {
-                    slaSpan.className += 'bg-green-100 text-green-800';
-                } else {
-                    slaSpan.className += 'bg-red-100 text-red-800';
-                }
-                slaSpan.textContent = req.sla_status;
-                tdSLA.appendChild(slaSpan);
-                tr.appendChild(tdSLA);
-
-                tbody.appendChild(tr);
-            });
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
-            document.querySelectorAll('.tab-content').forEach(function(content) { content.classList.remove('active'); });
-            event.target.classList.add('active');
-            document.getElementById('tab-' + tabId).classList.add('active');
+        function addOptions(id, items) {
+            var sel = document.getElementById(id);
+            for (var i = 0; i < items.length; i++) {
+                var o = document.createElement('option');
+                o.value = items[i];
+                o.textContent = items[i];
+                sel.appendChild(o);
+            }
         }
 
         function applyFilters() {
-            populateTable();
+            var year = document.getElementById('filterYear').value;
+            var company = document.getElementById('filterCompany').value;
+            var status = document.getElementById('filterStatus').value;
+            var supplier = document.getElementById('filterSupplier').value;
+            filteredRecords = transportData.records.filter(function(r) {
+                if (year && r.year != year) return false;
+                if (company && r.company !== company) return false;
+                if (status && r.status !== status) return false;
+                if (supplier && r.supplier !== supplier) return false;
+                return true;
+            });
+            renderAll();
         }
 
         function resetFilters() {
-            document.getElementById('filterProject').value = '';
-            document.getElementById('filterEquipType').value = '';
+            document.getElementById('filterYear').value = '';
+            document.getElementById('filterCompany').value = '';
             document.getElementById('filterStatus').value = '';
-            document.getElementById('filterLocation').value = '';
-            populateTable();
+            document.getElementById('filterSupplier').value = '';
+            filteredRecords = transportData.records.slice();
+            renderAll();
+        }
+
+        function renderAll() {
+            renderOverview();
+            renderRequests();
+            renderSuppliers();
+            renderEquipment();
+        }
+
+        function switchTab(name, btn) {
+            var tabs = document.querySelectorAll('.tab-content');
+            var btns = document.querySelectorAll('.tab-btn');
+            for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+            for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+            document.getElementById('tab-' + name).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function createKPI(gradient, iconKey, label, value, subtitle, onclick) {
+            var div = document.createElement('div');
+            div.className = 'kpi-card ' + gradient;
+            if (onclick) { div.style.cursor = 'pointer'; div.onclick = onclick; }
+
+            var iconDiv = document.createElement('div');
+            iconDiv.className = 'kpi-icon';
+            iconDiv.innerHTML = ICONS[iconKey]; // Safe: static constant
+            div.appendChild(iconDiv);
+
+            var labelP = document.createElement('p');
+            labelP.className = 'kpi-label';
+            labelP.textContent = label;
+            div.appendChild(labelP);
+
+            var valueP = document.createElement('p');
+            valueP.className = 'kpi-value';
+            valueP.textContent = value;
+            div.appendChild(valueP);
+
+            var subP = document.createElement('p');
+            subP.className = 'kpi-subtitle';
+            subP.textContent = subtitle;
+            div.appendChild(subP);
+
+            if (onclick) {
+                var hint = document.createElement('span');
+                hint.className = 'click-hint';
+                hint.textContent = 'Click for details';
+                div.appendChild(hint);
+            }
+            return div;
+        }
+
+        function createSLACard(status, label, value, target, trend, onclick) {
+            var div = document.createElement('div');
+            div.className = 'sla-card sla-' + status;
+            if (onclick) div.onclick = onclick;
+
+            var indicator = document.createElement('div');
+            indicator.className = 'sla-indicator';
+            indicator.innerHTML = status === 'green' ? ICON_CHECK : ICON_ALERT; // Safe: static constant
+            div.appendChild(indicator);
+
+            var labelP = document.createElement('p');
+            labelP.className = 'sla-label';
+            labelP.textContent = label;
+            div.appendChild(labelP);
+
+            var valueP = document.createElement('p');
+            valueP.className = 'sla-value';
+            valueP.textContent = value;
+            div.appendChild(valueP);
+
+            var targetP = document.createElement('p');
+            targetP.className = 'sla-target';
+            targetP.textContent = target;
+            div.appendChild(targetP);
+
+            if (trend) {
+                var trendP = document.createElement('p');
+                trendP.className = 'sla-trend ' + (trend.indexOf('+') === 0 ? 'trend-up' : (trend.indexOf('-') === 0 ? 'trend-down' : ''));
+                trendP.textContent = trend;
+                div.appendChild(trendP);
+            }
+            return div;
+        }
+
+        function createBadge(text, cls) {
+            var s = document.createElement('span');
+            s.className = 'badge ' + cls;
+            s.textContent = text;
+            return s;
+        }
+
+        function createCell(text, cls) {
+            var td = document.createElement('td');
+            if (cls) td.className = cls;
+            td.textContent = text || '-';
+            return td;
+        }
+
+        function renderOverview() {
+            var data = filteredRecords;
+            var total = data.length;
+            var amount = 0, done = 0, inProgress = 0, onTime = 0, delayed = 0;
+            for (var i = 0; i < data.length; i++) {
+                amount += data[i].total_amount;
+                if (data[i].status === 'Done') done++;
+                if (data[i].status === 'In Progress') inProgress++;
+                if (data[i].sla_status === 'On Time') onTime++;
+                if (data[i].sla_status === 'Delayed') delayed++;
+            }
+            var completionRate = total > 0 ? Math.round(done / total * 100) : 0;
+            var completed = data.filter(function(r) { return r.status === 'Done'; });
+            var onTimeRate = completed.length > 0 ? Math.round(onTime / completed.length * 100) : 0;
+
+            // SLA Cards
+            var sla = document.getElementById('slaCards');
+            sla.innerHTML = '';
+            sla.appendChild(createSLACard(completionRate >= 95 ? 'green' : completionRate >= 85 ? 'yellow' : 'red', 'Completion Rate', completionRate + '%', 'Target: 95%', null, function() { showSLADetails('completion'); }));
+            sla.appendChild(createSLACard(onTimeRate >= 95 ? 'green' : onTimeRate >= 85 ? 'yellow' : 'red', 'On-Time Delivery', onTimeRate + '%', 'Target: 95%', null, function() { showSLADetails('ontime'); }));
+            sla.appendChild(createSLACard(inProgress <= 20 ? 'green' : inProgress <= 50 ? 'yellow' : 'red', 'In Progress', inProgress, 'Active jobs', null, function() { showDetails('In Progress'); }));
+            sla.appendChild(createSLACard(delayed === 0 ? 'green' : delayed <= 10 ? 'yellow' : 'red', 'Delayed', delayed, 'Need attention', null, function() { showDelayedDetails(); }));
+
+            // KPIs
+            var kpi = document.getElementById('overviewKPIs');
+            kpi.innerHTML = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'truck', 'Total Jobs', total.toLocaleString(), 'Requests', function() { showModal('All Jobs', total + ' total job orders'); }));
+            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Completed', done.toLocaleString(), completionRate + '% rate', function() { showDetails('Done'); }));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'clock', 'In Progress', inProgress.toLocaleString(), 'Active', function() { showDetails('In Progress'); }));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'check', 'On Time', onTime.toLocaleString(), onTimeRate + '% of completed', null));
+            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'Delayed', delayed.toLocaleString(), 'Past SLA', function() { showDelayedDetails(); }));
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + (amount / 1000000).toFixed(2) + 'M', 'All jobs', null));
+
+            // Status Chart
+            var statusCounts = {};
+            for (var i = 0; i < data.length; i++) {
+                statusCounts[data[i].status] = (statusCounts[data[i].status] || 0) + 1;
+            }
+            if (charts.status) charts.status.destroy();
+            charts.status = new Chart(document.getElementById('statusChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(statusCounts), datasets: [{ data: Object.values(statusCounts), backgroundColor: ['#10B981', '#FBBF24', '#3B82F6', '#EF4444', '#8B5CF6', '#EC4899'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, cutout: '65%' }
+            });
+
+            // Monthly Chart
+            var monthly = {};
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].month) monthly[data[i].month] = (monthly[data[i].month] || 0) + 1;
+            }
+            var sortedMonths = Object.keys(monthly).sort().slice(-12);
+            if (charts.monthly) charts.monthly.destroy();
+            charts.monthly = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
+                type: 'line',
+                data: { labels: sortedMonths.map(function(m) { return m.slice(5); }), datasets: [{ label: 'Jobs', data: sortedMonths.map(function(m) { return monthly[m]; }), borderColor: '#2E3192', backgroundColor: 'rgba(46, 49, 146, 0.1)', fill: true, tension: 0.4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+
+            // Cycle Time Buckets
+            var buckets = { '0-2 days (On Time)': 0, '3-5 days': 0, '6-10 days': 0, '>10 days': 0 };
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].cycle_time !== null) {
+                    if (data[i].cycle_time <= 2) buckets['0-2 days (On Time)']++;
+                    else if (data[i].cycle_time <= 5) buckets['3-5 days']++;
+                    else if (data[i].cycle_time <= 10) buckets['6-10 days']++;
+                    else buckets['>10 days']++;
+                }
+            }
+            var ctDiv = document.getElementById('cycleTimeBuckets');
+            ctDiv.innerHTML = '';
+            var bucketClasses = ['aging-green', 'aging-yellow', 'aging-orange', 'aging-red'];
+            var bucketEntries = Object.entries(buckets);
+            for (var i = 0; i < bucketEntries.length; i++) {
+                var label = bucketEntries[i][0];
+                var count = bucketEntries[i][1];
+                var pct = total > 0 ? (count / total * 100).toFixed(0) : 0;
+                var div = document.createElement('div');
+                div.className = 'aging-item ' + bucketClasses[i];
+
+                var flex = document.createElement('div');
+                flex.className = 'flex-1';
+                var labelSpan = document.createElement('span');
+                labelSpan.className = 'text-sm font-medium text-gray-700';
+                labelSpan.textContent = label;
+                var countSpan = document.createElement('span');
+                countSpan.className = 'text-sm text-gray-500 ml-2';
+                countSpan.textContent = '(' + count + ')';
+                flex.appendChild(labelSpan);
+                flex.appendChild(countSpan);
+
+                var pctSpan = document.createElement('span');
+                pctSpan.className = 'text-sm font-medium text-gray-600';
+                pctSpan.textContent = pct + '%';
+
+                div.appendChild(flex);
+                div.appendChild(pctSpan);
+                ctDiv.appendChild(div);
+            }
+
+            // Project Chart
+            var projectSpend = {};
+            for (var i = 0; i < data.length; i++) {
+                projectSpend[data[i].project] = (projectSpend[data[i].project] || 0) + data[i].total_amount;
+            }
+            var top10Projects = Object.entries(projectSpend).sort(function(a, b) { return b[1] - a[1]; }).slice(0, 10);
+            if (charts.project) charts.project.destroy();
+            charts.project = new Chart(document.getElementById('projectChart').getContext('2d'), {
+                type: 'bar',
+                data: { labels: top10Projects.map(function(p) { return p[0].length > 20 ? p[0].slice(0, 20) + '...' : p[0]; }), datasets: [{ label: 'SAR', data: top10Projects.map(function(p) { return p[1]; }), backgroundColor: '#2E3192' }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            // Supplier Chart
+            var supplierCount = {};
+            for (var i = 0; i < data.length; i++) {
+                supplierCount[data[i].supplier] = (supplierCount[data[i].supplier] || 0) + 1;
+            }
+            if (charts.supplier) charts.supplier.destroy();
+            charts.supplier = new Chart(document.getElementById('supplierChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(supplierCount), datasets: [{ data: Object.values(supplierCount), backgroundColor: ['#2E3192', '#80D1E9', '#10B981', '#FBBF24', '#EF4444', '#8B5CF6', '#EC4899', '#F97316', '#06B6D4', '#14B8A6', '#6366F1'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 } } } }, cutout: '50%' }
+            });
+        }
+
+        var requestsFiltered = [];
+        function filterRequests() {
+            var project = document.getElementById('filterProject').value;
+            var equipment = document.getElementById('filterEquipment').value;
+            var rentType = document.getElementById('filterRentType').value;
+            var sla = document.getElementById('filterSLA').value;
+            requestsFiltered = filteredRecords.filter(function(r) {
+                if (project && r.project !== project) return false;
+                if (equipment && r.equipment_category !== equipment) return false;
+                if (rentType && r.rent_type !== rentType) return false;
+                if (sla && r.sla_status !== sla) return false;
+                return true;
+            });
+            renderRequests(requestsFiltered);
+        }
+
+        function resetRequestFilters() {
+            document.getElementById('filterProject').value = '';
+            document.getElementById('filterEquipment').value = '';
+            document.getElementById('filterRentType').value = '';
+            document.getElementById('filterSLA').value = '';
+            requestsFiltered = filteredRecords.slice();
+            renderRequests(requestsFiltered);
+        }
+
+        function renderRequests(data) {
+            data = data || filteredRecords;
+            var total = data.length;
+            var amount = 0, daily = 0, monthly = 0;
+            for (var i = 0; i < data.length; i++) {
+                amount += data[i].total_amount;
+                if (data[i].rent_type === 'Daily') daily++;
+                else monthly++;
+            }
+
+            var kpi = document.getElementById('requestsKPIs');
+            kpi.innerHTML = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'truck', 'Jobs', total.toLocaleString(), 'Total', null));
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Amount', 'SAR ' + (amount / 1000).toFixed(0) + 'K', 'Total spend', null));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'clock', 'Daily Rent', daily.toLocaleString(), Math.round(daily / Math.max(total, 1) * 100) + '%', null));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'clock', 'Monthly Rent', monthly.toLocaleString(), Math.round(monthly / Math.max(total, 1) * 100) + '%', null));
+
+            document.getElementById('requestsTableCount').textContent = data.length + ' records';
+            var tbody = document.getElementById('requestsTableBody');
+            tbody.innerHTML = '';
+            var displayData = data.slice(0, 200);
+            for (var i = 0; i < displayData.length; i++) {
+                var r = displayData[i];
+                var tr = document.createElement('tr');
+                tr.appendChild(createCell(r.job_order, 'font-medium'));
+                tr.appendChild(createCell(r.request_date));
+                tr.appendChild(createCell(r.company));
+                var projTd = createCell(r.project);
+                projTd.style.maxWidth = '150px';
+                projTd.style.overflow = 'hidden';
+                projTd.style.textOverflow = 'ellipsis';
+                projTd.style.whiteSpace = 'nowrap';
+                projTd.title = r.project;
+                tr.appendChild(projTd);
+                tr.appendChild(createCell(r.supplier));
+                tr.appendChild(createCell(r.equipment));
+                var rentTd = document.createElement('td');
+                rentTd.appendChild(createBadge(r.rent_type, r.rent_type === 'Daily' ? 'badge-info' : 'badge-warning'));
+                tr.appendChild(rentTd);
+                tr.appendChild(createCell(r.total_amount.toLocaleString(), 'text-right'));
+                var statusTd = document.createElement('td');
+                statusTd.appendChild(createBadge(r.status, r.status === 'Done' ? 'badge-success' : r.status === 'In Progress' ? 'badge-warning' : 'badge-gray'));
+                tr.appendChild(statusTd);
+                var slaTd = document.createElement('td');
+                slaTd.appendChild(createBadge(r.sla_status, r.sla_status === 'On Time' ? 'badge-success' : r.sla_status === 'Delayed' ? 'badge-danger' : 'badge-info'));
+                tr.appendChild(slaTd);
+                tbody.appendChild(tr);
+            }
+            if (data.length > 200) {
+                var tr = document.createElement('tr');
+                var td = document.createElement('td');
+                td.colSpan = 10;
+                td.className = 'text-center text-gray-500 py-4';
+                td.textContent = 'Showing 200 of ' + data.length + ' records';
+                tr.appendChild(td);
+                tbody.appendChild(tr);
+            }
+        }
+
+        function renderSuppliers() {
+            var data = filteredRecords;
+            var suppliers = {};
+            for (var i = 0; i < data.length; i++) {
+                var r = data[i];
+                if (!suppliers[r.supplier]) suppliers[r.supplier] = { jobs: 0, amount: 0, onTime: 0, delayed: 0 };
+                suppliers[r.supplier].jobs++;
+                suppliers[r.supplier].amount += r.total_amount;
+                if (r.sla_status === 'On Time') suppliers[r.supplier].onTime++;
+                if (r.sla_status === 'Delayed') suppliers[r.supplier].delayed++;
+            }
+
+            var kpi = document.getElementById('suppliersKPIs');
+            kpi.innerHTML = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'users', 'Suppliers', Object.keys(suppliers).length, 'Active', null));
+            var sorted = Object.entries(suppliers).sort(function(a, b) { return b[1].jobs - a[1].jobs; });
+            var topSupplier = sorted[0];
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'truck', 'Top Supplier', topSupplier ? topSupplier[0] : 'N/A', topSupplier ? topSupplier[1].jobs + ' jobs' : '', null));
+            var totalOnTime = 0, totalCompleted = 0;
+            for (var key in suppliers) {
+                totalOnTime += suppliers[key].onTime;
+                totalCompleted += suppliers[key].onTime + suppliers[key].delayed;
+            }
+            var avgOnTimeRate = totalCompleted > 0 ? Math.round(totalOnTime / totalCompleted * 100) : 0;
+            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Avg On-Time', avgOnTimeRate + '%', 'All suppliers', null));
+            var totalSpend = 0;
+            for (var key in suppliers) totalSpend += suppliers[key].amount;
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + (totalSpend / 1000000).toFixed(2) + 'M', 'All suppliers', null));
+
+            if (charts.supplierJobs) charts.supplierJobs.destroy();
+            charts.supplierJobs = new Chart(document.getElementById('supplierJobsChart').getContext('2d'), {
+                type: 'bar',
+                data: { labels: sorted.map(function(s) { return s[0]; }), datasets: [{ label: 'Jobs', data: sorted.map(function(s) { return s[1].jobs; }), backgroundColor: '#2E3192' }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            var sortedBySpend = Object.entries(suppliers).sort(function(a, b) { return b[1].amount - a[1].amount; });
+            if (charts.supplierSpend) charts.supplierSpend.destroy();
+            charts.supplierSpend = new Chart(document.getElementById('supplierSpendChart').getContext('2d'), {
+                type: 'bar',
+                data: { labels: sortedBySpend.map(function(s) { return s[0]; }), datasets: [{ label: 'SAR', data: sortedBySpend.map(function(s) { return s[1].amount; }), backgroundColor: '#80D1E9' }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            var tbody = document.getElementById('suppliersTableBody');
+            tbody.innerHTML = '';
+            for (var i = 0; i < sorted.length; i++) {
+                var name = sorted[i][0];
+                var s = sorted[i][1];
+                var tr = document.createElement('tr');
+                tr.appendChild(createCell(name, 'font-medium'));
+                tr.appendChild(createCell(s.jobs, 'text-center'));
+                tr.appendChild(createCell(s.onTime, 'text-center'));
+                tr.appendChild(createCell(s.delayed, 'text-center'));
+                var completed = s.onTime + s.delayed;
+                var rate = completed > 0 ? Math.round(s.onTime / completed * 100) : 0;
+                var rateTd = document.createElement('td');
+                rateTd.appendChild(createBadge(rate + '%', rate >= 95 ? 'badge-success' : rate >= 85 ? 'badge-warning' : 'badge-danger'));
+                tr.appendChild(rateTd);
+                tr.appendChild(createCell(s.amount.toLocaleString(), 'text-right'));
+                tr.appendChild(createCell(Math.round(s.amount / s.jobs).toLocaleString(), 'text-right'));
+                tbody.appendChild(tr);
+            }
+        }
+
+        function renderEquipment() {
+            var data = filteredRecords;
+            var equipment = {};
+            var categories = {};
+            for (var i = 0; i < data.length; i++) {
+                var r = data[i];
+                if (!equipment[r.equipment]) equipment[r.equipment] = { count: 0, amount: 0, daily: 0, monthly: 0, category: r.equipment_category };
+                equipment[r.equipment].count++;
+                equipment[r.equipment].amount += r.total_amount;
+                if (r.rent_type === 'Daily') equipment[r.equipment].daily++;
+                else equipment[r.equipment].monthly++;
+                categories[r.equipment_category] = (categories[r.equipment_category] || 0) + 1;
+            }
+
+            var kpi = document.getElementById('equipmentKPIs');
+            kpi.innerHTML = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'box', 'Equipment Types', Object.keys(equipment).length, 'Unique', null));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'box', 'Categories', Object.keys(categories).length, 'Groups', null));
+            var sorted = Object.entries(equipment).sort(function(a, b) { return b[1].count - a[1].count; });
+            var topEquip = sorted[0];
+            kpi.appendChild(createKPI('bg-success-gradient', 'truck', 'Most Used', topEquip ? topEquip[0] : 'N/A', topEquip ? topEquip[1].count + ' times' : '', null));
+            var totalSpend = 0;
+            for (var key in equipment) totalSpend += equipment[key].amount;
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + (totalSpend / 1000000).toFixed(2) + 'M', 'All equipment', null));
+
+            if (charts.equipmentCat) charts.equipmentCat.destroy();
+            charts.equipmentCat = new Chart(document.getElementById('equipmentCatChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(categories), datasets: [{ data: Object.values(categories), backgroundColor: ['#2E3192', '#80D1E9', '#10B981', '#FBBF24', '#EF4444', '#8B5CF6', '#EC4899'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 } } } }, cutout: '50%' }
+            });
+
+            var top10 = sorted.slice(0, 10);
+            if (charts.equipmentUsage) charts.equipmentUsage.destroy();
+            charts.equipmentUsage = new Chart(document.getElementById('equipmentUsageChart').getContext('2d'), {
+                type: 'bar',
+                data: { labels: top10.map(function(e) { return e[0].length > 15 ? e[0].slice(0, 15) + '...' : e[0]; }), datasets: [{ label: 'Usage', data: top10.map(function(e) { return e[1].count; }), backgroundColor: '#2E3192' }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            var tbody = document.getElementById('equipmentTableBody');
+            tbody.innerHTML = '';
+            var displayEquip = sorted.slice(0, 50);
+            for (var i = 0; i < displayEquip.length; i++) {
+                var name = displayEquip[i][0];
+                var e = displayEquip[i][1];
+                var tr = document.createElement('tr');
+                var nameTd = createCell(name, 'font-medium');
+                nameTd.style.maxWidth = '200px';
+                nameTd.style.overflow = 'hidden';
+                nameTd.style.textOverflow = 'ellipsis';
+                nameTd.style.whiteSpace = 'nowrap';
+                nameTd.title = name;
+                tr.appendChild(nameTd);
+                tr.appendChild(createCell(e.category));
+                tr.appendChild(createCell(e.count, 'text-center'));
+                tr.appendChild(createCell(e.amount.toLocaleString(), 'text-right'));
+                tr.appendChild(createCell(Math.round(e.amount / e.count).toLocaleString(), 'text-right'));
+                tr.appendChild(createCell(e.daily, 'text-center'));
+                tr.appendChild(createCell(e.monthly, 'text-center'));
+                tbody.appendChild(tr);
+            }
+        }
+
+        function showModal(title, contentText) {
+            document.getElementById('modalTitle').textContent = title;
+            var body = document.getElementById('modalBody');
+            body.innerHTML = '';
+            var p = document.createElement('p');
+            p.textContent = contentText;
+            body.appendChild(p);
+            document.getElementById('detailModal').classList.add('show');
         }
 
         function closeModal() {
             document.getElementById('detailModal').classList.remove('show');
         }
 
+        function showDetails(status) {
+            var records = filteredRecords.filter(function(r) { return r.status === status; });
+            document.getElementById('modalTitle').textContent = status + ' Jobs';
+            var body = document.getElementById('modalBody');
+            body.innerHTML = '';
+
+            var summary = document.createElement('p');
+            summary.className = 'text-sm text-gray-500 mb-4';
+            summary.textContent = records.length + ' ' + status + ' jobs';
+            body.appendChild(summary);
+
+            var displayRecords = records.slice(0, 20);
+            for (var i = 0; i < displayRecords.length; i++) {
+                var r = displayRecords[i];
+                var div = document.createElement('div');
+                div.className = 'p-3 bg-gray-50 rounded-lg mb-2';
+                var title = document.createElement('p');
+                title.className = 'font-medium';
+                title.textContent = r.job_order + ' - ' + r.project;
+                var details = document.createElement('p');
+                details.className = 'text-sm text-gray-500';
+                details.textContent = r.supplier + ' | ' + r.equipment + ' | SAR ' + r.total_amount.toLocaleString();
+                div.appendChild(title);
+                div.appendChild(details);
+                body.appendChild(div);
+            }
+            document.getElementById('detailModal').classList.add('show');
+        }
+
+        function showDelayedDetails() {
+            var records = filteredRecords.filter(function(r) { return r.sla_status === 'Delayed'; });
+            document.getElementById('modalTitle').textContent = 'Delayed Jobs';
+            var body = document.getElementById('modalBody');
+            body.innerHTML = '';
+
+            var summary = document.createElement('p');
+            summary.className = 'text-sm text-gray-500 mb-4';
+            summary.textContent = records.length + ' delayed jobs (past SLA target of 2 days)';
+            body.appendChild(summary);
+
+            var displayRecords = records.slice(0, 20);
+            for (var i = 0; i < displayRecords.length; i++) {
+                var r = displayRecords[i];
+                var div = document.createElement('div');
+                div.className = 'p-3 bg-red-50 rounded-lg mb-2 border-l-4 border-red-500';
+                var title = document.createElement('p');
+                title.className = 'font-medium';
+                title.textContent = r.job_order + ' - ' + r.project;
+                var details = document.createElement('p');
+                details.className = 'text-sm text-gray-500';
+                details.textContent = r.supplier + ' | Cycle: ' + (r.cycle_time || 'N/A') + ' days | SAR ' + r.total_amount.toLocaleString();
+                div.appendChild(title);
+                div.appendChild(details);
+                body.appendChild(div);
+            }
+            document.getElementById('detailModal').classList.add('show');
+        }
+
+        function showSLADetails(type) {
+            var data = filteredRecords;
+            document.getElementById('modalTitle').textContent = type === 'completion' ? 'Completion Rate Details' : 'On-Time Delivery Details';
+            var body = document.getElementById('modalBody');
+            body.innerHTML = '';
+
+            var card = document.createElement('div');
+            card.className = 'cycle-time-card mb-4';
+
+            if (type === 'completion') {
+                var done = data.filter(function(r) { return r.status === 'Done'; }).length;
+                var rate = data.length > 0 ? Math.round(done / data.length * 100) : 0;
+                var label = document.createElement('p');
+                label.className = 'text-sm text-gray-500';
+                label.textContent = 'Current Rate';
+                var value = document.createElement('p');
+                value.className = 'cycle-time-value';
+                value.textContent = rate + '%';
+                var target = document.createElement('p');
+                target.className = 'text-xs text-gray-400';
+                target.textContent = 'Target: 95%';
+                card.appendChild(label);
+                card.appendChild(value);
+                card.appendChild(target);
+                body.appendChild(card);
+
+                var info = document.createElement('p');
+                info.className = 'text-sm mb-2';
+                info.textContent = 'Completed: ' + done + ' | Total: ' + data.length;
+                body.appendChild(info);
+            } else {
+                var completed = data.filter(function(r) { return r.status === 'Done'; });
+                var onTime = completed.filter(function(r) { return r.sla_status === 'On Time'; }).length;
+                var rate = completed.length > 0 ? Math.round(onTime / completed.length * 100) : 0;
+                var label = document.createElement('p');
+                label.className = 'text-sm text-gray-500';
+                label.textContent = 'On-Time Rate';
+                var value = document.createElement('p');
+                value.className = 'cycle-time-value';
+                value.textContent = rate + '%';
+                var target = document.createElement('p');
+                target.className = 'text-xs text-gray-400';
+                target.textContent = 'Target: 95% (2 days)';
+                card.appendChild(label);
+                card.appendChild(value);
+                card.appendChild(target);
+                body.appendChild(card);
+
+                var info = document.createElement('p');
+                info.className = 'text-sm mb-2';
+                info.textContent = 'On Time: ' + onTime + ' | Completed: ' + completed.length;
+                body.appendChild(info);
+            }
+            document.getElementById('detailModal').classList.add('show');
+        }
+
+        function exportToExcel() {
+            var exp = filteredRecords.map(function(r) {
+                return {
+                    'Job Order': r.job_order,
+                    'Date': r.request_date,
+                    'Company': r.company,
+                    'Project': r.project,
+                    'Requester': r.requester,
+                    'Supplier': r.supplier,
+                    'Equipment': r.equipment,
+                    'Category': r.equipment_category,
+                    'Rent Type': r.rent_type,
+                    'Amount': r.total_amount,
+                    'Status': r.status,
+                    'SLA Status': r.sla_status,
+                    'Cycle Time': r.cycle_time
+                };
+            });
+            var ws = XLSX.utils.json_to_sheet(exp);
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Transportation');
+            XLSX.writeFile(wb, 'Transportation_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+        }
+
+        function exportRequestsExcel() {
+            var data = requestsFiltered.length > 0 ? requestsFiltered : filteredRecords;
+            var exp = data.map(function(r) {
+                return {
+                    'Job Order': r.job_order,
+                    'Date': r.request_date,
+                    'Company': r.company,
+                    'Project': r.project,
+                    'Supplier': r.supplier,
+                    'Equipment': r.equipment,
+                    'Rent Type': r.rent_type,
+                    'Amount': r.total_amount,
+                    'Status': r.status,
+                    'SLA': r.sla_status
+                };
+            });
+            var ws = XLSX.utils.json_to_sheet(exp);
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Job Orders');
+            XLSX.writeFile(wb, 'JobOrders_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+        }
+
+        function exportToPDF() {
+            window.print();
+        }
+
         document.addEventListener('DOMContentLoaded', loadData);
+        document.getElementById('detailModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
     </script>
 </body>
 </html>

@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>NESMA | Facility Management Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/nesma-theme.css">
+    <style>
+        :root {
+            --nesma-primary: #2E3192;
+            --nesma-cyan: #80D1E9;
+            --nesma-navy: #0E2841;
+            --nesma-dark-blue: #203366;
+            --nesma-light-gray: #E8E8E8;
+            --nesma-gray: #B3B3B3;
+            --success: #059669;
+            --warning: #D97706;
+            --danger: #DC2626;
+            --info: #0284C7;
+        }
+        * { font-family: 'Inter', 'Cairo', sans-serif; box-sizing: border-box; }
+        body { background: #F8FAFC; min-height: 100vh; margin: 0; }
+
+        .nesma-header {
+            background: var(--nesma-primary);
+            box-shadow: 0 2px 8px rgba(46, 49, 146, 0.15);
+            position: relative;
+        }
+        .nesma-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 120px;
+            height: 3px;
+            background: var(--nesma-cyan);
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(14, 40, 65, 0.08);
+            border: 1px solid var(--nesma-light-gray);
+        }
+
+        /* KPI Cards */
+        .kpi-card {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 16px;
+            border: none;
+            padding: 20px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .kpi-icon svg { width: 24px; height: 24px; }
+        .kpi-value { font-size: 1.75rem; font-weight: 800; line-height: 1.2; }
+        .kpi-label { font-size: 0.8rem; opacity: 0.9; margin-bottom: 4px; }
+        .kpi-subtitle { font-size: 0.7rem; opacity: 0.7; margin-top: 4px; }
+        .kpi-card .click-hint { font-size: 0.6rem; opacity: 0.5; margin-top: 8px; }
+
+        /* Gradients */
+        .bg-primary-gradient { background: linear-gradient(135deg, #2E3192 0%, #0E2841 100%); }
+        .bg-cyan-gradient { background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%); }
+        .bg-success-gradient { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+        .bg-warning-gradient { background: linear-gradient(135deg, #D97706 0%, #B45309 100%); }
+        .bg-danger-gradient { background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); }
+        .bg-purple-gradient { background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); }
+        .bg-indigo-gradient { background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%); }
+        .bg-rose-gradient { background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%); }
+
+        /* SLA Section */
+        .sla-section {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--nesma-light-gray);
+        }
+        .sla-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            position: relative;
+            border: 1px solid var(--nesma-light-gray);
+            transition: all 0.3s ease;
+        }
+        .sla-card:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .sla-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            border-radius: 12px 12px 0 0;
+        }
+        .sla-green::before { background: var(--success); }
+        .sla-yellow::before { background: var(--warning); }
+        .sla-red::before { background: var(--danger); }
+        .sla-value { font-size: 2rem; font-weight: 800; margin: 8px 0; }
+        .sla-green .sla-value { color: var(--success); }
+        .sla-yellow .sla-value { color: var(--warning); }
+        .sla-red .sla-value { color: var(--danger); }
+        .sla-indicator {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            margin-bottom: 8px;
+        }
+        .sla-indicator svg { width: 18px; height: 18px; }
+        .sla-green .sla-indicator { background: #D1FAE5; color: var(--success); }
+        .sla-yellow .sla-indicator { background: #FEF3C7; color: var(--warning); }
+        .sla-red .sla-indicator { background: #FEE2E2; color: var(--danger); }
+        .sla-label { font-size: 0.85rem; font-weight: 500; color: #374151; }
+        .sla-target { font-size: 0.7rem; color: var(--nesma-gray); margin-top: 6px; }
+
+        /* Tabs */
+        .tabs-container {
+            display: flex;
+            border-bottom: 1px solid var(--nesma-light-gray);
+            overflow-x: auto;
+            background: white;
+        }
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 24px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--nesma-gray);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .tab-btn:hover { color: var(--nesma-navy); background: rgba(128, 209, 233, 0.1); }
+        .tab-btn.active {
+            color: var(--nesma-primary);
+            border-bottom-color: var(--nesma-primary);
+            background: rgba(46, 49, 146, 0.05);
+        }
+        .tab-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .tab-count {
+            background: var(--nesma-primary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            min-width: 28px;
+            text-align: center;
+        }
+        .tab-btn.active .tab-count { background: var(--nesma-cyan); color: var(--nesma-navy); }
+        .tab-content { display: none; padding: 24px; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--nesma-light-gray);
+        }
+        .filter-select {
+            border: 1px solid var(--nesma-light-gray);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.85rem;
+            background: white;
+            min-width: 150px;
+            cursor: pointer;
+        }
+        .filter-select:focus { outline: none; border-color: var(--nesma-primary); box-shadow: 0 0 0 3px rgba(46, 49, 146, 0.1); }
+        .btn-reset {
+            background: var(--nesma-light-gray);
+            color: var(--nesma-navy);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-reset:hover { background: #D1D5DB; }
+        .btn-export {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            background: var(--success);
+            color: white;
+        }
+        .btn-export:hover { background: #047857; }
+        .btn-export svg { width: 16px; height: 16px; }
+
+        /* Tables */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th {
+            background: var(--nesma-primary);
+            padding: 12px 14px;
+            font-weight: 600;
+            color: white;
+            text-align: left;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .data-table th:first-child { border-radius: 8px 0 0 0; }
+        .data-table th:last-child { border-radius: 0 8px 0 0; }
+        .data-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--nesma-light-gray);
+            font-size: 0.85rem;
+        }
+        .data-table tr:hover td { background: rgba(128, 209, 233, 0.08); }
+        .scroll-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--nesma-light-gray);
+            border-radius: 8px;
+        }
+        .scroll-container::-webkit-scrollbar { width: 6px; }
+        .scroll-container::-webkit-scrollbar-thumb { background: var(--nesma-cyan); border-radius: 4px; }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-warning { background: #FEF3C7; color: #92400E; }
+        .badge-danger { background: #FEE2E2; color: #991B1B; }
+        .badge-info { background: #DBEAFE; color: #1E40AF; }
+
+        /* Charts */
+        .chart-container { position: relative; height: 280px; }
+
+        /* Progress */
+        .progress-bar { height: 8px; background: #E5E7EB; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 4px; }
+        .progress-green { background: var(--success); }
+        .progress-yellow { background: var(--warning); }
+        .progress-red { background: var(--danger); }
+
+        /* Aging Buckets */
+        .aging-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .aging-item:hover { transform: translateX(4px); }
+        .aging-green { background: rgba(5, 150, 105, 0.1); border-left: 4px solid var(--success); }
+        .aging-yellow { background: rgba(217, 119, 6, 0.1); border-left: 4px solid var(--warning); }
+        .aging-orange { background: rgba(234, 88, 12, 0.1); border-left: 4px solid #EA580C; }
+        .aging-red { background: rgba(220, 38, 38, 0.1); border-left: 4px solid var(--danger); }
+
+        /* Modal */
+        .modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(14, 40, 65, 0.6); backdrop-filter: blur(4px); }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; border-radius: 16px; width: 95%; max-width: 800px; max-height: 85vh; overflow: hidden; }
+        .modal-header { padding: 16px 20px; background: var(--nesma-primary); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
+        .close-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; }
+        .close-btn:hover { background: rgba(255,255,255,0.3); }
+
+        /* Alert */
+        .alert-card { border-radius: 12px; padding: 16px 20px; border-left: 4px solid; }
+        .alert-danger { border-left-color: var(--danger); background: #FEF2F2; }
+        .alert-warning { border-left-color: var(--warning); background: #FFFBEB; }
+        .alert-success { border-left-color: var(--success); background: #ECFDF5; }
+
+        /* Severity */
+        .severity-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        .severity-extreme { background: #DC2626; }
+        .severity-high { background: #F97316; }
+        .severity-medium { background: #FBBF24; }
+        .severity-low { background: #10B981; }
+
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body>
+    <header class="nesma-header text-white no-print">
+        <div class="container mx-auto px-4 lg:px-6">
+            <div class="flex items-center justify-between py-4">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="flex items-center gap-2 text-white/80 hover:text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        <span class="text-sm font-medium hidden sm:inline">Back to Portal</span>
+                    </a>
+                    <div class="h-6 w-px bg-white/20"></div>
+                    <img src="assets/logo-white.svg" alt="NESMA" class="h-8 lg:h-10">
+                </div>
+                <div class="text-center flex-1 px-4">
+                    <h1 class="text-lg lg:text-xl font-bold">Facility Management Dashboard</h1>
+                    <p class="text-xs lg:text-sm text-white/70 hidden sm:block">Accommodation • Fleet • Maintenance • Safety</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs text-white/60 hidden md:inline" id="lastUpdated">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 lg:px-6 py-6">
+        <div class="card mb-6 overflow-hidden">
+            <!-- Tabs -->
+            <div class="tabs-container">
+                <button class="tab-btn active" onclick="switchTab('accommodation', this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    <span>Accommodation</span>
+                    <span class="tab-count" id="accommodationBadge">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('driving', this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                    <span>Fleet Monitoring</span>
+                    <span class="tab-count" id="drivingBadge">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('fuel', this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
+                    <span>Fuel Summary</span>
+                    <span class="tab-count" id="fuelBadge">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('maintenance', this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span>Maintenance</span>
+                    <span class="tab-count" id="maintenanceBadge">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('safety', this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <span>Safety</span>
+                    <span class="tab-count" style="background:#DC2626;" id="safetyBadge">0</span>
+                </button>
+            </div>
+
+            <!-- TAB: ACCOMMODATION -->
+            <div id="tab-accommodation" class="tab-content active">
+                <div class="sla-section">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-gray-800">Contract Status Overview</h3>
+                        <button onclick="showSLAInfo('accommodation')" class="text-sm text-blue-600 hover:underline">View SLA Details</button>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="accSLACards"></div>
+                </div>
+
+                <div class="filter-section no-print">
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">City</label>
+                            <select id="accCityFilter" class="filter-select" onchange="filterAccommodation()"><option value="">All Cities</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Status</label>
+                            <select id="accStatusFilter" class="filter-select" onchange="filterAccommodation()">
+                                <option value="">All</option>
+                                <option value="Active">Active</option>
+                                <option value="Warning">Warning</option>
+                                <option value="Critical">Critical</option>
+                                <option value="Expired">Expired</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Occupancy</label>
+                            <select id="accOccupancyFilter" class="filter-select" onchange="filterAccommodation()">
+                                <option value="">All</option>
+                                <option value="high">High (&gt;80%)</option>
+                                <option value="medium">Medium (50-80%)</option>
+                                <option value="low">Low (&lt;50%)</option>
+                            </select>
+                        </div>
+                        <div class="ml-auto flex gap-2">
+                            <button onclick="resetAccFilters()" class="btn-reset">Reset</button>
+                            <button onclick="exportAccommodation()" class="btn-export">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="accKPIs" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Contract Expiry Timeline</h3>
+                        <div id="accAgingBuckets"></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Status Distribution</h3>
+                        <div class="chart-container" style="height:220px;"><canvas id="accStatusChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Residents by City</h3>
+                        <div class="chart-container" style="height:220px;"><canvas id="accCityChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-700 text-sm">Accommodation Contracts</h3>
+                        <span class="text-xs text-gray-500" id="accTableCount">0 records</span>
+                    </div>
+                    <div class="scroll-container">
+                        <table class="data-table">
+                            <thead><tr><th>City</th><th>Project</th><th>Rooms</th><th>Residents</th><th>Empty</th><th>Occupancy</th><th>End Date</th><th>Days Left</th><th>Status</th><th>Annual (SAR)</th></tr></thead>
+                            <tbody id="accTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: FLEET MONITORING -->
+            <div id="tab-driving" class="tab-content">
+                <div class="sla-section">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-gray-800">Fleet Performance Overview</h3>
+                        <button onclick="showSLAInfo('driving')" class="text-sm text-blue-600 hover:underline">View Metrics</button>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="drivingSLACards"></div>
+                </div>
+
+                <div class="filter-section no-print">
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Rating</label>
+                            <select id="drivingRatingFilter" class="filter-select" onchange="filterDriving()">
+                                <option value="">All</option>
+                                <option value="Excellent">Excellent</option>
+                                <option value="Good">Good</option>
+                                <option value="Average">Average</option>
+                                <option value="Poor">Poor</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Overspeed</label>
+                            <select id="drivingOverspeedFilter" class="filter-select" onchange="filterDriving()">
+                                <option value="">All</option>
+                                <option value="high">High (&gt;100)</option>
+                                <option value="medium">Medium (50-100)</option>
+                                <option value="low">Low (1-49)</option>
+                                <option value="none">None</option>
+                            </select>
+                        </div>
+                        <div class="ml-auto flex gap-2">
+                            <button onclick="resetDrivingFilters()" class="btn-reset">Reset</button>
+                            <button onclick="exportDriving()" class="btn-export">Export</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="drivingKPIs" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Rating Distribution</h3>
+                        <div class="chart-container"><canvas id="drivingRatingChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Top 10 by Distance</h3>
+                        <div class="chart-container"><canvas id="drivingDistanceChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-700 text-sm">Fleet Statistics</h3>
+                        <span class="text-xs text-gray-500" id="drivingTableCount">0 records</span>
+                    </div>
+                    <div class="scroll-container">
+                        <table class="data-table">
+                            <thead><tr><th>Plate</th><th>Distance (km)</th><th>Hours</th><th>Overspeed</th><th>Braking</th><th>Max Speed</th><th>DAT Score</th><th>Rating</th></tr></thead>
+                            <tbody id="drivingTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: FUEL -->
+            <div id="tab-fuel" class="tab-content">
+                <div class="filter-section no-print">
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Distance</label>
+                            <select id="fuelDistanceFilter" class="filter-select" onchange="filterFuel()">
+                                <option value="">All</option>
+                                <option value="high">High (&gt;10K)</option>
+                                <option value="medium">Medium (5-10K)</option>
+                                <option value="low">Low (&lt;5K)</option>
+                            </select>
+                        </div>
+                        <div class="ml-auto flex gap-2">
+                            <button onclick="resetFuelFilters()" class="btn-reset">Reset</button>
+                            <button onclick="exportFuel()" class="btn-export">Export</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="fuelKPIs" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Top 10 by Distance</h3>
+                        <div class="chart-container"><canvas id="fuelDistanceChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Distance Distribution</h3>
+                        <div class="chart-container"><canvas id="fuelDistChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-700 text-sm">Vehicle Summary</h3>
+                        <span class="text-xs text-gray-500" id="fuelTableCount">0 records</span>
+                    </div>
+                    <div class="scroll-container">
+                        <table class="data-table">
+                            <thead><tr><th>Plate</th><th>Distance (km)</th><th>Fuel (L)</th><th>Cost (SAR)</th><th>Efficiency</th></tr></thead>
+                            <tbody id="fuelTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: MAINTENANCE -->
+            <div id="tab-maintenance" class="tab-content">
+                <div class="sla-section">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-gray-800">Maintenance SLA</h3>
+                        <button onclick="showSLAInfo('maintenance')" class="text-sm text-blue-600 hover:underline">View Requirements</button>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="maintSLACards"></div>
+                </div>
+
+                <div class="filter-section no-print">
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Region</label>
+                            <select id="maintRegionFilter" class="filter-select" onchange="filterMaintenance()"><option value="">All</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">City</label>
+                            <select id="maintCityFilter" class="filter-select" onchange="filterMaintenance()"><option value="">All</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Vendor</label>
+                            <select id="maintVendorFilter" class="filter-select" onchange="filterMaintenance()"><option value="">All</option></select>
+                        </div>
+                        <div class="ml-auto flex gap-2">
+                            <button onclick="resetMaintFilters()" class="btn-reset">Reset</button>
+                            <button onclick="exportMaintenance()" class="btn-export">Export</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="maintKPIs" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">By Region</h3>
+                        <div class="chart-container"><canvas id="maintRegionChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">By Vendor</h3>
+                        <div class="chart-container"><canvas id="maintVendorChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-700 text-sm">Maintenance Requests</h3>
+                        <span class="text-xs text-gray-500" id="maintTableCount">0 records</span>
+                    </div>
+                    <div class="scroll-container">
+                        <table class="data-table">
+                            <thead><tr><th>Date</th><th>Region</th><th>City</th><th>Location</th><th>Vendor</th><th>Description</th><th>Status</th></tr></thead>
+                            <tbody id="maintTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: SAFETY -->
+            <div id="tab-safety" class="tab-content">
+                <div class="alert-card alert-danger mb-6" id="safetyAlert">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        <div>
+                            <h3 class="font-bold text-red-800" id="safetyAlertTitle">Loading...</h3>
+                            <p class="text-sm text-red-700" id="safetyAlertText">Loading safety data...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section no-print">
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Severity</label>
+                            <select id="safetySeverityFilter" class="filter-select" onchange="filterSafety()">
+                                <option value="">All</option>
+                                <option value="Extreme">Extreme (≥140)</option>
+                                <option value="High">High (120-139)</option>
+                                <option value="Medium">Medium (100-119)</option>
+                                <option value="Low">Low (&lt;100)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Vehicle</label>
+                            <select id="safetyVehicleFilter" class="filter-select" onchange="filterSafety()"><option value="">All</option></select>
+                        </div>
+                        <div class="ml-auto flex gap-2">
+                            <button onclick="resetSafetyFilters()" class="btn-reset">Reset</button>
+                            <button onclick="exportSafety()" class="btn-export">Export</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="safetyKPIs" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">By Severity</h3>
+                        <div class="chart-container"><canvas id="safetySeverityChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Top Offenders</h3>
+                        <div class="chart-container"><canvas id="safetyOffendersChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-700 text-sm">Overspeed Violations</h3>
+                        <span class="text-xs text-gray-500" id="safetyTableCount">0 records</span>
+                    </div>
+                    <div class="scroll-container">
+                        <table class="data-table">
+                            <thead><tr><th>Date/Time</th><th>Plate</th><th>Speed</th><th>Severity</th><th>Location</th></tr></thead>
+                            <tbody id="safetyTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" class="font-bold">Details</h3>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        let facilityData = null;
+        let charts = {};
+        let filteredData = { accommodation: [], driving: [], fuel: [], maintenance: [], overspeed: [] };
+
+        const ICONS = {
+            home: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>',
+            users: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>',
+            bed: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>',
+            check: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+            alert: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>',
+            money: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+            car: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m-8 5h8m-4-9l-2 4h6l-2-4M7 17a2 2 0 100-4 2 2 0 000 4zm10 0a2 2 0 100-4 2 2 0 000 4z"/></svg>',
+            road: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>',
+            speed: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
+            star: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>',
+            wrench: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
+            clock: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+            fuel: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>'
+        };
+
+        async function loadData() {
+            try {
+                const response = await fetch('data/facility_data.json?t=' + Date.now());
+                facilityData = await response.json();
+                document.getElementById('lastUpdated').textContent = 'Updated: ' + new Date(facilityData.last_updated).toLocaleString();
+                document.getElementById('accommodationBadge').textContent = facilityData.accommodation.summary.total_accommodations;
+                document.getElementById('drivingBadge').textContent = facilityData.driving.summary.total_vehicles;
+                document.getElementById('fuelBadge').textContent = facilityData.fuel.summary.total_vehicles;
+                document.getElementById('maintenanceBadge').textContent = facilityData.maintenance.summary.total_requests;
+                document.getElementById('safetyBadge').textContent = facilityData.overspeed.summary.total_violations;
+                filteredData.accommodation = [...facilityData.accommodation.records];
+                filteredData.driving = [...facilityData.driving.records];
+                filteredData.fuel = [...facilityData.fuel.records];
+                filteredData.maintenance = [...facilityData.maintenance.records];
+                filteredData.overspeed = [...facilityData.overspeed.records];
+                populateFilters();
+                initAllTabs();
+            } catch (e) { console.error('Error:', e); }
+        }
+
+        function populateFilters() {
+            addOptions('accCityFilter', facilityData.accommodation.filters.cities);
+            addOptions('maintRegionFilter', facilityData.maintenance.filters.regions);
+            addOptions('maintCityFilter', facilityData.maintenance.filters.cities);
+            addOptions('maintVendorFilter', facilityData.maintenance.filters.vendors);
+            addOptions('safetyVehicleFilter', facilityData.overspeed.filters.plates);
+        }
+
+        function addOptions(id, items) {
+            const sel = document.getElementById(id);
+            items.forEach(i => { const o = document.createElement('option'); o.value = i; o.textContent = i; sel.appendChild(o); });
+        }
+
+        function initAllTabs() { renderAccommodation(); renderDriving(); renderFuel(); renderMaintenance(); renderSafety(); }
+
+        function switchTab(name, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function createKPI(gradient, iconKey, label, value, subtitle, onclick) {
+            const div = document.createElement('div');
+            div.className = 'kpi-card ' + gradient;
+            if (onclick) { div.style.cursor = 'pointer'; div.onclick = onclick; }
+            div.innerHTML = '<div class="kpi-icon">' + ICONS[iconKey] + '</div><p class="kpi-label">' + label + '</p><p class="kpi-value">' + value + '</p><p class="kpi-subtitle">' + subtitle + '</p>' + (onclick ? '<span class="click-hint">Click for details</span>' : '');
+            return div;
+        }
+
+        function createSLACard(status, label, value, target, onclick) {
+            const div = document.createElement('div');
+            div.className = 'sla-card sla-' + status;
+            if (onclick) div.onclick = onclick;
+            const icon = status === 'green' ? ICONS.check : ICONS.alert;
+            div.innerHTML = '<div class="sla-indicator">' + icon + '</div><p class="sla-value">' + value + '</p><p class="sla-label">' + label + '</p><p class="sla-target">' + target + '</p>';
+            return div;
+        }
+
+        function createBadge(text, cls) { const s = document.createElement('span'); s.className = 'badge ' + cls; s.textContent = text; return s; }
+        function createCell(text, cls) { const td = document.createElement('td'); if (cls) td.className = cls; td.textContent = text || '-'; return td; }
+
+        // ACCOMMODATION
+        function filterAccommodation() {
+            const city = document.getElementById('accCityFilter').value;
+            const status = document.getElementById('accStatusFilter').value;
+            const occ = document.getElementById('accOccupancyFilter').value;
+            filteredData.accommodation = facilityData.accommodation.records.filter(r => {
+                if (city && r.city !== city) return false;
+                if (status && r.status !== status) return false;
+                if (occ === 'high' && r.occupancy_rate <= 80) return false;
+                if (occ === 'medium' && (r.occupancy_rate < 50 || r.occupancy_rate > 80)) return false;
+                if (occ === 'low' && r.occupancy_rate >= 50) return false;
+                return true;
+            });
+            renderAccommodation();
+        }
+        function resetAccFilters() { document.getElementById('accCityFilter').value = ''; document.getElementById('accStatusFilter').value = ''; document.getElementById('accOccupancyFilter').value = ''; filteredData.accommodation = [...facilityData.accommodation.records]; renderAccommodation(); }
+
+        function renderAccommodation() {
+            const data = filteredData.accommodation;
+            const s = { total: data.length, rooms: 0, residents: 0, empty: 0, cost: 0, active: 0, warning: 0, critical: 0, expired: 0 };
+            data.forEach(r => { s.rooms += r.rooms; s.residents += r.residents; s.empty += r.empty_beds; s.cost += r.annual_payment; if (r.status === 'Active') s.active++; else if (r.status === 'Warning') s.warning++; else if (r.status === 'Critical') s.critical++; else s.expired++; });
+            const avgOcc = s.rooms > 0 ? Math.round(s.residents / (s.rooms * 4) * 100) : 0;
+
+            // SLA Cards
+            const sla = document.getElementById('accSLACards');
+            sla.innerHTML = '';
+            sla.appendChild(createSLACard('green', 'Active', s.active, '>180 days', () => showDetails('Active', data)));
+            sla.appendChild(createSLACard(s.warning > 0 ? 'yellow' : 'green', 'Warning', s.warning, '90-180 days', () => showDetails('Warning', data)));
+            sla.appendChild(createSLACard(s.critical > 0 ? 'red' : 'green', 'Critical', s.critical, '<90 days', () => showDetails('Critical', data)));
+            sla.appendChild(createSLACard(s.expired > 0 ? 'red' : 'green', 'Expired', s.expired, 'Needs renewal', () => showDetails('Expired', data)));
+
+            // KPIs
+            const kpi = document.getElementById('accKPIs');
+            kpi.innerHTML = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'home', 'Accommodations', s.total, s.rooms + ' rooms', () => showModal('All Accommodations', data.length + ' total records')));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'users', 'Residents', s.residents.toLocaleString(), avgOcc + '% occupancy', null));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'bed', 'Empty Beds', s.empty.toLocaleString(), 'Available', null));
+            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Active', s.active, 'No action needed', () => showDetails('Active', data)));
+            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'At Risk', s.warning + s.critical, 'Needs attention', () => showDetails('Warning', data)));
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Annual Cost', 'SAR ' + (s.cost / 1000000).toFixed(1) + 'M', 'Total payments', null));
+
+            // Aging
+            const aging = document.getElementById('accAgingBuckets');
+            aging.innerHTML = '';
+            const buckets = [
+                { label: '>180 days (Active)', count: s.active, cls: 'aging-green' },
+                { label: '90-180 days (Warning)', count: s.warning, cls: 'aging-yellow' },
+                { label: '<90 days (Critical)', count: s.critical, cls: 'aging-orange' },
+                { label: 'Expired', count: s.expired, cls: 'aging-red' }
+            ];
+            buckets.forEach(b => {
+                const pct = s.total > 0 ? (b.count / s.total * 100).toFixed(0) : 0;
+                const div = document.createElement('div');
+                div.className = 'aging-item ' + b.cls;
+                div.innerHTML = '<div class="flex-1"><span class="text-sm font-medium text-gray-700">' + b.label + '</span><span class="text-sm text-gray-500 ml-2">(' + b.count + ')</span></div><span class="text-sm font-medium text-gray-600">' + pct + '%</span>';
+                aging.appendChild(div);
+            });
+
+            // Charts
+            if (charts.accStatus) charts.accStatus.destroy();
+            charts.accStatus = new Chart(document.getElementById('accStatusChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: ['Active', 'Warning', 'Critical', 'Expired'], datasets: [{ data: [s.active, s.warning, s.critical, s.expired], backgroundColor: ['#10B981', '#FBBF24', '#F97316', '#EF4444'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, cutout: '65%' }
+            });
+
+            const cityData = {};
+            data.forEach(r => { cityData[r.city] = (cityData[r.city] || 0) + r.residents; });
+            const cities = Object.entries(cityData).sort((a, b) => b[1] - a[1]).slice(0, 6);
+            if (charts.accCity) charts.accCity.destroy();
+            charts.accCity = new Chart(document.getElementById('accCityChart').getContext('2d'), {
+                type: 'bar',
+                data: { labels: cities.map(c => c[0]), datasets: [{ label: 'Residents', data: cities.map(c => c[1]), backgroundColor: '#2E3192' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+
+            // Table
+            document.getElementById('accTableCount').textContent = data.length + ' records';
+            const tbody = document.getElementById('accTableBody');
+            tbody.innerHTML = '';
+            data.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.appendChild(createCell(r.city, 'font-medium'));
+                tr.appendChild(createCell(r.project_name));
+                tr.appendChild(createCell(r.rooms, 'text-center'));
+                tr.appendChild(createCell(r.residents, 'text-center'));
+                tr.appendChild(createCell(r.empty_beds, 'text-center'));
+                const occTd = document.createElement('td');
+                occTd.innerHTML = '<div class="progress-bar"><div class="progress-fill progress-' + (r.occupancy_rate >= 80 ? 'green' : r.occupancy_rate >= 50 ? 'yellow' : 'red') + '" style="width:' + Math.min(r.occupancy_rate, 100) + '%"></div></div><span class="text-xs text-gray-500">' + r.occupancy_rate + '%</span>';
+                tr.appendChild(occTd);
+                tr.appendChild(createCell(r.end_date));
+                tr.appendChild(createCell(r.remaining_days, 'text-center font-bold'));
+                const statusTd = document.createElement('td');
+                statusTd.appendChild(createBadge(r.status, r.status === 'Active' ? 'badge-success' : r.status === 'Warning' ? 'badge-warning' : r.status === 'Critical' ? 'badge-danger' : 'badge-info'));
+                tr.appendChild(statusTd);
+                tr.appendChild(createCell(r.annual_payment.toLocaleString(), 'text-right'));
+                tbody.appendChild(tr);
+            });
+        }
+
+        // DRIVING
+        function filterDriving() {
+            const rating = document.getElementById('drivingRatingFilter').value;
+            const overspeed = document.getElementById('drivingOverspeedFilter').value;
+            filteredData.driving = facilityData.driving.records.filter(r => {
+                if (rating && r.rating !== rating) return false;
+                if (overspeed === 'high' && r.overspeed_count <= 100) return false;
+                if (overspeed === 'medium' && (r.overspeed_count < 50 || r.overspeed_count > 100)) return false;
+                if (overspeed === 'low' && (r.overspeed_count < 1 || r.overspeed_count >= 50)) return false;
+                if (overspeed === 'none' && r.overspeed_count > 0) return false;
+                return true;
+            });
+            renderDriving();
+        }
+        function resetDrivingFilters() { document.getElementById('drivingRatingFilter').value = ''; document.getElementById('drivingOverspeedFilter').value = ''; filteredData.driving = [...facilityData.driving.records]; renderDriving(); }
+
+        function renderDriving() {
+            const data = filteredData.driving;
+            const s = { total: data.length, dist: 0, overspeed: 0, score: 0, excellent: 0, good: 0, average: 0, poor: 0 };
+            data.forEach(r => { s.dist += r.distance_km; s.overspeed += r.overspeed_count; s.score += r.dat_score; if (r.rating === 'Excellent') s.excellent++; else if (r.rating === 'Good') s.good++; else if (r.rating === 'Average') s.average++; else s.poor++; });
+            const avgScore = s.total > 0 ? Math.round(s.score / s.total) : 0;
+            const excellentPct = s.total > 0 ? Math.round(s.excellent / s.total * 100) : 0;
+
+            const sla = document.getElementById('drivingSLACards');
+            sla.innerHTML = '';
+            sla.appendChild(createSLACard(excellentPct >= 50 ? 'green' : excellentPct >= 30 ? 'yellow' : 'red', 'Excellent Drivers', excellentPct + '%', 'Target: ≥50%', null));
+            sla.appendChild(createSLACard(avgScore >= 80 ? 'green' : avgScore >= 60 ? 'yellow' : 'red', 'Avg DAT Score', avgScore, 'Target: ≥80', null));
+            sla.appendChild(createSLACard(s.poor === 0 ? 'green' : 'red', 'Poor Ratings', s.poor, 'Target: 0', null));
+            sla.appendChild(createSLACard('green', 'Total Vehicles', s.total, 'Monitored', null));
+
+            const kpi = document.getElementById('drivingKPIs');
+            kpi.innerHTML = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'car', 'Vehicles', s.total, 'Monitored', null));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'road', 'Distance', Math.round(s.dist / 1000) + 'K km', 'Avg: ' + Math.round(s.dist / Math.max(s.total, 1)).toLocaleString() + ' km', null));
+            kpi.appendChild(createKPI('bg-danger-gradient', 'speed', 'Overspeed', s.overspeed.toLocaleString(), 'Events', null));
+            kpi.appendChild(createKPI('bg-success-gradient', 'star', 'Excellent', s.excellent, 'Score ≥90', null));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'star', 'Average', s.average, 'Score 50-69', null));
+            kpi.appendChild(createKPI('bg-rose-gradient', 'alert', 'Poor', s.poor, 'Score <50', null));
+
+            if (charts.drivingRating) charts.drivingRating.destroy();
+            charts.drivingRating = new Chart(document.getElementById('drivingRatingChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: ['Excellent', 'Good', 'Average', 'Poor'], datasets: [{ data: [s.excellent, s.good, s.average, s.poor], backgroundColor: ['#10B981', '#3B82F6', '#FBBF24', '#EF4444'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, cutout: '65%' }
+            });
+
+            const top10 = [...data].sort((a, b) => b.distance_km - a.distance_km).slice(0, 10);
+            if (charts.drivingDistance) charts.drivingDistance.destroy();
+            charts.drivingDistance = new Chart(document.getElementById('drivingDistanceChart').getContext('2d'), {
+                type: 'bar',
+                data: { labels: top10.map(r => r.plate_number), datasets: [{ label: 'km', data: top10.map(r => r.distance_km), backgroundColor: '#2E3192' }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            document.getElementById('drivingTableCount').textContent = data.length + ' records';
+            const tbody = document.getElementById('drivingTableBody');
+            tbody.innerHTML = '';
+            data.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.appendChild(createCell(r.plate_number, 'font-medium'));
+                tr.appendChild(createCell(r.distance_km.toLocaleString(), 'text-right'));
+                tr.appendChild(createCell(r.working_hours || '-'));
+                const osTd = document.createElement('td'); osTd.className = 'text-center';
+                osTd.appendChild(createBadge(r.overspeed_count, r.overspeed_count > 0 ? 'badge-danger' : 'badge-success'));
+                tr.appendChild(osTd);
+                tr.appendChild(createCell(r.harsh_braking, 'text-center'));
+                tr.appendChild(createCell(r.max_speed + ' km/h', 'text-right'));
+                tr.appendChild(createCell(r.dat_score, 'text-center font-bold'));
+                const ratTd = document.createElement('td');
+                ratTd.appendChild(createBadge(r.rating, r.rating === 'Excellent' ? 'badge-success' : r.rating === 'Good' ? 'badge-info' : r.rating === 'Average' ? 'badge-warning' : 'badge-danger'));
+                tr.appendChild(ratTd);
+                tbody.appendChild(tr);
+            });
+        }
+
+        // FUEL
+        function filterFuel() {
+            const d = document.getElementById('fuelDistanceFilter').value;
+            filteredData.fuel = facilityData.fuel.records.filter(r => {
+                if (d === 'high' && r.distance_km <= 10000) return false;
+                if (d === 'medium' && (r.distance_km < 5000 || r.distance_km > 10000)) return false;
+                if (d === 'low' && r.distance_km >= 5000) return false;
+                return true;
+            });
+            renderFuel();
+        }
+        function resetFuelFilters() { document.getElementById('fuelDistanceFilter').value = ''; filteredData.fuel = [...facilityData.fuel.records]; renderFuel(); }
+
+        function renderFuel() {
+            const data = filteredData.fuel;
+            const s = { total: data.length, dist: 0, fuel: 0, cost: 0 };
+            data.forEach(r => { s.dist += r.distance_km; s.fuel += r.fuel_liters; s.cost += r.fuel_cost; });
+
+            const kpi = document.getElementById('fuelKPIs');
+            kpi.innerHTML = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'car', 'Vehicles', s.total, 'With data', null));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'road', 'Distance', Math.round(s.dist / 1000) + 'K km', 'Total', null));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'fuel', 'Fuel', s.fuel.toLocaleString() + ' L', 'Consumed', null));
+            kpi.appendChild(createKPI('bg-danger-gradient', 'money', 'Cost', 'SAR ' + s.cost.toLocaleString(), 'Total', null));
+
+            const top10 = [...data].sort((a, b) => b.distance_km - a.distance_km).slice(0, 10);
+            if (charts.fuelDistance) charts.fuelDistance.destroy();
+            charts.fuelDistance = new Chart(document.getElementById('fuelDistanceChart').getContext('2d'), {
+                type: 'bar',
+                data: { labels: top10.map(r => r.plate_number), datasets: [{ label: 'km', data: top10.map(r => r.distance_km), backgroundColor: '#2E3192' }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            const dist = { Low: 0, Medium: 0, High: 0 };
+            data.forEach(r => { if (r.distance_km < 5000) dist.Low++; else if (r.distance_km <= 10000) dist.Medium++; else dist.High++; });
+            if (charts.fuelDist) charts.fuelDist.destroy();
+            charts.fuelDist = new Chart(document.getElementById('fuelDistChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: ['Low (<5K)', 'Medium (5-10K)', 'High (>10K)'], datasets: [{ data: [dist.Low, dist.Medium, dist.High], backgroundColor: ['#10B981', '#FBBF24', '#EF4444'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, cutout: '65%' }
+            });
+
+            document.getElementById('fuelTableCount').textContent = data.length + ' records';
+            const tbody = document.getElementById('fuelTableBody');
+            tbody.innerHTML = '';
+            data.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.appendChild(createCell(r.plate_number, 'font-medium'));
+                tr.appendChild(createCell(r.distance_km.toLocaleString(), 'text-right'));
+                tr.appendChild(createCell(r.fuel_liters.toLocaleString(), 'text-right'));
+                tr.appendChild(createCell(r.fuel_cost.toLocaleString(), 'text-right'));
+                tr.appendChild(createCell(r.fuel_efficiency > 0 ? r.fuel_efficiency + ' km/L' : '-', 'text-right'));
+                tbody.appendChild(tr);
+            });
+        }
+
+        // MAINTENANCE
+        function filterMaintenance() {
+            const region = document.getElementById('maintRegionFilter').value;
+            const city = document.getElementById('maintCityFilter').value;
+            const vendor = document.getElementById('maintVendorFilter').value;
+            filteredData.maintenance = facilityData.maintenance.records.filter(r => {
+                if (region && r.region !== region) return false;
+                if (city && r.city !== city) return false;
+                if (vendor && r.vendor !== vendor) return false;
+                return true;
+            });
+            renderMaintenance();
+        }
+        function resetMaintFilters() { document.getElementById('maintRegionFilter').value = ''; document.getElementById('maintCityFilter').value = ''; document.getElementById('maintVendorFilter').value = ''; filteredData.maintenance = [...facilityData.maintenance.records]; renderMaintenance(); }
+
+        function renderMaintenance() {
+            const data = filteredData.maintenance;
+            const s = { total: data.length, completed: data.filter(r => r.status === 'Completed').length };
+            s.pending = s.total - s.completed;
+            s.rate = s.total > 0 ? Math.round(s.completed / s.total * 100) : 0;
+
+            const sla = document.getElementById('maintSLACards');
+            sla.innerHTML = '';
+            sla.appendChild(createSLACard(s.rate >= 95 ? 'green' : s.rate >= 85 ? 'yellow' : 'red', 'Completion Rate', s.rate + '%', 'Target: ≥95%', null));
+            sla.appendChild(createSLACard('green', 'Completed', s.completed, 'Requests done', null));
+            sla.appendChild(createSLACard(s.pending === 0 ? 'green' : 'yellow', 'Pending', s.pending, 'Awaiting', null));
+            sla.appendChild(createSLACard('green', 'Total', s.total, 'This period', null));
+
+            const kpi = document.getElementById('maintKPIs');
+            kpi.innerHTML = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'wrench', 'Total', s.total, 'Requests', null));
+            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Completed', s.completed, s.rate + '%', null));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'clock', 'Pending', s.pending, 'Awaiting', null));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'star', 'SLA', s.rate >= 95 ? '✓ Met' : '✗ Not Met', 'Target: ≥95%', null));
+
+            const rc = {};
+            data.forEach(r => { rc[r.region || 'Unknown'] = (rc[r.region || 'Unknown'] || 0) + 1; });
+            if (charts.maintRegion) charts.maintRegion.destroy();
+            charts.maintRegion = new Chart(document.getElementById('maintRegionChart').getContext('2d'), {
+                type: 'bar',
+                data: { labels: Object.keys(rc), datasets: [{ label: 'Requests', data: Object.values(rc), backgroundColor: '#2E3192' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+
+            const vc = {};
+            data.forEach(r => { vc[r.vendor || 'Unknown'] = (vc[r.vendor || 'Unknown'] || 0) + 1; });
+            if (charts.maintVendor) charts.maintVendor.destroy();
+            charts.maintVendor = new Chart(document.getElementById('maintVendorChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(vc), datasets: [{ data: Object.values(vc), backgroundColor: ['#2E3192', '#80D1E9', '#10B981', '#FBBF24', '#EF4444'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, cutout: '65%' }
+            });
+
+            document.getElementById('maintTableCount').textContent = data.length + ' records';
+            const tbody = document.getElementById('maintTableBody');
+            tbody.innerHTML = '';
+            data.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.appendChild(createCell(r.date));
+                tr.appendChild(createCell(r.region));
+                tr.appendChild(createCell(r.city));
+                tr.appendChild(createCell(r.location));
+                tr.appendChild(createCell(r.vendor));
+                const descTd = createCell(r.description);
+                descTd.style.maxWidth = '200px';
+                descTd.style.overflow = 'hidden';
+                descTd.style.textOverflow = 'ellipsis';
+                descTd.style.whiteSpace = 'nowrap';
+                descTd.title = r.description || '';
+                tr.appendChild(descTd);
+                const statusTd = document.createElement('td');
+                statusTd.appendChild(createBadge(r.status, r.status === 'Completed' ? 'badge-success' : 'badge-warning'));
+                tr.appendChild(statusTd);
+                tbody.appendChild(tr);
+            });
+        }
+
+        // SAFETY
+        function filterSafety() {
+            const sev = document.getElementById('safetySeverityFilter').value;
+            const veh = document.getElementById('safetyVehicleFilter').value;
+            filteredData.overspeed = facilityData.overspeed.records.filter(r => {
+                if (sev && r.severity !== sev) return false;
+                if (veh && r.plate_number !== veh) return false;
+                return true;
+            });
+            renderSafety();
+        }
+        function resetSafetyFilters() { document.getElementById('safetySeverityFilter').value = ''; document.getElementById('safetyVehicleFilter').value = ''; filteredData.overspeed = [...facilityData.overspeed.records]; renderSafety(); }
+
+        function renderSafety() {
+            const data = filteredData.overspeed;
+            const s = { total: data.length, vehicles: new Set(data.map(r => r.plate_number)).size, max: 0, sum: 0, extreme: 0, high: 0 };
+            data.forEach(r => { if (r.speed > s.max) s.max = r.speed; s.sum += r.speed; if (r.severity === 'Extreme') s.extreme++; if (r.severity === 'High') s.high++; });
+            const avgSpeed = s.total > 0 ? Math.round(s.sum / s.total) : 0;
+
+            document.getElementById('safetyAlertTitle').textContent = s.extreme > 0 ? 'CRITICAL: ' + s.extreme + ' Extreme Violations' : s.total > 0 ? 'Safety Violations Recorded' : 'No Violations';
+            document.getElementById('safetyAlertText').textContent = s.total + ' total violations. ' + s.extreme + ' extreme (≥140), ' + s.high + ' high (120-139). Max: ' + s.max.toFixed(0) + ' km/h.';
+
+            const kpi = document.getElementById('safetyKPIs');
+            kpi.innerHTML = '';
+            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'Violations', s.total.toLocaleString(), 'Total', null));
+            kpi.appendChild(createKPI('bg-primary-gradient', 'car', 'Vehicles', s.vehicles, 'With violations', null));
+            kpi.appendChild(createKPI('bg-rose-gradient', 'speed', 'Max Speed', s.max.toFixed(0) + ' km/h', 'Highest', null));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'speed', 'Avg Speed', avgSpeed + ' km/h', 'Average', null));
+            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'Extreme', s.extreme, '≥140 km/h', null));
+
+            const sc = { Extreme: 0, High: 0, Medium: 0, Low: 0 };
+            data.forEach(r => sc[r.severity]++);
+            if (charts.safetySeverity) charts.safetySeverity.destroy();
+            charts.safetySeverity = new Chart(document.getElementById('safetySeverityChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(sc), datasets: [{ data: Object.values(sc), backgroundColor: ['#DC2626', '#F97316', '#FBBF24', '#10B981'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, cutout: '65%' }
+            });
+
+            const oc = {};
+            data.forEach(r => { oc[r.plate_number] = (oc[r.plate_number] || 0) + 1; });
+            const top10 = Object.entries(oc).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            if (charts.safetyOffenders) charts.safetyOffenders.destroy();
+            charts.safetyOffenders = new Chart(document.getElementById('safetyOffendersChart').getContext('2d'), {
+                type: 'bar',
+                data: { labels: top10.map(o => o[0]), datasets: [{ label: 'Violations', data: top10.map(o => o[1]), backgroundColor: '#EF4444' }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            document.getElementById('safetyTableCount').textContent = data.length + ' records';
+            const tbody = document.getElementById('safetyTableBody');
+            tbody.innerHTML = '';
+            data.slice(0, 100).forEach(r => {
+                const tr = document.createElement('tr');
+                tr.appendChild(createCell(r.datetime));
+                tr.appendChild(createCell(r.plate_number, 'font-medium'));
+                tr.appendChild(createCell(r.speed.toFixed(0) + ' km/h', 'text-right font-bold'));
+                const sevTd = document.createElement('td');
+                const dot = document.createElement('span');
+                dot.className = 'severity-dot severity-' + r.severity.toLowerCase();
+                sevTd.appendChild(dot);
+                sevTd.appendChild(createBadge(r.severity, r.severity === 'Extreme' ? 'badge-danger' : r.severity === 'High' ? 'badge-warning' : r.severity === 'Medium' ? 'badge-info' : 'badge-success'));
+                tr.appendChild(sevTd);
+                const locTd = createCell(r.address);
+                locTd.style.maxWidth = '250px';
+                locTd.style.overflow = 'hidden';
+                locTd.style.textOverflow = 'ellipsis';
+                locTd.style.whiteSpace = 'nowrap';
+                locTd.title = r.address || '';
+                tr.appendChild(locTd);
+                tbody.appendChild(tr);
+            });
+            if (data.length > 100) {
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                td.colSpan = 5;
+                td.className = 'text-center text-gray-500 py-4';
+                td.textContent = 'Showing 100 of ' + data.length + ' records';
+                tr.appendChild(td);
+                tbody.appendChild(tr);
+            }
+        }
+
+        // MODAL
+        function showModal(title, content) { document.getElementById('modalTitle').textContent = title; document.getElementById('modalBody').innerHTML = typeof content === 'string' ? '<p>' + content + '</p>' : content; document.getElementById('detailModal').classList.add('show'); }
+        function closeModal() { document.getElementById('detailModal').classList.remove('show'); }
+        function showSLAInfo(type) {
+            const info = { accommodation: 'Contract renewals should be initiated 90 days before expiry.', driving: 'Target: ≥50% Excellent rating (≥90 score).', maintenance: 'Target completion rate: ≥95%.' };
+            showModal('SLA Information', info[type] || 'No info available.');
+        }
+        function showDetails(status, data) {
+            const records = data.filter(r => r.status === status);
+            let html = '<p class="text-sm text-gray-500 mb-4">' + records.length + ' ' + status + ' contracts</p>';
+            records.slice(0, 15).forEach(r => { html += '<div class="p-3 bg-gray-50 rounded-lg mb-2"><p class="font-medium">' + r.city + ' - ' + r.project_name + '</p><p class="text-sm text-gray-500">' + r.remaining_days + ' days | ' + r.residents + ' residents</p></div>'; });
+            showModal(status + ' Contracts', html);
+        }
+
+        // EXPORT
+        function exportToExcel(data, name, cols) {
+            const exp = data.map(r => { const row = {}; cols.forEach(c => { row[c.toUpperCase().replace(/_/g, ' ')] = r[c]; }); return row; });
+            const ws = XLSX.utils.json_to_sheet(exp);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Data');
+            XLSX.writeFile(wb, name + '_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+        }
+        function exportAccommodation() { exportToExcel(filteredData.accommodation, 'Accommodation', ['city', 'project_name', 'rooms', 'residents', 'empty_beds', 'occupancy_rate', 'end_date', 'remaining_days', 'status', 'annual_payment']); }
+        function exportDriving() { exportToExcel(filteredData.driving, 'Fleet', ['plate_number', 'distance_km', 'overspeed_count', 'harsh_braking', 'max_speed', 'dat_score', 'rating']); }
+        function exportFuel() { exportToExcel(filteredData.fuel, 'Fuel', ['plate_number', 'distance_km', 'fuel_liters', 'fuel_cost']); }
+        function exportMaintenance() { exportToExcel(filteredData.maintenance, 'Maintenance', ['date', 'region', 'city', 'location', 'vendor', 'description', 'status']); }
+        function exportSafety() { exportToExcel(filteredData.overspeed, 'Safety', ['datetime', 'plate_number', 'speed', 'severity', 'address']); }
+
+        document.addEventListener('DOMContentLoaded', loadData);
+        document.getElementById('detailModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+    </script>
+</body>
+</html>
