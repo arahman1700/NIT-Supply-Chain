@@ -64,7 +64,7 @@
         }
 
         .department-card {
-            min-height: 320px;
+            min-height: 280px;
         }
 
         .glow-text {
@@ -293,10 +293,10 @@
         </header>
 
         <!-- Hero with Logo -->
-        <section class="container mx-auto px-4 md:px-6 py-12 md:py-16 text-center">
+        <section class="container mx-auto px-4 md:px-6 pt-6 pb-10 text-center">
             <!-- Glowing Logo Section -->
-            <div class="fade-in-up stagger-1 mb-10">
-                <div class="logo-glow-container inline-block relative" style="padding: 30px;">
+            <div class="fade-in-up stagger-1 mb-6">
+                <div class="logo-glow-container inline-block relative" style="padding: 40px;">
                     <!-- Sparkle effects -->
                     <div class="sparkle"></div>
                     <div class="sparkle"></div>
@@ -305,27 +305,34 @@
                     <div class="sparkle"></div>
                     <div class="sparkle"></div>
                     <!-- Main Logo -->
-                    <img src="assets/nit-supply-chain-logo.png" alt="NIT Supply Chain" class="mx-auto logo-glow" style="height: 260px; max-width: 90%; filter: drop-shadow(0 0 30px rgba(128, 209, 233, 0.4));" onerror="this.style.display='none'; document.getElementById('fallback-title').style.display='block';">
+                    <img src="assets/nit-supply-chain-logo.png" alt="NIT Supply Chain" class="mx-auto logo-glow" style="height: 340px; max-width: 95%; filter: drop-shadow(0 0 30px rgba(128, 209, 233, 0.4));" onerror="this.style.display='none'; document.getElementById('fallback-title').style.display='block';">
                     <div id="fallback-title" style="display:none;">
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 glow-text">Supply Chain Management</h1>
                     </div>
                 </div>
             </div>
             <div class="fade-in-up stagger-2">
-                <p class="text-xl text-gray-300 mb-2">Integrated Operations Management System</p>
-                <p class="text-sm text-cyan-400/70">Select a department to access dashboards</p>
+                <p class="text-2xl font-light text-gray-300 mb-3 tracking-wide">Integrated Operations Management System</p>
+                <div class="flex items-center justify-center gap-3">
+                    <div class="h-px w-16 bg-gradient-to-r from-transparent to-cyan-400/50"></div>
+                    <p class="text-sm text-cyan-400 font-medium uppercase tracking-widest">Select a department</p>
+                    <div class="h-px w-16 bg-gradient-to-l from-transparent to-cyan-400/50"></div>
+                </div>
             </div>
         </section>
 
         <!-- Department Cards -->
         <section class="container mx-auto px-6 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
 
                 <!-- Logistics -->
                 <a href="transport_dashboard.html" class="glass-card department-card p-8 fade-in-up stagger-2 block text-center">
                     <div class="flex justify-center">
-                        <div class="icon-box p-0 overflow-hidden" style="width: 90px; height: 90px;">
-                            <img src="assets/nit-logistics.png" alt="NIT Logistics">
+                        <div class="icon-box logistics-gradient">
+                            <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
+                                <path d="M0 4a1 1 0 011-1h11a1 1 0 011 1v7H0V4zm1 0v6h10V4H1zm13.5 0H16a2 2 0 012 2v5h-1V6a1 1 0 00-1-1h-1.5V4zM16 12h2v1.5a1.5 1.5 0 01-1.5 1.5h-.085A2.5 2.5 0 0013 12.5V12h3zm-5.085 3a2.5 2.5 0 00-3.83 0H4.5A1.5 1.5 0 013 13.5V12h8v.5a2.5 2.5 0 00-2.085 2.5z"/>
+                            </svg>
                         </div>
                     </div>
                     <span class="status-badge badge-active mb-4 inline-block">Active</span>
@@ -478,10 +485,10 @@
         </section>
 
         <!-- Footer -->
-        <footer class="container mx-auto px-6 py-8 text-center">
-            <div class="border-t border-gray-800 pt-6">
-                <p class="text-gray-500 text-sm mb-2">NESMA Infrastructure & Technology</p>
-                <p class="text-gray-600 text-xs">Supply Chain Management</p>
+        <footer class="container mx-auto px-6 py-10 text-center">
+            <div class="border-t border-gray-700/50 pt-6">
+                <p class="text-gray-400 text-sm mb-1 font-medium tracking-wide">NESMA Infrastructure & Technology</p>
+                <p class="text-cyan-400/40 text-xs uppercase tracking-widest">Supply Chain Management Portal</p>
             </div>
         </footer>
     </div>
