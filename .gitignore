@@ -90,3 +90,4 @@ settings.local.json
 # Large data files (optional - uncomment if needed)
 # *.json
 # !data/*.json
+.playwright-mcp/
