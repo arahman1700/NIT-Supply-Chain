@@ -24,9 +24,9 @@
             --danger: #DC2626;
         }
         * { font-family: 'Inter', 'Cairo', sans-serif; }
-        body { background: #F8FAFC; min-height: 100vh; }
-        .nesma-header { background: var(--nesma-primary); position: relative; }
-        .nesma-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 120px; height: 3px; background: var(--nesma-cyan); }
+        body { background: #F2F2F4; min-height: 100vh; }
+        .nesma-header { background: linear-gradient(90deg, #0E2841 0%, #2E3192 45%, #5B2D8E 100%); position: relative; }
+        .nesma-header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #80D1E9 0%, #DEC18C 100%); }
         .card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(14,40,65,0.08); border: 1px solid var(--nesma-light-gray); }
         .overview-card { position: relative; border-radius: 16px; padding: 20px; color: white; overflow: hidden; cursor: pointer; transition: all 0.3s ease; }
         .overview-card::before { content: ''; position: absolute; top: 0; right: 0; width: 50%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 100%); }
@@ -35,7 +35,7 @@
         .overview-card .value { font-size: 2rem; font-weight: 800; }
         .overview-card .label { font-size: 0.85rem; opacity: 0.9; }
         .overview-card .sub { font-size: 0.75rem; opacity: 0.7; margin-top: 4px; }
-        .bg-equipment { background: linear-gradient(135deg, #4361ee 0%, #2E3192 100%); }
+        .bg-equipment { background: linear-gradient(135deg, #2E3192 0%, #5B2D8E 100%); }
         .bg-fleet { background: linear-gradient(135deg, #10B981 0%, #047857 100%); }
         .bg-generators { background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%); }
         .bg-acs { background: linear-gradient(135deg, #06B6D4 0%, #0E7490 100%); }
@@ -65,7 +65,7 @@
         .badge-success { background: #D1FAE5; color: #059669; }
         .badge-info { background: #DBEAFE; color: #2563EB; }
         .badge-purple { background: #EDE9FE; color: #7C3AED; }
-        .filter-section { background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%); border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--nesma-light-gray); }
+        .filter-section { background: linear-gradient(135deg, #F2F2F4 0%, #F1F5F9 100%); border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--nesma-light-gray); }
         .filter-select { border: 1px solid var(--nesma-light-gray); border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; background: white; min-width: 150px; transition: all 0.2s; }
         .filter-select:focus { outline: none; border-color: var(--nesma-primary); box-shadow: 0 0 0 3px rgba(46,49,146,0.1); }
         .btn-export { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; transition: all 0.2s ease; }
@@ -410,7 +410,7 @@
             if (charts.equipmentByBrand) charts.equipmentByBrand.destroy();
             charts.equipmentByBrand = new Chart(document.getElementById('equipmentByBrandChart').getContext('2d'), {
                 type: 'doughnut',
-                data: { labels: brandSorted.map(d => d[0]), datasets: [{ data: brandSorted.map(d => d[1]), backgroundColor: ['#2E3192', '#80D1E9', '#0E2841', '#059669', '#D97706', '#DC2626', '#8B5CF6', '#06B6D4'] }] },
+                data: { labels: brandSorted.map(d => d[0]), datasets: [{ data: brandSorted.map(d => d[1]), backgroundColor: ['#2E3192', '#80D1E9', '#92A185', '#DEC18C', '#AD8082', '#4472C4', '#002060', '#7B2D8E'] }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12 } } } }
             });
 
@@ -514,7 +514,7 @@
             if (charts.fleetByRegion) charts.fleetByRegion.destroy();
             charts.fleetByRegion = new Chart(document.getElementById('fleetByRegionChart').getContext('2d'), {
                 type: 'pie',
-                data: { labels: regionSorted.map(d => d[0]), datasets: [{ data: regionSorted.map(d => d[1]), backgroundColor: ['#2E3192', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'] }] },
+                data: { labels: regionSorted.map(d => d[0]), datasets: [{ data: regionSorted.map(d => d[1]), backgroundColor: ['#2E3192', '#92A185', '#DEC18C', '#AD8082', '#4472C4', '#7B2D8E'] }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
             });
 

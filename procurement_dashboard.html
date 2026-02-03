@@ -35,13 +35,13 @@
         * { font-family: 'Inter', 'Cairo', sans-serif; }
 
         body {
-            background: #F8FAFC;
+            background: #F2F2F4;
             min-height: 100vh;
         }
 
         /* Header - Solid Primary with subtle accent */
         .nesma-header {
-            background: var(--nesma-primary);
+            background: linear-gradient(90deg, #0E2841 0%, #2E3192 45%, #5B2D8E 100%);
             box-shadow: 0 2px 8px rgba(46, 49, 146, 0.15);
             position: relative;
         }
@@ -50,9 +50,9 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 120px;
+            right: 0;
             height: 3px;
-            background: var(--nesma-cyan);
+            background: linear-gradient(90deg, #80D1E9 0%, #DEC18C 100%);
         }
 
         /* Cards - Clean white */
@@ -461,7 +461,7 @@
                         <p class="text-sm font-semibold" id="lastUpdateDate">December 8, 2025</p>
                     </div>
                     <!-- Theme Toggle -->
-                    <button id="themeToggle" onclick="NesmaTheme.toggle()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Toggle theme">
+                    <button id="themeToggleBtn" onclick="NesmaTheme.toggle()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Toggle theme">
                         <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                     </button>
                     <!-- Settings Button -->
@@ -2450,7 +2450,7 @@
                                 prData?.summary?.status_breakdown?.INCOMPLETE || 118,
                                 prData?.summary?.status_breakdown?.['IN PROCESS'] || 114
                             ],
-                            backgroundColor: ['#2E3192', '#EF4444', '#F59E0B', '#B3B3B3', '#80D1E9'],
+                            backgroundColor: ['#2E3192', '#AD8082', '#DEC18C', '#92A185', '#80D1E9'],
                             borderWidth: 0
                         }]
                     },
@@ -2661,7 +2661,7 @@
                                 vendorData?.score_distribution?.['60_70'] || 14,
                                 vendorData?.score_distribution?.above_70 || 12
                             ],
-                            backgroundColor: ['#EF4444', '#F59E0B', '#B3B3B3', '#80D1E9', '#2E3192'],
+                            backgroundColor: ['#AD8082', '#DEC18C', '#92A185', '#80D1E9', '#2E3192'],
                             borderRadius: 6
                         }]
                     },
@@ -3744,7 +3744,7 @@
                         labels: categoryEntries.map(c => c[0]),
                         datasets: [{
                             data: categoryEntries.map(c => c[1]),
-                            backgroundColor: ['#2E3192', '#80D1E9', '#F59E0B', '#EF4444', '#0E2841', '#203366', '#10B981'],
+                            backgroundColor: ['#2E3192', '#80D1E9', '#92A185', '#DEC18C', '#AD8082', '#4472C4', '#7B2D8E'],
                             borderWidth: 0
                         }]
                     },

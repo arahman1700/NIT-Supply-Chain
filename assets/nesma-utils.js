@@ -16,15 +16,21 @@ const NesmaTheme = {
         }
         this.updateToggleIcon();
         this.updateChartDefaults();
+        this.ensureParticlesContainer();
+        this.updateParticles();
     },
 
     toggle() {
         const current = document.documentElement.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
+        var next;
+        if (current === 'dark') next = 'nit';
+        else if (current === 'nit') next = 'light';
+        else next = 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem(this.storageKey, next);
         this.updateToggleIcon();
         this.updateChartDefaults();
+        this.updateParticles();
         if (typeof Chart !== 'undefined') {
             Chart.helpers.each(Chart.instances, (chart) => {
                 if (chart) {
@@ -36,25 +42,36 @@ const NesmaTheme = {
     },
 
     isDark() {
-        return document.documentElement.getAttribute('data-theme') === 'dark';
+        var theme = document.documentElement.getAttribute('data-theme');
+        return theme === 'dark' || theme === 'nit';
+    },
+
+    isNit() {
+        return document.documentElement.getAttribute('data-theme') === 'nit';
     },
 
     updateToggleIcon() {
-        const btn = document.getElementById('themeToggleBtn');
+        var btn = document.getElementById('themeToggleBtn') || document.getElementById('themeToggle');
         if (!btn) return;
         btn.textContent = '';
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        var theme = document.documentElement.getAttribute('data-theme');
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('class', 'w-5 h-5');
         svg.setAttribute('fill', 'none');
         svg.setAttribute('stroke', 'currentColor');
         svg.setAttribute('viewBox', '0 0 24 24');
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('stroke-linecap', 'round');
         path.setAttribute('stroke-linejoin', 'round');
         path.setAttribute('stroke-width', '2');
-        if (this.isDark()) {
+        if (theme === 'nit') {
+            // NIT mode: sparkles icon (click goes to light)
+            path.setAttribute('d', 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z');
+        } else if (theme === 'dark') {
+            // Dark mode: sun icon (click goes to NIT)
             path.setAttribute('d', 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z');
         } else {
+            // Light mode: moon icon (click goes to dark)
             path.setAttribute('d', 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z');
         }
         svg.appendChild(path);
@@ -86,11 +103,83 @@ const NesmaTheme = {
 
     getChartColors(count) {
         const palette = [
-            '#2E3192', '#80D1E9', '#203366', '#0E2841',
-            '#4A4DC7', '#5BBCD9', '#059669', '#D97706',
-            '#DC2626', '#8B5CF6', '#06B6D4', '#F59E0B'
+            '#2E3192', '#80D1E9', '#92A185', '#DEC18C',
+            '#AD8082', '#4472C4', '#002060', '#203366',
+            '#059669', '#D97706', '#DC2626', '#7B2D8E',
+            '#4A4DC7', '#5BBCD9', '#06B6D4', '#F59E0B'
         ];
         return palette.slice(0, count);
+    },
+
+    // ---- Particle system for NIT theme ----
+
+    ensureParticlesContainer() {
+        if (!document.getElementById('particles')) {
+            var div = document.createElement('div');
+            div.id = 'particles';
+            div.className = 'particles';
+            document.body.insertBefore(div, document.body.firstChild);
+        }
+    },
+
+    createLogoSVG(fill1, fill2) {
+        var ns = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(ns, 'svg');
+        svg.setAttribute('viewBox', '0 0 80.8 30.65');
+        var shapes = [
+            {tag:'rect', attrs:{x:'46.4',y:'.04',width:'10.53',height:'30.52',fill:fill1}},
+            {tag:'rect', attrs:{x:'0',y:'.02',width:'10.52',height:'30.56',fill:fill1}},
+            {tag:'path', attrs:{d:'M30.89,16.55v13.93s0,.02,0,0L13.01,13.47s0,0,0,0V.06s0-.02,0,0l17.88,16.49s0,0,0,0',fill:fill1}},
+            {tag:'rect', attrs:{x:'33.38',y:'10.69',width:'10.53',height:'19.87',fill:fill1}},
+            {tag:'polygon', attrs:{points:'33.38 8.75 33.38 .02 43.91 .02 33.38 8.75',fill:fill2}},
+            {tag:'rect', attrs:{x:'58.95',y:'11.2',width:'9.4',height:'7.32',fill:fill1}},
+            {tag:'rect', attrs:{x:'80.45',y:'0',width:'.35',height:'30.65',fill:fill1}}
+        ];
+        shapes.forEach(function(s) {
+            var el = document.createElementNS(ns, s.tag);
+            Object.keys(s.attrs).forEach(function(k) { el.setAttribute(k, s.attrs[k]); });
+            svg.appendChild(el);
+        });
+        return svg;
+    },
+
+    createParticles(container) {
+        if (!container) return;
+        var colorSets = [
+            { fill1: '#2E3192', fill2: '#80D1E9' },
+            { fill1: 'rgba(255,255,255,0.9)', fill2: 'rgba(255,255,255,0.6)' },
+            { fill1: '#80D1E9', fill2: '#2E3192' }
+        ];
+        var animations = ['logoFloat', 'logoPop', 'logoFall'];
+        for (var i = 0; i < 15; i++) {
+            var colors = colorSets[i % 3];
+            var anim = animations[Math.floor(Math.random() * animations.length)];
+            var size = 16 + Math.random() * 24;
+            var opacity = 0.04 + Math.random() * 0.1;
+            var duration = 18 + Math.random() * 22;
+            var delay = Math.random() * 25;
+            var driftDur = 8 + Math.random() * 6;
+
+            var particle = document.createElement('div');
+            particle.className = 'logo-particle';
+            particle.style.left = (Math.random() * 100) + '%';
+            particle.style.top = (Math.random() * 100) + '%';
+            particle.style.width = size + 'px';
+            particle.style.setProperty('--p-opacity', String(opacity));
+            particle.style.animation = anim + ' ' + duration + 's ease-in-out ' + delay + 's infinite, logoDrift ' + driftDur + 's ease-in-out ' + delay + 's infinite';
+            particle.appendChild(this.createLogoSVG(colors.fill1, colors.fill2));
+            container.appendChild(particle);
+        }
+    },
+
+    updateParticles() {
+        this.ensureParticlesContainer();
+        var container = document.getElementById('particles');
+        if (!container) return;
+        // Only populate if empty (particles persist across toggles; CSS controls visibility)
+        if (container.children.length === 0) {
+            this.createParticles(container);
+        }
     }
 };
 

@@ -24,16 +24,20 @@
             --danger: #DC2626;
         }
         * { font-family: 'Inter', 'Cairo', sans-serif; }
-        body { background: #F8FAFC; min-height: 100vh; }
-        .nesma-header { background: var(--nesma-primary); position: relative; }
-        .nesma-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 120px; height: 3px; background: var(--nesma-cyan); }
+        body { background: #F2F2F4; min-height: 100vh; }
+        .nesma-header { background: linear-gradient(90deg, #0E2841 0%, #2E3192 45%, #5B2D8E 100%); position: relative; }
+        .nesma-header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #80D1E9 0%, #DEC18C 100%); }
         .card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(14,40,65,0.08); border: 1px solid var(--nesma-light-gray); }
 
         /* Gradient KPI Cards */
         .kpi-card { position: relative; border-radius: 16px; padding: 20px 24px; color: white; overflow: hidden; cursor: pointer; min-height: 120px; transition: all 0.3s ease; }
         .kpi-card::before { content: ''; position: absolute; top: 0; right: 0; width: 60%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 100%); }
         .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .kpi-primary { background: linear-gradient(135deg, #4361ee 0%, #2E3192 100%); }
+        .kpi-primary { background: linear-gradient(135deg, #2E3192 0%, #5B2D8E 100%); }
+        .kpi-olive { background: linear-gradient(135deg, #92A185 0%, #7A8B6E 100%); }
+        .kpi-gold { background: linear-gradient(135deg, #DEC18C 0%, #C5A66E 100%); color: #0E2841; }
+        .kpi-rose { background: linear-gradient(135deg, #AD8082 0%, #956A6C 100%); }
+        .kpi-icon-blue { background: linear-gradient(135deg, #4472C4 0%, #3662B4 100%); }
         .kpi-success { background: linear-gradient(135deg, #10B981 0%, #047857 100%); }
         .kpi-warning { background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%); }
         .kpi-danger { background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); }
@@ -93,7 +97,7 @@
         .badge-info { background: #DBEAFE; color: #2563EB; }
 
         /* Filter Section */
-        .filter-section { background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%); border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--nesma-light-gray); }
+        .filter-section { background: linear-gradient(135deg, #F2F2F4 0%, #F1F5F9 100%); border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--nesma-light-gray); }
         .filter-select { border: 1px solid var(--nesma-light-gray); border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; background: white; min-width: 160px; transition: all 0.2s; }
         .filter-select:focus { outline: none; border-color: var(--nesma-primary); box-shadow: 0 0 0 3px rgba(46,49,146,0.1); }
 
@@ -776,7 +780,7 @@
 
             if (charts.surplusByProject) charts.surplusByProject.destroy();
             charts.surplusByProject = new Chart(document.getElementById('surplusByProjectChart').getContext('2d'), {
-                type: 'doughnut', data: { labels: projData.map(d => d.project), datasets: [{ data: projData.map(d => d.balance), backgroundColor: ['#2E3192', '#80D1E9', '#0E2841', '#059669', '#D97706', '#DC2626', '#8B5CF6', '#06B6D4', '#F59E0B', '#10B981'] }] },
+                type: 'doughnut', data: { labels: projData.map(d => d.project), datasets: [{ data: projData.map(d => d.balance), backgroundColor: ['#2E3192', '#80D1E9', '#92A185', '#DEC18C', '#AD8082', '#4472C4', '#002060', '#203366', '#059669', '#7B2D8E'] }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12 } } } }
             });
 
