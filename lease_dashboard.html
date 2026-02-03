@@ -335,6 +335,70 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
+        /* ========== MOBILE RESPONSIVE STYLES ========== */
+        @media (max-width: 768px) {
+            .nesma-header { padding: 12px 16px !important; }
+            .nesma-header img { height: 28px !important; }
+            .nesma-header .text-lg { font-size: 1rem !important; }
+            .nesma-header .text-xs { font-size: 0.65rem !important; }
+            .nesma-header .gap-3 { gap: 0.5rem !important; }
+            .nesma-header button { padding: 6px !important; }
+            .nesma-header button svg { width: 18px !important; height: 18px !important; }
+
+            main { padding: 12px !important; }
+            .card { padding: 12px !important; }
+
+            /* KPI Cards */
+            .kpi-card { padding: 12px !important; }
+            .kpi-value { font-size: 1.25rem !important; }
+            .kpi-label { font-size: 0.7rem !important; }
+            .kpi-icon { width: 36px !important; height: 36px !important; }
+            .kpi-icon svg { width: 18px !important; height: 18px !important; }
+
+            /* Filters */
+            .filter-section select { font-size: 0.75rem !important; padding: 6px 8px !important; min-width: 100px !important; }
+            .filter-section label { font-size: 0.7rem !important; }
+
+            /* Charts */
+            .chart-container { height: 200px !important; }
+
+            /* Contract Cards */
+            .contract-card { padding: 12px !important; }
+            .contract-card h4 { font-size: 0.9rem !important; }
+            .contract-card .text-sm { font-size: 0.75rem !important; }
+            .contract-card .text-xs { font-size: 0.65rem !important; }
+
+            /* Tables */
+            .data-table { font-size: 0.7rem !important; }
+            .data-table th, .data-table td { padding: 6px 8px !important; }
+
+            /* Grid adjustments */
+            .grid-cols-5, .grid-cols-4, .grid-cols-3, .grid-cols-2 { grid-template-columns: repeat(2, 1fr) !important; }
+
+            /* View toggle */
+            .view-toggle button { padding: 6px 10px !important; font-size: 0.7rem !important; }
+
+            /* Exit opportunities */
+            .exit-card { padding: 10px !important; }
+            .exit-card h4 { font-size: 0.8rem !important; }
+        }
+
+        @media (max-width: 480px) {
+            .nesma-header { flex-wrap: wrap; gap: 8px; }
+            .nesma-header img { height: 24px !important; }
+
+            .grid-cols-5, .grid-cols-4, .grid-cols-3, .grid-cols-2 { grid-template-columns: 1fr !important; }
+
+            .kpi-card { padding: 10px !important; }
+            .kpi-value { font-size: 1.1rem !important; }
+
+            .contract-card { padding: 10px !important; }
+
+            main { padding: 8px !important; }
+
+            .modal-content { width: 98% !important; margin: 8px !important; }
+        }
+
         @media print { .no-print { display: none !important; } }
     </style>
 </head>

@@ -243,6 +243,58 @@
         .sparkle:nth-child(4) { bottom: 5%; right: 10%; animation-delay: 1.2s; }
         .sparkle:nth-child(5) { top: 40%; left: 0%; animation-delay: 0.2s; }
         .sparkle:nth-child(6) { top: 40%; right: 0%; animation-delay: 0.6s; }
+
+        /* ========== MOBILE RESPONSIVE STYLES ========== */
+        @media (max-width: 768px) {
+            /* Header adjustments */
+            header { padding-top: 1rem !important; padding-bottom: 0.5rem !important; }
+            header img { height: 32px !important; }
+            header .gap-4 { gap: 0.5rem !important; }
+
+            /* Logo section */
+            .logo-glow-container { padding: 15px !important; }
+            .logo-glow-container img { height: 160px !important; max-width: 90% !important; }
+            .sparkle { width: 5px; height: 5px; }
+
+            /* Hero text */
+            section .text-2xl { font-size: 1rem !important; }
+            section .text-sm { font-size: 0.7rem !important; }
+            .h-px.w-16 { width: 2rem !important; }
+
+            /* Cards */
+            .department-card { min-height: 220px !important; padding: 1.25rem !important; }
+            .icon-box { width: 56px !important; height: 56px !important; margin-bottom: 12px !important; }
+            .icon-box svg { width: 28px !important; height: 28px !important; }
+            .department-card h3 { font-size: 1.25rem !important; margin-bottom: 0.5rem !important; }
+            .department-card p { font-size: 0.75rem !important; margin-bottom: 0.75rem !important; }
+            .feature-tag { font-size: 9px !important; padding: 3px 8px !important; }
+            .status-badge { font-size: 9px !important; padding: 4px 10px !important; }
+            .enter-btn { font-size: 12px !important; }
+
+            /* Links section */
+            .icon-link-card { padding: 0.75rem !important; }
+            .icon-link-card svg { width: 20px !important; height: 20px !important; }
+            .icon-link-card span { font-size: 0.7rem !important; }
+
+            /* Grid */
+            .grid.gap-5 { gap: 0.75rem !important; }
+            .container { padding-left: 1rem !important; padding-right: 1rem !important; }
+
+            /* Buttons */
+            #particlesToggleBtn, #themeToggleBtn { padding: 0.4rem !important; }
+            #particlesToggleBtn svg, #themeToggleBtn svg { width: 18px !important; height: 18px !important; }
+        }
+
+        @media (max-width: 480px) {
+            .logo-glow-container img { height: 120px !important; }
+            .logo-glow-container { padding: 10px !important; }
+            .department-card { min-height: 180px !important; padding: 1rem !important; }
+            .icon-box { width: 48px !important; height: 48px !important; }
+            .department-card h3 { font-size: 1.1rem !important; }
+            section .text-2xl { font-size: 0.875rem !important; }
+            header img { height: 28px !important; }
+            #currentTime { font-size: 0.65rem !important; }
+        }
     </style>
 </head>
 <body class="text-white">
