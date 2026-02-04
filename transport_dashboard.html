@@ -237,10 +237,12 @@
             border: none;
             cursor: pointer;
         }
-        .btn-export-pdf { background: #DC2626; color: white; }
-        .btn-export-pdf:hover { background: #B91C1C; }
-        .btn-export-excel { background: var(--success); color: white; }
-        .btn-export-excel:hover { background: #047857; }
+        .btn-export-pdf, .btn-pdf { background: #DC2626; color: white; }
+        .btn-export-pdf:hover, .btn-pdf:hover { background: #B91C1C; }
+        .btn-export-excel, .btn-excel { background: var(--success); color: white; }
+        .btn-export-excel:hover, .btn-excel:hover { background: #047857; }
+        .btn-csv { background: #4472C4; color: white; }
+        .btn-csv:hover { background: #3662B4; }
         .btn-export svg { width: 16px; height: 16px; }
 
         .data-table { width: 100%; border-collapse: collapse; }
@@ -317,7 +319,7 @@
 
         .modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(14, 40, 65, 0.6); backdrop-filter: blur(4px); }
         .modal.show { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: white; border-radius: 16px; width: 95%; max-width: 900px; max-height: 85vh; overflow: hidden; }
+        .modal-content { background: white; border-radius: 16px; width: 95%; max-width: 1000px; max-height: 85vh; overflow: hidden; }
         .modal-header { padding: 16px 20px; background: var(--nesma-primary); color: white; display: flex; justify-content: space-between; align-items: center; }
         .modal-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
         .close-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; }
@@ -370,6 +372,16 @@
                     <span>Suppliers</span>
                     <span class="tab-count" id="suppliersBadge">0</span>
                 </button>
+                <button class="tab-btn" onclick="switchTab('monthly', this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span>Monthly Contracts</span>
+                    <span class="tab-count" id="monthlyBadge">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('scrap', this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    <span>Scrap Removal</span>
+                    <span class="tab-count" id="scrapBadge">0</span>
+                </button>
                 <button class="tab-btn" onclick="switchTab('equipment', this)">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                     <span>Equipment</span>
@@ -384,7 +396,7 @@
                             <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                             SLA Compliance Dashboard
                         </h3>
-                        <span class="text-xs text-gray-500">Equipment Delivery Target: 2 days | Overall Target: 95%</span>
+                        <span class="text-xs text-gray-500">Daily Jobs SLA Target: 2 days | Overall Target: 95%</span>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="slaCards"></div>
                 </div>
@@ -394,6 +406,18 @@
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">Year</label>
                             <select id="filterYear" class="filter-select" onchange="applyFilters()"><option value="">All Years</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Month</label>
+                            <select id="filterMonth" class="filter-select" onchange="applyFilters()">
+                                <option value="">All Months</option>
+                                <option value="01">January</option><option value="02">February</option>
+                                <option value="03">March</option><option value="04">April</option>
+                                <option value="05">May</option><option value="06">June</option>
+                                <option value="07">July</option><option value="08">August</option>
+                                <option value="09">September</option><option value="10">October</option>
+                                <option value="11">November</option><option value="12">December</option>
+                            </select>
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">Company</label>
@@ -507,6 +531,48 @@
             </div>
 
             <div id="tab-suppliers" class="tab-content">
+                <div class="card mb-6">
+                    <div class="filter-section flex flex-wrap gap-4 items-end">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Supplier</label>
+                            <select id="supFilterSupplier" class="filter-select" onchange="applySupplierFilters()"><option value="">All Suppliers</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Equipment Category</label>
+                            <select id="supFilterEquipCat" class="filter-select" onchange="applySupplierFilters()"><option value="">All Categories</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Rent Type</label>
+                            <select id="supFilterRentType" class="filter-select" onchange="applySupplierFilters()">
+                                <option value="">All Types</option>
+                                <option value="Daily">Daily</option>
+                                <option value="Monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">SLA Status</label>
+                            <select id="supFilterSLA" class="filter-select" onchange="applySupplierFilters()">
+                                <option value="">All</option>
+                                <option value="On Time">On Time</option>
+                                <option value="Delayed">Delayed</option>
+                                <option value="In Progress">In Progress</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Min Jobs</label>
+                            <input type="number" id="supFilterMinJobs" class="filter-select" style="width:90px" placeholder="0" min="0" onchange="applySupplierFilters()">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Min Spend (SAR)</label>
+                            <input type="number" id="supFilterMinSpend" class="filter-select" style="width:120px" placeholder="0" min="0" onchange="applySupplierFilters()">
+                        </div>
+                        <div class="ml-auto flex gap-2">
+                            <button onclick="resetSupplierFilters()" class="btn-reset">Reset</button>
+                            <button onclick="exportSuppliersExcel()" class="btn-export btn-export-excel">Export</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="suppliersKPIs" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -528,6 +594,179 @@
                         <table class="data-table">
                             <thead><tr><th>Supplier</th><th>Total Jobs</th><th>On Time</th><th>Delayed</th><th>On-Time Rate</th><th>Total Spend</th><th>Avg Amount</th></tr></thead>
                             <tbody id="suppliersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-monthly" class="tab-content">
+                <div class="sla-section">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+                            Monthly Rental Contracts Summary
+                        </h3>
+                        <span class="text-xs text-gray-500">Long-term equipment rental agreements</span>
+                    </div>
+                    <div id="monthlyContractKPIs" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Spend by Supplier (Monthly Contracts)</h3>
+                        <div class="chart-container"><canvas id="monthlySupplierChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Equipment Types (Monthly Contracts)</h3>
+                        <div class="chart-container"><canvas id="monthlyEquipChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-700 text-sm">Monthly Rental Contracts</h3>
+                        <div class="flex gap-2">
+                            <button onclick="exportMonthlyExcel()" class="btn-export btn-export-excel">Export Excel</button>
+                        </div>
+                    </div>
+                    <div class="scroll-container" style="max-height:500px;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Project</th>
+                                    <th>Requester</th>
+                                    <th>Equipment</th>
+                                    <th>Supplier</th>
+                                    <th>Monthly Rate (SAR)</th>
+                                    <th>Active Months</th>
+                                    <th>Total Spend (SAR)</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="monthlyTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card mt-6">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="font-bold text-gray-700 text-sm">Monthly Spend Timeline (2025-2026)</h3>
+                    </div>
+                    <div class="p-5">
+                        <div class="chart-container" style="height:320px;"><canvas id="monthlyTimelineChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-scrap" class="tab-content">
+                <!-- SLA Section -->
+                <div class="sla-section">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L6.382 6H3a1 1 0 000 2v8a2 2 0 002 2h10a2 2 0 002-2V8a1 1 0 100-2h-3.382l-1.724-3.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            Cable Scrap Removal SLA
+                        </h3>
+                        <span class="text-xs text-gray-500">Removal Target: 3 days | Overall Target: 95%</span>
+                    </div>
+                    <div id="scrapSLACards" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></div>
+                </div>
+
+                <!-- Filters -->
+                <div class="card mb-6">
+                    <div class="filter-section flex flex-wrap gap-4 items-end">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Year</label>
+                            <select id="scrapFilterYear" class="filter-select" onchange="applyScrapFilters()"><option value="">All Years</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Month</label>
+                            <select id="scrapFilterMonth" class="filter-select" onchange="applyScrapFilters()">
+                                <option value="">All Months</option>
+                                <option value="01">January</option><option value="02">February</option>
+                                <option value="03">March</option><option value="04">April</option>
+                                <option value="05">May</option><option value="06">June</option>
+                                <option value="07">July</option><option value="08">August</option>
+                                <option value="09">September</option><option value="10">October</option>
+                                <option value="11">November</option><option value="12">December</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Project</label>
+                            <select id="scrapFilterProject" class="filter-select" onchange="applyScrapFilters()"><option value="">All Projects</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Status</label>
+                            <select id="scrapFilterSLA" class="filter-select" onchange="applyScrapFilters()">
+                                <option value="">All Statuses</option>
+                                <option value="On Time">On Time</option>
+                                <option value="Delayed">Delayed</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Drop Location</label>
+                            <select id="scrapFilterDrop" class="filter-select" onchange="applyScrapFilters()"><option value="">All Locations</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Equipment</label>
+                            <select id="scrapFilterEquip" class="filter-select" onchange="applyScrapFilters()"><option value="">All Equipment</option></select>
+                        </div>
+                        <div class="ml-auto flex gap-2">
+                            <button onclick="resetScrapFilters()" class="btn-reset">Reset</button>
+                            <button onclick="exportScrapExcel()" class="btn-export btn-export-excel">Export</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPIs -->
+                <div id="scrapKPIs" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6"></div>
+
+                <!-- Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Monthly Scrap Removal Jobs</h3>
+                        <div class="chart-container"><canvas id="scrapMonthlyChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Spend by Drop Location</h3>
+                        <div class="chart-container"><canvas id="scrapDropChart"></canvas></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Equipment Usage</h3>
+                        <div class="chart-container"><canvas id="scrapEquipChart"></canvas></div>
+                    </div>
+                    <div class="card p-5">
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Cost Breakdown (Equipment vs Labour)</h3>
+                        <div class="chart-container"><canvas id="scrapCostChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="card">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-700 text-sm">Scrap Removal Jobs</h3>
+                        <span class="text-xs text-gray-500" id="scrapTableCount">0 records</span>
+                    </div>
+                    <div class="scroll-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Request Date</th>
+                                    <th>Close Date</th>
+                                    <th>Cycle</th>
+                                    <th>Pickup</th>
+                                    <th>Drop</th>
+                                    <th>Equipment</th>
+                                    <th>Equip Cost</th>
+                                    <th>Labour Cost</th>
+                                    <th>Total (SAR)</th>
+                                    <th>SLA</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scrapTableBody"></tbody>
                         </table>
                     </div>
                 </div>
@@ -575,6 +814,7 @@
     <script>
         let transportData = null;
         let filteredRecords = [];
+        let monthlyContracts = [];
         let charts = {};
 
         // SVG Icons as constants (safe static content)
@@ -605,7 +845,9 @@
                 document.getElementById('requestsBadge').textContent = transportData.summary.total_requests;
                 document.getElementById('suppliersBadge').textContent = transportData.summary.unique_suppliers;
                 document.getElementById('equipmentBadge').textContent = Object.keys(transportData.summary.equipment_breakdown).length;
+                document.getElementById('monthlyBadge').textContent = transportData.monthly_contracts ? transportData.monthly_contracts.total_contracts : 0;
                 filteredRecords = transportData.records.slice();
+                monthlyContracts = transportData.monthly_contracts ? transportData.monthly_contracts.contracts : [];
                 populateFilters();
                 renderAll();
             } catch (e) { console.error('Error loading data:', e); }
@@ -622,7 +864,8 @@
         }
 
         function addOptions(id, items) {
-            var sel = document.getElementById(id);
+            var sel = typeof id === 'string' ? document.getElementById(id) : id;
+            if (!sel) { console.error('addOptions: element not found:', id); return; }
             for (var i = 0; i < items.length; i++) {
                 var o = document.createElement('option');
                 o.value = items[i];
@@ -633,11 +876,13 @@
 
         function applyFilters() {
             var year = document.getElementById('filterYear').value;
+            var month = document.getElementById('filterMonth').value;
             var company = document.getElementById('filterCompany').value;
             var status = document.getElementById('filterStatus').value;
             var supplier = document.getElementById('filterSupplier').value;
             filteredRecords = transportData.records.filter(function(r) {
                 if (year && r.year != year) return false;
+                if (month && r.month && r.month.split('-')[1] !== month) return false;
                 if (company && r.company !== company) return false;
                 if (status && r.status !== status) return false;
                 if (supplier && r.supplier !== supplier) return false;
@@ -648,6 +893,7 @@
 
         function resetFilters() {
             document.getElementById('filterYear').value = '';
+            document.getElementById('filterMonth').value = '';
             document.getElementById('filterCompany').value = '';
             document.getElementById('filterStatus').value = '';
             document.getElementById('filterSupplier').value = '';
@@ -656,10 +902,13 @@
         }
 
         function renderAll() {
+            populateSupplierFilters();
+            supplierFilteredData = filteredRecords.slice();
             renderOverview();
             renderRequests();
-            renderSuppliers();
+            renderSuppliers(supplierFilteredData);
             renderEquipment();
+            renderMonthlyContracts();
         }
 
         function switchTab(name, btn) {
@@ -669,6 +918,10 @@
             for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
             document.getElementById('tab-' + name).classList.add('active');
             btn.classList.add('active');
+            // Re-render scrap when switching to it (charts need visible container)
+            if (name === 'scrap' && scrapData) {
+                setTimeout(function() { renderScrap(); }, 50);
+            }
         }
 
         function createKPI(gradient, iconKey, label, value, subtitle, onclick) {
@@ -757,35 +1010,45 @@
             var data = filteredRecords;
             var total = data.length;
             var amount = 0, done = 0, inProgress = 0, onTime = 0, delayed = 0;
+            var dailyData = [], monthlyRentData = [];
             for (var i = 0; i < data.length; i++) {
                 amount += data[i].total_amount;
                 if (data[i].status === 'Done') done++;
                 if (data[i].status === 'In Progress') inProgress++;
                 if (data[i].sla_status === 'On Time') onTime++;
                 if (data[i].sla_status === 'Delayed') delayed++;
+                if (data[i].rent_type === 'Daily') dailyData.push(data[i]);
+                else monthlyRentData.push(data[i]);
             }
             var completionRate = total > 0 ? Math.round(done / total * 100) : 0;
             var completed = data.filter(function(r) { return r.status === 'Done'; });
             var onTimeRate = completed.length > 0 ? Math.round(onTime / completed.length * 100) : 0;
 
+            // Monthly contracts spend
+            var monthlyContractSpend = 0;
+            if (transportData.monthly_contracts) {
+                monthlyContractSpend = transportData.monthly_contracts.total_spend || 0;
+            }
+            var totalCombinedSpend = amount + monthlyContractSpend;
+
             // SLA Cards
             var sla = document.getElementById('slaCards');
             sla.innerHTML = '';
-            sla.appendChild(createSLACard(completionRate >= 95 ? 'green' : completionRate >= 85 ? 'yellow' : 'red', 'Completion Rate', completionRate + '%', 'Target: 95%', null, function() { showSLADetails('completion'); }));
-            sla.appendChild(createSLACard(onTimeRate >= 95 ? 'green' : onTimeRate >= 85 ? 'yellow' : 'red', 'On-Time Delivery', onTimeRate + '%', 'Target: 95%', null, function() { showSLADetails('ontime'); }));
-            sla.appendChild(createSLACard(inProgress <= 20 ? 'green' : inProgress <= 50 ? 'yellow' : 'red', 'In Progress', inProgress, 'Active jobs', null, function() { showDetails('In Progress'); }));
-            sla.appendChild(createSLACard(delayed === 0 ? 'green' : delayed <= 10 ? 'yellow' : 'red', 'Delayed', delayed, 'Need attention', null, function() { showDelayedDetails(); }));
+            sla.appendChild(createSLACard(completionRate >= 95 ? 'green' : completionRate >= 85 ? 'yellow' : 'red', 'Completion Rate', completionRate + '%', 'Target: 95% | Done: ' + done + '/' + total, null, function() { showTransportSLA('completion'); }));
+            sla.appendChild(createSLACard(onTimeRate >= 95 ? 'green' : onTimeRate >= 85 ? 'yellow' : 'red', 'On-Time Delivery', onTimeRate + '%', 'Target: 95% (SLA: 2 days)', null, function() { showTransportSLA('on-time-delivery'); }));
+            sla.appendChild(createSLACard(inProgress <= 20 ? 'green' : inProgress <= 50 ? 'yellow' : 'red', 'In Progress', inProgress, 'Active daily jobs', null, function() { showTransportDetail('in-progress', data.filter(function(r){return r.status==='In Progress';})); }));
+            sla.appendChild(createSLACard(delayed === 0 ? 'green' : delayed <= 10 ? 'yellow' : 'red', 'Delayed', delayed, 'Need attention', null, function() { showTransportSLA('delayed-sla'); }));
 
             // KPIs
             var transportCols = [{key:'job_order',label:'Job Order'},{key:'request_date',label:'Date'},{key:'project',label:'Project'},{key:'supplier',label:'Supplier'},{key:'equipment',label:'Equipment'},{key:'rent_type',label:'Rent Type'},{key:'total_amount',label:'Amount',align:'right'},{key:'status',label:'Status'},{key:'sla_status',label:'SLA'}];
             var kpi = document.getElementById('overviewKPIs');
             kpi.textContent = '';
-            kpi.appendChild(createKPI('bg-primary-gradient', 'truck', 'Total Jobs', total.toLocaleString(), 'Requests', function() { NesmaModal.show('All Job Orders', data, transportCols, total + ' total requests'); }));
-            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Completed', done.toLocaleString(), completionRate + '% rate', function() { NesmaModal.show('Completed Jobs', data.filter(function(r){return r.status==='Done';}), transportCols); }));
-            kpi.appendChild(createKPI('bg-warning-gradient', 'clock', 'In Progress', inProgress.toLocaleString(), 'Active', function() { NesmaModal.show('In Progress Jobs', data.filter(function(r){return r.status==='In Progress';}), transportCols); }));
-            kpi.appendChild(createKPI('bg-cyan-gradient', 'check', 'On Time', onTime.toLocaleString(), onTimeRate + '% of completed', function() { NesmaModal.show('On Time Jobs', data.filter(function(r){return r.sla_status==='On Time';}), transportCols); }));
-            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'Delayed', delayed.toLocaleString(), 'Past SLA', function() { NesmaModal.show('Delayed Jobs', data.filter(function(r){return r.sla_status==='Delayed';}), transportCols, delayed + ' jobs past SLA target of 2 days'); }));
-            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + (amount / 1000000).toFixed(2) + 'M', 'All jobs', function() { NesmaModal.show('Jobs by Spend', data.slice().sort(function(a,b){return b.total_amount-a.total_amount;}), transportCols, 'SAR ' + amount.toLocaleString() + ' total'); }));
+            kpi.appendChild(createKPI('bg-primary-gradient', 'truck', 'Total Job Orders', total.toLocaleString(), 'Daily: ' + dailyData.length + ' | Monthly: ' + monthlyRentData.length, function() { showTransportDetail('total', data); }));
+            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Completed', done.toLocaleString(), completionRate + '% completion rate', function() { showTransportDetail('done', data.filter(function(r){return r.status==='Done';})); }));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'check', 'On Time', onTime.toLocaleString(), onTimeRate + '% of completed', function() { showTransportDetail('on-time', data.filter(function(r){return r.sla_status==='On Time';})); }));
+            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'Delayed', delayed.toLocaleString(), 'Past SLA (>2 days)', function() { showTransportDetail('delayed', data.filter(function(r){return r.sla_status==='Delayed';})); }));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'money', 'Daily Spend', 'SAR ' + amount.toLocaleString(), 'Job orders total', function() { showTransportDetail('spend', data.slice().sort(function(a,b){return b.total_amount-a.total_amount;})); }));
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + totalCombinedSpend.toLocaleString(), 'Daily + Monthly contracts', function() { showTransportDetail('total-spend', data); }));
 
             // Status Chart
             var statusCounts = {};
@@ -936,10 +1199,10 @@
 
             var kpi = document.getElementById('requestsKPIs');
             kpi.innerHTML = '';
-            kpi.appendChild(createKPI('bg-primary-gradient', 'truck', 'Jobs', total.toLocaleString(), 'Total', null));
-            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Amount', 'SAR ' + (amount / 1000).toFixed(0) + 'K', 'Total spend', null));
-            kpi.appendChild(createKPI('bg-cyan-gradient', 'clock', 'Daily Rent', daily.toLocaleString(), Math.round(daily / Math.max(total, 1) * 100) + '%', null));
-            kpi.appendChild(createKPI('bg-warning-gradient', 'clock', 'Monthly Rent', monthly.toLocaleString(), Math.round(monthly / Math.max(total, 1) * 100) + '%', null));
+            kpi.appendChild(createKPI('bg-primary-gradient', 'truck', 'Jobs', total.toLocaleString(), 'Total', function() { showTransportDetail('total', data); }));
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Amount', 'SAR ' + amount.toLocaleString(), 'Total spend', function() { showTransportDetail('spend', data.slice().sort(function(a,b){return b.total_amount-a.total_amount;})); }));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'clock', 'Daily Rent', daily.toLocaleString(), Math.round(daily / Math.max(total, 1) * 100) + '%', function() { showTransportDetail('daily-rent', data.filter(function(r){return r.rent_type==='Daily';})); }));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'clock', 'Monthly Rent', monthly.toLocaleString(), Math.round(monthly / Math.max(total, 1) * 100) + '%', function() { showTransportDetail('monthly-rent', data.filter(function(r){return r.rent_type==='Monthly';})); }));
 
             document.getElementById('requestsTableCount').textContent = data.length + ' records';
             var tbody = document.getElementById('requestsTableBody');
@@ -983,8 +1246,94 @@
             }
         }
 
-        function renderSuppliers() {
+        var supplierFilteredData = [];
+
+        function populateSupplierFilters() {
             var data = filteredRecords;
+            var supSelect = document.getElementById('supFilterSupplier');
+            var catSelect = document.getElementById('supFilterEquipCat');
+            var currentSup = supSelect.value;
+            var currentCat = catSelect.value;
+
+            var suppliers = {}, cats = {};
+            for (var i = 0; i < data.length; i++) {
+                suppliers[data[i].supplier] = 1;
+                cats[data[i].equipment_category] = 1;
+            }
+
+            supSelect.innerHTML = '<option value="">All Suppliers</option>';
+            Object.keys(suppliers).sort().forEach(function(s) {
+                var opt = document.createElement('option');
+                opt.value = s; opt.textContent = s;
+                if (s === currentSup) opt.selected = true;
+                supSelect.appendChild(opt);
+            });
+
+            catSelect.innerHTML = '<option value="">All Categories</option>';
+            Object.keys(cats).sort().forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                if (c === currentCat) opt.selected = true;
+                catSelect.appendChild(opt);
+            });
+        }
+
+        function getSupplierFilteredData() {
+            var supplier = document.getElementById('supFilterSupplier').value;
+            var equipCat = document.getElementById('supFilterEquipCat').value;
+            var rentType = document.getElementById('supFilterRentType').value;
+            var sla = document.getElementById('supFilterSLA').value;
+            var minJobs = parseInt(document.getElementById('supFilterMinJobs').value) || 0;
+            var minSpend = parseInt(document.getElementById('supFilterMinSpend').value) || 0;
+
+            // First filter the records
+            var data = filteredRecords.filter(function(r) {
+                if (supplier && r.supplier !== supplier) return false;
+                if (equipCat && r.equipment_category !== equipCat) return false;
+                if (rentType && r.rent_type !== rentType) return false;
+                if (sla && r.sla_status !== sla) return false;
+                return true;
+            });
+
+            // If min jobs or min spend, we need to filter out suppliers that don't meet threshold
+            if (minJobs > 0 || minSpend > 0) {
+                var supplierStats = {};
+                for (var i = 0; i < data.length; i++) {
+                    var s = data[i].supplier;
+                    if (!supplierStats[s]) supplierStats[s] = { jobs: 0, amount: 0 };
+                    supplierStats[s].jobs++;
+                    supplierStats[s].amount += data[i].total_amount;
+                }
+                var validSuppliers = {};
+                for (var s in supplierStats) {
+                    if (supplierStats[s].jobs >= minJobs && supplierStats[s].amount >= minSpend) {
+                        validSuppliers[s] = true;
+                    }
+                }
+                data = data.filter(function(r) { return validSuppliers[r.supplier]; });
+            }
+
+            return data;
+        }
+
+        function applySupplierFilters() {
+            supplierFilteredData = getSupplierFilteredData();
+            renderSuppliers(supplierFilteredData);
+        }
+
+        function resetSupplierFilters() {
+            document.getElementById('supFilterSupplier').value = '';
+            document.getElementById('supFilterEquipCat').value = '';
+            document.getElementById('supFilterRentType').value = '';
+            document.getElementById('supFilterSLA').value = '';
+            document.getElementById('supFilterMinJobs').value = '';
+            document.getElementById('supFilterMinSpend').value = '';
+            supplierFilteredData = filteredRecords.slice();
+            renderSuppliers(supplierFilteredData);
+        }
+
+        function exportSuppliersExcel() {
+            var data = supplierFilteredData.length > 0 ? supplierFilteredData : filteredRecords;
             var suppliers = {};
             for (var i = 0; i < data.length; i++) {
                 var r = data[i];
@@ -994,23 +1343,57 @@
                 if (r.sla_status === 'On Time') suppliers[r.supplier].onTime++;
                 if (r.sla_status === 'Delayed') suppliers[r.supplier].delayed++;
             }
+            var exp = Object.entries(suppliers).sort(function(a,b){return b[1].jobs-a[1].jobs;}).map(function(e) {
+                var completed = e[1].onTime + e[1].delayed;
+                return { 'Supplier': e[0], 'Total Jobs': e[1].jobs, 'On Time': e[1].onTime, 'Delayed': e[1].delayed,
+                    'On-Time Rate': completed > 0 ? Math.round(e[1].onTime / completed * 100) + '%' : 'N/A',
+                    'Total Spend': e[1].amount, 'Avg per Job': Math.round(e[1].amount / e[1].jobs) };
+            });
+            var ws = XLSX.utils.json_to_sheet(exp);
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Suppliers');
+            XLSX.writeFile(wb, 'Suppliers_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+        }
+
+        function renderSuppliers(data) {
+            data = data || filteredRecords;
+            var suppliers = {};
+            for (var i = 0; i < data.length; i++) {
+                var r = data[i];
+                if (!suppliers[r.supplier]) suppliers[r.supplier] = { jobs: 0, amount: 0, onTime: 0, delayed: 0, daily: 0, monthly: 0 };
+                suppliers[r.supplier].jobs++;
+                suppliers[r.supplier].amount += r.total_amount;
+                if (r.sla_status === 'On Time') suppliers[r.supplier].onTime++;
+                if (r.sla_status === 'Delayed') suppliers[r.supplier].delayed++;
+                if (r.rent_type === 'Daily') suppliers[r.supplier].daily++;
+                else suppliers[r.supplier].monthly++;
+            }
 
             var kpi = document.getElementById('suppliersKPIs');
             kpi.innerHTML = '';
-            kpi.appendChild(createKPI('bg-primary-gradient', 'users', 'Suppliers', Object.keys(suppliers).length, 'Active', null));
             var sorted = Object.entries(suppliers).sort(function(a, b) { return b[1].jobs - a[1].jobs; });
             var topSupplier = sorted[0];
-            kpi.appendChild(createKPI('bg-cyan-gradient', 'truck', 'Top Supplier', topSupplier ? topSupplier[0] : 'N/A', topSupplier ? topSupplier[1].jobs + ' jobs' : '', null));
             var totalOnTime = 0, totalCompleted = 0;
             for (var key in suppliers) {
                 totalOnTime += suppliers[key].onTime;
                 totalCompleted += suppliers[key].onTime + suppliers[key].delayed;
             }
             var avgOnTimeRate = totalCompleted > 0 ? Math.round(totalOnTime / totalCompleted * 100) : 0;
-            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Avg On-Time', avgOnTimeRate + '%', 'All suppliers', null));
             var totalSpend = 0;
             for (var key in suppliers) totalSpend += suppliers[key].amount;
-            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + (totalSpend / 1000000).toFixed(2) + 'M', 'All suppliers', null));
+
+            kpi.appendChild(createKPI('bg-primary-gradient', 'users', 'Suppliers', Object.keys(suppliers).length, data.length + ' jobs filtered', function() {
+                showSupplierSummaryModal(sorted);
+            }));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'truck', 'Top Supplier', topSupplier ? topSupplier[0] : 'N/A', topSupplier ? topSupplier[1].jobs + ' jobs' : '', function() {
+                if (topSupplier) showTransportDetail('supplier-' + topSupplier[0], data.filter(function(r){return r.supplier === topSupplier[0];}));
+            }));
+            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Avg On-Time', avgOnTimeRate + '%', totalOnTime + ' on-time of ' + totalCompleted, function() {
+                showTransportDetail('on-time', data.filter(function(r){return r.sla_status==='On Time';}));
+            }));
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + totalSpend.toLocaleString(), 'Filtered suppliers', function() {
+                showTransportDetail('spend', data.slice().sort(function(a,b){return b.total_amount-a.total_amount;}));
+            }));
 
             if (charts.supplierJobs) charts.supplierJobs.destroy();
             charts.supplierJobs = new Chart(document.getElementById('supplierJobsChart').getContext('2d'), {
@@ -1028,11 +1411,11 @@
             });
 
             NesmaChartDrill.attach(charts.supplierJobs, function(label) {
-                var recs = filteredRecords.filter(function(r){ return r.supplier === label; });
+                var recs = data.filter(function(r){ return r.supplier === label; });
                 return { title: label + ' Jobs', data: recs, columns: [{key:'job_order',label:'Job Order'},{key:'request_date',label:'Date'},{key:'project',label:'Project'},{key:'equipment',label:'Equipment'},{key:'total_amount',label:'Amount',align:'right'},{key:'status',label:'Status'},{key:'sla_status',label:'SLA'}], subtitle: recs.length + ' jobs' };
             });
             NesmaChartDrill.attach(charts.supplierSpend, function(label) {
-                var recs = filteredRecords.filter(function(r){ return r.supplier === label; });
+                var recs = data.filter(function(r){ return r.supplier === label; });
                 return { title: label + ' Spend Details', data: recs, columns: [{key:'job_order',label:'Job Order'},{key:'project',label:'Project'},{key:'equipment',label:'Equipment'},{key:'rent_type',label:'Rent'},{key:'total_amount',label:'Amount',align:'right'}], subtitle: recs.length + ' jobs' };
             });
 
@@ -1042,6 +1425,12 @@
                 var name = sorted[i][0];
                 var s = sorted[i][1];
                 var tr = document.createElement('tr');
+                tr.style.cursor = 'pointer';
+                tr.onclick = (function(supplierName, supplierData) {
+                    return function() {
+                        showTransportDetail('supplier-' + supplierName, supplierData);
+                    };
+                })(name, data.filter(function(r){return r.supplier === name;}));
                 tr.appendChild(createCell(name, 'font-medium'));
                 tr.appendChild(createCell(s.jobs, 'text-center'));
                 tr.appendChild(createCell(s.onTime, 'text-center'));
@@ -1073,14 +1462,23 @@
 
             var kpi = document.getElementById('equipmentKPIs');
             kpi.innerHTML = '';
-            kpi.appendChild(createKPI('bg-primary-gradient', 'box', 'Equipment Types', Object.keys(equipment).length, 'Unique', null));
-            kpi.appendChild(createKPI('bg-cyan-gradient', 'box', 'Categories', Object.keys(categories).length, 'Groups', null));
             var sorted = Object.entries(equipment).sort(function(a, b) { return b[1].count - a[1].count; });
             var topEquip = sorted[0];
-            kpi.appendChild(createKPI('bg-success-gradient', 'truck', 'Most Used', topEquip ? topEquip[0] : 'N/A', topEquip ? topEquip[1].count + ' times' : '', null));
             var totalSpend = 0;
             for (var key in equipment) totalSpend += equipment[key].amount;
-            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + (totalSpend / 1000000).toFixed(2) + 'M', 'All equipment', null));
+
+            kpi.appendChild(createKPI('bg-primary-gradient', 'box', 'Equipment Types', Object.keys(equipment).length, 'Unique', function() {
+                showEquipmentSummaryModal(sorted);
+            }));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'box', 'Categories', Object.keys(categories).length, 'Groups', function() {
+                showCategorySummaryModal(categories);
+            }));
+            kpi.appendChild(createKPI('bg-success-gradient', 'truck', 'Most Used', topEquip ? topEquip[0] : 'N/A', topEquip ? topEquip[1].count + ' times' : '', function() {
+                if (topEquip) showTransportDetail('equip-' + topEquip[0], data.filter(function(r){return r.equipment === topEquip[0];}));
+            }));
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + totalSpend.toLocaleString(), 'All equipment', function() {
+                showTransportDetail('spend', data.slice().sort(function(a,b){return b.total_amount-a.total_amount;}));
+            }));
 
             if (charts.equipmentCat) charts.equipmentCat.destroy();
             charts.equipmentCat = new Chart(document.getElementById('equipmentCatChart').getContext('2d'), {
@@ -1131,132 +1529,918 @@
             }
         }
 
-        function showModal(title, contentText) {
-            document.getElementById('modalTitle').textContent = title;
-            var body = document.getElementById('modalBody');
-            body.innerHTML = '';
-            var p = document.createElement('p');
-            p.textContent = contentText;
-            body.appendChild(p);
-            document.getElementById('detailModal').classList.add('show');
+        function renderMonthlyContracts() {
+            if (!transportData.monthly_contracts) return;
+            var mc = transportData.monthly_contracts;
+            var contracts = mc.contracts || [];
+
+            // KPIs
+            var kpi = document.getElementById('monthlyContractKPIs');
+            kpi.innerHTML = '';
+            var totalActiveMonths = 0;
+            for (var i = 0; i < contracts.length; i++) totalActiveMonths += contracts[i].active_month_count;
+
+            kpi.appendChild(createKPI('bg-primary-gradient', 'box', 'Total Contracts', mc.total_contracts, 'Active: ' + mc.active_contracts, function() {
+                showMonthlyContractModal('all', contracts);
+            }));
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + mc.total_spend.toLocaleString(), 'All monthly contracts', function() {
+                showMonthlyContractModal('spend', contracts.slice().sort(function(a,b){return b.total_spend-a.total_spend;}));
+            }));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'money', 'Avg Monthly Rate', 'SAR ' + mc.avg_monthly_rate.toLocaleString(), 'Per contract', function() {
+                showMonthlyContractModal('rate', contracts.slice().sort(function(a,b){return b.monthly_rate-a.monthly_rate;}));
+            }));
+            kpi.appendChild(createKPI('bg-success-gradient', 'clock', 'Total Active Months', totalActiveMonths, 'Across all contracts', function() {
+                showMonthlyContractModal('months', contracts.slice().sort(function(a,b){return b.active_month_count-a.active_month_count;}));
+            }));
+
+            // Supplier chart
+            var supplierData = mc.supplier_breakdown || {};
+            var supplierLabels = Object.keys(supplierData);
+            var supplierSpend = supplierLabels.map(function(s) { return supplierData[s].spend; });
+            if (charts.monthlySupplier) charts.monthlySupplier.destroy();
+            charts.monthlySupplier = new Chart(document.getElementById('monthlySupplierChart').getContext('2d'), {
+                type: 'bar',
+                data: { labels: supplierLabels, datasets: [{ label: 'SAR', data: supplierSpend, backgroundColor: ['#2E3192', '#80D1E9', '#92A185', '#DEC18C', '#AD8082'] }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            // Equipment chart
+            var equipData = mc.equipment_breakdown || {};
+            if (charts.monthlyEquip) charts.monthlyEquip.destroy();
+            charts.monthlyEquip = new Chart(document.getElementById('monthlyEquipChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(equipData), datasets: [{ data: Object.values(equipData), backgroundColor: ['#2E3192', '#80D1E9', '#92A185', '#DEC18C', '#AD8082', '#4472C4'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } }, cutout: '55%' }
+            });
+
+            // Table
+            var tbody = document.getElementById('monthlyTableBody');
+            tbody.innerHTML = '';
+            for (var i = 0; i < contracts.length; i++) {
+                var c = contracts[i];
+                var tr = document.createElement('tr');
+                tr.appendChild(createCell(c.id));
+                var projTd = createCell(c.project, 'font-medium');
+                projTd.style.maxWidth = '180px';
+                projTd.style.overflow = 'hidden';
+                projTd.style.textOverflow = 'ellipsis';
+                projTd.style.whiteSpace = 'nowrap';
+                projTd.title = c.project;
+                tr.appendChild(projTd);
+                tr.appendChild(createCell(c.requester));
+                tr.appendChild(createCell(c.equipment));
+                tr.appendChild(createCell(c.supplier));
+                tr.appendChild(createCell('SAR ' + c.monthly_rate.toLocaleString(), 'text-right'));
+                tr.appendChild(createCell(c.active_month_count + ' months', 'text-center'));
+                tr.appendChild(createCell('SAR ' + c.total_spend.toLocaleString(), 'text-right font-medium'));
+                var statusTd = document.createElement('td');
+                statusTd.appendChild(createBadge(c.status, c.status === 'Active' ? 'badge-success' : 'badge-gray'));
+                tr.appendChild(statusTd);
+                tbody.appendChild(tr);
+            }
+
+            // Timeline chart
+            var allMonths = {};
+            for (var i = 0; i < contracts.length; i++) {
+                var am = contracts[i].active_months;
+                for (var m in am) {
+                    if (!allMonths[m]) allMonths[m] = 0;
+                    allMonths[m] += am[m];
+                }
+            }
+            var sortedMonths = Object.keys(allMonths).sort();
+            if (charts.monthlyTimeline) charts.monthlyTimeline.destroy();
+            charts.monthlyTimeline = new Chart(document.getElementById('monthlyTimelineChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: sortedMonths.map(function(m) { var parts = m.split('-'); var monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return monthNames[parseInt(parts[1])-1] + ' ' + parts[0].slice(2); }),
+                    datasets: [{
+                        label: 'Monthly Spend (SAR)',
+                        data: sortedMonths.map(function(m) { return allMonths[m]; }),
+                        backgroundColor: sortedMonths.map(function(m) { return m.startsWith('2026') ? '#80D1E9' : '#2E3192'; }),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return 'SAR ' + (v/1000).toFixed(0) + 'K'; } } } }
+                }
+            });
         }
+
+        function exportMonthlyExcel() {
+            if (!monthlyContracts.length) return;
+            var exp = monthlyContracts.map(function(c) {
+                return {
+                    '#': c.id,
+                    'Project': c.project,
+                    'Requester': c.requester,
+                    'Equipment': c.equipment,
+                    'Supplier': c.supplier,
+                    'Monthly Rate': c.monthly_rate,
+                    'Active Months': c.active_month_count,
+                    'Total Spend': c.total_spend,
+                    'Start Month': c.start_month,
+                    'Status': c.status
+                };
+            });
+            var ws = XLSX.utils.json_to_sheet(exp);
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Monthly Contracts');
+            XLSX.writeFile(wb, 'Monthly_Contracts_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+        }
+
+        // ============================================
+        // SCRAP DATA & FUNCTIONS
+        // ============================================
+        var scrapData = null;
+        var scrapFiltered = [];
+
+        function loadScrapData() {
+            fetch('data/scrap_data.json')
+                .then(function(r) {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.json();
+                })
+                .then(function(data) {
+                    console.log('Scrap data loaded:', data.records.length, 'records');
+                    scrapData = data;
+                    scrapFiltered = data.records.slice();
+                    document.getElementById('scrapBadge').textContent = data.summary.total_jobs;
+                    populateScrapFilters();
+                })
+                .catch(function(e) { console.error('Scrap data error:', e); });
+        }
+
+        function populateScrapFilters() {
+            if (!scrapData) return;
+            var f = scrapData.filters;
+            // Year
+            var years = {};
+            scrapData.records.forEach(function(r) { years[r.year] = 1; });
+            var yearSel = document.getElementById('scrapFilterYear');
+            yearSel.innerHTML = '<option value="">All Years</option>';
+            Object.keys(years).sort().forEach(function(y) {
+                var o = document.createElement('option');
+                o.value = y; o.textContent = y;
+                yearSel.appendChild(o);
+            });
+            addOptions('scrapFilterProject', f.projects);
+            addOptions('scrapFilterDrop', f.drops);
+            addOptions('scrapFilterEquip', f.equipment);
+        }
+
+        function applyScrapFilters() {
+            if (!scrapData) return;
+            var year = document.getElementById('scrapFilterYear').value;
+            var month = document.getElementById('scrapFilterMonth').value;
+            var project = document.getElementById('scrapFilterProject').value;
+            var sla = document.getElementById('scrapFilterSLA').value;
+            var drop = document.getElementById('scrapFilterDrop').value;
+            var equip = document.getElementById('scrapFilterEquip').value;
+            scrapFiltered = scrapData.records.filter(function(r) {
+                if (year && r.year != year) return false;
+                if (month && r.month && r.month.split('-')[1] !== month) return false;
+                if (project && r.project !== project) return false;
+                if (sla && r.sla_status !== sla) return false;
+                if (drop && r.drop !== drop) return false;
+                if (equip && r.equipment !== equip) return false;
+                return true;
+            });
+            renderScrap();
+        }
+
+        function resetScrapFilters() {
+            document.getElementById('scrapFilterYear').value = '';
+            document.getElementById('scrapFilterMonth').value = '';
+            document.getElementById('scrapFilterProject').value = '';
+            document.getElementById('scrapFilterSLA').value = '';
+            document.getElementById('scrapFilterDrop').value = '';
+            document.getElementById('scrapFilterEquip').value = '';
+            if (scrapData) scrapFiltered = scrapData.records.slice();
+            renderScrap();
+        }
+
+        function renderScrap() {
+            if (!scrapData) return;
+            var data = scrapFiltered;
+            var total = data.length;
+            var spend = 0, equipSpend = 0, labourSpend = 0, onTime = 0, delayed = 0;
+            for (var i = 0; i < data.length; i++) {
+                spend += data[i].total;
+                equipSpend += data[i].total_equip_price;
+                labourSpend += data[i].total_labour_price;
+                if (data[i].sla_status === 'On Time') onTime++;
+                if (data[i].sla_status === 'Delayed') delayed++;
+            }
+            var onTimeRate = total > 0 ? Math.round(onTime / total * 100) : 0;
+            var cts = data.filter(function(r){return r.cycle_time !== null;}).map(function(r){return r.cycle_time;});
+            var avgCycle = cts.length > 0 ? (cts.reduce(function(a,b){return a+b;},0) / cts.length).toFixed(1) : '0';
+
+            // SLA Cards
+            var sla = document.getElementById('scrapSLACards');
+            sla.innerHTML = '';
+            sla.appendChild(createSLACard(onTimeRate >= 95 ? 'green' : onTimeRate >= 85 ? 'yellow' : 'red', 'On-Time Rate', onTimeRate + '%', 'Target: 95% (SLA: 3 days)', null, function() { showScrapSLA('on-time'); }));
+            sla.appendChild(createSLACard(delayed === 0 ? 'green' : delayed <= 10 ? 'yellow' : 'red', 'Delayed Jobs', delayed, onTime + ' on-time / ' + delayed + ' delayed', null, function() { showScrapSLA('delayed'); }));
+            var completionRate = total > 0 ? 100 : 0;
+            sla.appendChild(createSLACard('green', 'Completion', completionRate + '%', total + ' total jobs', null, function() { showScrapDetail('total', data); }));
+            sla.appendChild(createSLACard(parseFloat(avgCycle) <= 3 ? 'green' : parseFloat(avgCycle) <= 5 ? 'yellow' : 'red', 'Avg Cycle Time', avgCycle + ' days', 'Target: <=3 days', null, function() { showScrapSLA('cycle'); }));
+
+            // KPIs
+            var kpi = document.getElementById('scrapKPIs');
+            kpi.innerHTML = '';
+            kpi.appendChild(createKPI('bg-primary-gradient', 'truck', 'Total Jobs', total.toLocaleString(), 'Scrap removal', function() { showScrapDetail('total', data); }));
+            kpi.appendChild(createKPI('bg-success-gradient', 'check', 'On Time', onTime.toLocaleString(), onTimeRate + '% rate', function() { showScrapDetail('on-time', data.filter(function(r){return r.sla_status==='On Time';})); }));
+            kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'Delayed', delayed.toLocaleString(), '>3 days', function() { showScrapDetail('delayed', data.filter(function(r){return r.sla_status==='Delayed';})); }));
+            kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Total Spend', 'SAR ' + spend.toLocaleString(), 'All costs', function() { showScrapDetail('spend', data.slice().sort(function(a,b){return b.total-a.total;})); }));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'money', 'Equipment Cost', 'SAR ' + equipSpend.toLocaleString(), Math.round(equipSpend/Math.max(spend,1)*100) + '% of total', function() { showScrapDetail('equip', data); }));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'money', 'Labour Cost', 'SAR ' + labourSpend.toLocaleString(), Math.round(labourSpend/Math.max(spend,1)*100) + '% of total', function() { showScrapDetail('labour', data); }));
+
+            // Monthly chart
+            var monthlyData = {};
+            for (var i = 0; i < data.length; i++) {
+                var m = data[i].month;
+                if (!monthlyData[m]) monthlyData[m] = { jobs: 0, spend: 0, onTime: 0, delayed: 0 };
+                monthlyData[m].jobs++;
+                monthlyData[m].spend += data[i].total;
+                if (data[i].sla_status === 'On Time') monthlyData[m].onTime++;
+                else monthlyData[m].delayed++;
+            }
+            var mKeys = Object.keys(monthlyData).sort();
+            var mNames = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            if (charts.scrapMonthly) charts.scrapMonthly.destroy();
+            charts.scrapMonthly = new Chart(document.getElementById('scrapMonthlyChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: mKeys.map(function(m){ var p=m.split('-'); return mNames[parseInt(p[1])]+' '+p[0].slice(2); }),
+                    datasets: [
+                        { label: 'On Time', data: mKeys.map(function(m){return monthlyData[m].onTime;}), backgroundColor: '#10B981' },
+                        { label: 'Delayed', data: mKeys.map(function(m){return monthlyData[m].delayed;}), backgroundColor: '#EF4444' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } } }
+            });
+
+            // Drop location chart
+            var dropData = {};
+            for (var i = 0; i < data.length; i++) {
+                var d = data[i].drop;
+                if (!dropData[d]) dropData[d] = 0;
+                dropData[d] += data[i].total;
+            }
+            var dropSorted = Object.entries(dropData).sort(function(a,b){return b[1]-a[1];});
+            if (charts.scrapDrop) charts.scrapDrop.destroy();
+            charts.scrapDrop = new Chart(document.getElementById('scrapDropChart').getContext('2d'), {
+                type: 'bar',
+                data: { labels: dropSorted.map(function(d){return d[0];}), datasets: [{ label: 'SAR', data: dropSorted.map(function(d){return d[1];}), backgroundColor: '#2E3192' }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            // Equipment chart
+            var equipData = {};
+            for (var i = 0; i < data.length; i++) {
+                var e = data[i].equipment;
+                if (!equipData[e]) equipData[e] = 0;
+                equipData[e]++;
+            }
+            var equipSorted = Object.entries(equipData).sort(function(a,b){return b[1]-a[1];});
+            if (charts.scrapEquip) charts.scrapEquip.destroy();
+            charts.scrapEquip = new Chart(document.getElementById('scrapEquipChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: equipSorted.map(function(e){return e[0];}), datasets: [{ data: equipSorted.map(function(e){return e[1];}), backgroundColor: ['#2E3192','#80D1E9','#92A185','#DEC18C','#AD8082','#4472C4','#7B2D8E','#10B981','#F59E0B','#EF4444'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 } } } }, cutout: '50%' }
+            });
+
+            // Cost breakdown chart
+            if (charts.scrapCost) charts.scrapCost.destroy();
+            charts.scrapCost = new Chart(document.getElementById('scrapCostChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: ['Equipment', 'Labour'], datasets: [{ data: [equipSpend, labourSpend], backgroundColor: ['#2E3192', '#80D1E9'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, cutout: '60%' }
+            });
+
+            // Table
+            document.getElementById('scrapTableCount').textContent = data.length + ' records';
+            var tbody = document.getElementById('scrapTableBody');
+            tbody.innerHTML = '';
+            var display = data.slice(0, 200);
+            for (var i = 0; i < display.length; i++) {
+                var r = display[i];
+                var ctBadge = '<span class="px-2 py-0.5 rounded text-xs ' + (r.cycle_time <= 3 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') + '">' + r.cycle_time + 'd</span>';
+                var slaBadge = '<span class="px-2 py-0.5 rounded text-xs ' + (r.sla_status === 'On Time' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') + '">' + r.sla_status + '</span>';
+                var tr = document.createElement('tr');
+                tr.innerHTML = '<td>' + r.id + '</td><td>' + r.request_date + '</td><td>' + r.close_date + '</td><td>' + ctBadge + '</td><td title="' + r.pickup + '" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + r.pickup + '</td><td>' + r.drop + '</td><td>' + r.equipment + '</td><td class="text-right">' + r.total_equip_price.toLocaleString() + '</td><td class="text-right">' + r.total_labour_price.toLocaleString() + '</td><td class="text-right font-medium">' + r.total.toLocaleString() + '</td><td>' + slaBadge + '</td>';
+                tbody.appendChild(tr);
+            }
+            if (data.length > 200) {
+                var tr = document.createElement('tr');
+                tr.innerHTML = '<td colspan="11" class="text-center text-gray-500 py-4">Showing 200 of ' + data.length + '</td>';
+                tbody.appendChild(tr);
+            }
+        }
+
+        // Scrap SLA detail modal
+        function showScrapSLA(type) {
+            var data = scrapFiltered;
+            var prs, titleText, onTimeCount, lateCount, onTimeRate;
+            var slaType = 'scrap-' + type;
+
+            switch(type) {
+                case 'on-time':
+                    titleText = 'Scrap Removal On-Time SLA (<=3 Days)';
+                    prs = data.slice();
+                    onTimeCount = prs.filter(function(r){return r.sla_status==='On Time';}).length;
+                    lateCount = prs.length - onTimeCount;
+                    onTimeRate = prs.length > 0 ? ((onTimeCount / prs.length) * 100).toFixed(1) : '0.0';
+                    break;
+                case 'delayed':
+                    titleText = 'Delayed Scrap Removal Jobs (>3 Days)';
+                    prs = data.filter(function(r){return r.sla_status==='Delayed';});
+                    onTimeCount = 0; lateCount = prs.length;
+                    onTimeRate = data.length > 0 ? (((data.length - lateCount) / data.length) * 100).toFixed(1) : '0.0';
+                    break;
+                case 'cycle':
+                    titleText = 'Cycle Time Analysis';
+                    prs = data.slice();
+                    onTimeCount = prs.filter(function(r){return r.cycle_time<=3;}).length;
+                    lateCount = prs.length - onTimeCount;
+                    onTimeRate = prs.length > 0 ? ((onTimeCount / prs.length) * 100).toFixed(1) : '0.0';
+                    break;
+            }
+
+            var modal = document.getElementById('detailModal');
+            var title = document.getElementById('modalTitle');
+            var body = document.getElementById('modalBody');
+            currentModalData = prs;
+            currentModalType = slaType;
+            title.textContent = titleText + ' (' + prs.length + ' records)';
+
+            var compColor = parseFloat(onTimeRate) >= 95 ? 'green' : parseFloat(onTimeRate) >= 85 ? 'yellow' : 'red';
+            var compBg = compColor==='green' ? 'bg-green-100 border-green-300 text-green-600' : compColor==='yellow' ? 'bg-yellow-100 border-yellow-300 text-yellow-600' : 'bg-red-100 border-red-300 text-red-600';
+            var compTxt = compColor==='green' ? 'text-green-700' : compColor==='yellow' ? 'text-yellow-700' : 'text-red-700';
+
+            var rows = '';
+            var display = prs.slice(0, 100);
+            for (var i = 0; i < display.length; i++) {
+                var r = display[i];
+                var ctBadge = '<span class="px-2 py-0.5 rounded text-xs ' + (r.cycle_time <= 3 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') + '">' + r.cycle_time + ' days</span>';
+                var slaBadge = '<span class="px-2 py-0.5 rounded text-xs ' + (r.sla_status === 'On Time' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') + '">' + r.sla_status + '</span>';
+                rows += '<tr class="modal-row"><td>' + r.id + '</td><td>' + r.request_date + '</td><td>' + r.close_date + '</td><td>' + ctBadge + '</td><td title="' + r.pickup + '" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + r.pickup + '</td><td>' + r.drop + '</td><td>' + r.equipment + '</td><td class="text-right">' + r.total.toLocaleString() + '</td><td>' + slaBadge + '</td></tr>';
+            }
+
+            body.innerHTML =
+            '<div class="flex items-center justify-between mb-4"><div class="flex gap-2">' +
+                '<button onclick="showTransportSLAInfo(\'scrap-removal\')" class="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 rounded-lg text-blue-700 flex items-center gap-1 text-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> SLA Info</button>' +
+                '<button onclick="showTransportFormula(\'scrap-removal\')" class="px-3 py-1.5 bg-purple-100 hover:bg-purple-200 rounded-lg text-purple-700 flex items-center gap-1 text-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg> Formula</button>' +
+            '</div><span class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Total: ' + prs.length + '</span></div>' +
+            '<div class="grid grid-cols-3 gap-4 mb-4">' +
+                '<div class="bg-green-50 rounded-lg p-3 text-center border border-green-200"><p class="text-2xl font-bold text-green-600">' + onTimeCount + '</p><p class="text-xs text-green-700">On-Time</p></div>' +
+                '<div class="bg-red-50 rounded-lg p-3 text-center border border-red-200"><p class="text-2xl font-bold text-red-600">' + lateCount + '</p><p class="text-xs text-red-700">Late</p></div>' +
+                '<div class="rounded-lg p-3 text-center ' + compBg + ' border"><p class="text-2xl font-bold">' + onTimeRate + '%</p><p class="text-xs ' + compTxt + '">Compliance (Target: 95%)</p></div>' +
+            '</div>' +
+            '<div class="mb-4 flex items-center justify-between"><input type="text" id="modalSearch" placeholder="Search..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm w-48"><div class="flex gap-2"><button onclick="exportModalPDF()" class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm">PDF</button><button onclick="exportModalCSV()" class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm">CSV</button></div></div>' +
+            '<div class="scroll-container" style="max-height:300px;"><table class="data-table text-sm w-full" id="modalTable"><thead><tr><th>#</th><th>Request</th><th>Close</th><th>Cycle</th><th>Pickup</th><th>Drop</th><th>Equipment</th><th class="text-right">Total (SAR)</th><th>SLA</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+            (prs.length > 100 ? '<p class="text-xs text-gray-400 mt-2 text-center">Showing first 100 of ' + prs.length + '</p>' : '');
+            modal.classList.add('show');
+            setupModalSearch();
+        }
+
+        // Scrap KPI detail modal
+        function showScrapDetail(type, records) {
+            var modal = document.getElementById('detailModal');
+            var title = document.getElementById('modalTitle');
+            var body = document.getElementById('modalBody');
+            currentModalData = records;
+            var titles = { 'total': 'All Scrap Jobs', 'on-time': 'On-Time Jobs', 'delayed': 'Delayed Jobs', 'spend': 'Jobs by Spend', 'equip': 'Equipment Cost Details', 'labour': 'Labour Cost Details' };
+            title.textContent = (titles[type] || 'Details') + ' (' + records.length + ' records)';
+
+            var totalSpend = 0, totalEquip = 0, totalLabour = 0;
+            for (var i = 0; i < records.length; i++) {
+                totalSpend += records[i].total;
+                totalEquip += records[i].total_equip_price;
+                totalLabour += records[i].total_labour_price;
+            }
+            var onTime = records.filter(function(r){return r.sla_status==='On Time';}).length;
+            var delayed = records.length - onTime;
+
+            var rows = '';
+            var display = records.slice(0, 100);
+            for (var i = 0; i < display.length; i++) {
+                var r = display[i];
+                var ctBadge = '<span class="px-2 py-0.5 rounded text-xs ' + (r.cycle_time <= 3 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') + '">' + r.cycle_time + 'd</span>';
+                var slaBadge = '<span class="px-2 py-0.5 rounded text-xs ' + (r.sla_status === 'On Time' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') + '">' + r.sla_status + '</span>';
+                rows += '<tr class="modal-row"><td>' + r.request_date + '</td><td>' + r.close_date + '</td><td>' + ctBadge + '</td><td title="' + r.pickup + '" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + r.pickup + '</td><td>' + r.drop + '</td><td>' + r.equipment + '</td><td class="text-right">' + r.total_equip_price.toLocaleString() + '</td><td class="text-right">' + r.total_labour_price.toLocaleString() + '</td><td class="text-right font-medium">' + r.total.toLocaleString() + '</td><td>' + slaBadge + '</td></tr>';
+            }
+
+            body.innerHTML =
+            '<div class="grid grid-cols-4 gap-3 mb-4">' +
+                '<div class="bg-blue-50 rounded-lg p-3 text-center border border-blue-200"><p class="text-xl font-bold text-blue-600">' + records.length + '</p><p class="text-xs text-blue-700">Total</p></div>' +
+                '<div class="bg-green-50 rounded-lg p-3 text-center border border-green-200"><p class="text-xl font-bold text-green-600">' + onTime + '</p><p class="text-xs text-green-700">On Time</p></div>' +
+                '<div class="bg-red-50 rounded-lg p-3 text-center border border-red-200"><p class="text-xl font-bold text-red-600">' + delayed + '</p><p class="text-xs text-red-700">Delayed</p></div>' +
+                '<div class="bg-purple-50 rounded-lg p-3 text-center border border-purple-200"><p class="text-xl font-bold text-purple-600">SAR ' + totalSpend.toLocaleString() + '</p><p class="text-xs text-purple-700">Total Spend</p></div>' +
+            '</div>' +
+            '<div class="mb-4 flex items-center justify-between"><input type="text" id="modalSearch" placeholder="Search..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm w-48"><div class="flex gap-2"><button onclick="exportModalPDF()" class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm">PDF</button><button onclick="exportModalCSV()" class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm">CSV</button></div></div>' +
+            '<div class="scroll-container" style="max-height:300px;"><table class="data-table text-sm w-full" id="modalTable"><thead><tr><th>Request</th><th>Close</th><th>Cycle</th><th>Pickup</th><th>Drop</th><th>Equipment</th><th class="text-right">Equip (SAR)</th><th class="text-right">Labour (SAR)</th><th class="text-right">Total (SAR)</th><th>SLA</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+            (records.length > 100 ? '<p class="text-xs text-gray-400 mt-2 text-center">Showing first 100 of ' + records.length + '</p>' : '');
+            modal.classList.add('show');
+            setupModalSearch();
+        }
+
+        function exportScrapExcel() {
+            var data = scrapFiltered;
+            var exp = data.map(function(r) {
+                return { '#': r.id, 'Request Date': r.request_date, 'Close Date': r.close_date,
+                    'Cycle Days': r.cycle_time, 'Pickup': r.pickup, 'Drop': r.drop,
+                    'Equipment': r.equipment, 'Equip Cost': r.total_equip_price,
+                    'Labour Cost': r.total_labour_price, 'Total': r.total, 'SLA': r.sla_status };
+            });
+            var ws = XLSX.utils.json_to_sheet(exp);
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Scrap Removal');
+            XLSX.writeFile(wb, 'Scrap_Removal_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+        }
+
+        // ============================================
+        // SLA INFO DICTIONARY
+        // ============================================
+        var TRANSPORT_SLA_INFO = {
+            'scrap-removal': {
+                title: 'Cable Scrap Removal SLA',
+                requirement: 'Complete scrap cable removal from project site to designated warehouse/drop location within 3 calendar days of the request.',
+                target: '>=95%',
+                standard: '<=3 Calendar Days from request to job closure',
+                source: 'NIT Transportation SLA Policy',
+                supportingKPIs: ['Cycle time (Avg)', 'Delayed count', 'Equipment utilization', 'Labour cost efficiency'],
+                calculation: {
+                    columns: ['request_date', 'close_date'],
+                    formula: 'Cycle Time = close_date - request_date (in days)',
+                    condition: 'On-Time if Cycle Time <= 3 days',
+                    rate: 'SLA Rate = (Count of On-Time / Total Jobs) x 100',
+                    notes: 'All scrap removal jobs are included. Close date represents job completion.'
+                }
+            },
+            'completion': {
+                title: 'Job Order Completion SLA',
+                requirement: 'Complete all job orders (equipment delivery, setup, and work execution) in a timely manner.',
+                target: '>=95%',
+                standard: 'All job orders should reach Done status',
+                source: 'NIT Transportation SLA Policy',
+                supportingKPIs: ['Completion rate', 'In-progress count', 'Pending count'],
+                calculation: {
+                    columns: ['status'],
+                    formula: 'Completion Rate = (Count of Done / Total Job Orders) x 100',
+                    condition: 'Green >= 95%, Yellow 85-94%, Red < 85%',
+                    rate: 'Rate = Done / Total x 100',
+                    notes: 'Includes all job orders regardless of rent type'
+                }
+            },
+            'on-time-delivery': {
+                title: 'On-Time Equipment Delivery SLA',
+                requirement: 'Deliver requested equipment to the project site within 2 calendar days of the request date.',
+                target: '>=95%',
+                standard: '<=2 Calendar Days from request to actual delivery',
+                source: 'NIT Transportation SLA Policy',
+                supportingKPIs: ['Cycle time (Avg/P50/P90)', 'Delayed count', 'Supplier on-time rate'],
+                calculation: {
+                    columns: ['request_date', 'actual_date'],
+                    formula: 'Cycle Time = actual_date - request_date (in days)',
+                    condition: 'On-Time if Cycle Time <= 2 days',
+                    rate: 'SLA Rate = (Count of On-Time / Total Completed) x 100',
+                    notes: 'Only calculated for completed (Done) jobs with both request and actual dates'
+                }
+            },
+            'delayed-sla': {
+                title: 'Delayed Jobs Analysis',
+                requirement: 'Minimize jobs exceeding the 2-day delivery SLA target.',
+                target: '0 delayed jobs',
+                standard: 'All deliveries within 2 days',
+                source: 'NIT Transportation SLA Policy',
+                supportingKPIs: ['Average delay days', 'Top delayed suppliers', 'Delay root causes'],
+                calculation: {
+                    columns: ['request_date', 'actual_date', 'cycle_time'],
+                    formula: 'Delay = actual_date - request_date',
+                    condition: 'Delayed if Cycle Time > 2 days',
+                    rate: 'Delay Rate = (Count Delayed / Total Completed) x 100',
+                    notes: 'Reviews pending_with and remarks for root cause analysis'
+                }
+            }
+        };
+
+        var currentModalData = [];
+        var currentModalType = '';
 
         function closeModal() {
             document.getElementById('detailModal').classList.remove('show');
         }
 
-        function showDetails(status) {
-            var records = filteredRecords.filter(function(r) { return r.status === status; });
-            document.getElementById('modalTitle').textContent = status + ' Jobs';
+        // ============================================
+        // RICH SLA DETAIL MODAL
+        // ============================================
+        function showTransportSLA(slaType) {
+            var modal = document.getElementById('detailModal');
+            var title = document.getElementById('modalTitle');
             var body = document.getElementById('modalBody');
-            body.innerHTML = '';
-
-            var summary = document.createElement('p');
-            summary.className = 'text-sm text-gray-500 mb-4';
-            summary.textContent = records.length + ' ' + status + ' jobs';
-            body.appendChild(summary);
-
-            var displayRecords = records.slice(0, 20);
-            for (var i = 0; i < displayRecords.length; i++) {
-                var r = displayRecords[i];
-                var div = document.createElement('div');
-                div.className = 'p-3 bg-gray-50 rounded-lg mb-2';
-                var title = document.createElement('p');
-                title.className = 'font-medium';
-                title.textContent = r.job_order + ' - ' + r.project;
-                var details = document.createElement('p');
-                details.className = 'text-sm text-gray-500';
-                details.textContent = r.supplier + ' | ' + r.equipment + ' | SAR ' + r.total_amount.toLocaleString();
-                div.appendChild(title);
-                div.appendChild(details);
-                body.appendChild(div);
-            }
-            document.getElementById('detailModal').classList.add('show');
-        }
-
-        function showDelayedDetails() {
-            var records = filteredRecords.filter(function(r) { return r.sla_status === 'Delayed'; });
-            document.getElementById('modalTitle').textContent = 'Delayed Jobs';
-            var body = document.getElementById('modalBody');
-            body.innerHTML = '';
-
-            var summary = document.createElement('p');
-            summary.className = 'text-sm text-gray-500 mb-4';
-            summary.textContent = records.length + ' delayed jobs (past SLA target of 2 days)';
-            body.appendChild(summary);
-
-            var displayRecords = records.slice(0, 20);
-            for (var i = 0; i < displayRecords.length; i++) {
-                var r = displayRecords[i];
-                var div = document.createElement('div');
-                div.className = 'p-3 bg-red-50 rounded-lg mb-2 border-l-4 border-red-500';
-                var title = document.createElement('p');
-                title.className = 'font-medium';
-                title.textContent = r.job_order + ' - ' + r.project;
-                var details = document.createElement('p');
-                details.className = 'text-sm text-gray-500';
-                details.textContent = r.supplier + ' | Cycle: ' + (r.cycle_time || 'N/A') + ' days | SAR ' + r.total_amount.toLocaleString();
-                div.appendChild(title);
-                div.appendChild(details);
-                body.appendChild(div);
-            }
-            document.getElementById('detailModal').classList.add('show');
-        }
-
-        function showSLADetails(type) {
             var data = filteredRecords;
-            document.getElementById('modalTitle').textContent = type === 'completion' ? 'Completion Rate Details' : 'On-Time Delivery Details';
-            var body = document.getElementById('modalBody');
-            body.innerHTML = '';
+            var prs, titleText, onTimeCount, lateCount, onTimeRate;
+            currentModalType = slaType;
 
-            var card = document.createElement('div');
-            card.className = 'cycle-time-card mb-4';
-
-            if (type === 'completion') {
-                var done = data.filter(function(r) { return r.status === 'Done'; }).length;
-                var rate = data.length > 0 ? Math.round(done / data.length * 100) : 0;
-                var label = document.createElement('p');
-                label.className = 'text-sm text-gray-500';
-                label.textContent = 'Current Rate';
-                var value = document.createElement('p');
-                value.className = 'cycle-time-value';
-                value.textContent = rate + '%';
-                var target = document.createElement('p');
-                target.className = 'text-xs text-gray-400';
-                target.textContent = 'Target: 95%';
-                card.appendChild(label);
-                card.appendChild(value);
-                card.appendChild(target);
-                body.appendChild(card);
-
-                var info = document.createElement('p');
-                info.className = 'text-sm mb-2';
-                info.textContent = 'Completed: ' + done + ' | Total: ' + data.length;
-                body.appendChild(info);
-            } else {
-                var completed = data.filter(function(r) { return r.status === 'Done'; });
-                var onTime = completed.filter(function(r) { return r.sla_status === 'On Time'; }).length;
-                var rate = completed.length > 0 ? Math.round(onTime / completed.length * 100) : 0;
-                var label = document.createElement('p');
-                label.className = 'text-sm text-gray-500';
-                label.textContent = 'On-Time Rate';
-                var value = document.createElement('p');
-                value.className = 'cycle-time-value';
-                value.textContent = rate + '%';
-                var target = document.createElement('p');
-                target.className = 'text-xs text-gray-400';
-                target.textContent = 'Target: 95% (2 days)';
-                card.appendChild(label);
-                card.appendChild(value);
-                card.appendChild(target);
-                body.appendChild(card);
-
-                var info = document.createElement('p');
-                info.className = 'text-sm mb-2';
-                info.textContent = 'On Time: ' + onTime + ' | Completed: ' + completed.length;
-                body.appendChild(info);
+            switch(slaType) {
+                case 'completion':
+                    titleText = 'Job Completion SLA Details';
+                    prs = data.slice();
+                    onTimeCount = prs.filter(function(r) { return r.status === 'Done'; }).length;
+                    lateCount = prs.length - onTimeCount;
+                    onTimeRate = prs.length > 0 ? ((onTimeCount / prs.length) * 100).toFixed(1) : '0.0';
+                    break;
+                case 'on-time-delivery':
+                    titleText = 'On-Time Delivery SLA Details (<=2 Days)';
+                    prs = data.filter(function(r) { return r.status === 'Done' && r.cycle_time !== null; });
+                    prs = prs.map(function(r) { r._isOnTime = r.cycle_time <= 2; return r; });
+                    onTimeCount = prs.filter(function(r) { return r._isOnTime; }).length;
+                    lateCount = prs.length - onTimeCount;
+                    onTimeRate = prs.length > 0 ? ((onTimeCount / prs.length) * 100).toFixed(1) : '0.0';
+                    break;
+                case 'delayed-sla':
+                    titleText = 'Delayed Jobs (Past SLA >2 Days)';
+                    prs = data.filter(function(r) { return r.sla_status === 'Delayed'; });
+                    prs = prs.map(function(r) { r._isOnTime = false; return r; });
+                    onTimeCount = 0;
+                    lateCount = prs.length;
+                    var allCompleted = data.filter(function(r) { return r.status === 'Done'; });
+                    onTimeRate = allCompleted.length > 0 ? (((allCompleted.length - lateCount) / allCompleted.length) * 100).toFixed(1) : '0.0';
+                    break;
             }
-            document.getElementById('detailModal').classList.add('show');
+
+            currentModalData = prs;
+            title.textContent = titleText + ' (' + prs.length + ' records)';
+            body.innerHTML = buildSLADetailHTML(prs, slaType, onTimeCount, lateCount, onTimeRate);
+            modal.classList.add('show');
+            setupModalSearch();
+        }
+
+        function buildSLADetailHTML(prs, slaType, onTimeCount, lateCount, onTimeRate) {
+            if (prs.length === 0) return '<p class="text-gray-500 text-center py-8">No data available for current filters</p>';
+
+            var complianceColor = parseFloat(onTimeRate) >= 95 ? 'green' : parseFloat(onTimeRate) >= 85 ? 'yellow' : 'red';
+            var compBg = complianceColor === 'green' ? 'bg-green-100 border-green-300 text-green-600' : complianceColor === 'yellow' ? 'bg-yellow-100 border-yellow-300 text-yellow-600' : 'bg-red-100 border-red-300 text-red-600';
+            var compText = complianceColor === 'green' ? 'text-green-700' : complianceColor === 'yellow' ? 'text-yellow-700' : 'text-red-700';
+
+            // Build table rows (limit 100)
+            var displayPrs = prs.slice(0, 100);
+            var rows = '';
+            for (var i = 0; i < displayPrs.length; i++) {
+                var r = displayPrs[i];
+                var ctBadge = r.cycle_time !== null ? '<span class="px-2 py-0.5 rounded text-xs ' + (r.cycle_time <= 2 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') + '">' + r.cycle_time + ' days</span>' : '-';
+                var statusBadge = '<span class="px-2 py-0.5 rounded text-xs ' + (r.status === 'Done' ? 'bg-green-100 text-green-800' : r.status === 'In Progress' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800') + '">' + r.status + '</span>';
+                var slaBadge = '<span class="px-2 py-0.5 rounded text-xs ' + (r.sla_status === 'On Time' ? 'bg-green-100 text-green-800' : r.sla_status === 'Delayed' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800') + '">' + r.sla_status + '</span>';
+                rows += '<tr class="modal-row"><td class="font-medium">' + (r.job_order || '-') + '</td><td title="' + r.project + '" style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + r.project + '</td><td>' + r.supplier + '</td><td>' + r.request_date + '</td><td>' + ctBadge + '</td><td>' + statusBadge + '</td><td>' + slaBadge + '</td><td class="text-right">' + (r.total_amount ? r.total_amount.toLocaleString() : '0') + '</td></tr>';
+            }
+
+            return '<div class="flex items-center justify-between mb-4">' +
+                '<div class="flex gap-2">' +
+                    '<button onclick="showTransportSLAInfo(\'' + slaType + '\')" class="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 rounded-lg text-blue-700 flex items-center gap-1 text-sm">' +
+                        '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+                        ' SLA Info</button>' +
+                    '<button onclick="showTransportFormula(\'' + slaType + '\')" class="px-3 py-1.5 bg-purple-100 hover:bg-purple-200 rounded-lg text-purple-700 flex items-center gap-1 text-sm">' +
+                        '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>' +
+                        ' Formula</button>' +
+                '</div>' +
+                '<span class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Total: ' + prs.length + '</span>' +
+            '</div>' +
+            '<div class="grid grid-cols-3 gap-4 mb-4">' +
+                '<div class="bg-green-50 rounded-lg p-3 text-center border border-green-200">' +
+                    '<p class="text-2xl font-bold text-green-600">' + onTimeCount + '</p>' +
+                    '<p class="text-xs text-green-700">' + (slaType === 'completion' ? 'Completed' : 'On-Time') + '</p>' +
+                '</div>' +
+                '<div class="bg-red-50 rounded-lg p-3 text-center border border-red-200">' +
+                    '<p class="text-2xl font-bold text-red-600">' + lateCount + '</p>' +
+                    '<p class="text-xs text-red-700">' + (slaType === 'completion' ? 'Pending/In Progress' : 'Late') + '</p>' +
+                '</div>' +
+                '<div class="rounded-lg p-3 text-center ' + compBg + ' border">' +
+                    '<p class="text-2xl font-bold">' + onTimeRate + '%</p>' +
+                    '<p class="text-xs ' + compText + '">Compliance (Target: 95%)</p>' +
+                '</div>' +
+            '</div>' +
+            '<div class="mb-4 flex flex-wrap gap-2 items-center justify-between">' +
+                '<input type="text" id="modalSearch" placeholder="Search..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-48">' +
+                '<div class="flex gap-2">' +
+                    '<button onclick="exportModalPDF()" class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">PDF</button>' +
+                    '<button onclick="exportModalCSV()" class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">CSV</button>' +
+                '</div>' +
+            '</div>' +
+            '<div class="scroll-container" style="max-height:300px;">' +
+                '<table class="data-table text-sm w-full" id="modalTable">' +
+                    '<thead><tr><th>Job Order</th><th>Project</th><th>Supplier</th><th>Request Date</th><th>Cycle Time</th><th>Status</th><th>SLA</th><th class="text-right">Amount (SAR)</th></tr></thead>' +
+                    '<tbody>' + rows + '</tbody>' +
+                '</table>' +
+            '</div>' +
+            (prs.length > 100 ? '<p class="text-xs text-gray-400 mt-2 text-center">Showing first 100 of ' + prs.length + ' records</p>' : '');
+        }
+
+        // ============================================
+        // KPI DETAIL MODAL
+        // ============================================
+        function showTransportDetail(kpiType, records) {
+            var modal = document.getElementById('detailModal');
+            var title = document.getElementById('modalTitle');
+            var body = document.getElementById('modalBody');
+            currentModalData = records;
+            currentModalType = kpiType;
+
+            var titles = {
+                'total': 'All Job Orders', 'done': 'Completed Jobs', 'on-time': 'On-Time Deliveries',
+                'delayed': 'Delayed Jobs', 'in-progress': 'In Progress Jobs', 'spend': 'Jobs by Spend',
+                'total-spend': 'Total Combined Spend'
+            };
+            title.textContent = (titles[kpiType] || 'Details') + ' (' + records.length + ' records)';
+
+            // Build summary based on type
+            var totalAmt = 0, doneCount = 0, onTimeCount = 0, delayedCount = 0;
+            for (var i = 0; i < records.length; i++) {
+                totalAmt += records[i].total_amount;
+                if (records[i].status === 'Done') doneCount++;
+                if (records[i].sla_status === 'On Time') onTimeCount++;
+                if (records[i].sla_status === 'Delayed') delayedCount++;
+            }
+
+            // Build table rows
+            var displayRecs = records.slice(0, 100);
+            var rows = '';
+            for (var i = 0; i < displayRecs.length; i++) {
+                var r = displayRecs[i];
+                var ctBadge = r.cycle_time !== null ? '<span class="px-2 py-0.5 rounded text-xs ' + (r.cycle_time <= 2 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') + '">' + r.cycle_time + ' days</span>' : '-';
+                var statusBadge = '<span class="px-2 py-0.5 rounded text-xs ' + (r.status === 'Done' ? 'bg-green-100 text-green-800' : r.status === 'In Progress' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800') + '">' + r.status + '</span>';
+                var slaBadge = '<span class="px-2 py-0.5 rounded text-xs ' + (r.sla_status === 'On Time' ? 'bg-green-100 text-green-800' : r.sla_status === 'Delayed' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800') + '">' + r.sla_status + '</span>';
+                rows += '<tr class="modal-row"><td class="font-medium">' + (r.job_order || '-') + '</td><td title="' + r.project + '" style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + r.project + '</td><td>' + r.supplier + '</td><td>' + r.equipment + '</td><td>' + ctBadge + '</td><td>' + statusBadge + '</td><td>' + slaBadge + '</td><td class="text-right">' + (r.total_amount ? r.total_amount.toLocaleString() : '0') + '</td></tr>';
+            }
+
+            body.innerHTML =
+            '<div class="flex items-center justify-between mb-4">' +
+                '<span class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Total: ' + records.length + '</span>' +
+                '<span class="text-sm text-gray-500">Total Spend: SAR ' + totalAmt.toLocaleString() + '</span>' +
+            '</div>' +
+            '<div class="grid grid-cols-4 gap-3 mb-4">' +
+                '<div class="bg-blue-50 rounded-lg p-3 text-center border border-blue-200"><p class="text-xl font-bold text-blue-600">' + records.length + '</p><p class="text-xs text-blue-700">Total</p></div>' +
+                '<div class="bg-green-50 rounded-lg p-3 text-center border border-green-200"><p class="text-xl font-bold text-green-600">' + doneCount + '</p><p class="text-xs text-green-700">Done</p></div>' +
+                '<div class="bg-cyan-50 rounded-lg p-3 text-center border border-cyan-200"><p class="text-xl font-bold text-cyan-600">' + onTimeCount + '</p><p class="text-xs text-cyan-700">On Time</p></div>' +
+                '<div class="bg-red-50 rounded-lg p-3 text-center border border-red-200"><p class="text-xl font-bold text-red-600">' + delayedCount + '</p><p class="text-xs text-red-700">Delayed</p></div>' +
+            '</div>' +
+            '<div class="mb-4 flex flex-wrap gap-2 items-center justify-between">' +
+                '<input type="text" id="modalSearch" placeholder="Search..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-48">' +
+                '<div class="flex gap-2">' +
+                    '<button onclick="exportModalPDF()" class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">PDF</button>' +
+                    '<button onclick="exportModalCSV()" class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">CSV</button>' +
+                '</div>' +
+            '</div>' +
+            '<div class="scroll-container" style="max-height:300px;">' +
+                '<table class="data-table text-sm w-full" id="modalTable">' +
+                    '<thead><tr><th>Job Order</th><th>Project</th><th>Supplier</th><th>Equipment</th><th>Cycle Time</th><th>Status</th><th>SLA</th><th class="text-right">Amount (SAR)</th></tr></thead>' +
+                    '<tbody>' + rows + '</tbody>' +
+                '</table>' +
+            '</div>' +
+            (records.length > 100 ? '<p class="text-xs text-gray-400 mt-2 text-center">Showing first 100 of ' + records.length + ' records</p>' : '');
+
+            modal.classList.add('show');
+            setupModalSearch();
+        }
+
+        // ============================================
+        // SLA INFO & FORMULA OVERLAY MODALS
+        // ============================================
+        function showTransportSLAInfo(slaType) {
+            var info = TRANSPORT_SLA_INFO[slaType];
+            if (!info) return;
+            var overlay = document.createElement('div');
+            overlay.id = 'slaInfoOverlay';
+            overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center';
+            overlay.style.zIndex = '2000';
+            overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+
+            var supportHTML = '';
+            if (info.supportingKPIs) {
+                supportHTML = '<div class="bg-gray-50 rounded-lg p-3 mt-3"><p class="text-xs text-gray-500 font-semibold mb-1">Supporting KPIs:</p><ul class="text-sm text-gray-700 list-disc list-inside">';
+                for (var i = 0; i < info.supportingKPIs.length; i++) {
+                    supportHTML += '<li>' + info.supportingKPIs[i] + '</li>';
+                }
+                supportHTML += '</ul></div>';
+            }
+
+            overlay.innerHTML =
+            '<div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden">' +
+                '<div class="p-4 text-white" style="background:linear-gradient(135deg,#0284C7,#0369A1)">' +
+                    '<div class="flex items-center justify-between">' +
+                        '<h3 class="text-lg font-bold flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> SLA Requirement</h3>' +
+                        '<button onclick="document.getElementById(\'slaInfoOverlay\').remove()" class="close-btn">&times;</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="p-6 space-y-4">' +
+                    '<div><h4 class="font-bold text-gray-800 text-lg">' + info.title + '</h4><p class="text-gray-600 mt-1">' + info.requirement + '</p></div>' +
+                    '<div class="grid grid-cols-2 gap-4">' +
+                        '<div class="bg-green-50 rounded-lg p-3 border border-green-200"><p class="text-xs text-green-600 font-semibold">Target</p><p class="text-xl font-bold text-green-700">' + info.target + '</p></div>' +
+                        '<div class="bg-blue-50 rounded-lg p-3 border border-blue-200"><p class="text-xs text-blue-600 font-semibold">Standard</p><p class="text-xl font-bold text-blue-700">' + info.standard + '</p></div>' +
+                    '</div>' +
+                    supportHTML +
+                    '<div class="text-xs text-gray-400">Source: ' + info.source + '</div>' +
+                '</div>' +
+            '</div>';
+            document.body.appendChild(overlay);
+        }
+
+        function showTransportFormula(slaType) {
+            var info = TRANSPORT_SLA_INFO[slaType];
+            if (!info || !info.calculation) return;
+            var calc = info.calculation;
+            var overlay = document.createElement('div');
+            overlay.id = 'calcInfoOverlay';
+            overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center';
+            overlay.style.zIndex = '2000';
+            overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+
+            var colsHTML = '';
+            for (var i = 0; i < calc.columns.length; i++) {
+                colsHTML += '<span class="bg-white px-2 py-1 rounded text-sm font-mono text-blue-700 border border-blue-300">' + calc.columns[i] + '</span> ';
+            }
+
+            overlay.innerHTML =
+            '<div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden">' +
+                '<div class="p-4 text-white" style="background:linear-gradient(135deg,#7C3AED,#5B21B6)">' +
+                    '<div class="flex items-center justify-between">' +
+                        '<h3 class="text-lg font-bold flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg> Calculation Method</h3>' +
+                        '<button onclick="document.getElementById(\'calcInfoOverlay\').remove()" class="close-btn">&times;</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="p-6 space-y-4">' +
+                    '<h4 class="font-bold text-gray-800 text-lg">' + info.title + '</h4>' +
+                    '<div class="bg-blue-50 rounded-lg p-4 border border-blue-200"><p class="text-xs text-blue-600 font-semibold mb-2">Data Columns Used:</p><div class="flex flex-wrap gap-2">' + colsHTML + '</div></div>' +
+                    '<div class="bg-purple-50 rounded-lg p-4 border border-purple-200"><p class="text-xs text-purple-600 font-semibold mb-1">Formula:</p><p class="font-mono text-sm text-purple-800 bg-white p-2 rounded border">' + calc.formula + '</p></div>' +
+                    '<div class="bg-green-50 rounded-lg p-4 border border-green-200"><p class="text-xs text-green-600 font-semibold mb-1">Condition:</p><p class="text-sm text-green-800">' + calc.condition + '</p></div>' +
+                    '<div class="bg-amber-50 rounded-lg p-4 border border-amber-200"><p class="text-xs text-amber-600 font-semibold mb-1">Rate Calculation:</p><p class="font-mono text-sm text-amber-800">' + calc.rate + '</p></div>' +
+                    (calc.notes ? '<div class="text-xs text-gray-500 bg-gray-100 p-3 rounded-lg"><strong>Note:</strong> ' + calc.notes + '</div>' : '') +
+                '</div>' +
+            '</div>';
+            document.body.appendChild(overlay);
+        }
+
+        // ============================================
+        // SUPPLIER SUMMARY MODAL
+        // ============================================
+        function showSupplierSummaryModal(sortedSuppliers) {
+            var modal = document.getElementById('detailModal');
+            var title = document.getElementById('modalTitle');
+            var body = document.getElementById('modalBody');
+            title.textContent = 'All Suppliers (' + sortedSuppliers.length + ')';
+
+            var rows = '';
+            for (var i = 0; i < sortedSuppliers.length; i++) {
+                var name = sortedSuppliers[i][0];
+                var s = sortedSuppliers[i][1];
+                var completed = s.onTime + s.delayed;
+                var rate = completed > 0 ? Math.round(s.onTime / completed * 100) : 0;
+                var rateBadge = '<span class="px-2 py-0.5 rounded text-xs ' + (rate >= 95 ? 'bg-green-100 text-green-800' : rate >= 85 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') + '">' + rate + '%</span>';
+                rows += '<tr class="modal-row"><td class="font-medium">' + name + '</td><td class="text-center">' + s.jobs + '</td><td class="text-center">' + s.onTime + '</td><td class="text-center">' + s.delayed + '</td><td class="text-center">' + rateBadge + '</td><td class="text-right">' + s.amount.toLocaleString() + '</td><td class="text-right">' + Math.round(s.amount / s.jobs).toLocaleString() + '</td></tr>';
+            }
+
+            body.innerHTML =
+            '<div class="mb-4 flex items-center justify-between"><span class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Total: ' + sortedSuppliers.length + ' suppliers</span><input type="text" id="modalSearch" placeholder="Search..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm w-48"></div>' +
+            '<div class="scroll-container" style="max-height:400px;"><table class="data-table text-sm w-full" id="modalTable"><thead><tr><th>Supplier</th><th class="text-center">Total Jobs</th><th class="text-center">On Time</th><th class="text-center">Delayed</th><th class="text-center">On-Time Rate</th><th class="text-right">Total Spend (SAR)</th><th class="text-right">Avg/Job</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+            modal.classList.add('show');
+            setupModalSearch();
+        }
+
+        // ============================================
+        // EQUIPMENT SUMMARY MODAL
+        // ============================================
+        function showEquipmentSummaryModal(sortedEquipment) {
+            var modal = document.getElementById('detailModal');
+            var title = document.getElementById('modalTitle');
+            var body = document.getElementById('modalBody');
+            title.textContent = 'All Equipment Types (' + sortedEquipment.length + ')';
+
+            var rows = '';
+            var display = sortedEquipment.slice(0, 100);
+            for (var i = 0; i < display.length; i++) {
+                var name = display[i][0];
+                var e = display[i][1];
+                rows += '<tr class="modal-row"><td class="font-medium" title="' + name + '" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + name + '</td><td>' + e.category + '</td><td class="text-center">' + e.count + '</td><td class="text-right">' + e.amount.toLocaleString() + '</td><td class="text-right">' + Math.round(e.amount / Math.max(e.count, 1)).toLocaleString() + '</td><td class="text-center">' + e.daily + '</td><td class="text-center">' + e.monthly + '</td></tr>';
+            }
+
+            body.innerHTML =
+            '<div class="mb-4 flex items-center justify-between"><span class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Total: ' + sortedEquipment.length + ' types</span><input type="text" id="modalSearch" placeholder="Search..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm w-48"></div>' +
+            '<div class="scroll-container" style="max-height:400px;"><table class="data-table text-sm w-full" id="modalTable"><thead><tr><th>Equipment</th><th>Category</th><th class="text-center">Usage</th><th class="text-right">Total Spend (SAR)</th><th class="text-right">Avg Cost</th><th class="text-center">Daily</th><th class="text-center">Monthly</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+            (sortedEquipment.length > 100 ? '<p class="text-xs text-gray-400 mt-2 text-center">Showing first 100 of ' + sortedEquipment.length + '</p>' : '');
+            modal.classList.add('show');
+            setupModalSearch();
+        }
+
+        // ============================================
+        // CATEGORY SUMMARY MODAL
+        // ============================================
+        function showCategorySummaryModal(categories) {
+            var modal = document.getElementById('detailModal');
+            var title = document.getElementById('modalTitle');
+            var body = document.getElementById('modalBody');
+            var entries = Object.entries(categories).sort(function(a,b){return b[1]-a[1];});
+            var totalCount = 0;
+            for (var i = 0; i < entries.length; i++) totalCount += entries[i][1];
+            title.textContent = 'Equipment Categories (' + entries.length + ')';
+
+            var rows = '';
+            for (var i = 0; i < entries.length; i++) {
+                var name = entries[i][0];
+                var count = entries[i][1];
+                var pct = totalCount > 0 ? ((count / totalCount) * 100).toFixed(1) : '0.0';
+                var bar = '<div class="bg-gray-200 rounded-full h-2 w-24 inline-block"><div class="h-2 rounded-full" style="width:' + pct + '%;background:#2E3192"></div></div>';
+                rows += '<tr class="modal-row cursor-pointer" onclick="closeModal();showTransportDetail(\'cat-' + name + '\', filteredRecords.filter(function(r){return r.equipment_category===\'' + name + '\';}))"><td class="font-medium">' + name + '</td><td class="text-center">' + count + '</td><td class="text-center">' + pct + '%</td><td>' + bar + '</td></tr>';
+            }
+
+            body.innerHTML =
+            '<div class="mb-4"><span class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Total: ' + totalCount + ' jobs in ' + entries.length + ' categories</span></div>' +
+            '<div class="scroll-container" style="max-height:400px;"><table class="data-table text-sm w-full" id="modalTable"><thead><tr><th>Category</th><th class="text-center">Count</th><th class="text-center">%</th><th>Distribution</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+            '<p class="text-xs text-gray-400 mt-3">Click a category to view its job orders</p>';
+            modal.classList.add('show');
+        }
+
+        // ============================================
+        // MONTHLY CONTRACT MODAL
+        // ============================================
+        function showMonthlyContractModal(type, contracts) {
+            var modal = document.getElementById('detailModal');
+            var title = document.getElementById('modalTitle');
+            var body = document.getElementById('modalBody');
+            var titles = { 'all': 'All Monthly Contracts', 'spend': 'Contracts by Spend', 'rate': 'Contracts by Monthly Rate', 'months': 'Contracts by Active Months' };
+            title.textContent = (titles[type] || 'Monthly Contracts') + ' (' + contracts.length + ')';
+
+            var totalSpend = 0;
+            for (var i = 0; i < contracts.length; i++) totalSpend += contracts[i].total_spend;
+
+            var rows = '';
+            for (var i = 0; i < contracts.length; i++) {
+                var c = contracts[i];
+                var statusBadge = '<span class="px-2 py-0.5 rounded text-xs ' + (c.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800') + '">' + c.status + '</span>';
+                rows += '<tr class="modal-row"><td class="font-medium">' + c.id + '</td><td title="' + c.project + '" style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + c.project + '</td><td>' + c.requester + '</td><td>' + c.equipment + '</td><td>' + c.supplier + '</td><td class="text-right">' + c.monthly_rate.toLocaleString() + '</td><td class="text-center">' + c.active_month_count + '</td><td class="text-right font-medium">' + c.total_spend.toLocaleString() + '</td><td>' + statusBadge + '</td></tr>';
+            }
+
+            body.innerHTML =
+            '<div class="grid grid-cols-3 gap-4 mb-4">' +
+                '<div class="bg-blue-50 rounded-lg p-3 text-center border border-blue-200"><p class="text-2xl font-bold text-blue-600">' + contracts.length + '</p><p class="text-xs text-blue-700">Total Contracts</p></div>' +
+                '<div class="bg-green-50 rounded-lg p-3 text-center border border-green-200"><p class="text-2xl font-bold text-green-600">SAR ' + totalSpend.toLocaleString() + '</p><p class="text-xs text-green-700">Total Spend</p></div>' +
+                '<div class="bg-purple-50 rounded-lg p-3 text-center border border-purple-200"><p class="text-2xl font-bold text-purple-600">SAR ' + (contracts.length > 0 ? Math.round(totalSpend / contracts.length).toLocaleString() : '0') + '</p><p class="text-xs text-purple-700">Avg per Contract</p></div>' +
+            '</div>' +
+            '<div class="mb-4 flex items-center justify-between"><input type="text" id="modalSearch" placeholder="Search..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm w-48"><button onclick="exportMonthlyExcel()" class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">Export Excel</button></div>' +
+            '<div class="scroll-container" style="max-height:300px;"><table class="data-table text-sm w-full" id="modalTable"><thead><tr><th>#</th><th>Project</th><th>Requester</th><th>Equipment</th><th>Supplier</th><th class="text-right">Rate (SAR)</th><th class="text-center">Months</th><th class="text-right">Total (SAR)</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+            modal.classList.add('show');
+            setupModalSearch();
+        }
+
+        // ============================================
+        // MODAL SEARCH
+        // ============================================
+        function setupModalSearch() {
+            var searchInput = document.getElementById('modalSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    var term = this.value.toLowerCase();
+                    var rows = document.querySelectorAll('#modalTable tbody tr');
+                    var visible = 0;
+                    for (var i = 0; i < rows.length; i++) {
+                        var match = rows[i].textContent.toLowerCase().indexOf(term) >= 0;
+                        rows[i].style.display = match ? '' : 'none';
+                        if (match) visible++;
+                    }
+                });
+            }
+        }
+
+        // ============================================
+        // MODAL EXPORT
+        // ============================================
+        function exportModalCSV() {
+            if (!currentModalData || !currentModalData.length) return;
+            var exp = currentModalData.map(function(r) {
+                return { 'Job Order': r.job_order, 'Project': r.project, 'Supplier': r.supplier,
+                    'Equipment': r.equipment, 'Request Date': r.request_date, 'Actual Date': r.actual_date,
+                    'Cycle Time': r.cycle_time, 'Status': r.status, 'SLA': r.sla_status,
+                    'Amount': r.total_amount, 'Rent Type': r.rent_type };
+            });
+            var ws = XLSX.utils.json_to_sheet(exp);
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Data');
+            XLSX.writeFile(wb, 'Transport_Detail_' + new Date().toISOString().slice(0, 10) + '.csv');
+        }
+
+        function exportModalPDF() {
+            var el = document.getElementById('modalBody');
+            if (!el) return;
+            html2canvas(el).then(function(canvas) {
+                var pdf = new jspdf.jsPDF('l', 'mm', 'a4');
+                var imgData = canvas.toDataURL('image/png');
+                var w = pdf.internal.pageSize.getWidth();
+                var h = (canvas.height * w) / canvas.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, w, h);
+                pdf.save('Transport_Detail_' + new Date().toISOString().slice(0, 10) + '.pdf');
+            });
         }
 
         function exportToExcel() {
@@ -1309,8 +2493,17 @@
             NesmaExport.toPDF('tab-overview', 'Transportation_Dashboard');
         }
 
-        document.addEventListener('DOMContentLoaded', function() { loadData(); if (typeof NesmaTheme !== 'undefined') NesmaTheme.init(); });
+        document.addEventListener('DOMContentLoaded', function() { loadData(); loadScrapData(); if (typeof NesmaTheme !== 'undefined') NesmaTheme.init(); });
         document.getElementById('detailModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                var overlay = document.getElementById('slaInfoOverlay');
+                if (overlay) { overlay.remove(); return; }
+                overlay = document.getElementById('calcInfoOverlay');
+                if (overlay) { overlay.remove(); return; }
+                closeModal();
+            }
+        });
     </script>
 </body>
 </html>

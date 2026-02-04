@@ -1597,11 +1597,11 @@
                 source: 'NIT-SCM-SLA-KSA-001 (Operations)',
                 supportingKPIs: ['Cycle time (P50/P90)', 'PR quality rate (first-time complete)', 'APRs not converted to PO >30 days'],
                 calculation: {
-                    columns: ['submission_date', 'approved_date'],
-                    formula: 'Processing Days = approved_date - submission_date',
+                    columns: ['pending_since', 'approved_date'],
+                    formula: 'Processing Days = approved_date - pending_since',
                     condition: 'On-Time if Processing Days ≤ 2',
                     rate: 'SLA Rate = (Count of On-Time PRs / Total PRs with both dates) × 100',
-                    notes: 'Only includes PRs with both submission_date and approved_date'
+                    notes: 'Only includes PRs with both pending_since and approved_date'
                 }
             },
             'po-issuance': {
@@ -1738,7 +1738,7 @@
             'approved': ['pr_num', 'project', 'vendor', 'pr_value', 'approved_date', 'status'],
             'returned': ['pr_num', 'project', 'vendor', 'pr_value', 'return_date', 'pr_note', 'status'],
             'rejected': ['pr_num', 'project', 'vendor', 'pr_value', 'reject_date', 'pr_note'],
-            'pr-processing': ['pr_num', 'project', 'vendor', 'submission_date', 'approved_date', 'status'],
+            'pr-processing': ['pr_num', 'project', 'vendor', 'pending_since', 'approved_date', 'status'],
             'po-issuance': ['pr_num', 'project', 'vendor', 'pr_value', 'pr_to_po_days', 'status'],
             'high-value': ['pr_num', 'project', 'vendor', 'pr_value', 'pr_to_po_days', 'status'],
             'low-value': ['pr_num', 'project', 'vendor', 'pr_value', 'pr_to_po_days', 'status'],
@@ -2743,19 +2743,21 @@
 
                 // Generate attachments HTML - prioritize local PDF files
                 let attachmentsHtml = '-';
-                if (v.local_pdf) {
-                    // Use local PDF file (opens directly in browser)
-                    attachmentsHtml = `
-                        <a href="${v.local_pdf}"
+                const localPdfs = v.local_pdfs || (v.local_pdf ? [v.local_pdf] : []);
+                if (localPdfs.length > 0) {
+                    // Use local PDF files (open directly in browser)
+                    attachmentsHtml = localPdfs.map((pdfPath, idx) => {
+                        const fileName = pdfPath.split('/').pop().replace('.pdf', '');
+                        return `<a href="${pdfPath}"
                            target="_blank"
-                           class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-xs cursor-pointer"
-                           title="${'View Evaluation'}">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                           class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-xs cursor-pointer hover:underline"
+                           title="View: ${fileName}">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
                             </svg>
-                            PDF
-                        </a>
-                    `;
+                            PDF${localPdfs.length > 1 ? ' ' + (idx + 1) : ''}
+                        </a>`;
+                    }).join(' ');
                 } else if (v.attachments && v.attachments.length > 0) {
                     // Fallback to Smartsheet attachment if no local PDF
                     const VENDOR_SHEET_ID = '1185309157969796';
@@ -2764,7 +2766,7 @@
                         <a href="${smartsheetUrl}"
                            target="_blank"
                            class="inline-flex items-center gap-1 text-amber-600 hover:text-amber-800 text-xs cursor-pointer"
-                           title="${'View in Smartsheet'}">
+                           title="View in Smartsheet">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
                             </svg>
@@ -2850,18 +2852,18 @@
 
             // ==========================================
             // SLA 1: PR PROCESSING (≤2 business days)
-            // Measure: submission_date → approved_date
+            // Measure: pending_since → approved_date
             // Target: ≥95%
             // ==========================================
-            const prsWithProcessingDates = filteredPRs.filter(pr => pr.submission_date && pr.approved_date);
+            const prsWithProcessingDates = filteredPRs.filter(pr => pr.pending_since && pr.approved_date);
             let prProcessingWithin2 = 0;
             let prProcessingAfter2 = 0;
             
             prsWithProcessingDates.forEach(pr => {
                 try {
-                    const submitted = new Date(pr.submission_date);
+                    const pendingSince = new Date(pr.pending_since);
                     const approved = new Date(pr.approved_date);
-                    const days = Math.floor((approved - submitted) / 86400000);
+                    const days = Math.floor((approved - pendingSince) / 86400000);
                     if (days <= 2) {
                         prProcessingWithin2++;
                     } else {
@@ -5394,10 +5396,10 @@
             switch(slaType) {
                 case 'pr-processing':
                     titleText = 'PR Processing SLA Details (≤2 Days)';
-                    filteredPRs = allPRs.filter(pr => pr.approved_date && pr.submission_date).map(pr => {
-                        const submitted = new Date(pr.submission_date);
+                    filteredPRs = allPRs.filter(pr => pr.approved_date && pr.pending_since).map(pr => {
+                        const pendingSince = new Date(pr.pending_since);
                         const approved = new Date(pr.approved_date);
-                        const days = Math.floor((approved - submitted) / 86400000);
+                        const days = Math.floor((approved - pendingSince) / 86400000);
                         return { ...pr, processingDays: days, isOnTime: days <= 2 };
                     });
                     break;
@@ -5791,7 +5793,7 @@
                             <button onclick="document.getElementById('columnSelectorModal').remove()" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
                                 Cancel
                             </button>
-                            <button onclick="applyColumnSelection('${modalType}')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <button onclick="applySLAColumnSelection('${modalType}')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                                 Apply
                             </button>
                         </div>
@@ -5802,7 +5804,7 @@
             document.body.appendChild(selectorModal);
         }
         
-        function applyColumnSelection(modalType) {
+        function applySLAColumnSelection(modalType) {
             const checkboxes = document.querySelectorAll('#columnSelectorModal input[type="checkbox"]:checked');
             const selectedColumns = Array.from(checkboxes).map(cb => cb.dataset.colId);
             

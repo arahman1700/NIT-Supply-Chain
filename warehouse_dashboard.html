@@ -470,8 +470,16 @@
                 <div class="filter-section no-print">
                     <div class="flex flex-wrap items-end gap-4">
                         <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Year</label>
+                            <select id="filterTransferYear" class="filter-select" onchange="filterTransfers()"><option value="">All Years</option></select>
+                        </div>
+                        <div>
                             <label class="block text-xs font-medium text-gray-500 mb-1">Month</label>
                             <select id="filterTransferMonth" class="filter-select" onchange="filterTransfers()"><option value="">All Months</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Project</label>
+                            <select id="filterTransferProject" class="filter-select" onchange="filterTransfers()"><option value="">All Projects</option></select>
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-500 mb-1">Source</label>
@@ -539,7 +547,47 @@
             populateSelect('filterSurplusStore', f.surplus_stores);
             populateSelect('filterSurplusProject', f.surplus_projects);
             populateSelect('filterNonMovingWH', f.non_moving_warehouses);
-            populateSelect('filterTransferMonth', f.transfer_months);
+
+            // Transfer filters: extract unique years and months from dates
+            const transferRecords = warehouseData.records.transfers || [];
+            const yearsSet = new Set();
+            const monthsSet = new Set();
+            const projectsSet = new Set();
+
+            transferRecords.forEach(r => {
+                const date = r.date || r.month || '';
+                if (date) {
+                    const parts = date.split('-');
+                    if (parts.length >= 2) {
+                        yearsSet.add(parts[0]);
+                        monthsSet.add(parts[1]);
+                    }
+                }
+                if (r.send_project) projectsSet.add(r.send_project);
+                if (r.request_project) projectsSet.add(r.request_project);
+            });
+
+            const monthNames = {'01':'January','02':'February','03':'March','04':'April','05':'May','06':'June','07':'July','08':'August','09':'September','10':'October','11':'November','12':'December'};
+
+            const years = [...yearsSet].sort();
+            const months = [...monthsSet].sort();
+            const projects = [...projectsSet].sort();
+
+            years.forEach(y => {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.textContent = y;
+                document.getElementById('filterTransferYear').appendChild(opt);
+            });
+
+            months.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = monthNames[m] || m;
+                document.getElementById('filterTransferMonth').appendChild(opt);
+            });
+
+            populateSelect('filterTransferProject', projects);
             populateSelect('filterTransferSource', f.transfer_sources);
             populateSelect('filterTransferDest', f.transfer_dests);
         }
@@ -554,16 +602,82 @@
             });
         }
 
+        function calculateSLAFromData() {
+            const sla = warehouseData.sla_metrics;
+            const result = {};
+
+            // 1. Material Transfer: calculated from request_date → delivery_date (≤2 days)
+            const transfers = warehouseData.records.transfers || [];
+            const trWithDates = transfers.filter(t => t.request_date && t.delivery_date);
+            let trOnTime = 0;
+            trWithDates.forEach(t => {
+                const req = new Date(t.request_date);
+                const del = new Date(t.delivery_date);
+                const days = Math.floor((del - req) / 86400000);
+                t.processing_days = days;
+                t.is_on_time = days <= 2;
+                if (days <= 2) trOnTime++;
+            });
+            result.transfer = {
+                rate: trWithDates.length > 0 ? Math.round((trOnTime / trWithDates.length) * 1000) / 10 : 0,
+                onTime: trOnTime,
+                delayed: trWithDates.length - trOnTime,
+                total: trWithDates.length
+            };
+
+            // 2. Storage Compliance: calculated from audit pass/fail
+            const audits = warehouseData.records.audits || [];
+            const passCount = audits.filter(a => a.result === 'Pass').length;
+            result.storage = {
+                rate: audits.length > 0 ? Math.round((passCount / audits.length) * 1000) / 10 : 0,
+                pass: passCount,
+                fail: audits.length - passCount,
+                total: audits.length
+            };
+
+            // 3. Stock Confirmation: calculated from request_date → response_date (≤1 day)
+            const confs = warehouseData.records.confirmations || [];
+            let scOnTime = 0;
+            confs.forEach(c => {
+                const req = new Date(c.request_date);
+                const resp = new Date(c.response_date);
+                const days = Math.floor((resp - req) / 86400000);
+                c.response_days = days;
+                c.is_on_time = days <= 1;
+                if (days <= 1) scOnTime++;
+            });
+            result.sc = {
+                rate: confs.length > 0 ? Math.round((scOnTime / confs.length) * 1000) / 10 : 0,
+                onTime: scOnTime,
+                delayed: confs.length - scOnTime,
+                total: confs.length
+            };
+
+            // 4. Non-Moving Rate
+            const nmCount = (warehouseData.records.non_moving || []).length;
+            const invTotal = (warehouseData.records.inventory || []).length;
+            result.nonmoving = {
+                rate: invTotal > 0 ? Math.round((nmCount / invTotal) * 1000) / 10 : 0,
+                count: nmCount,
+                total: invTotal
+            };
+
+            return result;
+        }
+
+        let calculatedSLA = {};
+
         function renderSLACards() {
+            calculatedSLA = calculateSLAFromData();
             const sla = warehouseData.sla_metrics;
             const container = document.getElementById('slaCards');
             const getSLAClass = (v, t, inv = false) => inv ? (v <= t * 0.5 ? 'sla-green' : v <= t ? 'sla-yellow' : 'sla-red') : (v >= t ? 'sla-green' : v >= t * 0.9 ? 'sla-yellow' : 'sla-red');
 
             const cards = [
-                { key: 'transfer', title: 'Material Transfer SLA', target: sla.target_transfer_rate, value: sla.transfer_on_time_rate, sub: `${sla.transfer_on_time_count} on-time / ${sla.transfer_on_time_count + sla.transfer_delayed_count} total` },
-                { key: 'storage', title: 'Storage Compliance', target: sla.target_storage_compliance, value: sla.storage_compliance_rate, sub: 'Audit pass rate' },
-                { key: 'sc', title: 'Stock Confirmation', target: sla.target_sc_rate, value: sla.stock_confirmation_rate, sub: '≤1 day response' },
-                { key: 'nonmoving', title: 'Non-Moving Rate', target: 50, value: sla.non_moving_rate, sub: '>4 years idle', inv: true }
+                { key: 'transfer', title: 'Material Transfer SLA', target: sla.target_transfer_rate, value: calculatedSLA.transfer.rate, sub: `${calculatedSLA.transfer.onTime} on-time / ${calculatedSLA.transfer.total} total`, detail: '≤2 days from request to delivery' },
+                { key: 'storage', title: 'Storage Compliance', target: sla.target_storage_compliance, value: calculatedSLA.storage.rate, sub: `${calculatedSLA.storage.pass} pass / ${calculatedSLA.storage.total} audits`, detail: 'Warehouse audit pass rate' },
+                { key: 'sc', title: 'Stock Confirmation', target: sla.target_sc_rate, value: calculatedSLA.sc.rate, sub: `${calculatedSLA.sc.onTime} on-time / ${calculatedSLA.sc.total} requests`, detail: '≤1 day response time' },
+                { key: 'nonmoving', title: 'Non-Moving Rate', target: 50, value: calculatedSLA.nonmoving.rate, sub: `${calculatedSLA.nonmoving.count} of ${calculatedSLA.nonmoving.total} items`, inv: true, detail: 'Items idle >4 years' }
             ];
 
             container.textContent = '';
@@ -571,6 +685,7 @@
                 const cls = getSLAClass(c.value, c.target, c.inv);
                 const div = document.createElement('div');
                 div.className = `sla-card ${cls} cursor-pointer`;
+                div.onclick = () => showSLADetailModal(c.key);
                 div.innerHTML = `
                     <div class="flex items-start justify-between mb-3">
                         <div>
@@ -584,7 +699,7 @@
                     </div>
                     <p class="sla-value">${c.value}%</p>
                     <p class="text-xs text-gray-500 mt-1">${c.sub}</p>
-                    <p class="text-xs text-blue-500 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">Click ? for calculation details</p>
+                    <p class="text-xs text-blue-400 mt-2">Click for details</p>
                 `;
                 container.appendChild(div);
             });
@@ -627,14 +742,11 @@
         function renderInventoryKPIs(useFiltered = false) {
             const data = useFiltered ? filteredData.inventory : warehouseData.records.inventory;
             const totalItems = data.length;
-            const totalBalance = data.reduce((sum, r) => sum + r.balance, 0);
             const uniqueProjects = new Set(data.map(r => r.project)).size;
             const uniqueLocations = new Set(data.map(r => r.location)).size;
-
             const c = document.getElementById('inventoryKPIs');
             c.textContent = '';
             c.appendChild(createKPI('kpi-primary', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>', 'Total Items', totalItems.toLocaleString(), 'Inventory records', () => showInventoryKPIDetails('total')));
-            c.appendChild(createKPI('kpi-cyan', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>', 'Total Balance', totalBalance.toLocaleString(), 'Units in storage', () => showInventoryKPIDetails('balance')));
             c.appendChild(createKPI('kpi-success', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>', 'Projects', uniqueProjects.toString(), 'Active projects', () => showInventoryKPIDetails('projects')));
             c.appendChild(createKPI('kpi-purple', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>', 'Locations', uniqueLocations.toString(), 'Storage locations', () => showInventoryKPIDetails('locations')));
             c.appendChild(createKPI('kpi-navy', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5"/></svg>', 'Accuracy', warehouseData.sla_metrics.inventory_accuracy + '%', 'Inventory accuracy'));
@@ -642,9 +754,9 @@
 
         function renderInventoryStats() {
             const total = filteredData.inventory.length;
-            const balance = filteredData.inventory.reduce((sum, r) => sum + r.balance, 0);
             const projects = new Set(filteredData.inventory.map(r => r.project)).size;
-            document.getElementById('inventoryStats').innerHTML = `<div class="stat-item"><span class="label">Showing:</span><span class="value">${total.toLocaleString()} items</span></div><div class="stat-item"><span class="label">Total Balance:</span><span class="value">${balance.toLocaleString()} units</span></div><div class="stat-item"><span class="label">Projects:</span><span class="value">${projects}</span></div>`;
+            const locations = new Set(filteredData.inventory.map(r => r.location)).size;
+            document.getElementById('inventoryStats').innerHTML = `<div class="stat-item"><span class="label">Showing:</span><span class="value">${total.toLocaleString()} items</span></div><div class="stat-item"><span class="label">Projects:</span><span class="value">${projects}</span></div><div class="stat-item"><span class="label">Locations:</span><span class="value">${locations}</span></div>`;
         }
 
         function renderInventoryCharts() {
@@ -884,16 +996,6 @@
 
         // ===== TRANSFERS TAB =====
         function initTransfersTab() {
-            // Add is_on_time flag to transfers based on SLA rate
-            const sla = warehouseData.sla_metrics;
-            const totalTransfers = warehouseData.records.transfers.length;
-            const onTimeCount = Math.round(totalTransfers * (sla.transfer_on_time_rate / 100));
-
-            warehouseData.records.transfers = warehouseData.records.transfers.map((t, i) => ({
-                ...t,
-                is_on_time: i < onTimeCount // Assign first N as on-time based on rate
-            }));
-
             filteredData.transfers = [...warehouseData.records.transfers];
             renderTransferKPIs();
             renderTransferCharts();
@@ -901,18 +1003,27 @@
         }
 
         function filterTransfers() {
+            const year = document.getElementById('filterTransferYear').value;
             const month = document.getElementById('filterTransferMonth').value;
+            const project = document.getElementById('filterTransferProject').value;
             const source = document.getElementById('filterTransferSource').value;
             const dest = document.getElementById('filterTransferDest').value;
 
             filteredData.transfers = warehouseData.records.transfers.filter(r => {
-                const matchMonth = !month || r.month === month;
+                const date = r.date || r.month || '';
+                const parts = date.split('-');
+                const rYear = parts[0] || '';
+                const rMonth = parts[1] || '';
+
+                const matchYear = !year || rYear === year;
+                const matchMonth = !month || rMonth === month;
+                const matchProject = !project || r.send_project === project || r.request_project === project;
                 const matchSource = !source || r.send_project === source;
                 const matchDest = !dest || r.request_project === dest;
-                return matchMonth && matchSource && matchDest;
+                return matchYear && matchMonth && matchProject && matchSource && matchDest;
             });
 
-            renderTransferKPIs(true); // Update KPIs with filtered data
+            renderTransferKPIs(true);
             renderTransferStats();
             renderTransferTable();
         }
@@ -928,15 +1039,15 @@
             const c = document.getElementById('transferKPIs');
             c.textContent = '';
             c.appendChild(createKPI('kpi-primary', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>', 'Total Transfers', totalTransfers.toLocaleString(), 'Material movements', () => showTransferKPIDetails('total')));
-            c.appendChild(createKPI('kpi-cyan', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4"/></svg>', 'Qty Transferred', totalQty.toLocaleString(), 'Units moved', () => showTransferKPIDetails('qty')));
             c.appendChild(createKPI('kpi-success', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>', 'On-Time Rate', onTimeRate + '%', 'SLA compliance', () => showTransferKPIDetails('ontime')));
             c.appendChild(createKPI('kpi-purple', '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>', 'Destinations', uniqueDest.toString(), 'Unique projects'));
         }
 
         function renderTransferStats() {
             const total = filteredData.transfers.length;
-            const qty = filteredData.transfers.reduce((sum, r) => sum + r.qty_numeric, 0);
-            document.getElementById('transferStats').innerHTML = `<div class="stat-item"><span class="label">Showing:</span><span class="value">${total.toLocaleString()} transfers</span></div><div class="stat-item"><span class="label">Total Qty:</span><span class="value">${qty.toLocaleString()} units</span></div>`;
+            const uniqueSources = new Set(filteredData.transfers.map(r => r.send_project)).size;
+            const uniqueDests = new Set(filteredData.transfers.map(r => r.request_project)).size;
+            document.getElementById('transferStats').innerHTML = `<div class="stat-item"><span class="label">Showing:</span><span class="value">${total.toLocaleString()} transfers</span></div><div class="stat-item"><span class="label">Sources:</span><span class="value">${uniqueSources}</span></div><div class="stat-item"><span class="label">Destinations:</span><span class="value">${uniqueDests}</span></div>`;
         }
 
         function renderTransferCharts() {
@@ -1010,6 +1121,293 @@
 
         function printTable(type) {
             NesmaExport.toPDF('tab-' + type, 'Warehouse_' + type);
+        }
+
+        // ===== SLA DETAIL MODALS =====
+        function showSLADetailModal(type) {
+            const modal = document.getElementById('kpiModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+
+            switch(type) {
+                case 'transfer': showTransferSLADetail(title, content); break;
+                case 'storage': showStorageSLADetail(title, content); break;
+                case 'sc': showSCDetail(title, content); break;
+                case 'nonmoving': showNonMovingSLADetail(title, content); break;
+            }
+            modal.classList.add('show');
+        }
+
+        function showTransferSLADetail(titleEl, contentEl) {
+            const transfers = warehouseData.records.transfers.filter(t => t.request_date && t.delivery_date);
+            const onTime = transfers.filter(t => t.is_on_time);
+            const delayed = transfers.filter(t => !t.is_on_time);
+            const rate = calculatedSLA.transfer.rate;
+            const cls = rate >= 95 ? 'green' : rate >= 85 ? 'amber' : 'red';
+
+            titleEl.textContent = 'Material Transfer SLA Details (≤2 Days)';
+
+            const delayedRows = delayed.sort((a, b) => b.processing_days - a.processing_days).map((t, i) => `
+                <tr>
+                    <td class="text-center text-gray-400">${i + 1}</td>
+                    <td>${escapeHtml(t.request_date)}</td>
+                    <td>${escapeHtml(t.delivery_date)}</td>
+                    <td class="font-semibold text-red-600">${t.processing_days} days</td>
+                    <td>${escapeHtml(t.material?.substring(0, 35) || '')}...</td>
+                    <td>${escapeHtml(t.send_project)}</td>
+                    <td>${escapeHtml(t.request_project)}</td>
+                    <td>${escapeHtml(t.issued_by)}</td>
+                </tr>
+            `).join('');
+
+            const onTimeRows = onTime.slice(0, 50).map((t, i) => `
+                <tr>
+                    <td class="text-center text-gray-400">${i + 1}</td>
+                    <td>${escapeHtml(t.request_date)}</td>
+                    <td>${escapeHtml(t.delivery_date)}</td>
+                    <td class="font-semibold text-green-600">${t.processing_days} days</td>
+                    <td>${escapeHtml(t.material?.substring(0, 35) || '')}...</td>
+                    <td>${escapeHtml(t.send_project)}</td>
+                    <td>${escapeHtml(t.request_project)}</td>
+                    <td>${escapeHtml(t.issued_by)}</td>
+                </tr>
+            `).join('');
+
+            contentEl.innerHTML = `
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                    <div class="p-3 bg-${cls}-50 rounded-lg border border-${cls}-200 text-center">
+                        <p class="text-2xl font-bold text-${cls}-600">${rate}%</p>
+                        <p class="text-xs text-gray-500">SLA Rate (Target: ≥95%)</p>
+                    </div>
+                    <div class="p-3 bg-green-50 rounded-lg border border-green-200 text-center">
+                        <p class="text-2xl font-bold text-green-600">${onTime.length}</p>
+                        <p class="text-xs text-gray-500">On-Time (≤2 days)</p>
+                    </div>
+                    <div class="p-3 bg-red-50 rounded-lg border border-red-200 text-center">
+                        <p class="text-2xl font-bold text-red-600">${delayed.length}</p>
+                        <p class="text-xs text-gray-500">Delayed (>2 days)</p>
+                    </div>
+                </div>
+                <div class="mb-2 p-2 bg-blue-50 rounded-lg border border-blue-200">
+                    <p class="text-xs text-blue-800"><strong>Calculation:</strong> Processing Days = delivery_date - request_date | On-Time if ≤2 days</p>
+                </div>
+                ${delayed.length > 0 ? `
+                <h4 class="font-semibold text-red-700 mt-4 mb-2">Delayed Transfers (${delayed.length})</h4>
+                <div class="scroll-container" style="max-height: 250px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>#</th><th>Request Date</th><th>Delivery Date</th><th>Days</th><th>Material</th><th>From</th><th>To</th><th>Issued By</th></tr></thead>
+                        <tbody>${delayedRows}</tbody>
+                    </table>
+                </div>` : ''}
+                <h4 class="font-semibold text-green-700 mt-4 mb-2">On-Time Transfers (showing 50 of ${onTime.length})</h4>
+                <div class="scroll-container" style="max-height: 250px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>#</th><th>Request Date</th><th>Delivery Date</th><th>Days</th><th>Material</th><th>From</th><th>To</th><th>Issued By</th></tr></thead>
+                        <tbody>${onTimeRows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function showStorageSLADetail(titleEl, contentEl) {
+            const audits = warehouseData.records.audits || [];
+            const passed = audits.filter(a => a.result === 'Pass');
+            const failed = audits.filter(a => a.result === 'Fail');
+            const rate = calculatedSLA.storage.rate;
+            const cls = rate >= 98 ? 'green' : rate >= 90 ? 'amber' : 'red';
+
+            titleEl.textContent = 'Storage Compliance Details (Audit Results)';
+
+            const failRows = failed.sort((a, b) => b.date < a.date ? -1 : 1).map((a, i) => `
+                <tr>
+                    <td class="text-center text-gray-400">${i + 1}</td>
+                    <td>${escapeHtml(a.date)}</td>
+                    <td>${escapeHtml(a.warehouse)}</td>
+                    <td>${escapeHtml(a.criterion)}</td>
+                    <td><span class="badge badge-danger">Fail</span></td>
+                    <td>${escapeHtml(a.inspector)}</td>
+                    <td class="text-red-600 text-xs">${escapeHtml(a.notes)}</td>
+                </tr>
+            `).join('');
+
+            // Summary by warehouse
+            const whSummary = {};
+            audits.forEach(a => {
+                if (!whSummary[a.warehouse]) whSummary[a.warehouse] = { pass: 0, fail: 0, total: 0 };
+                whSummary[a.warehouse].total++;
+                if (a.result === 'Pass') whSummary[a.warehouse].pass++;
+                else whSummary[a.warehouse].fail++;
+            });
+            const whRows = Object.entries(whSummary).sort((a, b) => (a[1].pass/a[1].total) - (b[1].pass/b[1].total)).map(([wh, s]) => {
+                const r = Math.round((s.pass / s.total) * 100);
+                const c = r >= 98 ? 'green' : r >= 90 ? 'amber' : 'red';
+                return `<tr><td>${escapeHtml(wh)}</td><td class="text-center">${s.total}</td><td class="text-center text-green-600">${s.pass}</td><td class="text-center text-red-600">${s.fail}</td><td class="font-semibold text-${c}-600">${r}%</td></tr>`;
+            }).join('');
+
+            contentEl.innerHTML = `
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                    <div class="p-3 bg-${cls}-50 rounded-lg border border-${cls}-200 text-center">
+                        <p class="text-2xl font-bold text-${cls}-600">${rate}%</p>
+                        <p class="text-xs text-gray-500">Compliance Rate (Target: ≥98%)</p>
+                    </div>
+                    <div class="p-3 bg-green-50 rounded-lg border border-green-200 text-center">
+                        <p class="text-2xl font-bold text-green-600">${passed.length}</p>
+                        <p class="text-xs text-gray-500">Passed Audits</p>
+                    </div>
+                    <div class="p-3 bg-red-50 rounded-lg border border-red-200 text-center">
+                        <p class="text-2xl font-bold text-red-600">${failed.length}</p>
+                        <p class="text-xs text-gray-500">Failed Audits</p>
+                    </div>
+                </div>
+                <h4 class="font-semibold text-gray-700 mt-4 mb-2">Compliance by Warehouse</h4>
+                <div class="scroll-container" style="max-height: 220px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>Warehouse</th><th class="text-center">Total</th><th class="text-center">Pass</th><th class="text-center">Fail</th><th>Rate</th></tr></thead>
+                        <tbody>${whRows}</tbody>
+                    </table>
+                </div>
+                ${failed.length > 0 ? `
+                <h4 class="font-semibold text-red-700 mt-4 mb-2">Failed Audits (${failed.length})</h4>
+                <div class="scroll-container" style="max-height: 250px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>#</th><th>Date</th><th>Warehouse</th><th>Criterion</th><th>Result</th><th>Inspector</th><th>Notes</th></tr></thead>
+                        <tbody>${failRows}</tbody>
+                    </table>
+                </div>` : ''}
+            `;
+        }
+
+        function showSCDetail(titleEl, contentEl) {
+            const confs = warehouseData.records.confirmations || [];
+            const onTime = confs.filter(c => c.is_on_time);
+            const delayed = confs.filter(c => !c.is_on_time);
+            const rate = calculatedSLA.sc.rate;
+            const cls = rate >= 95 ? 'green' : rate >= 85 ? 'amber' : 'red';
+
+            titleEl.textContent = 'Stock Confirmation SLA Details (≤1 Day)';
+
+            const delayedRows = delayed.sort((a, b) => b.response_days - a.response_days).map((c, i) => `
+                <tr>
+                    <td class="text-center text-gray-400">${i + 1}</td>
+                    <td>${escapeHtml(c.request_date)}</td>
+                    <td>${escapeHtml(c.response_date)}</td>
+                    <td class="font-semibold text-red-600">${c.response_days} days</td>
+                    <td>${escapeHtml(c.warehouse)}</td>
+                    <td>${escapeHtml(c.project)}</td>
+                    <td>${escapeHtml(c.requester)}</td>
+                </tr>
+            `).join('');
+
+            // Summary by warehouse
+            const whSummary = {};
+            confs.forEach(c => {
+                if (!whSummary[c.warehouse]) whSummary[c.warehouse] = { onTime: 0, delayed: 0, total: 0 };
+                whSummary[c.warehouse].total++;
+                if (c.is_on_time) whSummary[c.warehouse].onTime++;
+                else whSummary[c.warehouse].delayed++;
+            });
+            const whRows = Object.entries(whSummary).sort((a, b) => (a[1].onTime/a[1].total) - (b[1].onTime/b[1].total)).map(([wh, s]) => {
+                const r = Math.round((s.onTime / s.total) * 100);
+                const c = r >= 95 ? 'green' : r >= 85 ? 'amber' : 'red';
+                return `<tr><td>${escapeHtml(wh)}</td><td class="text-center">${s.total}</td><td class="text-center text-green-600">${s.onTime}</td><td class="text-center text-red-600">${s.delayed}</td><td class="font-semibold text-${c}-600">${r}%</td></tr>`;
+            }).join('');
+
+            contentEl.innerHTML = `
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                    <div class="p-3 bg-${cls}-50 rounded-lg border border-${cls}-200 text-center">
+                        <p class="text-2xl font-bold text-${cls}-600">${rate}%</p>
+                        <p class="text-xs text-gray-500">SLA Rate (Target: ≥95%)</p>
+                    </div>
+                    <div class="p-3 bg-green-50 rounded-lg border border-green-200 text-center">
+                        <p class="text-2xl font-bold text-green-600">${onTime.length}</p>
+                        <p class="text-xs text-gray-500">On-Time (≤1 day)</p>
+                    </div>
+                    <div class="p-3 bg-red-50 rounded-lg border border-red-200 text-center">
+                        <p class="text-2xl font-bold text-red-600">${delayed.length}</p>
+                        <p class="text-xs text-gray-500">Delayed (>1 day)</p>
+                    </div>
+                </div>
+                <div class="mb-2 p-2 bg-blue-50 rounded-lg border border-blue-200">
+                    <p class="text-xs text-blue-800"><strong>Calculation:</strong> Response Days = response_date - request_date | On-Time if ≤1 day</p>
+                </div>
+                <h4 class="font-semibold text-gray-700 mt-4 mb-2">Performance by Warehouse</h4>
+                <div class="scroll-container" style="max-height: 200px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>Warehouse</th><th class="text-center">Total</th><th class="text-center">On-Time</th><th class="text-center">Delayed</th><th>Rate</th></tr></thead>
+                        <tbody>${whRows}</tbody>
+                    </table>
+                </div>
+                ${delayed.length > 0 ? `
+                <h4 class="font-semibold text-red-700 mt-4 mb-2">Delayed Confirmations (${delayed.length})</h4>
+                <div class="scroll-container" style="max-height: 250px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>#</th><th>Request Date</th><th>Response Date</th><th>Days</th><th>Warehouse</th><th>Project</th><th>Requester</th></tr></thead>
+                        <tbody>${delayedRows}</tbody>
+                    </table>
+                </div>` : ''}
+            `;
+        }
+
+        function showNonMovingSLADetail(titleEl, contentEl) {
+            const nm = warehouseData.records.non_moving || [];
+            const rate = calculatedSLA.nonmoving.rate;
+            const invTotal = calculatedSLA.nonmoving.total;
+
+            titleEl.textContent = 'Non-Moving Materials Details (>4 Years Idle)';
+
+            // Summary by warehouse
+            const whSummary = {};
+            nm.forEach(r => {
+                if (!whSummary[r.warehouse]) whSummary[r.warehouse] = { count: 0, qty: 0 };
+                whSummary[r.warehouse].count++;
+                whSummary[r.warehouse].qty += r.qty || 0;
+            });
+            const whRows = Object.entries(whSummary).sort((a, b) => b[1].count - a[1].count).map(([wh, s]) => 
+                `<tr><td>${escapeHtml(wh)}</td><td class="text-center font-semibold">${s.count}</td><td class="text-right">${s.qty.toLocaleString()}</td></tr>`
+            ).join('');
+
+            const itemRows = nm.slice(0, 100).map((r, i) => `
+                <tr>
+                    <td class="text-center text-gray-400">${i + 1}</td>
+                    <td>${escapeHtml(r.warehouse)}</td>
+                    <td class="max-w-xs" title="${escapeHtml(r.description)}">${escapeHtml(r.description?.substring(0, 35) || '')}...</td>
+                    <td>${escapeHtml(r.unit)}</td>
+                    <td class="font-semibold text-red-600">${(r.qty || 0).toLocaleString()}</td>
+                    <td>${escapeHtml(r.project)}</td>
+                    <td><span class="badge badge-danger">${escapeHtml(r.remarks || '>4 years')}</span></td>
+                </tr>
+            `).join('');
+
+            contentEl.innerHTML = `
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                    <div class="p-3 bg-green-50 rounded-lg border border-green-200 text-center">
+                        <p class="text-2xl font-bold text-green-600">${rate}%</p>
+                        <p class="text-xs text-gray-500">Non-Moving Rate (Lower is better)</p>
+                    </div>
+                    <div class="p-3 bg-red-50 rounded-lg border border-red-200 text-center">
+                        <p class="text-2xl font-bold text-red-600">${nm.length}</p>
+                        <p class="text-xs text-gray-500">Non-Moving Items</p>
+                    </div>
+                    <div class="p-3 bg-blue-50 rounded-lg border border-blue-200 text-center">
+                        <p class="text-2xl font-bold text-blue-600">${invTotal.toLocaleString()}</p>
+                        <p class="text-xs text-gray-500">Total Inventory Items</p>
+                    </div>
+                </div>
+                <h4 class="font-semibold text-gray-700 mt-4 mb-2">By Warehouse</h4>
+                <div class="scroll-container" style="max-height: 150px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>Warehouse</th><th class="text-center">Items</th><th class="text-right">Total Qty</th></tr></thead>
+                        <tbody>${whRows}</tbody>
+                    </table>
+                </div>
+                <h4 class="font-semibold text-red-700 mt-4 mb-2">Non-Moving Items (showing 100 of ${nm.length})</h4>
+                <div class="scroll-container" style="max-height: 250px;">
+                    <table class="data-table text-sm">
+                        <thead><tr><th>#</th><th>Warehouse</th><th>Description</th><th>Unit</th><th>Qty</th><th>Project</th><th>Status</th></tr></thead>
+                        <tbody>${itemRows}</tbody>
+                    </table>
+                </div>
+            `;
         }
 
         document.addEventListener('DOMContentLoaded', function() { loadData(); if (typeof NesmaTheme !== 'undefined') NesmaTheme.init(); });
