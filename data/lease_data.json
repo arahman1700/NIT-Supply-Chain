@@ -8,12 +8,9 @@
     "expired": 4,
     "total_annual_cost": 5593809.6,
     "exit_analysis": {
-      "can_exit": 3,
-      "can_exit_saving": 180225,
-      "still_needed": 8,
-      "project_dependent": 8,
-      "needs_investigation": 1,
-      "no_info": 2
+      "can_exit": 5,
+      "can_exit_saving": 565225,
+      "still_needed": 17
     }
   },
   "contracts": [
@@ -85,10 +82,10 @@
       "additional_clause": null,
       "total_contract_cost": 35000.0,
       "annual_payment": 35000.0,
-      "exit_note": "",
-      "exit_status": "No Info",
-      "can_exit": null,
-      "exit_action": "Needs assessment"
+      "exit_note": "Needed for project",
+      "exit_status": "Still Needed",
+      "can_exit": false,
+      "exit_action": "Keep - needed for project operations"
     },
     {
       "id": 4,
@@ -134,9 +131,10 @@
       "total_contract_cost": 80000.0,
       "annual_payment": 40000.0,
       "exit_note": "Will be renewed for 3 months pending project authorization, or will exit now",
-      "exit_status": "Project Dependent",
-      "can_exit": null,
-      "exit_action": "تجديد 3 أشهر انتظاراً للتعميد أو الخروج الآن"
+      "exit_status": "Can Exit",
+      "can_exit": true,
+      "exit_action": "تجديد 3 أشهر انتظاراً للتعميد أو الخروج الآن",
+      "potential_saving": 40000
     },
     {
       "id": 6,
@@ -147,7 +145,7 @@
       "city": "Riyadh",
       "type": "Warehouse",
       "contract_type": "Overhead",
-      "project": "Canary Office (Overhead - RUH)",
+      "project": "Riyadh Warehouse (Canary Office)",
       "location": "24.707924275473946, 46.707170296031215",
       "project_manager": "Mohammed Abbas",
       "start_date": "2020-03-01",
@@ -206,7 +204,7 @@
       "additional_clause": null,
       "total_contract_cost": 364300.0,
       "annual_payment": 121433.0,
-      "exit_note": "Still needed",
+      "exit_note": "Needed according to project work schedule",
       "exit_status": "Still Needed",
       "can_exit": false,
       "exit_action": "Continue - operationally required"
@@ -230,10 +228,11 @@
       "additional_clause": "1 year cannot terminate, on 31/05/2025 have the right",
       "total_contract_cost": 690000.0,
       "annual_payment": 345000.0,
-      "exit_note": "Will coordinate to find space and move 2 containers to cancel contract - exit possible but not confirmed",
-      "exit_status": "Needs Investigation",
-      "can_exit": null,
-      "exit_action": "Coordinate space allocation and container relocation"
+      "exit_note": "Will coordinate to find space and move 2 containers to cancel contract - exit possible but not 100% confirmed",
+      "exit_status": "Can Exit",
+      "can_exit": true,
+      "exit_action": "Coordinate space allocation and container relocation",
+      "potential_saving": 345000
     },
     {
       "id": 10,
@@ -254,7 +253,7 @@
       "additional_clause": null,
       "total_contract_cost": 17357564.25,
       "annual_payment": 1816489.0,
-      "exit_note": "Still needed",
+      "exit_note": "Needed according to project work schedule",
       "exit_status": "Still Needed",
       "can_exit": false,
       "exit_action": "Continue - long-term contract until 2034"
@@ -278,7 +277,7 @@
       "additional_clause": "1 year cannot terminate, on 07/09/2025 have the right",
       "total_contract_cost": 240000.0,
       "annual_payment": 75000.0,
-      "exit_note": "Still needed",
+      "exit_note": "Needed according to project work schedule",
       "exit_status": "Still Needed",
       "can_exit": false,
       "exit_action": "Continue - operationally required"
@@ -302,7 +301,7 @@
       "additional_clause": null,
       "total_contract_cost": 960250.0,
       "annual_payment": 460000.0,
-      "exit_note": "Still needed",
+      "exit_note": "Needed according to project work schedule",
       "exit_status": "Still Needed",
       "can_exit": false,
       "exit_action": "Continue - operationally required"
@@ -326,8 +325,8 @@
       "additional_clause": "2 years cannot terminate, on 31/12/2026 have the right",
       "total_contract_cost": 1725010.0,
       "annual_payment": 345002.0,
-      "exit_note": "as per work schedule",
-      "exit_status": "Project Dependent",
+      "exit_note": "Needed according to project work schedule",
+      "exit_status": "Still Needed",
       "can_exit": false,
       "exit_action": "Review at project milestones, 2-year lock-in until 31/12/2026"
     },
@@ -350,8 +349,8 @@
       "additional_clause": "1 year cannot terminate, on 08/02/2026 have the right",
       "total_contract_cost": 737400.0,
       "annual_payment": 245800.0,
-      "exit_note": "as per work schedule",
-      "exit_status": "Project Dependent",
+      "exit_note": "Needed according to project work schedule",
+      "exit_status": "Still Needed",
       "can_exit": false,
       "exit_action": "Review at project milestones, 1-year lock-in until 08/02/2026"
     },
@@ -374,8 +373,8 @@
       "additional_clause": null,
       "total_contract_cost": 207000.0,
       "annual_payment": 207000.0,
-      "exit_note": "as per work schedule",
-      "exit_status": "Project Dependent",
+      "exit_note": "Needed according to project work schedule",
+      "exit_status": "Still Needed",
       "can_exit": false,
       "exit_action": "Review at project completion"
     },
@@ -398,8 +397,8 @@
       "additional_clause": null,
       "total_contract_cost": 126500.0,
       "annual_payment": 126500.0,
-      "exit_note": "as per work schedule",
-      "exit_status": "Project Dependent",
+      "exit_note": "Needed according to project work schedule",
+      "exit_status": "Still Needed",
       "can_exit": false,
       "exit_action": "Review at project completion"
     },
@@ -447,8 +446,8 @@
       "additional_clause": "2 year cannot terminate, on 01/11/2026 have the right",
       "total_contract_cost": 400622.0,
       "annual_payment": 200311.0,
-      "exit_note": "As per work schedule",
-      "exit_status": "Project Dependent",
+      "exit_note": "Needed according to project work schedule",
+      "exit_status": "Still Needed",
       "can_exit": false,
       "exit_action": "مراجعة عند اكتمال المشروع"
     },
@@ -471,7 +470,7 @@
       "additional_clause": null,
       "total_contract_cost": 724500.0,
       "annual_payment": 724500.0,
-      "exit_note": "Still needed",
+      "exit_note": "Needed according to project work schedule",
       "exit_status": "Still Needed",
       "can_exit": false,
       "exit_action": "Continue - operationally required"
@@ -495,10 +494,10 @@
       "additional_clause": null,
       "total_contract_cost": 149500.0,
       "annual_payment": 149500.0,
-      "exit_note": "Mahmoud Albana",
-      "exit_status": "Project Dependent",
+      "exit_note": "Needed according to project work schedule",
+      "exit_status": "Still Needed",
       "can_exit": false,
-      "exit_action": "Contact Mahmoud Albana for status"
+      "exit_action": "Continue - needed for project"
     },
     {
       "id": 21,
@@ -519,7 +518,7 @@
       "additional_clause": null,
       "total_contract_cost": 410550.0,
       "annual_payment": 410550.0,
-      "exit_note": "Still needed",
+      "exit_note": "Needed according to project work schedule",
       "exit_status": "Still Needed",
       "can_exit": false,
       "exit_action": "Continue - operationally required"
@@ -543,8 +542,8 @@
       "additional_clause": null,
       "total_contract_cost": 276000.0,
       "annual_payment": 276000.0,
-      "exit_note": "as per work schedule",
-      "exit_status": "Project Dependent",
+      "exit_note": "Needed according to project work schedule",
+      "exit_status": "Still Needed",
       "can_exit": false,
       "exit_action": "Review at project completion"
     }

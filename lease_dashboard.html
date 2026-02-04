@@ -524,7 +524,7 @@
                 <span class="text-sm font-normal text-amber-700 ml-2">Click any row to view full details</span>
             </div>
             <!-- Exit Summary KPIs -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4" id="exitSummaryKPIs"></div>
+            <div class="grid grid-cols-2 gap-3 mb-4" id="exitSummaryKPIs"></div>
             <!-- Exit Table (Simple) -->
             <div class="bg-white rounded-xl overflow-hidden border border-amber-200">
                 <table class="w-full text-sm" id="exitTable">
@@ -964,38 +964,45 @@
         }
 
         function renderExitOpportunities() {
-            // Exit Summary KPIs
+            // Exit Summary KPIs - Only Can Exit and Still Needed
             const summaryEl = document.getElementById('exitSummaryKPIs');
             const canExit = filteredContracts.filter(c => c.can_exit === true);
             const stillNeeded = filteredContracts.filter(c => c.exit_status === 'Still Needed');
-            const projectDep = filteredContracts.filter(c => c.exit_status === 'Project Dependent');
-            const needsInv = filteredContracts.filter(c => c.exit_status === 'Needs Investigation');
-            const noInfo = filteredContracts.filter(c => c.exit_status === 'No Info');
             const potentialSaving = canExit.reduce((s, c) => s + (c.potential_saving || 0), 0);
 
-            summaryEl.innerHTML = `
-                <div class="p-3 rounded-xl bg-gradient-to-br from-green-500 to-green-700 text-white text-center cursor-pointer hover:shadow-lg transition-all" onclick="filterExitCards('Can Exit')">
-                    <p class="text-2xl font-bold">${canExit.length}</p>
-                    <p class="text-xs opacity-90">Can Exit</p>
-                    <p class="text-xs opacity-70 mt-1">${potentialSaving.toLocaleString()} SAR/yr saving</p>
-                </div>
-                <div class="p-3 rounded-xl bg-gradient-to-br from-red-500 to-red-700 text-white text-center cursor-pointer hover:shadow-lg transition-all" onclick="filterExitCards('Still Needed')">
-                    <p class="text-2xl font-bold">${stillNeeded.length}</p>
-                    <p class="text-xs opacity-90">Still Needed</p>
-                </div>
-                <div class="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white text-center cursor-pointer hover:shadow-lg transition-all" onclick="filterExitCards('Project Dependent')">
-                    <p class="text-2xl font-bold">${projectDep.length}</p>
-                    <p class="text-xs opacity-90">Project Dependent</p>
-                </div>
-                <div class="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 text-white text-center cursor-pointer hover:shadow-lg transition-all" onclick="filterExitCards('Needs Investigation')">
-                    <p class="text-2xl font-bold">${needsInv.length}</p>
-                    <p class="text-xs opacity-90">Needs Investigation</p>
-                </div>
-                <div class="p-3 rounded-xl bg-gradient-to-br from-gray-400 to-gray-600 text-white text-center cursor-pointer hover:shadow-lg transition-all" onclick="filterExitCards('No Info')">
-                    <p class="text-2xl font-bold">${noInfo.length}</p>
-                    <p class="text-xs opacity-90">No Info</p>
-                </div>
-            `;
+            summaryEl.textContent = '';
+
+            // Can Exit card
+            const canExitCard = document.createElement('div');
+            canExitCard.className = 'p-3 rounded-xl bg-gradient-to-br from-green-500 to-green-700 text-white text-center cursor-pointer hover:shadow-lg transition-all';
+            canExitCard.onclick = () => filterExitCards('Can Exit');
+            const canExitCount = document.createElement('p');
+            canExitCount.className = 'text-2xl font-bold';
+            canExitCount.textContent = canExit.length;
+            const canExitLabel = document.createElement('p');
+            canExitLabel.className = 'text-xs opacity-90';
+            canExitLabel.textContent = 'Can Exit';
+            const canExitSaving = document.createElement('p');
+            canExitSaving.className = 'text-xs opacity-70 mt-1';
+            canExitSaving.textContent = potentialSaving.toLocaleString() + ' SAR/yr saving';
+            canExitCard.appendChild(canExitCount);
+            canExitCard.appendChild(canExitLabel);
+            canExitCard.appendChild(canExitSaving);
+            summaryEl.appendChild(canExitCard);
+
+            // Still Needed card
+            const stillNeededCard = document.createElement('div');
+            stillNeededCard.className = 'p-3 rounded-xl bg-gradient-to-br from-red-500 to-red-700 text-white text-center cursor-pointer hover:shadow-lg transition-all';
+            stillNeededCard.onclick = () => filterExitCards('Still Needed');
+            const stillNeededCount = document.createElement('p');
+            stillNeededCount.className = 'text-2xl font-bold';
+            stillNeededCount.textContent = stillNeeded.length;
+            const stillNeededLabel = document.createElement('p');
+            stillNeededLabel.className = 'text-xs opacity-90';
+            stillNeededLabel.textContent = 'Still Needed';
+            stillNeededCard.appendChild(stillNeededCount);
+            stillNeededCard.appendChild(stillNeededLabel);
+            summaryEl.appendChild(stillNeededCard);
 
             // Render exit cards
             renderExitCards(filteredContracts);
@@ -1020,14 +1027,11 @@
 
             const exitStatusConfig = {
                 'Can Exit': { bg: '#ECFDF5', color: '#059669', label: 'CAN EXIT ✓' },
-                'Still Needed': { bg: '#FEE2E2', color: '#DC2626', label: 'STILL NEEDED ✗' },
-                'Project Dependent': { bg: '#DBEAFE', color: '#2563EB', label: 'PROJECT BASED' },
-                'Needs Investigation': { bg: '#FEF3C7', color: '#D97706', label: 'NEEDS REVIEW ?' },
-                'No Info': { bg: '#F3F4F6', color: '#6B7280', label: 'NO INFO' }
+                'Still Needed': { bg: '#FEE2E2', color: '#DC2626', label: 'STILL NEEDED ✗' }
             };
 
-            // Sort: Can Exit first, then Needs Investigation, then No Info, then Project Dependent, then Still Needed
-            const sortOrder = {'Can Exit': 0, 'Needs Investigation': 1, 'No Info': 2, 'Project Dependent': 3, 'Still Needed': 4};
+            // Sort: Can Exit first, then Still Needed
+            const sortOrder = {'Can Exit': 0, 'Still Needed': 1};
             const sorted = [...contracts].sort((a, b) => (sortOrder[a.exit_status] || 5) - (sortOrder[b.exit_status] || 5));
 
             sorted.forEach(c => {
@@ -1360,10 +1364,7 @@
             if (contract.exit_status) {
                 const exitColors = {
                     'Can Exit': { bg: '#ECFDF5', border: '#10B981', text: '#059669' },
-                    'Still Needed': { bg: '#FEF2F2', border: '#EF4444', text: '#DC2626' },
-                    'Project Dependent': { bg: '#EFF6FF', border: '#3B82F6', text: '#2563EB' },
-                    'Needs Investigation': { bg: '#FFFBEB', border: '#F59E0B', text: '#D97706' },
-                    'No Info': { bg: '#F9FAFB', border: '#9CA3AF', text: '#6B7280' }
+                    'Still Needed': { bg: '#FEF2F2', border: '#EF4444', text: '#DC2626' }
                 };
                 const ec = exitColors[contract.exit_status] || exitColors['No Info'];
 
