@@ -1,0 +1,318 @@
+{
+  "last_updated": "2026-01-28",
+  "email_info": {
+    "from": "Sultan Saud Kutubaldin",
+    "date": "2026-01-28",
+    "subject": "NIT projected expected completion date"
+  },
+  "summary": {
+    "total_projects": 50,
+    "energy_solution": 44,
+    "industrial_solution": 6,
+    "completed": 5,
+    "in_progress": 40,
+    "new": 5
+  },
+  "projects": [
+    {
+      "division": "Energy Solution",
+      "project": "SUBSTATION (KHOBAR CORNICHE)",
+      "expected_completion": "2025-12-28",
+      "status": "Completed"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "SUBSTATION (KHOBAR CORNICHE 2)",
+      "expected_completion": "2025-12-28",
+      "status": "Completed"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "SUBSTATION RABIGH",
+      "expected_completion": "2025-12-28",
+      "status": "Completed"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "AL KHARJ",
+      "expected_completion": "2026-01-31",
+      "status": "Completed"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "HURAYMLA RIYADH",
+      "expected_completion": "2026-01-31",
+      "status": "Completed"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "DAMMAM SUBSTATION",
+      "expected_completion": "2026-02-28",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "JIZAN SUBSTATION",
+      "expected_completion": "2026-03-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "ABHA SUBSTATION",
+      "expected_completion": "2026-03-30",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "TAIF SUBSTATION",
+      "expected_completion": "2026-04-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "JUBAIL SUBSTATION",
+      "expected_completion": "2026-04-30",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "YANBU SUBSTATION",
+      "expected_completion": "2026-05-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "MAKKAH SUBSTATION",
+      "expected_completion": "2026-05-31",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "MADINAH SUBSTATION",
+      "expected_completion": "2026-06-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "QASSIM SUBSTATION",
+      "expected_completion": "2026-06-30",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "HAIL SUBSTATION",
+      "expected_completion": "2026-07-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "TABUK SUBSTATION",
+      "expected_completion": "2026-07-31",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "ARAR SUBSTATION",
+      "expected_completion": "2026-08-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "NAJRAN SUBSTATION",
+      "expected_completion": "2026-08-31",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "BAHA SUBSTATION",
+      "expected_completion": "2026-09-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "KHAMIS MUSHAIT",
+      "expected_completion": "2026-09-30",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "HAFR AL-BATIN",
+      "expected_completion": "2026-10-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "RIYADH NORTH",
+      "expected_completion": "2026-10-31",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "RIYADH SOUTH",
+      "expected_completion": "2026-11-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "RIYADH EAST",
+      "expected_completion": "2026-11-30",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "RIYADH WEST",
+      "expected_completion": "2026-12-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "JEDDAH NORTH",
+      "expected_completion": "2026-12-31",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "JEDDAH SOUTH",
+      "expected_completion": "2027-01-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "DHAHRAN SUBSTATION",
+      "expected_completion": "2027-01-31",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "AHSA SUBSTATION",
+      "expected_completion": "2027-02-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "KHAFJI SUBSTATION",
+      "expected_completion": "2027-02-28",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "RAS TANURA",
+      "expected_completion": "2027-03-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "QATIF SUBSTATION",
+      "expected_completion": "2027-03-31",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "SAFWA SUBSTATION",
+      "expected_completion": "2027-04-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "SAIHAT SUBSTATION",
+      "expected_completion": "2027-04-30",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "TAROUT SUBSTATION",
+      "expected_completion": "2027-05-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "DARIN SUBSTATION",
+      "expected_completion": "2027-05-31",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "ABQAIQ SUBSTATION",
+      "expected_completion": "2027-06-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "UDHAILIYAH SUBSTATION",
+      "expected_completion": "2027-06-30",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "HARADH SUBSTATION",
+      "expected_completion": "2027-07-15",
+      "status": "In Progress"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "KHURAIS SUBSTATION",
+      "expected_completion": "2027-07-31",
+      "status": "New"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "SHAYBAH SUBSTATION",
+      "expected_completion": "2027-08-15",
+      "status": "New"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "GHAWAR SUBSTATION",
+      "expected_completion": "2027-08-31",
+      "status": "New"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "MANIFA SUBSTATION",
+      "expected_completion": "2027-09-15",
+      "status": "New"
+    },
+    {
+      "division": "Energy Solution",
+      "project": "ZULUF SUBSTATION",
+      "expected_completion": "2027-09-30",
+      "status": "New"
+    },
+    {
+      "division": "Industrial Solution",
+      "project": "INDUSTRIAL CITY RIYADH",
+      "expected_completion": "2026-03-31",
+      "status": "In Progress"
+    },
+    {
+      "division": "Industrial Solution",
+      "project": "INDUSTRIAL CITY JEDDAH",
+      "expected_completion": "2026-06-30",
+      "status": "In Progress"
+    },
+    {
+      "division": "Industrial Solution",
+      "project": "INDUSTRIAL CITY DAMMAM",
+      "expected_completion": "2026-09-30",
+      "status": "In Progress"
+    },
+    {
+      "division": "Industrial Solution",
+      "project": "MODON RIYADH 2",
+      "expected_completion": "2026-12-31",
+      "status": "In Progress"
+    },
+    {
+      "division": "Industrial Solution",
+      "project": "MODON JEDDAH 2",
+      "expected_completion": "2027-03-31",
+      "status": "In Progress"
+    },
+    {
+      "division": "Industrial Solution",
+      "project": "MODON DAMMAM 2",
+      "expected_completion": "2027-06-30",
+      "status": "In Progress"
+    }
+  ]
+}

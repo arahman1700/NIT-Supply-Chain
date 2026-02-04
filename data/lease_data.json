@@ -8,12 +8,12 @@
     "expired": 4,
     "total_annual_cost": 5593809.6,
     "exit_analysis": {
-      "can_exit": 3,
-      "can_exit_saving": 180225,
-      "still_needed": 6,
-      "project_dependent": 10,
+      "can_exit": 2,
+      "can_exit_saving": 64725,
+      "still_needed": 9,
+      "project_dependent": 9,
       "needs_investigation": 0,
-      "no_info": 3
+      "no_info": 2
     }
   },
   "contracts": [
@@ -36,10 +36,10 @@
       "additional_clause": null,
       "total_contract_cost": 330000.0,
       "annual_payment": 66000.0,
-      "exit_note": "",
-      "exit_status": "No Info",
-      "can_exit": null,
-      "exit_action": "Needs assessment"
+      "exit_note": "Tarshid warranty - cannot exit until warranty expires",
+      "exit_status": "Still Needed",
+      "can_exit": false,
+      "exit_action": "Keep for Tarshid warranty obligations"
     },
     {
       "id": 2,
@@ -60,11 +60,10 @@
       "additional_clause": null,
       "total_contract_cost": 577500.0,
       "annual_payment": 115500.0,
-      "exit_note": "We have a plan to install racks in the main warehouse two months from now and to transfer all materials to the main warehouse.",
-      "exit_status": "Can Exit",
-      "can_exit": true,
-      "exit_action": "Transfer materials to main WH, install racks, then terminate",
-      "potential_saving": 115500
+      "exit_note": "Tarshid warranty - cannot exit until warranty expires",
+      "exit_status": "Still Needed",
+      "can_exit": false,
+      "exit_action": "Keep for Tarshid warranty obligations"
     },
     {
       "id": 3,
@@ -109,10 +108,10 @@
       "additional_clause": null,
       "total_contract_cost": 7400000.0,
       "annual_payment": 740000.0,
-      "exit_note": "Central warehouse - needed based on projects",
-      "exit_status": "Project Dependent",
+      "exit_note": "Central warehouse - essential for operations",
+      "exit_status": "Still Needed",
       "can_exit": false,
-      "exit_action": "Review based on active projects"
+      "exit_action": "Keep - essential central warehouse"
     },
     {
       "id": 5,
@@ -182,10 +181,10 @@
       "additional_clause": null,
       "total_contract_cost": 330000.0,
       "annual_payment": 55000.0,
-      "exit_note": "",
-      "exit_status": "No Info",
-      "can_exit": null,
-      "exit_action": "Needs assessment"
+      "exit_note": "Tarshid warranty - cannot exit until warranty expires",
+      "exit_status": "Still Needed",
+      "can_exit": false,
+      "exit_action": "Keep for Tarshid warranty obligations"
     },
     {
       "id": 8,
