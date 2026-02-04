@@ -8,11 +8,11 @@
     "expired": 4,
     "total_annual_cost": 5593809.6,
     "exit_analysis": {
-      "can_exit": 2,
-      "can_exit_saving": 64725,
-      "still_needed": 9,
-      "project_dependent": 9,
-      "needs_investigation": 0,
+      "can_exit": 3,
+      "can_exit_saving": 180225,
+      "still_needed": 8,
+      "project_dependent": 8,
+      "needs_investigation": 1,
       "no_info": 2
     }
   },
@@ -60,10 +60,11 @@
       "additional_clause": null,
       "total_contract_cost": 577500.0,
       "annual_payment": 115500.0,
-      "exit_note": "Tarshid warranty - cannot exit until warranty expires",
-      "exit_status": "Still Needed",
-      "can_exit": false,
-      "exit_action": "Keep for Tarshid warranty obligations"
+      "exit_note": "We have a plan to install racks in the main warehouse two months from now and to transfer all materials to the main warehouse.",
+      "exit_status": "Can Exit",
+      "can_exit": true,
+      "exit_action": "Transfer materials to main WH, install racks, then terminate",
+      "potential_saving": 115500
     },
     {
       "id": 3,
@@ -229,10 +230,10 @@
       "additional_clause": "1 year cannot terminate, on 31/05/2025 have the right",
       "total_contract_cost": 690000.0,
       "annual_payment": 345000.0,
-      "exit_note": "as per work schedule",
-      "exit_status": "Project Dependent",
-      "can_exit": false,
-      "exit_action": "Review at project milestones"
+      "exit_note": "Will coordinate to find space and move 2 containers to cancel contract - exit possible but not confirmed",
+      "exit_status": "Needs Investigation",
+      "can_exit": null,
+      "exit_action": "Coordinate space allocation and container relocation"
     },
     {
       "id": 10,
