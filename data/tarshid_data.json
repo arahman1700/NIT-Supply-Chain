@@ -1,0 +1,200 @@
+{
+  "last_updated": "2026-02-02T11:34:05",
+  "email_info": {
+    "from": "Aqueel Ahmed",
+    "email": "aqueel@nit.com.sa",
+    "to": "Abdulrahman Khalid Hussein",
+    "date": "2026-02-02",
+    "subject": "Tarshid Contract and project details as requested"
+  },
+  "summary": {
+    "total_projects": 14,
+    "total_warehouses": 6,
+    "earliest_expiry": "2029-12-17",
+    "latest_expiry": "2033-05-26",
+    "contract_date": "2018-09-20",
+    "contract_term_months": 36,
+    "guarantee_years": 10
+  },
+  "warehouses": [
+    {
+      "name": "Dammam",
+      "name_ar": "الدمام",
+      "projects_count": 6,
+      "latest_warranty_expiry": "2031-08-12"
+    },
+    {
+      "name": "Jeddah",
+      "name_ar": "جدة",
+      "projects_count": 4,
+      "latest_warranty_expiry": "2033-05-26"
+    },
+    {
+      "name": "Riyadh",
+      "name_ar": "الرياض",
+      "projects_count": 1,
+      "latest_warranty_expiry": "2032-12-10"
+    },
+    {
+      "name": "Unaiza",
+      "name_ar": "عنيزة",
+      "projects_count": 1,
+      "latest_warranty_expiry": "2030-03-12"
+    },
+    {
+      "name": "Tabuk ISP",
+      "name_ar": "تبوك",
+      "projects_count": 1,
+      "latest_warranty_expiry": "2030-11-13"
+    },
+    {
+      "name": "Makkah",
+      "name_ar": "مكة",
+      "projects_count": 1,
+      "latest_warranty_expiry": "2032-02-26"
+    }
+  ],
+  "projects": [
+    {
+      "project_code": "10521100001",
+      "project_name": "Streetlights Dammam (ES-0005/ESCO)",
+      "warranty_expiry": "2030-03-15",
+      "warehouse": "Dammam",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100002",
+      "project_name": "Streetlights Khobar, Dhahran (ES-0007/ESCO)",
+      "warranty_expiry": "2030-08-07",
+      "warehouse": "Dammam",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100012",
+      "project_name": "Streetlights Hafar Albatin",
+      "warranty_expiry": "2031-08-12",
+      "warehouse": "Dammam",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100006",
+      "project_name": "Tarshid Qatif (ES-0021/ESCO)",
+      "warranty_expiry": "2031-05-30",
+      "warehouse": "Dammam",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100010",
+      "project_name": "Eastern Province - EP3",
+      "warranty_expiry": "2031-05-29",
+      "warehouse": "Dammam",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100007",
+      "project_name": "Tarshid Ras Tanura (ES-0022/ESCO)",
+      "warranty_expiry": "2031-05-30",
+      "warehouse": "Dammam",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100018",
+      "project_name": "Streetlights Riyadh, Phase 3",
+      "warranty_expiry": "2032-12-10",
+      "warehouse": "Riyadh",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100005",
+      "project_name": "Tarshid Onizaih (ES-0019/ESCO)",
+      "warranty_expiry": "2030-03-12",
+      "warehouse": "Unaiza",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100009",
+      "project_name": "Streetlights Tabuk (ES-0024)",
+      "warranty_expiry": "2030-11-13",
+      "warehouse": "Tabuk ISP",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100003",
+      "project_name": "Streetlights Jeddah (ES-0015/ESCO)",
+      "warranty_expiry": "2029-12-17",
+      "warehouse": "Jeddah",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100004",
+      "project_name": "Streetlights Jeddah, Phase 2 (ES-0017/ESCO)",
+      "warranty_expiry": "2030-11-14",
+      "warehouse": "Jeddah",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100013",
+      "project_name": "Streetlights Jeddah, Phase 4",
+      "warranty_expiry": "2030-02-27",
+      "warehouse": "Jeddah",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100019",
+      "project_name": "Streetlights Jeddah, Phase 5",
+      "warranty_expiry": "2033-05-26",
+      "warehouse": "Jeddah",
+      "status": "Active",
+      "days_remaining": null
+    },
+    {
+      "project_code": "10521100014",
+      "project_name": "Streetlights Makkah, Phase 2",
+      "warranty_expiry": "2032-02-26",
+      "warehouse": "Makkah",
+      "status": "Active",
+      "days_remaining": null
+    }
+  ],
+  "contract_info": {
+    "agreement_type": "Framework Agreement",
+    "procurer": "National Energy Services Company (Tarshid)",
+    "esco": "Nesma Telecom & Technology Company Ltd.",
+    "signing_date": "2018-09-26",
+    "ceo_tarshid": "Waled Alghreri",
+    "ceo_nesma": "Salah Sami Al Sunaid",
+    "contract_scope": "LED Street Lighting Replacement across Saudi Arabia",
+    "payment_terms": {
+      "on_po": "15%",
+      "progressive_delivery": "60%",
+      "on_acceptance": "25%"
+    },
+    "delay_damages": "0.5% per week, max 10%",
+    "reserve_stock": "2%"
+  },
+  "attachments": [
+    {
+      "name": "Frame Agreement.pdf",
+      "type": "Contract",
+      "pages": 77,
+      "description": "Framework Agreement between Tarshid and Nesma T&T for LED street lighting replacement"
+    },
+    {
+      "name": "Warranty Letter Sample",
+      "type": "Warranty",
+      "description": "Sample warranty letter submitted for all 14 projects"
+    }
+  ]
+}

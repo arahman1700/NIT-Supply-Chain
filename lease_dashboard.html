@@ -516,65 +516,81 @@
             </div>
         </div>
 
+        <!-- Tarshid Contracts Section -->
+        <div class="card mb-6" id="tarshidSection">
+            <div class="p-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-indigo-50">
+                <div class="flex items-center justify-between flex-wrap gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-purple-900">Tarshid Warranty Obligations</h3>
+                            <p class="text-xs text-purple-700">These warehouses cannot be exited until warranty expires (10-year guarantee)</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="attachments/tarshid/Frame_Agreement.pdf" target="_blank" class="flex items-center gap-2 px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+                            Contract PDF
+                        </a>
+                        <button onclick="exportTarshidTable()" class="flex items-center gap-2 px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-xs font-medium hover:bg-green-200 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-purple-900 text-white">
+                            <th class="px-4 py-3 text-left font-semibold">Warehouse</th>
+                            <th class="px-4 py-3 text-center font-semibold">Projects</th>
+                            <th class="px-4 py-3 text-center font-semibold">Latest Warranty Expiry</th>
+                            <th class="px-4 py-3 text-center font-semibold">Days Until Exit</th>
+                            <th class="px-4 py-3 text-left font-semibold">Note</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tarshidTableBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
+                <strong>Source:</strong> Email from Aqueel Ahmed (2 Feb 2026) | <strong>Contract:</strong> Framework Agreement with Tarshid (Sep 2018) | <strong>Guarantee:</strong> 10 Years per project
+            </div>
+        </div>
+
         <!-- Exit Analysis Section -->
         <div class="exit-section" id="exitSection">
             <div class="exit-section-title">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                 <span>Warehouse Exit Analysis</span>
-                <span class="text-sm font-normal text-amber-700 ml-2">Which warehouses can we exit and why?</span>
+                <span class="text-sm font-normal text-amber-700 ml-2">Click any row to view full details</span>
             </div>
             <!-- Exit Summary KPIs -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4" id="exitSummaryKPIs"></div>
-            <!-- Exit Cards -->
-            <div id="exitCards"></div>
+            <!-- Exit Table (Simple) -->
+            <div class="bg-white rounded-xl overflow-hidden border border-amber-200">
+                <table class="w-full text-sm" id="exitTable">
+                    <thead>
+                        <tr class="bg-amber-800 text-white">
+                            <th class="px-4 py-3 text-left font-semibold">Project / Warehouse</th>
+                            <th class="px-4 py-3 text-center font-semibold">City</th>
+                            <th class="px-4 py-3 text-center font-semibold">Type</th>
+                            <th class="px-4 py-3 text-center font-semibold">Annual Cost</th>
+                            <th class="px-4 py-3 text-center font-semibold">Status</th>
+                            <th class="px-4 py-3 text-left font-semibold">Note</th>
+                        </tr>
+                    </thead>
+                    <tbody id="exitTableBody"></tbody>
+                </table>
+            </div>
+            <!-- Old Exit Cards (hidden) -->
+            <div id="exitCards" class="hidden"></div>
         </div>
 
-        <!-- Contracts Section -->
-        <div class="card">
-            <div class="p-4 border-b border-gray-200 flex justify-between items-center flex-wrap gap-3">
-                <div class="flex items-center gap-3">
-                    <h3 class="font-bold text-gray-700 text-sm">All Contracts</h3>
-                    <span class="text-xs text-gray-500" id="tableCount">0 contracts</span>
-                </div>
-                <div class="view-toggle no-print">
-                    <button id="viewCards" class="active" onclick="setView('cards')">
-                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                        Cards
-                    </button>
-                    <button id="viewTable" onclick="setView('table')">
-                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-                        Table
-                    </button>
-                </div>
-            </div>
-
-            <!-- Cards View -->
-            <div id="cardsView" class="p-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="contractCards"></div>
-            </div>
-
-            <!-- Table View -->
-            <div id="tableView" class="hidden">
-                <div class="scroll-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Project</th>
-                                <th>City</th>
-                                <th>Type</th>
-                                <th>Contract Type</th>
-                                <th>Registration</th>
-                                <th>End Date</th>
-                                <th>Days Left</th>
-                                <th>Annual Cost</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </main>
 
     <!-- Detail Modal -->
@@ -590,16 +606,27 @@
 
     <script>
         let leaseData = null;
+        let tarshidData = null;
         let filteredContracts = [];
         let charts = {};
 
         async function loadData() {
             try {
+                // Load lease data
                 const response = await fetch('data/lease_data.json?t=' + Date.now());
                 leaseData = await response.json();
                 document.getElementById('lastUpdated').textContent = 'Updated: ' + leaseData.last_updated;
                 filteredContracts = [...leaseData.contracts];
                 populateFilters();
+
+                // Load Tarshid data
+                try {
+                    const tarshidResponse = await fetch('data/tarshid_data.json?t=' + Date.now());
+                    tarshidData = await tarshidResponse.json();
+                    renderTarshidTable();
+                } catch (e) {
+                    console.log('Tarshid data not available');
+                }
                 render();
             } catch (e) {
                 console.error('Error loading data:', e);
@@ -926,15 +953,15 @@
         }
 
         function renderExitCards(contracts) {
-            const container = document.getElementById('exitCards');
-            container.textContent = '';
+            const tbody = document.getElementById('exitTableBody');
+            tbody.textContent = '';
 
             const exitStatusConfig = {
-                'Can Exit': { border: '#10B981', bg: '#ECFDF5', icon: '&#10003;', iconBg: '#D1FAE5', iconColor: '#059669', label: 'CAN EXIT' },
-                'Still Needed': { border: '#EF4444', bg: '#FEF2F2', icon: '&#10007;', iconBg: '#FEE2E2', iconColor: '#DC2626', label: 'STILL NEEDED' },
-                'Project Dependent': { border: '#3B82F6', bg: '#EFF6FF', icon: '&#8634;', iconBg: '#DBEAFE', iconColor: '#2563EB', label: 'PROJECT DEPENDENT' },
-                'Needs Investigation': { border: '#F59E0B', bg: '#FFFBEB', icon: '?', iconBg: '#FEF3C7', iconColor: '#D97706', label: 'NEEDS INVESTIGATION' },
-                'No Info': { border: '#9CA3AF', bg: '#F9FAFB', icon: '—', iconBg: '#F3F4F6', iconColor: '#6B7280', label: 'NO INFO' }
+                'Can Exit': { bg: '#ECFDF5', color: '#059669', label: 'CAN EXIT ✓' },
+                'Still Needed': { bg: '#FEE2E2', color: '#DC2626', label: 'STILL NEEDED ✗' },
+                'Project Dependent': { bg: '#DBEAFE', color: '#2563EB', label: 'PROJECT BASED' },
+                'Needs Investigation': { bg: '#FEF3C7', color: '#D97706', label: 'NEEDS REVIEW ?' },
+                'No Info': { bg: '#F3F4F6', color: '#6B7280', label: 'NO INFO' }
             };
 
             // Sort: Can Exit first, then Needs Investigation, then No Info, then Project Dependent, then Still Needed
@@ -943,101 +970,61 @@
 
             sorted.forEach(c => {
                 const config = exitStatusConfig[c.exit_status] || exitStatusConfig['No Info'];
-                const status = getStatus(c.remaining_days);
 
-                const div = document.createElement('div');
-                div.className = 'exit-card';
-                div.style.cssText = `border-left: 4px solid ${config.border}; background: ${config.bg}; border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s;`;
-                div.onmouseenter = () => { div.style.transform = 'translateX(4px)'; div.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; };
-                div.onmouseleave = () => { div.style.transform = ''; div.style.boxShadow = ''; };
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-gray-100 hover:bg-amber-50 cursor-pointer transition-colors';
+                tr.onclick = () => showContractDetail(c);
 
-                const headerDiv = document.createElement('div');
-                headerDiv.className = 'flex justify-between items-start';
+                // Project name
+                const td1 = document.createElement('td');
+                td1.className = 'px-4 py-3';
+                const projectDiv = document.createElement('div');
+                projectDiv.className = 'font-semibold text-gray-800';
+                projectDiv.textContent = c.project;
+                const pmDiv = document.createElement('div');
+                pmDiv.className = 'text-xs text-gray-500';
+                pmDiv.textContent = 'PM: ' + c.project_manager;
+                td1.appendChild(projectDiv);
+                td1.appendChild(pmDiv);
+                tr.appendChild(td1);
 
-                const leftDiv = document.createElement('div');
-                leftDiv.className = 'flex items-start gap-3';
+                // City
+                const td2 = document.createElement('td');
+                td2.className = 'px-4 py-3 text-center';
+                td2.textContent = c.city;
+                tr.appendChild(td2);
 
-                const iconSpan = document.createElement('span');
-                iconSpan.style.cssText = `display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:${config.iconBg};color:${config.iconColor};font-weight:bold;font-size:14px;flex-shrink:0;`;
-                iconSpan.innerHTML = config.icon;
-
-                const textDiv = document.createElement('div');
-                const h4 = document.createElement('h4');
-                h4.className = 'font-bold text-gray-800 text-sm';
-                h4.textContent = c.project;
-                const p1 = document.createElement('p');
-                p1.className = 'text-xs text-gray-500';
-                p1.textContent = c.city + ', ' + c.region + ' | ' + c.type + ' | PM: ' + c.project_manager;
-                textDiv.appendChild(h4);
-                textDiv.appendChild(p1);
-                leftDiv.appendChild(iconSpan);
-                leftDiv.appendChild(textDiv);
-
-                const rightDiv = document.createElement('div');
-                rightDiv.className = 'text-right flex-shrink-0';
-                const statusBadge = document.createElement('span');
-                statusBadge.style.cssText = `display:inline-block;padding:3px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;letter-spacing:0.05em;background:${config.iconBg};color:${config.iconColor};`;
-                statusBadge.textContent = config.label;
-                const daysBadge = document.createElement('span');
-                daysBadge.className = 'badge ' + status.badge;
-                daysBadge.style.cssText = 'display:block;margin-top:4px;font-size:0.65rem;';
-                daysBadge.textContent = c.remaining_days < 0 ? Math.abs(c.remaining_days) + ' days overdue' : c.remaining_days + ' days left';
-                rightDiv.appendChild(statusBadge);
-                rightDiv.appendChild(daysBadge);
-
-                headerDiv.appendChild(leftDiv);
-                headerDiv.appendChild(rightDiv);
-
-                const detailDiv = document.createElement('div');
-                detailDiv.className = 'mt-3 pt-3 border-t';
-                detailDiv.style.borderColor = config.border + '33';
-
-                const grid = document.createElement('div');
-                grid.className = 'flex flex-wrap gap-4 items-center';
-
-                // Action
-                const actionP = document.createElement('p');
-                actionP.className = 'text-xs font-medium flex-1 min-w-[200px]';
-                actionP.style.color = config.iconColor;
-                actionP.innerHTML = '<strong>Action:</strong> ' + (c.exit_action || 'Needs assessment');
-                grid.appendChild(actionP);
-
-                // Note
-                if (c.exit_note) {
-                    const noteP = document.createElement('p');
-                    noteP.className = 'text-xs text-gray-600 flex-1 min-w-[200px] italic';
-                    noteP.innerHTML = '<strong>Note:</strong> "' + c.exit_note + '"';
-                    grid.appendChild(noteP);
-                }
+                // Type
+                const td3 = document.createElement('td');
+                td3.className = 'px-4 py-3 text-center';
+                const typeSpan = document.createElement('span');
+                typeSpan.className = c.type === 'Warehouse' ? 'bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium' : 'bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium';
+                typeSpan.textContent = c.type;
+                td3.appendChild(typeSpan);
+                tr.appendChild(td3);
 
                 // Annual cost
-                const costP = document.createElement('p');
-                costP.className = 'text-xs text-gray-700';
-                costP.innerHTML = '<strong>Annual Cost:</strong> ' + (c.annual_payment || 0).toLocaleString() + ' SAR';
-                grid.appendChild(costP);
+                const td4 = document.createElement('td');
+                td4.className = 'px-4 py-3 text-center font-semibold';
+                td4.textContent = (c.annual_payment || 0).toLocaleString() + ' SAR';
+                tr.appendChild(td4);
 
-                // Potential saving
-                if (c.potential_saving) {
-                    const saveP = document.createElement('p');
-                    saveP.className = 'text-xs font-bold text-green-600';
-                    saveP.innerHTML = 'Potential Saving: ' + c.potential_saving.toLocaleString() + ' SAR/year';
-                    grid.appendChild(saveP);
-                }
+                // Status
+                const td5 = document.createElement('td');
+                td5.className = 'px-4 py-3 text-center';
+                const statusSpan = document.createElement('span');
+                statusSpan.style.cssText = 'display:inline-block;padding:4px 12px;border-radius:20px;font-size:0.7rem;font-weight:600;background:' + config.bg + ';color:' + config.color + ';';
+                statusSpan.textContent = config.label;
+                td5.appendChild(statusSpan);
+                tr.appendChild(td5);
 
-                // Additional clause
-                if (c.additional_clause) {
-                    const clauseP = document.createElement('p');
-                    clauseP.className = 'text-xs text-amber-700 w-full';
-                    clauseP.innerHTML = '<strong>Clause:</strong> ' + c.additional_clause;
-                    grid.appendChild(clauseP);
-                }
+                // Note
+                const td6 = document.createElement('td');
+                td6.className = 'px-4 py-3 text-xs text-gray-600 max-w-xs';
+                td6.textContent = c.exit_note || '-';
+                tr.appendChild(td6);
 
-                detailDiv.appendChild(grid);
-
-                div.appendChild(headerDiv);
-                div.appendChild(detailDiv);
-                div.onclick = () => showContractDetail(c);
-                container.appendChild(div);
+                tbody.appendChild(tr);
             });
         }
 
@@ -1425,6 +1412,115 @@
         });
 
         // Close modal on Escape key
+        // ===== TARSHID TABLE FUNCTIONS =====
+        function renderTarshidTable() {
+            if (!tarshidData) return;
+
+            const tbody = document.getElementById('tarshidTableBody');
+            if (!tbody) return;
+
+            tbody.textContent = '';
+            const today = new Date();
+
+            // Sort warehouses by latest expiry date
+            const sortedWarehouses = [...tarshidData.warehouses].sort((a, b) =>
+                new Date(a.latest_warranty_expiry) - new Date(b.latest_warranty_expiry)
+            );
+
+            sortedWarehouses.forEach(wh => {
+                const expiryDate = new Date(wh.latest_warranty_expiry);
+                const diffTime = expiryDate - today;
+                const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-gray-100 hover:bg-purple-50 transition-colors';
+
+                // Warehouse name
+                const td1 = document.createElement('td');
+                td1.className = 'px-4 py-3';
+                const whDiv = document.createElement('div');
+                whDiv.className = 'flex items-center gap-2';
+                const icon = document.createElement('span');
+                icon.className = 'w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 text-xs font-bold';
+                icon.textContent = wh.name.charAt(0);
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'font-semibold text-gray-800';
+                nameSpan.textContent = wh.name;
+                whDiv.appendChild(icon);
+                whDiv.appendChild(nameSpan);
+                td1.appendChild(whDiv);
+                tr.appendChild(td1);
+
+                // Projects count
+                const td2 = document.createElement('td');
+                td2.className = 'px-4 py-3 text-center';
+                const badge = document.createElement('span');
+                badge.className = 'bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-semibold';
+                badge.textContent = wh.projects_count + ' projects';
+                td2.appendChild(badge);
+                tr.appendChild(td2);
+
+                // Expiry date
+                const td3 = document.createElement('td');
+                td3.className = 'px-4 py-3 text-center font-medium';
+                td3.textContent = expiryDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                tr.appendChild(td3);
+
+                // Days remaining
+                const td4 = document.createElement('td');
+                td4.className = 'px-4 py-3 text-center';
+                const daysSpan = document.createElement('span');
+                if (daysRemaining < 0) {
+                    daysSpan.className = 'text-green-600 font-bold';
+                    daysSpan.textContent = 'Can Exit Now';
+                } else if (daysRemaining < 365) {
+                    daysSpan.className = 'text-amber-600 font-bold';
+                    daysSpan.textContent = daysRemaining + ' days';
+                } else {
+                    const years = Math.floor(daysRemaining / 365);
+                    daysSpan.className = 'text-red-600 font-bold';
+                    daysSpan.textContent = years + '+ years';
+                }
+                td4.appendChild(daysSpan);
+                tr.appendChild(td4);
+
+                // Note
+                const td5 = document.createElement('td');
+                td5.className = 'px-4 py-3 text-gray-600 text-xs';
+                if (daysRemaining < 0) {
+                    td5.textContent = 'Warranty expired - eligible for exit';
+                } else {
+                    td5.textContent = 'Cannot exit until warranty expires (' + expiryDate.getFullYear() + ')';
+                }
+                tr.appendChild(td5);
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function exportTarshidTable() {
+            if (!tarshidData) return;
+
+            const data = tarshidData.warehouses.map(wh => {
+                const expiryDate = new Date(wh.latest_warranty_expiry);
+                const today = new Date();
+                const daysRemaining = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+
+                return {
+                    'Warehouse': wh.name,
+                    'Projects Count': wh.projects_count,
+                    'Latest Warranty Expiry': wh.latest_warranty_expiry,
+                    'Days Until Exit': daysRemaining > 0 ? daysRemaining : 'Can Exit Now',
+                    'Note': daysRemaining > 0 ? 'Cannot exit until ' + expiryDate.getFullYear() : 'Eligible for exit'
+                };
+            });
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Tarshid Warehouses');
+            XLSX.writeFile(wb, 'tarshid_warehouses_exit_analysis.xlsx');
+        }
+
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeModal();
         });
