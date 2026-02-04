@@ -2580,12 +2580,13 @@ input,
    PERFORMANCE OPTIMIZATIONS
    ========================================== */
 
-/* Mobile: enable particles with optimizations */
+/* Mobile: hide particles and disable heavy effects */
 @media (max-width: 768px) {
-  /* Keep particles visible */
+  /* Hide particles on mobile - too distracting on small screens */
   .particles,
-  .particles-always {
-    display: block !important;
+  .particles-always,
+  .logo-particle {
+    display: none !important;
   }
 
   /* Disable heavy hover effects only */

@@ -155,6 +155,11 @@ const NesmaTheme = {
     createParticles(container) {
         if (!container) return;
 
+        // Skip particles on mobile - hidden via CSS, save resources
+        if (this.isMobile()) {
+            return;
+        }
+
         // Skip particles if user prefers reduced motion
         if (this.prefersReducedMotion()) {
             return;

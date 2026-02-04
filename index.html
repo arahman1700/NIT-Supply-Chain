@@ -172,6 +172,11 @@
             display: inline-block;
         }
 
+        /* Hero logo base styles */
+        .hero-logo {
+            object-fit: contain;
+        }
+
         /* Simple glow - single filter for performance */
         .logo-glow {
             filter: drop-shadow(0 0 20px rgba(128, 209, 233, 0.6));
@@ -262,45 +267,82 @@
             .glass-card::before { display: none !important; }
             .glass-card:hover { transform: none !important; box-shadow: none !important; }
 
+            /* Hide floating logo particles on mobile - too distracting */
+            .particles,
+            .particles-always {
+                display: none !important;
+            }
+
             /* Header adjustments */
             header { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
             header img { height: 28px !important; }
             header .gap-4 { gap: 0.5rem !important; }
 
-            /* Logo section */
-            .logo-glow-container { padding: 10px !important; }
-            .logo-glow-container img { height: 120px !important; max-width: 80% !important; }
+            /* Hide particles toggle on mobile since particles are hidden */
+            #particlesToggleBtn { display: none !important; }
+
+            /* Logo section - smaller, no glow artifacts */
+            .logo-glow-container {
+                padding: 8px !important;
+            }
+            .logo-glow-container::before {
+                display: none !important;
+            }
+            .logo-glow-container img,
+            img.logo-glow {
+                height: 100px !important;
+                max-width: 75% !important;
+                object-fit: contain !important;
+                filter: none !important;
+            }
+            .sparkle { display: none !important; }
+
+            /* Reduce hero section spacing */
+            section.container.mx-auto.px-4.md\:px-6.pt-6.pb-10 {
+                padding-top: 0.5rem !important;
+                padding-bottom: 1rem !important;
+            }
+            .fade-in-up.stagger-1.mb-6 {
+                margin-bottom: 0.75rem !important;
+            }
 
             /* Hero text */
             section .text-2xl { font-size: 0.85rem !important; }
             section .text-sm { font-size: 0.6rem !important; }
             .h-px.w-16 { width: 1.5rem !important; }
 
-            /* Department Cards Grid - 2 per row */
-            .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3.xl\:grid-cols-5 {
+            /* Department Cards Grid - robust 2 per row */
+            .dept-grid {
                 display: grid !important;
                 grid-template-columns: repeat(2, 1fr) !important;
                 gap: 10px !important;
             }
 
-            /* Cards - larger icons, better touch */
+            /* Cards - clean mobile layout */
             .department-card {
                 min-height: auto !important;
                 padding: 16px !important;
             }
-            .icon-box {
-                width: 64px !important;
-                height: 64px !important;
-                margin-bottom: 12px !important;
-                border-radius: 16px !important;
+            .icon-box,
+            .icon-box-mobile {
+                width: 56px !important;
+                height: 56px !important;
+                margin-bottom: 10px !important;
+                border-radius: 14px !important;
+                overflow: hidden !important;
             }
-            .icon-box svg { width: 32px !important; height: 32px !important; }
-            .icon-box img { width: 64px !important; height: 64px !important; }
-            .department-card h3 { font-size: 1rem !important; margin-bottom: 0.25rem !important; }
+            .icon-box svg { width: 28px !important; height: 28px !important; }
+            .icon-box img {
+                width: 56px !important;
+                height: 56px !important;
+                object-fit: cover !important;
+                border-radius: 14px !important;
+            }
+            .department-card h3 { font-size: 0.95rem !important; margin-bottom: 0.25rem !important; }
             .department-card p { font-size: 0.65rem !important; margin-bottom: 0.5rem !important; line-height: 1.2 !important; }
             .feature-tag { font-size: 7px !important; padding: 2px 5px !important; }
             .status-badge { font-size: 8px !important; padding: 3px 8px !important; }
-            .enter-btn { font-size: 11px !important; margin-top: 8px !important; }
+            .enter-btn { font-size: 11px !important; margin-top: 6px !important; }
             .flex.flex-wrap.justify-center.gap-2.mb-6 { margin-bottom: 0.5rem !important; gap: 4px !important; }
 
             /* Links section */
@@ -318,12 +360,12 @@
             .container { padding-left: 12px !important; padding-right: 12px !important; }
 
             /* Buttons - touch friendly (min 44px) */
-            #particlesToggleBtn, #themeToggleBtn {
+            #themeToggleBtn {
                 padding: 8px !important;
                 min-width: 44px !important;
                 min-height: 44px !important;
             }
-            #particlesToggleBtn svg, #themeToggleBtn svg { width: 20px !important; height: 20px !important; }
+            #themeToggleBtn svg { width: 20px !important; height: 20px !important; }
 
             /* Footer */
             footer { padding: 1rem !important; }
@@ -332,15 +374,26 @@
         }
 
         @media (max-width: 480px) {
-            .logo-glow-container img { height: 90px !important; }
-            .logo-glow-container { padding: 5px !important; }
+            .logo-glow-container img,
+            img.logo-glow {
+                height: 80px !important;
+                max-width: 70% !important;
+            }
+            .logo-glow-container { padding: 4px !important; }
 
             /* Still 2 per row but smaller */
             .department-card { padding: 12px !important; }
-            .icon-box { width: 56px !important; height: 56px !important; }
-            .icon-box svg { width: 28px !important; height: 28px !important; }
-            .icon-box img { width: 56px !important; height: 56px !important; }
-            .department-card h3 { font-size: 0.9rem !important; }
+            .icon-box,
+            .icon-box-mobile {
+                width: 48px !important;
+                height: 48px !important;
+            }
+            .icon-box svg { width: 24px !important; height: 24px !important; }
+            .icon-box img {
+                width: 48px !important;
+                height: 48px !important;
+            }
+            .department-card h3 { font-size: 0.85rem !important; }
             .department-card p { font-size: 0.6rem !important; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
             section .text-2xl { font-size: 0.75rem !important; }
             header img { height: 24px !important; }
@@ -401,7 +454,7 @@
                     <div class="sparkle"></div>
                     <div class="sparkle"></div>
                     <!-- Main Logo -->
-                    <img src="assets/nit-supply-chain-logo.png" alt="NIT Supply Chain" class="mx-auto logo-glow" style="height: 340px; max-width: 95%; filter: drop-shadow(0 0 30px rgba(128, 209, 233, 0.4));" onerror="this.style.display='none'; document.getElementById('fallback-title').style.display='block';">
+                    <img src="assets/nit-supply-chain-logo.png" alt="NIT Supply Chain" class="mx-auto logo-glow hero-logo" style="height: 280px; max-width: 90%;" onerror="this.style.display='none'; document.getElementById('fallback-title').style.display='block';">
                     <div id="fallback-title" style="display:none;">
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 glow-text">Supply Chain Management</h1>
                     </div>
@@ -419,13 +472,13 @@
 
         <!-- Department Cards -->
         <section class="container mx-auto px-6 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 dept-grid">
 
                 <!-- Logistics -->
                 <a href="transport_dashboard.html" class="glass-card department-card p-8 fade-in-up stagger-2 block text-center">
                     <div class="flex justify-center">
-                        <div class="icon-box" style="background: transparent; width: 100px; height: 100px; border-radius: 16px; overflow: hidden;">
-                            <img src="assets/nit-logistics-icon.png" alt="NIT Logistics" style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px;">
+                        <div class="icon-box logistics-gradient" style="overflow: hidden;">
+                            <img src="assets/nit-logistics-icon.png" alt="NIT Logistics">
                         </div>
                     </div>
                     <span class="status-badge badge-active mb-4 inline-block">Active</span>
