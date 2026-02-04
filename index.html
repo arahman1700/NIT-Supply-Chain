@@ -261,105 +261,111 @@
             }
         }
 
-        /* ========== MOBILE RESPONSIVE STYLES - OPTIMIZED ========== */
+        /* Mobile hero - show text instead of PNG */
+        .mobile-hero { display: none; }
+        .desktop-hero { display: block; }
+
+        /* ========== MOBILE RESPONSIVE STYLES ========== */
         @media (max-width: 768px) {
-            /* Disable heavy effects on mobile */
+            /* Kill ALL heavy effects on mobile */
             .glass-card::before { display: none !important; }
             .glass-card:hover { transform: none !important; box-shadow: none !important; }
-
-            /* Hide floating logo particles on mobile - too distracting */
-            .particles,
-            .particles-always {
-                display: none !important;
+            .glass-card {
+                -webkit-backdrop-filter: none !important;
+                backdrop-filter: none !important;
+                background: rgba(255, 255, 255, 0.06) !important;
             }
 
-            /* Header adjustments */
-            header { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+            /* Kill particles completely */
+            .particles, .particles-always, .logo-particle {
+                display: none !important;
+                visibility: hidden !important;
+            }
+            #particlesToggleBtn { display: none !important; }
+
+            /* Header */
+            header { padding: 0.5rem 12px !important; }
             header img { height: 28px !important; }
             header .gap-4 { gap: 0.5rem !important; }
 
-            /* Hide particles toggle on mobile since particles are hidden */
-            #particlesToggleBtn { display: none !important; }
+            /* Swap hero: hide PNG, show text-based mobile hero */
+            .desktop-hero { display: none !important; }
+            .mobile-hero { display: block !important; }
 
-            /* Logo section - smaller, no glow artifacts */
-            .logo-glow-container {
-                padding: 8px !important;
-            }
-            .logo-glow-container::before {
-                display: none !important;
-            }
-            .logo-glow-container img,
-            img.logo-glow {
-                height: 100px !important;
-                max-width: 75% !important;
-                object-fit: contain !important;
-                filter: none !important;
-            }
-            .sparkle { display: none !important; }
-
-            /* Reduce hero section spacing */
-            section.container.mx-auto.px-4.md\:px-6.pt-6.pb-10 {
-                padding-top: 0.5rem !important;
-                padding-bottom: 1rem !important;
-            }
-            .fade-in-up.stagger-1.mb-6 {
-                margin-bottom: 0.75rem !important;
-            }
-
-            /* Hero text */
-            section .text-2xl { font-size: 0.85rem !important; }
-            section .text-sm { font-size: 0.6rem !important; }
+            /* Hero section spacing */
+            .hero-section { padding: 1rem 12px 1.5rem !important; }
+            .hero-section .text-2xl,
+            .hero-section p.text-2xl { font-size: 0.9rem !important; }
+            .hero-section .text-sm { font-size: 0.65rem !important; }
             .h-px.w-16 { width: 1.5rem !important; }
 
-            /* Department Cards Grid - robust 2 per row */
+            /* Department Cards Grid - FORCE 2 columns */
             .dept-grid {
                 display: grid !important;
                 grid-template-columns: repeat(2, 1fr) !important;
                 gap: 10px !important;
+                padding: 0 !important;
             }
 
-            /* Cards - clean mobile layout */
+            /* Cards */
             .department-card {
                 min-height: auto !important;
-                padding: 16px !important;
+                padding: 14px 10px !important;
+                border-radius: 16px !important;
             }
-            .icon-box,
-            .icon-box-mobile {
-                width: 56px !important;
-                height: 56px !important;
-                margin-bottom: 10px !important;
-                border-radius: 14px !important;
+            .department-card .p-8 { padding: 14px 10px !important; }
+
+            /* Icons */
+            .icon-box {
+                width: 52px !important;
+                height: 52px !important;
+                margin-bottom: 8px !important;
+                border-radius: 12px !important;
                 overflow: hidden !important;
             }
-            .icon-box svg { width: 28px !important; height: 28px !important; }
+            .icon-box svg { width: 26px !important; height: 26px !important; }
             .icon-box img {
-                width: 56px !important;
-                height: 56px !important;
+                width: 52px !important;
+                height: 52px !important;
                 object-fit: cover !important;
-                border-radius: 14px !important;
+                border-radius: 12px !important;
             }
-            .department-card h3 { font-size: 0.95rem !important; margin-bottom: 0.25rem !important; }
-            .department-card p { font-size: 0.65rem !important; margin-bottom: 0.5rem !important; line-height: 1.2 !important; }
+
+            /* Card text */
+            .department-card h3 {
+                font-size: 0.9rem !important;
+                margin-bottom: 0.15rem !important;
+            }
+            .department-card p {
+                font-size: 0.6rem !important;
+                margin-bottom: 0.4rem !important;
+                line-height: 1.2 !important;
+            }
             .feature-tag { font-size: 7px !important; padding: 2px 5px !important; }
-            .status-badge { font-size: 8px !important; padding: 3px 8px !important; }
-            .enter-btn { font-size: 11px !important; margin-top: 6px !important; }
-            .flex.flex-wrap.justify-center.gap-2.mb-6 { margin-bottom: 0.5rem !important; gap: 4px !important; }
+            .status-badge { font-size: 8px !important; padding: 2px 8px !important; margin-bottom: 6px !important; }
+            .enter-btn { font-size: 11px !important; margin-top: 4px !important; }
+            .flex.flex-wrap.justify-center.gap-2.mb-6 {
+                margin-bottom: 0.4rem !important;
+                gap: 3px !important;
+            }
 
-            /* Links section */
-            section.container.mx-auto.px-6.py-8 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
-            section.container.mx-auto.px-6.pb-4 { padding-bottom: 0.25rem !important; }
-            section.container.mx-auto.px-6.pb-8 { padding-bottom: 0.5rem !important; }
-            .glass-card.p-6 { padding: 12px !important; }
-            .glass-card .w-14 { width: 40px !important; height: 40px !important; flex-shrink: 0 !important; }
-            .glass-card .w-7 { width: 20px !important; height: 20px !important; }
-            .glass-card .text-lg { font-size: 0.8rem !important; }
+            /* Section spacing */
+            .cards-section { padding: 0.5rem 12px !important; }
+            .link-section { padding-top: 0.4rem !important; padding-bottom: 0.4rem !important; padding-left: 12px !important; padding-right: 12px !important; }
+            .link-section-last { padding-bottom: 0.5rem !important; }
+
+            /* Link cards */
+            .glass-card.p-6 { padding: 10px !important; }
+            .glass-card .w-14 { width: 36px !important; height: 36px !important; flex-shrink: 0 !important; }
+            .glass-card .w-7 { width: 18px !important; height: 18px !important; }
+            .glass-card .text-lg { font-size: 0.75rem !important; }
             .glass-card .text-sm { font-size: 0.6rem !important; }
+            .glass-card .gap-4 { gap: 8px !important; }
 
-            /* Grid */
-            .grid.gap-5 { gap: 10px !important; }
+            /* Container */
             .container { padding-left: 12px !important; padding-right: 12px !important; }
 
-            /* Buttons - touch friendly (min 44px) */
+            /* Theme toggle - touch friendly */
             #themeToggleBtn {
                 padding: 8px !important;
                 min-width: 44px !important;
@@ -368,44 +374,46 @@
             #themeToggleBtn svg { width: 20px !important; height: 20px !important; }
 
             /* Footer */
-            footer { padding: 1rem !important; }
-            footer .text-sm { font-size: 0.7rem !important; }
-            footer .text-xs { font-size: 0.6rem !important; }
+            footer { padding: 0.75rem !important; }
+            footer .text-sm { font-size: 0.65rem !important; }
+            footer .text-xs { font-size: 0.55rem !important; }
         }
 
         @media (max-width: 480px) {
-            .logo-glow-container img,
-            img.logo-glow {
-                height: 80px !important;
-                max-width: 70% !important;
+            .department-card { padding: 12px 8px !important; }
+            .icon-box {
+                width: 44px !important;
+                height: 44px !important;
+                border-radius: 10px !important;
             }
-            .logo-glow-container { padding: 4px !important; }
-
-            /* Still 2 per row but smaller */
-            .department-card { padding: 12px !important; }
-            .icon-box,
-            .icon-box-mobile {
-                width: 48px !important;
-                height: 48px !important;
-            }
-            .icon-box svg { width: 24px !important; height: 24px !important; }
+            .icon-box svg { width: 22px !important; height: 22px !important; }
             .icon-box img {
-                width: 48px !important;
-                height: 48px !important;
+                width: 44px !important;
+                height: 44px !important;
+                border-radius: 10px !important;
             }
-            .department-card h3 { font-size: 0.85rem !important; }
-            .department-card p { font-size: 0.6rem !important; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-            section .text-2xl { font-size: 0.75rem !important; }
-            header img { height: 24px !important; }
+            .department-card h3 { font-size: 0.8rem !important; }
+            .department-card p {
+                font-size: 0.55rem !important;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .hero-section .text-2xl,
+            .hero-section p.text-2xl { font-size: 0.8rem !important; }
+            header img { height: 22px !important; }
             #currentTime { font-size: 0.55rem !important; }
-
-            /* Link cards */
-            .glass-card .gap-4 { gap: 8px !important; }
             .glass-card .flex-1 h3 { font-size: 0.7rem !important; }
-            .glass-card .flex-1 p { font-size: 0.55rem !important; }
+            .glass-card .flex-1 p { font-size: 0.5rem !important; }
+
+            /* Mobile hero logo even smaller */
+            .mobile-hero img { height: 32px !important; }
+            .mobile-hero h2 { font-size: 1.1rem !important; }
+            .mobile-hero .supply-chain-text { font-size: 0.7rem !important; }
         }
 
-        /* Touch-friendly interactions */
+        /* Touch feedback */
         @media (hover: none) and (pointer: coarse) {
             .glass-card:active {
                 transform: scale(0.98) !important;
@@ -442,24 +450,33 @@
         </header>
 
         <!-- Hero with Logo -->
-        <section class="container mx-auto px-4 md:px-6 pt-6 pb-10 text-center">
-            <!-- Glowing Logo Section -->
-            <div class="fade-in-up stagger-1 mb-6">
-                <div class="logo-glow-container inline-block relative" style="padding: 40px;">
-                    <!-- Sparkle effects -->
-                    <div class="sparkle"></div>
-                    <div class="sparkle"></div>
-                    <div class="sparkle"></div>
-                    <div class="sparkle"></div>
-                    <div class="sparkle"></div>
-                    <div class="sparkle"></div>
-                    <!-- Main Logo -->
-                    <img src="assets/nit-supply-chain-logo.png" alt="NIT Supply Chain" class="mx-auto logo-glow hero-logo" style="height: 280px; max-width: 90%;" onerror="this.style.display='none'; document.getElementById('fallback-title').style.display='block';">
-                    <div id="fallback-title" style="display:none;">
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 glow-text">Supply Chain Management</h1>
+        <section class="container mx-auto px-4 md:px-6 pt-6 pb-10 text-center hero-section">
+
+            <!-- DESKTOP: Full PNG logo with effects -->
+            <div class="desktop-hero">
+                <div class="fade-in-up stagger-1 mb-6">
+                    <div class="logo-glow-container inline-block relative" style="padding: 40px;">
+                        <div class="sparkle"></div>
+                        <div class="sparkle"></div>
+                        <div class="sparkle"></div>
+                        <div class="sparkle"></div>
+                        <div class="sparkle"></div>
+                        <div class="sparkle"></div>
+                        <img src="assets/nit-supply-chain-logo.png" alt="NIT Supply Chain" class="mx-auto logo-glow hero-logo" style="height: 280px; max-width: 90%;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div style="display:none;">
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 glow-text">Supply Chain Management</h1>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- MOBILE: Clean text-based hero (no PNG, no rendering issues) -->
+            <div class="mobile-hero" style="padding: 1rem 0;">
+                <img src="assets/logo-white.svg" alt="NIT" style="height: 40px; margin: 0 auto 12px;">
+                <h2 style="font-size: 1.3rem; font-weight: 700; color: #80D1E9; margin-bottom: 4px; letter-spacing: 0.05em;">SUPPLY CHAIN</h2>
+                <p class="supply-chain-text" style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px;">Management Portal</p>
+            </div>
+
             <div class="fade-in-up stagger-2">
                 <p class="text-2xl font-light text-gray-300 mb-3 tracking-wide">Integrated Operations Management System</p>
                 <div class="flex items-center justify-center gap-3">
@@ -471,7 +488,7 @@
         </section>
 
         <!-- Department Cards -->
-        <section class="container mx-auto px-6 py-8">
+        <section class="container mx-auto px-6 py-8 cards-section">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 dept-grid">
 
                 <!-- Logistics -->
@@ -609,7 +626,7 @@
         </section>
 
         <!-- SLA Documentation Link -->
-        <section class="container mx-auto px-6 py-8">
+        <section class="container mx-auto px-6 py-8 link-section">
             <a href="sla_requirements.html" class="block glass-card p-6 fade-in-up stagger-5 hover:border-cyan-400/50 transition-all">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #2E3192 0%, #5B2D8E 100%)">
@@ -631,7 +648,7 @@
         </section>
 
         <!-- MITC Committee Link -->
-        <section class="container mx-auto px-6 pb-4">
+        <section class="container mx-auto px-6 pb-4 link-section">
             <a href="https://arahman1700.github.io/SCM-MITC-2025/" target="_blank" class="block glass-card p-6 fade-in-up stagger-5 hover:border-cyan-400/50 transition-all">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #DEC18C 0%, #B08F55 100%)">
@@ -653,7 +670,7 @@
         </section>
 
         <!-- Lease & Rental Management Link -->
-        <section class="container mx-auto px-6 pb-4">
+        <section class="container mx-auto px-6 pb-4 link-section">
             <a href="lease_dashboard.html" class="block glass-card p-6 fade-in-up stagger-5 hover:border-cyan-400/50 transition-all">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #DEC18C 0%, #B08F55 100%)">
@@ -675,7 +692,7 @@
         </section>
 
         <!-- Monthly Report Link -->
-        <section class="container mx-auto px-6 pb-8">
+        <section class="container mx-auto px-6 pb-8 link-section link-section-last">
             <a href="monthly_report.html" class="block glass-card p-6 fade-in-up stagger-5 hover:border-cyan-400/50 transition-all">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%)">
