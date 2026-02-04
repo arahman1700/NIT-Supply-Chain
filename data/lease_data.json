@@ -6,7 +6,15 @@
     "lands": 5,
     "expiring_soon": 6,
     "expired": 4,
-    "total_annual_cost": 5593809.6
+    "total_annual_cost": 5593809.6,
+    "exit_analysis": {
+      "can_exit": 3,
+      "can_exit_saving": 205500,
+      "still_needed": 7,
+      "project_dependent": 7,
+      "needs_investigation": 1,
+      "no_info": 4
+    }
   },
   "contracts": [
     {
@@ -26,8 +34,12 @@
       "remaining_days": 433,
       "auto_renewal": null,
       "additional_clause": null,
-      "total_contract_cost": 330000.00,
-      "annual_payment": 66000.00
+      "total_contract_cost": 330000.0,
+      "annual_payment": 66000.0,
+      "exit_note": "",
+      "exit_status": "No Info",
+      "can_exit": null,
+      "exit_action": "Needs assessment"
     },
     {
       "id": 2,
@@ -46,8 +58,13 @@
       "remaining_days": 356,
       "auto_renewal": null,
       "additional_clause": null,
-      "total_contract_cost": 577500.00,
-      "annual_payment": 115500.00
+      "total_contract_cost": 577500.0,
+      "annual_payment": 115500.0,
+      "exit_note": "We have a plan to install racks in the main warehouse two months from now and to transfer all materials to the main warehouse.",
+      "exit_status": "Can Exit",
+      "can_exit": true,
+      "exit_action": "Transfer materials to main WH, install racks, then terminate",
+      "potential_saving": 115500
     },
     {
       "id": 3,
@@ -66,8 +83,12 @@
       "remaining_days": 218,
       "auto_renewal": null,
       "additional_clause": null,
-      "total_contract_cost": 35000.00,
-      "annual_payment": 35000.00
+      "total_contract_cost": 35000.0,
+      "annual_payment": 35000.0,
+      "exit_note": "",
+      "exit_status": "No Info",
+      "can_exit": null,
+      "exit_action": "Needs assessment"
     },
     {
       "id": 4,
@@ -86,8 +107,12 @@
       "remaining_days": 178,
       "auto_renewal": null,
       "additional_clause": null,
-      "total_contract_cost": 7400000.00,
-      "annual_payment": 740000.00
+      "total_contract_cost": 7400000.0,
+      "annual_payment": 740000.0,
+      "exit_note": "",
+      "exit_status": "No Info",
+      "can_exit": null,
+      "exit_action": "Needs assessment"
     },
     {
       "id": 5,
@@ -106,8 +131,13 @@
       "remaining_days": -65,
       "auto_renewal": null,
       "additional_clause": null,
-      "total_contract_cost": 80000.00,
-      "annual_payment": 40000.00
+      "total_contract_cost": 80000.0,
+      "annual_payment": 40000.0,
+      "exit_note": "We can shifting the materials after 2 month",
+      "exit_status": "Can Exit",
+      "can_exit": true,
+      "exit_action": "Shift materials within 2 months, then close",
+      "potential_saving": 40000
     },
     {
       "id": 6,
@@ -126,8 +156,12 @@
       "remaining_days": -340,
       "auto_renewal": null,
       "additional_clause": null,
-      "total_contract_cost": 73623.00,
-      "annual_payment": 14724.60
+      "total_contract_cost": 73623.0,
+      "annual_payment": 14724.6,
+      "exit_note": "Still needed",
+      "exit_status": "Still Needed",
+      "can_exit": false,
+      "exit_action": "Continue - operationally required"
     },
     {
       "id": 7,
@@ -146,8 +180,12 @@
       "remaining_days": 1486,
       "auto_renewal": null,
       "additional_clause": null,
-      "total_contract_cost": 330000.00,
-      "annual_payment": 55000.00
+      "total_contract_cost": 330000.0,
+      "annual_payment": 55000.0,
+      "exit_note": "",
+      "exit_status": "No Info",
+      "can_exit": null,
+      "exit_action": "Needs assessment"
     },
     {
       "id": 8,
@@ -166,8 +204,12 @@
       "remaining_days": 389,
       "auto_renewal": null,
       "additional_clause": null,
-      "total_contract_cost": 364300.00,
-      "annual_payment": 121433.00
+      "total_contract_cost": 364300.0,
+      "annual_payment": 121433.0,
+      "exit_note": "Still needed",
+      "exit_status": "Still Needed",
+      "can_exit": false,
+      "exit_action": "Continue - operationally required"
     },
     {
       "id": 9,
@@ -186,8 +228,12 @@
       "remaining_days": 117,
       "auto_renewal": null,
       "additional_clause": "1 year cannot terminate, on 31/05/2025 have the right",
-      "total_contract_cost": 690000.00,
-      "annual_payment": 345000.00
+      "total_contract_cost": 690000.0,
+      "annual_payment": 345000.0,
+      "exit_note": "as per work schedule",
+      "exit_status": "Project Dependent",
+      "can_exit": false,
+      "exit_action": "Review at project milestones"
     },
     {
       "id": 10,
@@ -207,7 +253,11 @@
       "auto_renewal": null,
       "additional_clause": null,
       "total_contract_cost": 17357564.25,
-      "annual_payment": 1816489.00
+      "annual_payment": 1816489.0,
+      "exit_note": "Still needed",
+      "exit_status": "Still Needed",
+      "can_exit": false,
+      "exit_action": "Continue - long-term contract until 2034"
     },
     {
       "id": 11,
@@ -226,8 +276,12 @@
       "remaining_days": 581,
       "auto_renewal": null,
       "additional_clause": "1 year cannot terminate, on 07/09/2025 have the right",
-      "total_contract_cost": 240000.00,
-      "annual_payment": 75000.00
+      "total_contract_cost": 240000.0,
+      "annual_payment": 75000.0,
+      "exit_note": "Still needed",
+      "exit_status": "Still Needed",
+      "can_exit": false,
+      "exit_action": "Continue - operationally required"
     },
     {
       "id": 12,
@@ -246,8 +300,12 @@
       "remaining_days": 678,
       "auto_renewal": null,
       "additional_clause": null,
-      "total_contract_cost": 960250.00,
-      "annual_payment": 460000.00
+      "total_contract_cost": 960250.0,
+      "annual_payment": 460000.0,
+      "exit_note": "Still needed",
+      "exit_status": "Still Needed",
+      "can_exit": false,
+      "exit_action": "Continue - operationally required"
     },
     {
       "id": 13,
@@ -266,8 +324,12 @@
       "remaining_days": 1427,
       "auto_renewal": null,
       "additional_clause": "2 years cannot terminate, on 31/12/2026 have the right",
-      "total_contract_cost": 1725010.00,
-      "annual_payment": 345002.00
+      "total_contract_cost": 1725010.0,
+      "annual_payment": 345002.0,
+      "exit_note": "as per work schedule",
+      "exit_status": "Project Dependent",
+      "can_exit": false,
+      "exit_action": "Review at project milestones, 2-year lock-in until 31/12/2026"
     },
     {
       "id": 14,
@@ -286,8 +348,12 @@
       "remaining_days": 735,
       "auto_renewal": "Yes",
       "additional_clause": "1 year cannot terminate, on 08/02/2026 have the right",
-      "total_contract_cost": 737400.00,
-      "annual_payment": 245800.00
+      "total_contract_cost": 737400.0,
+      "annual_payment": 245800.0,
+      "exit_note": "as per work schedule",
+      "exit_status": "Project Dependent",
+      "can_exit": false,
+      "exit_action": "Review at project milestones, 1-year lock-in until 08/02/2026"
     },
     {
       "id": 15,
@@ -306,8 +372,12 @@
       "remaining_days": 146,
       "auto_renewal": "No",
       "additional_clause": null,
-      "total_contract_cost": 207000.00,
-      "annual_payment": 207000.00
+      "total_contract_cost": 207000.0,
+      "annual_payment": 207000.0,
+      "exit_note": "as per work schedule",
+      "exit_status": "Project Dependent",
+      "can_exit": false,
+      "exit_action": "Review at project completion"
     },
     {
       "id": 16,
@@ -326,8 +396,12 @@
       "remaining_days": 165,
       "auto_renewal": "No",
       "additional_clause": null,
-      "total_contract_cost": 126500.00,
-      "annual_payment": 126500.00
+      "total_contract_cost": 126500.0,
+      "annual_payment": 126500.0,
+      "exit_note": "as per work schedule",
+      "exit_status": "Project Dependent",
+      "can_exit": false,
+      "exit_action": "Review at project completion"
     },
     {
       "id": 17,
@@ -346,8 +420,13 @@
       "remaining_days": -3,
       "auto_renewal": "No",
       "additional_clause": null,
-      "total_contract_cost": 50000.00,
-      "annual_payment": 50000.00
+      "total_contract_cost": 50000.0,
+      "annual_payment": 50000.0,
+      "exit_note": "We can shifting all materials to Asfan warehouse and closing it",
+      "exit_status": "Can Exit",
+      "can_exit": true,
+      "exit_action": "Transfer all materials to Asfan WH, then close",
+      "potential_saving": 50000
     },
     {
       "id": 18,
@@ -366,8 +445,12 @@
       "remaining_days": 635,
       "auto_renewal": "Yes",
       "additional_clause": "2 year cannot terminate, on 01/11/2026 have the right",
-      "total_contract_cost": 400622.00,
-      "annual_payment": 200311.00
+      "total_contract_cost": 400622.0,
+      "annual_payment": 200311.0,
+      "exit_note": "No one informed me about this warehouse and I don't have any information about it",
+      "exit_status": "Needs Investigation",
+      "can_exit": null,
+      "exit_action": "URGENT: Investigate - no visibility on this warehouse"
     },
     {
       "id": 19,
@@ -386,8 +469,12 @@
       "remaining_days": 239,
       "auto_renewal": "Yes",
       "additional_clause": null,
-      "total_contract_cost": 724500.00,
-      "annual_payment": 724500.00
+      "total_contract_cost": 724500.0,
+      "annual_payment": 724500.0,
+      "exit_note": "Still needed",
+      "exit_status": "Still Needed",
+      "can_exit": false,
+      "exit_action": "Continue - operationally required"
     },
     {
       "id": 20,
@@ -406,8 +493,12 @@
       "remaining_days": 270,
       "auto_renewal": "Yes",
       "additional_clause": null,
-      "total_contract_cost": 149500.00,
-      "annual_payment": 149500.00
+      "total_contract_cost": 149500.0,
+      "annual_payment": 149500.0,
+      "exit_note": "Mahmoud Albana",
+      "exit_status": "Project Dependent",
+      "can_exit": false,
+      "exit_action": "Contact Mahmoud Albana for status"
     },
     {
       "id": 21,
@@ -426,8 +517,12 @@
       "remaining_days": 280,
       "auto_renewal": "Yes",
       "additional_clause": null,
-      "total_contract_cost": 410550.00,
-      "annual_payment": 410550.00
+      "total_contract_cost": 410550.0,
+      "annual_payment": 410550.0,
+      "exit_note": "Still needed",
+      "exit_status": "Still Needed",
+      "can_exit": false,
+      "exit_action": "Continue - operationally required"
     },
     {
       "id": 22,
@@ -446,8 +541,12 @@
       "remaining_days": 239,
       "auto_renewal": "No",
       "additional_clause": null,
-      "total_contract_cost": 276000.00,
-      "annual_payment": 276000.00
+      "total_contract_cost": 276000.0,
+      "annual_payment": 276000.0,
+      "exit_note": "as per work schedule",
+      "exit_status": "Project Dependent",
+      "can_exit": false,
+      "exit_action": "Review at project completion"
     }
   ]
 }

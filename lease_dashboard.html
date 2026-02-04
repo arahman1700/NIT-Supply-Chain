@@ -516,13 +516,16 @@
             </div>
         </div>
 
-        <!-- Exit Opportunities Section -->
+        <!-- Exit Analysis Section -->
         <div class="exit-section" id="exitSection">
             <div class="exit-section-title">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                <span>Exit Opportunities</span>
-                <span class="text-sm font-normal text-amber-700 ml-2">(Contracts expiring within 365 days)</span>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                <span>Warehouse Exit Analysis</span>
+                <span class="text-sm font-normal text-amber-700 ml-2">Which warehouses can we exit and why?</span>
             </div>
+            <!-- Exit Summary KPIs -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4" id="exitSummaryKPIs"></div>
+            <!-- Exit Cards -->
             <div id="exitCards"></div>
         </div>
 
@@ -872,75 +875,167 @@
         }
 
         function renderExitOpportunities() {
-            const exitContracts = filteredContracts
-                .filter(c => c.remaining_days < 365)
-                .sort((a, b) => a.remaining_days - b.remaining_days);
+            // Exit Summary KPIs
+            const summaryEl = document.getElementById('exitSummaryKPIs');
+            const canExit = filteredContracts.filter(c => c.can_exit === true);
+            const stillNeeded = filteredContracts.filter(c => c.exit_status === 'Still Needed');
+            const projectDep = filteredContracts.filter(c => c.exit_status === 'Project Dependent');
+            const needsInv = filteredContracts.filter(c => c.exit_status === 'Needs Investigation');
+            const noInfo = filteredContracts.filter(c => c.exit_status === 'No Info');
+            const potentialSaving = canExit.reduce((s, c) => s + (c.potential_saving || 0), 0);
 
+            summaryEl.innerHTML = `
+                <div class="p-3 rounded-xl bg-gradient-to-br from-green-500 to-green-700 text-white text-center cursor-pointer hover:shadow-lg transition-all" onclick="filterExitCards('Can Exit')">
+                    <p class="text-2xl font-bold">${canExit.length}</p>
+                    <p class="text-xs opacity-90">Can Exit</p>
+                    <p class="text-xs opacity-70 mt-1">${potentialSaving.toLocaleString()} SAR/yr saving</p>
+                </div>
+                <div class="p-3 rounded-xl bg-gradient-to-br from-red-500 to-red-700 text-white text-center cursor-pointer hover:shadow-lg transition-all" onclick="filterExitCards('Still Needed')">
+                    <p class="text-2xl font-bold">${stillNeeded.length}</p>
+                    <p class="text-xs opacity-90">Still Needed</p>
+                </div>
+                <div class="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white text-center cursor-pointer hover:shadow-lg transition-all" onclick="filterExitCards('Project Dependent')">
+                    <p class="text-2xl font-bold">${projectDep.length}</p>
+                    <p class="text-xs opacity-90">Project Dependent</p>
+                </div>
+                <div class="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 text-white text-center cursor-pointer hover:shadow-lg transition-all" onclick="filterExitCards('Needs Investigation')">
+                    <p class="text-2xl font-bold">${needsInv.length}</p>
+                    <p class="text-xs opacity-90">Needs Investigation</p>
+                </div>
+                <div class="p-3 rounded-xl bg-gradient-to-br from-gray-400 to-gray-600 text-white text-center cursor-pointer hover:shadow-lg transition-all" onclick="filterExitCards('No Info')">
+                    <p class="text-2xl font-bold">${noInfo.length}</p>
+                    <p class="text-xs opacity-90">No Info</p>
+                </div>
+            `;
+
+            // Render exit cards
+            renderExitCards(filteredContracts);
+        }
+
+        let activeExitFilter = null;
+
+        function filterExitCards(status) {
+            if (activeExitFilter === status) {
+                activeExitFilter = null;
+                renderExitCards(filteredContracts);
+            } else {
+                activeExitFilter = status;
+                const filtered = filteredContracts.filter(c => c.exit_status === status);
+                renderExitCards(filtered);
+            }
+        }
+
+        function renderExitCards(contracts) {
             const container = document.getElementById('exitCards');
             container.textContent = '';
 
-            if (exitContracts.length === 0) {
-                const p = document.createElement('p');
-                p.className = 'text-amber-700 text-sm';
-                p.textContent = 'No contracts requiring immediate attention.';
-                container.appendChild(p);
-                return;
-            }
+            const exitStatusConfig = {
+                'Can Exit': { border: '#10B981', bg: '#ECFDF5', icon: '&#10003;', iconBg: '#D1FAE5', iconColor: '#059669', label: 'CAN EXIT' },
+                'Still Needed': { border: '#EF4444', bg: '#FEF2F2', icon: '&#10007;', iconBg: '#FEE2E2', iconColor: '#DC2626', label: 'STILL NEEDED' },
+                'Project Dependent': { border: '#3B82F6', bg: '#EFF6FF', icon: '&#8634;', iconBg: '#DBEAFE', iconColor: '#2563EB', label: 'PROJECT DEPENDENT' },
+                'Needs Investigation': { border: '#F59E0B', bg: '#FFFBEB', icon: '?', iconBg: '#FEF3C7', iconColor: '#D97706', label: 'NEEDS INVESTIGATION' },
+                'No Info': { border: '#9CA3AF', bg: '#F9FAFB', icon: '—', iconBg: '#F3F4F6', iconColor: '#6B7280', label: 'NO INFO' }
+            };
 
-            exitContracts.forEach(c => {
+            // Sort: Can Exit first, then Needs Investigation, then No Info, then Project Dependent, then Still Needed
+            const sortOrder = {'Can Exit': 0, 'Needs Investigation': 1, 'No Info': 2, 'Project Dependent': 3, 'Still Needed': 4};
+            const sorted = [...contracts].sort((a, b) => (sortOrder[a.exit_status] || 5) - (sortOrder[b.exit_status] || 5));
+
+            sorted.forEach(c => {
+                const config = exitStatusConfig[c.exit_status] || exitStatusConfig['No Info'];
                 const status = getStatus(c.remaining_days);
-                let exitClass = 'exit-warning';
-                if (c.remaining_days < 0) exitClass = 'exit-expired';
-                else if (c.remaining_days < 180) exitClass = 'exit-critical';
-
-                let recommendation = 'Review for renewal';
-                if (c.remaining_days < 0) recommendation = 'Urgent: Contract expired - immediate action required';
-                else if (c.remaining_days < 90) recommendation = 'Critical: Start exit/renewal negotiations';
-                else if (c.remaining_days < 180) recommendation = 'Consider exit strategy or renewal terms';
 
                 const div = document.createElement('div');
-                div.className = 'exit-card ' + exitClass;
-                div.style.cursor = 'pointer';
+                div.className = 'exit-card';
+                div.style.cssText = `border-left: 4px solid ${config.border}; background: ${config.bg}; border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s;`;
+                div.onmouseenter = () => { div.style.transform = 'translateX(4px)'; div.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; };
+                div.onmouseleave = () => { div.style.transform = ''; div.style.boxShadow = ''; };
 
-                // Build structure with DOM methods
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'flex justify-between items-start';
 
                 const leftDiv = document.createElement('div');
+                leftDiv.className = 'flex items-start gap-3';
+
+                const iconSpan = document.createElement('span');
+                iconSpan.style.cssText = `display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:${config.iconBg};color:${config.iconColor};font-weight:bold;font-size:14px;flex-shrink:0;`;
+                iconSpan.innerHTML = config.icon;
+
+                const textDiv = document.createElement('div');
                 const h4 = document.createElement('h4');
-                h4.className = 'font-bold text-gray-800';
+                h4.className = 'font-bold text-gray-800 text-sm';
                 h4.textContent = c.project;
                 const p1 = document.createElement('p');
-                p1.className = 'text-sm text-gray-600';
-                p1.textContent = c.city + ', ' + c.region + ' - ' + c.type;
-                leftDiv.appendChild(h4);
-                leftDiv.appendChild(p1);
+                p1.className = 'text-xs text-gray-500';
+                p1.textContent = c.city + ', ' + c.region + ' | ' + c.type + ' | PM: ' + c.project_manager;
+                textDiv.appendChild(h4);
+                textDiv.appendChild(p1);
+                leftDiv.appendChild(iconSpan);
+                leftDiv.appendChild(textDiv);
 
                 const rightDiv = document.createElement('div');
-                rightDiv.className = 'text-right';
-                const badge = document.createElement('span');
-                badge.className = 'badge ' + status.badge;
-                badge.textContent = c.remaining_days < 0 ? Math.abs(c.remaining_days) + ' days overdue' : c.remaining_days + ' days left';
-                rightDiv.appendChild(badge);
+                rightDiv.className = 'text-right flex-shrink-0';
+                const statusBadge = document.createElement('span');
+                statusBadge.style.cssText = `display:inline-block;padding:3px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;letter-spacing:0.05em;background:${config.iconBg};color:${config.iconColor};`;
+                statusBadge.textContent = config.label;
+                const daysBadge = document.createElement('span');
+                daysBadge.className = 'badge ' + status.badge;
+                daysBadge.style.cssText = 'display:block;margin-top:4px;font-size:0.65rem;';
+                daysBadge.textContent = c.remaining_days < 0 ? Math.abs(c.remaining_days) + ' days overdue' : c.remaining_days + ' days left';
+                rightDiv.appendChild(statusBadge);
+                rightDiv.appendChild(daysBadge);
 
                 headerDiv.appendChild(leftDiv);
                 headerDiv.appendChild(rightDiv);
 
-                const footerDiv = document.createElement('div');
-                footerDiv.className = 'mt-3 pt-3 border-t border-gray-200';
-                const recP = document.createElement('p');
-                recP.className = 'text-sm font-medium';
-                recP.style.color = status.color;
-                recP.textContent = recommendation;
-                const metaP = document.createElement('p');
-                metaP.className = 'text-xs text-gray-500 mt-1';
-                metaP.textContent = 'End Date: ' + c.end_date + ' | PM: ' + c.project_manager;
-                footerDiv.appendChild(recP);
-                footerDiv.appendChild(metaP);
+                const detailDiv = document.createElement('div');
+                detailDiv.className = 'mt-3 pt-3 border-t';
+                detailDiv.style.borderColor = config.border + '33';
+
+                const grid = document.createElement('div');
+                grid.className = 'flex flex-wrap gap-4 items-center';
+
+                // Action
+                const actionP = document.createElement('p');
+                actionP.className = 'text-xs font-medium flex-1 min-w-[200px]';
+                actionP.style.color = config.iconColor;
+                actionP.innerHTML = '<strong>Action:</strong> ' + (c.exit_action || 'Needs assessment');
+                grid.appendChild(actionP);
+
+                // Note
+                if (c.exit_note) {
+                    const noteP = document.createElement('p');
+                    noteP.className = 'text-xs text-gray-600 flex-1 min-w-[200px] italic';
+                    noteP.innerHTML = '<strong>Note:</strong> "' + c.exit_note + '"';
+                    grid.appendChild(noteP);
+                }
+
+                // Annual cost
+                const costP = document.createElement('p');
+                costP.className = 'text-xs text-gray-700';
+                costP.innerHTML = '<strong>Annual Cost:</strong> ' + (c.annual_payment || 0).toLocaleString() + ' SAR';
+                grid.appendChild(costP);
+
+                // Potential saving
+                if (c.potential_saving) {
+                    const saveP = document.createElement('p');
+                    saveP.className = 'text-xs font-bold text-green-600';
+                    saveP.innerHTML = 'Potential Saving: ' + c.potential_saving.toLocaleString() + ' SAR/year';
+                    grid.appendChild(saveP);
+                }
+
+                // Additional clause
+                if (c.additional_clause) {
+                    const clauseP = document.createElement('p');
+                    clauseP.className = 'text-xs text-amber-700 w-full';
+                    clauseP.innerHTML = '<strong>Clause:</strong> ' + c.additional_clause;
+                    grid.appendChild(clauseP);
+                }
+
+                detailDiv.appendChild(grid);
 
                 div.appendChild(headerDiv);
-                div.appendChild(footerDiv);
-
+                div.appendChild(detailDiv);
                 div.onclick = () => showContractDetail(c);
                 container.appendChild(div);
             });
@@ -1212,26 +1307,73 @@
                 modalBody.appendChild(row);
             });
 
+            // Exit Analysis section
+            if (contract.exit_status) {
+                const exitColors = {
+                    'Can Exit': { bg: '#ECFDF5', border: '#10B981', text: '#059669' },
+                    'Still Needed': { bg: '#FEF2F2', border: '#EF4444', text: '#DC2626' },
+                    'Project Dependent': { bg: '#EFF6FF', border: '#3B82F6', text: '#2563EB' },
+                    'Needs Investigation': { bg: '#FFFBEB', border: '#F59E0B', text: '#D97706' },
+                    'No Info': { bg: '#F9FAFB', border: '#9CA3AF', text: '#6B7280' }
+                };
+                const ec = exitColors[contract.exit_status] || exitColors['No Info'];
+
+                const exitSection = document.createElement('div');
+                exitSection.className = 'mt-6 p-4 rounded-lg';
+                exitSection.style.cssText = 'background:' + ec.bg + ';border-left:4px solid ' + ec.border + ';';
+
+                const exitHeader = document.createElement('div');
+                exitHeader.className = 'flex items-center gap-2 mb-3';
+                exitHeader.innerHTML = '<svg class="w-5 h-5" style="color:' + ec.text + '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>';
+                const exitTitle = document.createElement('span');
+                exitTitle.className = 'font-bold';
+                exitTitle.style.color = ec.text;
+                exitTitle.textContent = 'Exit Analysis: ' + contract.exit_status;
+                exitHeader.appendChild(exitTitle);
+                exitSection.appendChild(exitHeader);
+
+                if (contract.exit_action) {
+                    const actionP = document.createElement('p');
+                    actionP.className = 'text-sm mb-2';
+                    actionP.innerHTML = '<strong>Recommended Action:</strong> ' + contract.exit_action;
+                    exitSection.appendChild(actionP);
+                }
+                if (contract.exit_note) {
+                    const noteP = document.createElement('p');
+                    noteP.className = 'text-sm italic text-gray-600 mb-2';
+                    noteP.innerHTML = '<strong>Warehouse Note:</strong> "' + contract.exit_note + '"';
+                    exitSection.appendChild(noteP);
+                }
+                if (contract.potential_saving) {
+                    const saveP = document.createElement('p');
+                    saveP.className = 'text-sm font-bold';
+                    saveP.style.color = '#059669';
+                    saveP.textContent = 'Potential Annual Saving: SAR ' + contract.potential_saving.toLocaleString();
+                    exitSection.appendChild(saveP);
+                }
+                modalBody.appendChild(exitSection);
+            }
+
             // Location section
-            const locationSection = document.createElement('div');
-            locationSection.className = 'mt-6 p-4 bg-blue-50 rounded-lg';
-            const locHeader = document.createElement('div');
-            locHeader.className = 'flex items-center gap-2 mb-2';
-            const locIcon = document.createElement('span');
-            locIcon.innerHTML = '<svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
-            const locLabel = document.createElement('span');
-            locLabel.className = 'font-medium text-blue-700';
-            locLabel.textContent = 'Location';
-            locHeader.appendChild(locIcon);
-            locHeader.appendChild(locLabel);
-            const locLink = document.createElement('a');
-            locLink.href = 'https://www.google.com/maps?q=' + contract.location;
-            locLink.target = '_blank';
-            locLink.className = 'text-blue-600 hover:underline text-sm';
-            locLink.textContent = 'Open in Google Maps (' + contract.location + ')';
-            locationSection.appendChild(locHeader);
-            locationSection.appendChild(locLink);
-            modalBody.appendChild(locationSection);
+            if (contract.location) {
+                const locationSection = document.createElement('div');
+                locationSection.className = 'mt-6 p-4 bg-blue-50 rounded-lg';
+                const locHeader = document.createElement('div');
+                locHeader.className = 'flex items-center gap-2 mb-2';
+                locHeader.innerHTML = '<svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
+                const locLabel = document.createElement('span');
+                locLabel.className = 'font-medium text-blue-700';
+                locLabel.textContent = 'Location';
+                locHeader.appendChild(locLabel);
+                const locLink = document.createElement('a');
+                locLink.href = 'https://www.google.com/maps?q=' + contract.location;
+                locLink.target = '_blank';
+                locLink.className = 'text-blue-600 hover:underline text-sm';
+                locLink.textContent = 'Open in Google Maps (' + contract.location + ')';
+                locationSection.appendChild(locHeader);
+                locationSection.appendChild(locLink);
+                modalBody.appendChild(locationSection);
+            }
 
             modal.classList.add('show');
         }
