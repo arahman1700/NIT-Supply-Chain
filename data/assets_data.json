@@ -15,13 +15,14 @@
       "regions": 5
     },
     "generators": {
-      "total": 122,
+      "total": 106,
       "total_capacity_kw": 11029.4,
       "total_cost": 4394625.26,
       "nit": {
         "total": 82,
         "active": 59,
         "overhaul": 21,
+        "idle": 2,
         "good": 57,
         "needs_maintenance": 25,
         "total_kw": 11029.4,
@@ -35,47 +36,25 @@
         "total_kw": 0,
         "total_cost": 1260588.26
       },
-      "unknown": {
-        "total": 16,
-        "total_kw": 0,
-        "total_cost": 0
+      "by_status": {
+        "Active": 64,
+        "Unknown": 10,
+        "Idle": 2,
+        "Overhaul": 21,
+        "Demobilized": 9
       },
-      "capacities": [
-        "10",
-        "100",
-        "114",
-        "116",
-        "120",
-        "125",
-        "15",
-        "150",
-        "150KVA",
-        "20",
-        "200",
-        "225",
-        "250",
-        "291",
-        "3",
-        "30",
-        "330",
-        "340",
-        "35",
-        "350",
-        "352",
-        "386",
-        "40",
-        "400",
-        "425",
-        "433",
-        "50",
-        "500",
-        "53",
-        "54",
-        "540",
-        "59",
-        "60",
-        "600KVA"
-      ]
+      "by_condition": {
+        "Good": 81,
+        "Bad": 2,
+        "Needs Maintenance": 19,
+        "Not Working": 4
+      },
+      "by_remaining": {
+        "Active": 0,
+        "Warning": 0,
+        "Critical": 0,
+        "Ended": 106
+      }
     },
     "stand_acs": {
       "total": 101,
@@ -7798,6 +7777,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "100",
@@ -7807,8 +7787,12 @@
         "responsible": "Soumya",
         "start_date": "2024-11-01",
         "return_date": "2025-12-01",
+        "duration_days": 396,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 2,
@@ -7816,6 +7800,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "59",
@@ -7825,8 +7810,12 @@
         "responsible": "Soumya",
         "start_date": "2024-11-01",
         "return_date": "2025-12-01",
+        "duration_days": 396,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 44800.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 3,
@@ -7834,6 +7823,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "386",
@@ -7843,8 +7833,12 @@
         "responsible": "Hassan Shaheen",
         "start_date": "2024-12-01",
         "return_date": "2025-12-31",
+        "duration_days": 396,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 149000.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 4,
@@ -7852,6 +7846,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "125",
@@ -7861,8 +7856,12 @@
         "responsible": "Hassan Shaheen",
         "start_date": "2024-12-01",
         "return_date": "2025-12-31",
+        "duration_days": 396,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 53000.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 5,
@@ -7870,6 +7869,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "400",
@@ -7879,8 +7879,12 @@
         "responsible": "Ahmed Abdulzaher",
         "start_date": "2023-08-01",
         "return_date": "2026-02-01",
+        "duration_days": 916,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 139500.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 6,
@@ -7888,6 +7892,7 @@
         "name": "Perkins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "150",
@@ -7897,8 +7902,12 @@
         "responsible": "Ahmed Abdulzaher",
         "start_date": "2023-08-01",
         "return_date": "2026-02-01",
+        "duration_days": 916,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 50650.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 7,
@@ -7906,6 +7915,7 @@
         "name": "Perkins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "50",
@@ -7915,8 +7925,12 @@
         "responsible": "Ahmed Abdulzaher",
         "start_date": "2023-08-01",
         "return_date": "2026-01-01",
+        "duration_days": 885,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 50650.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 8,
@@ -7924,6 +7938,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "50",
@@ -7933,8 +7948,12 @@
         "responsible": "Ahmed Abdulzaher",
         "start_date": "2023-08-01",
         "return_date": "2026-01-01",
+        "duration_days": 885,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 44800.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 9,
@@ -7942,6 +7961,7 @@
         "name": "",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "20",
@@ -7951,8 +7971,12 @@
         "responsible": "Ahmed Abdulzaher",
         "start_date": "2023-08-01",
         "return_date": "2026-01-01",
+        "duration_days": 885,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 50650.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 10,
@@ -7960,6 +7984,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "386",
@@ -7969,8 +7994,12 @@
         "responsible": "Ahmed Abdulzaher",
         "start_date": "2023-08-01",
         "return_date": "2026-01-01",
+        "duration_days": 885,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 139500.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 11,
@@ -7978,6 +8007,7 @@
         "name": "Stamford",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "291",
@@ -7987,8 +8017,12 @@
         "responsible": "Essam",
         "start_date": "2025-01-01",
         "return_date": "2026-03-01",
+        "duration_days": 425,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": "Confirmed but forms remaining"
       },
       {
         "id": 12,
@@ -7996,6 +8030,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "386",
@@ -8005,8 +8040,12 @@
         "responsible": "Essam",
         "start_date": "2025-01-01",
         "return_date": "2026-03-01",
+        "duration_days": 425,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 139500.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": "Confirmed but forms remaining"
       },
       {
         "id": 13,
@@ -8014,6 +8053,7 @@
         "name": "Perkins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "50",
@@ -8023,8 +8063,12 @@
         "responsible": "Essam",
         "start_date": "2025-01-01",
         "return_date": "2026-03-01",
+        "duration_days": 425,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 50650.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": "Confirmed but forms remaining"
       },
       {
         "id": 14,
@@ -8032,6 +8076,7 @@
         "name": "Perkins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "50",
@@ -8041,8 +8086,12 @@
         "responsible": "Essam",
         "start_date": "2025-01-01",
         "return_date": "2026-03-01",
+        "duration_days": 425,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 44800.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": "Confirmed but forms remaining"
       },
       {
         "id": 15,
@@ -8050,6 +8099,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "100",
@@ -8059,8 +8109,12 @@
         "responsible": "Ahmed Alhussein",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 16,
@@ -8068,6 +8122,7 @@
         "name": "Perkins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "50",
@@ -8077,8 +8132,12 @@
         "responsible": "Ahmed Alhussein",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 17,
@@ -8086,6 +8145,7 @@
         "name": "Rawafd AlQwt Litaqt Est.",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "250",
@@ -8095,8 +8155,12 @@
         "responsible": "Tarek",
         "start_date": "2025-05-07",
         "return_date": "2026-01-01",
+        "duration_days": 240,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 37000.0,
-        "status": "Unknown"
+        "status": "Unknown",
+        "notes": ""
       },
       {
         "id": 18,
@@ -8104,6 +8168,7 @@
         "name": "Talaea Alahlam Trading Company",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "250",
@@ -8113,8 +8178,12 @@
         "responsible": "Tarek",
         "start_date": "2025-06-04",
         "return_date": "2026-01-01",
+        "duration_days": 212,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 74347.5,
-        "status": "Unknown"
+        "status": "Unknown",
+        "notes": ""
       },
       {
         "id": 19,
@@ -8122,6 +8191,7 @@
         "name": "Honda",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "150",
@@ -8131,8 +8201,12 @@
         "responsible": "Hassan Jahabar",
         "start_date": "2023-06-01",
         "return_date": "2026-05-01",
+        "duration_days": 1066,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 20,
@@ -8140,6 +8214,7 @@
         "name": "Honda",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "150",
@@ -8149,8 +8224,12 @@
         "responsible": "Hassan Jahabar",
         "start_date": "2023-06-01",
         "return_date": "2026-05-01",
+        "duration_days": 1066,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 21,
@@ -8158,6 +8237,7 @@
         "name": "Cummins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "540",
@@ -8167,8 +8247,12 @@
         "responsible": "Mirza Baig",
         "start_date": "2023-06-01",
         "return_date": "2026-05-01",
+        "duration_days": 1066,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 22,
@@ -8176,6 +8260,7 @@
         "name": "شركة هدى ناصر عبدالله فدعق",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "600KVA",
@@ -8185,8 +8270,12 @@
         "responsible": "Mirza Baig",
         "start_date": "2024-11-30",
         "return_date": "2026-05-01",
+        "duration_days": 518,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 15000.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 23,
@@ -8194,6 +8283,7 @@
         "name": "Cummins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "330",
@@ -8203,8 +8293,12 @@
         "responsible": "Nusrath",
         "start_date": "2023-06-01",
         "return_date": "2026-05-01",
+        "duration_days": 1066,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 24,
@@ -8212,6 +8306,7 @@
         "name": "شركة الحلول التقنية الأحترافية",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "50",
@@ -8221,8 +8316,12 @@
         "responsible": "Nusrath",
         "start_date": "2025-01-15",
         "return_date": "2026-05-01",
+        "duration_days": 472,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 4500.0,
-        "status": "Unknown"
+        "status": "Unknown",
+        "notes": ""
       },
       {
         "id": 25,
@@ -8230,6 +8329,7 @@
         "name": "Perkins / Stamford",
         "model": "KMGPSS",
         "serial": "U593635H",
+        "man_date": "JAN, 2022",
         "usage_duration": "12H",
         "phase": "3",
         "capacity": "50",
@@ -8239,8 +8339,12 @@
         "responsible": "Nazir Ali",
         "start_date": "2022-09-29",
         "return_date": "2026-05-01",
+        "duration_days": 1311,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 44800.0,
-        "status": "Idle"
+        "status": "Idle",
+        "notes": ""
       },
       {
         "id": 26,
@@ -8248,6 +8352,7 @@
         "name": "شركة الحلول التقنية الأحترافية",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "50",
@@ -8257,8 +8362,12 @@
         "responsible": "Nusrath",
         "start_date": "2025-01-15",
         "return_date": "2026-05-01",
+        "duration_days": 472,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 4500.0,
-        "status": "Unknown"
+        "status": "Unknown",
+        "notes": ""
       },
       {
         "id": 27,
@@ -8266,6 +8375,7 @@
         "name": "شركة الحلول التقنية الأحترافية",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "150",
@@ -8275,8 +8385,12 @@
         "responsible": "Ammar Mazari",
         "start_date": "2024-11-21",
         "return_date": "2026-01-01",
+        "duration_days": 407,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 5000.0,
-        "status": "Unknown"
+        "status": "Unknown",
+        "notes": ""
       },
       {
         "id": 28,
@@ -8284,6 +8398,7 @@
         "name": "Rawafd AlQwt Litaqt Est.",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "250",
@@ -8293,8 +8408,12 @@
         "responsible": "Tarek",
         "start_date": "2023-11-06",
         "return_date": "2025-09-01",
+        "duration_days": 666,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 7000.0,
-        "status": "Unknown"
+        "status": "Unknown",
+        "notes": ""
       },
       {
         "id": 29,
@@ -8302,6 +8421,7 @@
         "name": "",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "4 Phase",
         "capacity": "350",
@@ -8311,8 +8431,12 @@
         "responsible": "Ali Elnour",
         "start_date": "2023-01-01",
         "return_date": "2025-09-01",
+        "duration_days": 975,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 30,
@@ -8320,6 +8444,7 @@
         "name": "",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "10",
@@ -8329,8 +8454,12 @@
         "responsible": "Ali Elnour",
         "start_date": "2023-01-01",
         "return_date": "2025-09-01",
+        "duration_days": 975,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 31,
@@ -8338,6 +8467,7 @@
         "name": "",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "10",
@@ -8347,8 +8477,12 @@
         "responsible": "Ali Elnour",
         "start_date": "2023-01-01",
         "return_date": "2025-09-01",
+        "duration_days": 975,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 32,
@@ -8356,6 +8490,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "386",
@@ -8365,8 +8500,12 @@
         "responsible": "Ameen Basharat",
         "start_date": "2023-11-06",
         "return_date": "2026-02-01",
+        "duration_days": 819,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 149000.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 33,
@@ -8374,6 +8513,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "125",
@@ -8383,8 +8523,12 @@
         "responsible": "Ameen Basharat",
         "start_date": "2023-11-06",
         "return_date": "2026-02-01",
+        "duration_days": 819,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 53000.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 34,
@@ -8392,6 +8536,7 @@
         "name": "Cummins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "425",
@@ -8401,8 +8546,12 @@
         "responsible": "Saad Alqahtani",
         "start_date": "2024-08-21",
         "return_date": "2026-02-01",
+        "duration_days": 530,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": "Confirmed but forms remaining"
       },
       {
         "id": 35,
@@ -8410,6 +8559,7 @@
         "name": "Perkins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "53",
@@ -8419,8 +8569,12 @@
         "responsible": "Saad Alqahtani",
         "start_date": "2024-08-21",
         "return_date": "2026-02-01",
+        "duration_days": 530,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 44800.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": "Confirmed but forms remaining"
       },
       {
         "id": 36,
@@ -8428,6 +8582,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "386",
@@ -8437,8 +8592,12 @@
         "responsible": "Muhanned Alsalmani",
         "start_date": "2023-11-06",
         "return_date": "2026-02-01",
+        "duration_days": 819,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 139500.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 37,
@@ -8446,6 +8605,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "125",
@@ -8455,8 +8615,12 @@
         "responsible": "Muhanned Alsalmani",
         "start_date": "2023-11-06",
         "return_date": "2026-02-01",
+        "duration_days": 819,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 50650.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 38,
@@ -8464,6 +8628,7 @@
         "name": "Bravo / Prime",
         "model": "PRM386",
         "serial": "PRM262003",
+        "man_date": "JAN, 2024",
         "usage_duration": "12H",
         "phase": "3",
         "capacity": "352",
@@ -8473,8 +8638,12 @@
         "responsible": "Muhannad Alharbi",
         "start_date": "2024-01-01",
         "return_date": "2026-05-01",
+        "duration_days": 852,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 139500.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 39,
@@ -8482,6 +8651,7 @@
         "name": "Bravo / Prime",
         "model": "PRM125",
         "serial": "PRM242031",
+        "man_date": "JAN, 2024",
         "usage_duration": "12H",
         "phase": "3",
         "capacity": "114",
@@ -8491,8 +8661,12 @@
         "responsible": "Muhannad Alharbi",
         "start_date": "2024-01-01",
         "return_date": "2026-05-01",
+        "duration_days": 852,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 50650.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 40,
@@ -8500,6 +8674,7 @@
         "name": "Doosan",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "3 Phase",
         "capacity": "400",
@@ -8509,8 +8684,12 @@
         "responsible": "Safdar",
         "start_date": "2023-11-06",
         "return_date": "2026-02-01",
+        "duration_days": 819,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 224445.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 41,
@@ -8518,6 +8697,7 @@
         "name": "Doosan",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "3 Phase",
         "capacity": "150",
@@ -8527,8 +8707,12 @@
         "responsible": "Safdar",
         "start_date": "2023-11-06",
         "return_date": "2026-02-01",
+        "duration_days": 819,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 67142.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 42,
@@ -8536,6 +8720,7 @@
         "name": "Meccalte",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "125",
@@ -8545,8 +8730,12 @@
         "responsible": "Saber",
         "start_date": "2025-03-01",
         "return_date": "2026-02-01",
+        "duration_days": 338,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 43,
@@ -8554,6 +8743,7 @@
         "name": "Meccalte",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "125",
@@ -8563,8 +8753,12 @@
         "responsible": "Saber",
         "start_date": "2025-03-01",
         "return_date": "2026-02-01",
+        "duration_days": 338,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 44,
@@ -8572,6 +8766,7 @@
         "name": "Kohler",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "500",
@@ -8581,8 +8776,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 45,
@@ -8590,6 +8789,7 @@
         "name": "Kohler",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "500",
@@ -8599,8 +8799,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 46,
@@ -8608,6 +8812,7 @@
         "name": "Caterpillar",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "350",
@@ -8617,8 +8822,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": "Major Service (Engine / Alternator)"
       },
       {
         "id": 47,
@@ -8626,6 +8835,7 @@
         "name": "Iveco",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "150",
@@ -8635,8 +8845,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 48,
@@ -8644,6 +8858,7 @@
         "name": "Doosan",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "500",
@@ -8653,8 +8868,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 49,
@@ -8662,6 +8881,7 @@
         "name": "Doosan",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "250",
@@ -8671,8 +8891,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": "Major Service (Engine / Alternator)"
       },
       {
         "id": 50,
@@ -8680,6 +8904,7 @@
         "name": "Cummins",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "125",
@@ -8689,8 +8914,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": "Major Service (Engine / Alternator)"
       },
       {
         "id": 51,
@@ -8698,6 +8927,7 @@
         "name": "Deutz",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "40",
@@ -8707,8 +8937,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 52,
@@ -8716,6 +8950,7 @@
         "name": "Kabuta",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "10",
@@ -8725,8 +8960,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 53,
@@ -8734,6 +8973,7 @@
         "name": "SDMO",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "30",
@@ -8743,8 +8983,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 54,
@@ -8752,6 +8996,7 @@
         "name": "Chinese",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "3",
@@ -8761,8 +9006,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 55,
@@ -8770,6 +9019,7 @@
         "name": "Chinese",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "3",
@@ -8779,8 +9029,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 56,
@@ -8788,6 +9042,7 @@
         "name": "Chinese",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "3",
@@ -8797,8 +9052,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 57,
@@ -8806,6 +9065,7 @@
         "name": "Chinese",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "3",
@@ -8815,8 +9075,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 58,
@@ -8824,6 +9088,7 @@
         "name": "Chinese",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "3",
@@ -8833,8 +9098,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 59,
@@ -8842,6 +9111,7 @@
         "name": "Perkin",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "60",
@@ -8851,8 +9121,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": "Major Service (Engine / Alternator)"
       },
       {
         "id": 60,
@@ -8860,6 +9134,7 @@
         "name": "Caterpillar",
         "model": "",
         "serial": "",
+        "man_date": "Old",
         "usage_duration": "0",
         "phase": "",
         "capacity": "340",
@@ -8869,8 +9144,12 @@
         "responsible": "Mohammed Allkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": "Major Service (Engine / Alternator)"
       },
       {
         "id": 61,
@@ -8878,6 +9157,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "",
         "phase": "3 Phase",
         "capacity": "350",
@@ -8887,8 +9167,12 @@
         "responsible": "Fahd Althuary",
         "start_date": "2022-06-01",
         "return_date": "2026-07-01",
+        "duration_days": 1492,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 62,
@@ -8896,6 +9180,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "3 Phase",
         "capacity": "350",
@@ -8905,8 +9190,12 @@
         "responsible": "Fahd Althuary",
         "start_date": "2022-06-01",
         "return_date": "2026-07-01",
+        "duration_days": 1492,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 63,
@@ -8914,6 +9203,7 @@
         "name": "Sudhir",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "350",
@@ -8923,8 +9213,12 @@
         "responsible": "Abdullah Shalaby",
         "start_date": "2025-02-10",
         "return_date": "2025-11-01",
+        "duration_days": 265,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 26700.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 64,
@@ -8932,6 +9226,7 @@
         "name": "Sudhir",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "350",
@@ -8941,8 +9236,12 @@
         "responsible": "Abdullah Shalaby",
         "start_date": "2025-02-10",
         "return_date": "2025-11-01",
+        "duration_days": 265,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 29000.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": "Shifted from 8387 after energization"
       },
       {
         "id": 65,
@@ -8950,6 +9249,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "386",
@@ -8959,8 +9259,12 @@
         "responsible": "Sami",
         "start_date": "2025-06-01",
         "return_date": "2026-05-01",
+        "duration_days": 335,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 139500.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 66,
@@ -8968,6 +9272,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "125",
@@ -8977,8 +9282,12 @@
         "responsible": "Sami",
         "start_date": "2025-06-01",
         "return_date": "2026-05-01",
+        "duration_days": 335,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 50650.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 67,
@@ -8986,6 +9295,7 @@
         "name": "Cummins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "400",
@@ -8995,8 +9305,12 @@
         "responsible": "Abdulrahman",
         "start_date": "2022-09-29",
         "return_date": "2026-05-01",
+        "duration_days": 1311,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 149000.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 68,
@@ -9004,6 +9318,7 @@
         "name": "Rawafd AlQwt Litaqt Est.",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "250",
@@ -9013,8 +9328,12 @@
         "responsible": "Mohammed Ibrahim",
         "start_date": "2025-05-07",
         "return_date": "2026-03-01",
+        "duration_days": 299,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 37000.0,
-        "status": "Unknown"
+        "status": "Unknown",
+        "notes": ""
       },
       {
         "id": 69,
@@ -9022,6 +9341,7 @@
         "name": "Talaea Alahlam Trading Company",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "250",
@@ -9031,8 +9351,12 @@
         "responsible": "Mohammed Ibrahim",
         "start_date": "2025-06-15",
         "return_date": "2026-03-01",
+        "duration_days": 260,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 44608.5,
-        "status": "Unknown"
+        "status": "Unknown",
+        "notes": ""
       },
       {
         "id": 70,
@@ -9040,6 +9364,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "386",
@@ -9049,8 +9374,12 @@
         "responsible": "Ameen Basharat",
         "start_date": "2023-11-06",
         "return_date": "2026-03-01",
+        "duration_days": 847,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 149000.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": "Confirmed but forms remaining"
       },
       {
         "id": 71,
@@ -9058,6 +9387,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "125",
@@ -9067,8 +9397,12 @@
         "responsible": "Ameen Basharat",
         "start_date": "2023-11-06",
         "return_date": "2026-03-01",
+        "duration_days": 847,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 53000.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": "Confirmed but forms remaining"
       },
       {
         "id": 71,
@@ -9076,6 +9410,7 @@
         "name": "Rawafd AlQwt Litaqt Est.",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "250",
@@ -9085,8 +9420,12 @@
         "responsible": "Ameen Basharat",
         "start_date": "2025-05-18",
         "return_date": "2025-09-01",
+        "duration_days": 107,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 48000.0,
-        "status": "Demobilized"
+        "status": "Demobilized",
+        "notes": ""
       },
       {
         "id": 72,
@@ -9094,6 +9433,7 @@
         "name": "Rawafd AlQwt Litaqt Est.",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "250",
@@ -9103,8 +9443,12 @@
         "responsible": "Ameen Basharat",
         "start_date": "2025-05-18",
         "return_date": "2025-09-01",
+        "duration_days": 107,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 25000.0,
-        "status": "Demobilized"
+        "status": "Demobilized",
+        "notes": ""
       },
       {
         "id": 73,
@@ -9112,6 +9456,7 @@
         "name": "Al-Masar Al-Monasib Company for Logistics Services",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "250",
@@ -9121,8 +9466,12 @@
         "responsible": "Ameen Basharat",
         "start_date": "2025-05-15",
         "return_date": "2025-09-01",
+        "duration_days": 110,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 76360.13,
-        "status": "Demobilized"
+        "status": "Demobilized",
+        "notes": ""
       },
       {
         "id": 74,
@@ -9130,6 +9479,7 @@
         "name": "Sudhir",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "350",
@@ -9139,8 +9489,12 @@
         "responsible": "Christian",
         "start_date": "2024-02-27",
         "return_date": "2026-02-01",
+        "duration_days": 706,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 9000.0,
-        "status": "Demobilized"
+        "status": "Demobilized",
+        "notes": "Waiting for LOA to extract"
       },
       {
         "id": 75,
@@ -9148,6 +9502,7 @@
         "name": "Saudi Diesel",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "400",
@@ -9157,8 +9512,12 @@
         "responsible": "Christian",
         "start_date": "2024-02-27",
         "return_date": "2026-02-01",
+        "duration_days": 706,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 224445.0,
-        "status": "Demobilized"
+        "status": "Demobilized",
+        "notes": "Waiting for LOA to extract"
       },
       {
         "id": 76,
@@ -9166,6 +9525,7 @@
         "name": "Saudi Diesel",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "120",
@@ -9175,8 +9535,12 @@
         "responsible": "Christian",
         "start_date": "2023-11-02",
         "return_date": "2026-01-01",
+        "duration_days": 792,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 67142.0,
-        "status": "Demobilized"
+        "status": "Demobilized",
+        "notes": "Waiting for LOA to extract"
       },
       {
         "id": 77,
@@ -9184,6 +9548,7 @@
         "name": "Saudi Diesel",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "250",
@@ -9193,8 +9558,12 @@
         "responsible": "Christian",
         "start_date": "2023-11-02",
         "return_date": "2026-01-01",
+        "duration_days": 792,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 156275.0,
-        "status": "Demobilized"
+        "status": "Demobilized",
+        "notes": ""
       },
       {
         "id": 78,
@@ -9202,6 +9571,7 @@
         "name": "Sudhir",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "100",
@@ -9211,8 +9581,12 @@
         "responsible": "Abdullah Shalaby",
         "start_date": "2023-06-14",
         "return_date": "2026-07-01",
+        "duration_days": 1114,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 200600.0,
-        "status": "Demobilized"
+        "status": "Demobilized",
+        "notes": "Returned after energization"
       },
       {
         "id": 79,
@@ -9220,6 +9594,7 @@
         "name": "Rawafd AlQwt Litaqt Est.",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "250",
@@ -9229,8 +9604,12 @@
         "responsible": "Ameen Basharat",
         "start_date": "2025-05-15",
         "return_date": "2025-10-01",
+        "duration_days": 140,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 76360.13,
-        "status": "Unknown"
+        "status": "Unknown",
+        "notes": "Confirmed but forms remaining"
       },
       {
         "id": 80,
@@ -9238,6 +9617,7 @@
         "name": "Rawafd AlQwt Litaqt Est.",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "250",
@@ -9247,8 +9627,12 @@
         "responsible": "Ameen Basharat",
         "start_date": "2025-07-01",
         "return_date": "2025-10-01",
+        "duration_days": 93,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 73000.0,
-        "status": "Unknown"
+        "status": "Unknown",
+        "notes": "Confirmed but forms remaining"
       },
       {
         "id": 81,
@@ -9256,6 +9640,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "386",
@@ -9265,8 +9650,12 @@
         "responsible": "Aurangzeb Mughal",
         "start_date": "2023-11-06",
         "return_date": "2026-07-01",
+        "duration_days": 969,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 149000.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 82,
@@ -9274,6 +9663,7 @@
         "name": "SDMO",
         "model": "Deutz HG2",
         "serial": "8772122",
+        "man_date": "",
         "usage_duration": "0",
         "phase": "3",
         "capacity": "35",
@@ -9283,8 +9673,12 @@
         "responsible": "Mohammed Alkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 83,
@@ -9292,6 +9686,7 @@
         "name": "Cummins",
         "model": "QSL9-G5",
         "serial": "84500645",
+        "man_date": "",
         "usage_duration": "0",
         "phase": "3",
         "capacity": "433",
@@ -9301,8 +9696,12 @@
         "responsible": "Mohammed Alkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 84,
@@ -9310,6 +9709,7 @@
         "name": "Cummins",
         "model": "6BTA5",
         "serial": "21653211",
+        "man_date": "",
         "usage_duration": "0",
         "phase": "3",
         "capacity": "150",
@@ -9319,8 +9719,12 @@
         "responsible": "Mohammed Alkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 85,
@@ -9328,6 +9732,7 @@
         "name": "Cummins",
         "model": "QSL9-G5",
         "serial": "84500185",
+        "man_date": "",
         "usage_duration": "0",
         "phase": "3",
         "capacity": "433",
@@ -9337,8 +9742,12 @@
         "responsible": "Mohammed Alkor",
         "start_date": "",
         "return_date": "",
+        "duration_days": 0,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Overhaul"
+        "status": "Overhaul",
+        "notes": ""
       },
       {
         "id": 86,
@@ -9346,6 +9755,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "125",
@@ -9355,8 +9765,12 @@
         "responsible": "Aurangzeb Mughal",
         "start_date": "2023-11-06",
         "return_date": "2026-07-01",
+        "duration_days": 969,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 53000.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 87,
@@ -9364,6 +9778,7 @@
         "name": "HERO - PERKINS",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "150KVA",
@@ -9373,8 +9788,12 @@
         "responsible": "Mirza Baig",
         "start_date": "2024-11-01",
         "return_date": "2025-08-31",
+        "duration_days": 304,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 6125.0,
-        "status": "Demobilized"
+        "status": "Demobilized",
+        "notes": ""
       },
       {
         "id": 88,
@@ -9382,6 +9801,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "350",
@@ -9391,8 +9811,12 @@
         "responsible": "Haqiqat",
         "start_date": "2025-01-01",
         "return_date": "2025-12-31",
+        "duration_days": 365,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 139500.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 89,
@@ -9400,6 +9824,7 @@
         "name": "Bravo",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "114",
@@ -9409,8 +9834,12 @@
         "responsible": "Haqiqat",
         "start_date": "2025-01-01",
         "return_date": "2025-12-31",
+        "duration_days": 365,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 50650.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 90,
@@ -9418,6 +9847,7 @@
         "name": "Bravo / Prime",
         "model": "PRM386",
         "serial": "PRM232451",
+        "man_date": "NOV, 2023",
         "usage_duration": "12H",
         "phase": "3",
         "capacity": "386",
@@ -9427,8 +9857,12 @@
         "responsible": "Islam",
         "start_date": "2024-01-01",
         "return_date": "2025-12-01",
+        "duration_days": 701,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 139500.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 91,
@@ -9436,6 +9870,7 @@
         "name": "Bravo / Prime",
         "model": "PRM125",
         "serial": "PRM232832",
+        "man_date": "NOV, 2023",
         "usage_duration": "12H",
         "phase": "3",
         "capacity": "116",
@@ -9445,8 +9880,12 @@
         "responsible": "Islam",
         "start_date": "2024-01-01",
         "return_date": "2025-12-01",
+        "duration_days": 701,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 50650.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 92,
@@ -9454,6 +9893,7 @@
         "name": "شركة هدى ناصر عبدالله فدعق",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "150",
@@ -9463,8 +9903,12 @@
         "responsible": "Mohammed Azam",
         "start_date": "2024-12-24",
         "return_date": "2025-11-01",
+        "duration_days": 313,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 6125.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 93,
@@ -9472,6 +9916,7 @@
         "name": "Perkins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "59",
@@ -9481,8 +9926,12 @@
         "responsible": "Mohammed Jaber",
         "start_date": "2025-01-07",
         "return_date": "2027-04-01",
+        "duration_days": 815,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 94,
@@ -9490,6 +9939,7 @@
         "name": "Perkins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "100",
@@ -9499,8 +9949,12 @@
         "responsible": "Mohammed Jaber",
         "start_date": "2025-01-07",
         "return_date": "2027-04-01",
+        "duration_days": 815,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 95,
@@ -9508,6 +9962,7 @@
         "name": "Perkins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "40",
@@ -9517,8 +9972,12 @@
         "responsible": "Saeed Mashely",
         "start_date": "2024-06-01",
         "return_date": "2025-11-01",
+        "duration_days": 519,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 96,
@@ -9526,6 +9985,7 @@
         "name": "Honda",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "200",
@@ -9535,8 +9995,12 @@
         "responsible": "Saeed Mashely",
         "start_date": "2024-06-01",
         "return_date": "2025-11-01",
+        "duration_days": 519,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 97,
@@ -9544,6 +10008,7 @@
         "name": "Energya",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "250",
@@ -9553,8 +10018,12 @@
         "responsible": "Tarek",
         "start_date": "2025-06-28",
         "return_date": "2025-10-10",
+        "duration_days": 105,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 7500.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 98,
@@ -9562,6 +10031,7 @@
         "name": "CUMMINS QSZ13-G5",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "500",
@@ -9571,8 +10041,12 @@
         "responsible": "Tawfiq",
         "start_date": "2023-01-26",
         "return_date": "2026-09-19",
+        "duration_days": 1333,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 99,
@@ -9580,6 +10054,7 @@
         "name": "CUMMINS NTA855",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "400",
@@ -9589,8 +10064,12 @@
         "responsible": "Tawfiq",
         "start_date": "2023-12-05",
         "return_date": "2026-09-19",
+        "duration_days": 1020,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 100,
@@ -9598,6 +10077,7 @@
         "name": "Cummins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "400",
@@ -9607,8 +10087,12 @@
         "responsible": "Tawfiq",
         "start_date": "2023-05-26",
         "return_date": "2026-09-19",
+        "duration_days": 1213,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 101,
@@ -9616,6 +10100,7 @@
         "name": "Kubota",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "50",
@@ -9625,8 +10110,12 @@
         "responsible": "Tawfiq",
         "start_date": "2023-12-05",
         "return_date": "2026-09-19",
+        "duration_days": 1020,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 44800.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 102,
@@ -9634,6 +10123,7 @@
         "name": "Kubota",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "15",
@@ -9643,8 +10133,12 @@
         "responsible": "Tawfiq",
         "start_date": "2023-12-05",
         "return_date": "2026-09-19",
+        "duration_days": 1020,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 103,
@@ -9652,6 +10146,7 @@
         "name": "Cummins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "54",
@@ -9661,8 +10156,12 @@
         "responsible": "Tawfiq",
         "start_date": "2023-12-05",
         "return_date": "2026-09-19",
+        "duration_days": 1020,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 44800.0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 104,
@@ -9670,6 +10169,7 @@
         "name": "Cummins",
         "model": "",
         "serial": "",
+        "man_date": "",
         "usage_duration": "12H",
         "phase": "",
         "capacity": "225",
@@ -9679,8 +10179,12 @@
         "responsible": "Tawfiq",
         "start_date": "2023-12-05",
         "return_date": "2026-09-19",
+        "duration_days": 1020,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Active"
+        "status": "Active",
+        "notes": ""
       },
       {
         "id": 105,
@@ -9688,6 +10192,7 @@
         "name": "Bravo",
         "model": "PRV125",
         "serial": "PRV242035",
+        "man_date": "",
         "usage_duration": "0",
         "phase": "3",
         "capacity": "114",
@@ -9695,298 +10200,14 @@
         "location": "Riyadh Warehouse",
         "condition": "Good",
         "responsible": "Mohammed Alkor",
-        "start_date": "00:00:00",
-        "return_date": "00:00:00",
+        "start_date": "1900-01-01",
+        "return_date": "1900-01-01",
+        "duration_days": 1,
+        "remaining_days": 0,
+        "remaining_status": "Ended",
         "cost": 0,
-        "status": "Idle"
-      },
-      {
-        "id": 105,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 106,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 107,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 108,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 109,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 110,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 111,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 112,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 113,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 114,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 115,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 116,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 117,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 118,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 119,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
-      },
-      {
-        "id": 120,
-        "type": "Unknown",
-        "name": "",
-        "model": "",
-        "serial": "",
-        "usage_duration": "",
-        "phase": "",
-        "capacity": "",
-        "max_kw": 0,
-        "location": "",
-        "condition": "Unknown",
-        "responsible": "",
-        "start_date": "",
-        "return_date": "",
-        "cost": 0,
-        "status": "Unknown"
+        "status": "Idle",
+        "notes": ""
       }
     ],
     "stand_acs": [
@@ -26915,10 +27136,10 @@
       "TEMPORARY"
     ],
     "generator_locations": [
+      "Abu Hadriyah",
       "Ain Dar",
       "Al Bahr",
       "Aldiryiah 8171",
-      "Aldiryiah 8172",
       "Aldiryiah 8242",
       "Alhada 2",
       "Almurjan",
@@ -26932,11 +27153,10 @@
       "Farasan",
       "Hafer Al Batin",
       "Haram-3",
-      "Jafurah",
       "Jafurah - BSP",
       "Jafurah BSP",
       "Jazeera Royal",
-      "Jeddah Waerhouse",
+      "Jeddah Warehouse",
       "KSP 8388",
       "KSP 8388 S/S",
       "KSP 8390 S/S",
@@ -26950,6 +27170,7 @@
       "Rumah",
       "Ryadiyah",
       "Senaya",
+      "Tabuk Warehouse OSP",
       "Taibah west",
       "Wadi Dahran",
       "ZATCA"
@@ -26957,8 +27178,7 @@
     "generator_statuses": [
       "Active",
       "Demobilized",
-      "On Hold",
-      "Overdue",
+      "Idle",
       "Overhaul"
     ],
     "tool_types": [
@@ -26977,6 +27197,48 @@
       "New - Not received from Supplier",
       "RTR",
       "Tabuk ISP"
+    ],
+    "generator_capacities": [
+      "3",
+      "10",
+      "15",
+      "20",
+      "30",
+      "35",
+      "40",
+      "50",
+      "53",
+      "54",
+      "59",
+      "60",
+      "100",
+      "114",
+      "116",
+      "120",
+      "125",
+      "150",
+      "150KVA",
+      "200",
+      "225",
+      "250",
+      "291",
+      "330",
+      "340",
+      "350",
+      "352",
+      "386",
+      "400",
+      "425",
+      "433",
+      "500",
+      "540",
+      "600KVA"
+    ],
+    "generator_conditions": [
+      "Bad",
+      "Good",
+      "Needs Maintenance",
+      "Not Working"
     ]
   },
   "charts": {
