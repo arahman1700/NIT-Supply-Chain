@@ -451,7 +451,7 @@
                         <div class="chart-container" style="height:220px;"><canvas id="accStatusChart"></canvas></div>
                     </div>
                     <div class="card p-5">
-                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Residents by City</h3>
+                        <h3 class="font-bold text-gray-700 mb-4 text-sm">Rooms by City</h3>
                         <div class="chart-container" style="height:220px;"><canvas id="accCityChart"></canvas></div>
                     </div>
                 </div>
@@ -463,7 +463,7 @@
                     </div>
                     <div class="scroll-container">
                         <table class="data-table">
-                            <thead><tr><th>City</th><th>Project</th><th>Rooms</th><th>Residents</th><th>Empty Beds</th><th>Occupancy</th><th>End Date</th><th>Days Left</th><th>Status</th><th>Annual (SAR)</th></tr></thead>
+                            <thead><tr><th>City</th><th>Project</th><th>Rooms</th><th>Occupied</th><th>Empty</th><th>Occupancy %</th><th>End Date</th><th>Days Left</th><th>Status</th><th>Annual (SAR)</th></tr></thead>
                             <tbody id="accTableBody"></tbody>
                         </table>
                     </div>
@@ -731,7 +731,7 @@
         const ICONS = {
             home: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>',
             users: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>',
-            bed: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>',
+            room: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>',
             check: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
             alert: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>',
             money: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
@@ -825,15 +825,16 @@
 
         function renderAccommodation() {
             const data = filteredData.accommodation;
-            const s = { total: data.length, rooms: 0, residents: 0, empty: 0, cost: 0, active: 0, warning: 0, critical: 0, expired: 0 };
-            data.forEach(r => { s.rooms += r.rooms; s.residents += r.residents; s.empty += r.empty_beds; s.cost += r.annual_payment; if (r.status === 'Active') s.active++; else if (r.status === 'Warning') s.warning++; else if (r.status === 'Critical') s.critical++; else s.expired++; });
-            const avgOcc = (s.residents + s.empty) > 0 ? Math.round(s.residents / (s.residents + s.empty) * 100) : 0;
+            const s = { total: data.length, rooms: 0, occupied_rooms: 0, empty_rooms: 0, cost: 0, active: 0, warning: 0, critical: 0, expired: 0 };
+            data.forEach(r => { s.rooms += r.rooms; s.empty_rooms += r.empty_rooms; s.cost += r.annual_payment; if (r.status === 'Active') s.active++; else if (r.status === 'Warning') s.warning++; else if (r.status === 'Critical') s.critical++; else s.expired++; });
+            s.occupied_rooms = s.rooms - s.empty_rooms;
+            const avgOcc = s.rooms > 0 ? Math.round(s.occupied_rooms / s.rooms * 100) : 0;
 
             // SLA Cards
             const accCols = [
                 { key: 'city', label: 'City' }, { key: 'project_name', label: 'Project' },
-                { key: 'rooms', label: 'Rooms' }, { key: 'residents', label: 'Residents' },
-                { key: 'empty_beds', label: 'Empty Beds' }, { key: 'occupancy_rate', label: 'Occupancy %' },
+                { key: 'rooms', label: 'Rooms' }, { key: 'occupied_rooms', label: 'Occupied' },
+                { key: 'empty_rooms', label: 'Empty' }, { key: 'occupancy_rate', label: 'Occupancy %' },
                 { key: 'end_date', label: 'End Date' }, { key: 'remaining_days', label: 'Days Left' },
                 { key: 'status', label: 'Status' }, { key: 'annual_payment', label: 'Annual Payment' }
             ];
@@ -848,8 +849,8 @@
             const kpi = document.getElementById('accKPIs');
             kpi.textContent = '';
             kpi.appendChild(createKPI('bg-primary-gradient', 'home', 'Accommodations', s.total, s.rooms + ' rooms', () => NesmaModal.show('All Accommodations', data, accCols, s.total + ' records')));
-            kpi.appendChild(createKPI('bg-cyan-gradient', 'home', 'Rooms', '459', 'Total rooms', () => NesmaModal.show('Rooms by Location', data.filter(r => r.rooms > 0), accCols)));
-            kpi.appendChild(createKPI('bg-warning-gradient', 'bed', 'Empty Beds', s.empty.toLocaleString(), 'Available', () => NesmaModal.show('Empty Beds', data.filter(r => r.empty_beds > 0), accCols)));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'home', 'Rooms', s.rooms, 'Total rooms', () => NesmaModal.show('Rooms by Location', data.filter(r => r.rooms > 0), accCols)));
+            kpi.appendChild(createKPI('bg-warning-gradient', 'room', 'Empty Rooms', s.empty_rooms.toLocaleString(), 'Vacant', () => NesmaModal.show('Empty Rooms', data.filter(r => r.empty_rooms > 0), accCols)));
             kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Active', s.active, 'No action needed', () => NesmaModal.show('Active Contracts', data.filter(r => r.status === 'Active'), accCols)));
             kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'At Risk', s.warning + s.critical, 'Needs attention', () => NesmaModal.show('At Risk Contracts', data.filter(r => r.status === 'Warning' || r.status === 'Critical'), accCols)));
             kpi.appendChild(createKPI('bg-purple-gradient', 'money', 'Annual Cost', 'SAR ' + (s.cost / 1000000).toFixed(1) + 'M', 'Total payments', () => NesmaModal.show('Cost Breakdown', data.sort((a, b) => b.annual_payment - a.annual_payment), accCols)));
@@ -882,12 +883,12 @@
             NesmaChartDrill.attach(charts.accStatus, (label) => data.filter(r => r.status === label), accCols, 'Accommodation');
 
             const cityData = {};
-            data.forEach(r => { cityData[r.city] = (cityData[r.city] || 0) + r.residents; });
+            data.forEach(r => { cityData[r.city] = (cityData[r.city] || 0) + r.rooms; });
             const cities = Object.entries(cityData).sort((a, b) => b[1] - a[1]).slice(0, 6);
             if (charts.accCity) charts.accCity.destroy();
             charts.accCity = new Chart(document.getElementById('accCityChart').getContext('2d'), {
                 type: 'bar',
-                data: { labels: cities.map(c => c[0]), datasets: [{ label: 'Residents', data: cities.map(c => c[1]), backgroundColor: '#2E3192' }] },
+                data: { labels: cities.map(c => c[0]), datasets: [{ label: 'Rooms', data: cities.map(c => c[1]), backgroundColor: '#2E3192' }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
 
@@ -899,11 +900,12 @@
             tbody.innerHTML = '';
             data.forEach(r => {
                 const tr = document.createElement('tr');
+                const occupied = r.rooms - r.empty_rooms;
                 tr.appendChild(createCell(r.city, 'font-medium'));
                 tr.appendChild(createCell(r.project_name));
                 tr.appendChild(createCell(r.rooms, 'text-center'));
-                tr.appendChild(createCell(r.residents, 'text-center'));
-                tr.appendChild(createCell(r.empty_beds, 'text-center'));
+                tr.appendChild(createCell(occupied, 'text-center'));
+                tr.appendChild(createCell(r.empty_rooms, 'text-center'));
                 const occTd = document.createElement('td');
                 occTd.innerHTML = '<div class="progress-bar"><div class="progress-fill progress-' + (r.occupancy_rate >= 80 ? 'green' : r.occupancy_rate >= 50 ? 'yellow' : 'red') + '" style="width:' + Math.min(r.occupancy_rate, 100) + '%"></div></div><span class="text-xs text-gray-500">' + r.occupancy_rate + '%</span>';
                 tr.appendChild(occTd);
@@ -1269,14 +1271,14 @@
             XLSX.utils.book_append_sheet(wb, ws, 'Data');
             XLSX.writeFile(wb, name + '_' + new Date().toISOString().slice(0, 10) + '.xlsx');
         }
-        function exportAccommodation() { exportToExcel(filteredData.accommodation, 'Accommodation', ['city', 'project_name', 'rooms', 'residents', 'empty_beds', 'occupancy_rate', 'end_date', 'remaining_days', 'status', 'annual_payment']); }
+        function exportAccommodation() { exportToExcel(filteredData.accommodation, 'Accommodation', ['city', 'project_name', 'rooms', 'occupied_rooms', 'empty_rooms', 'occupancy_rate', 'end_date', 'remaining_days', 'status', 'annual_payment']); }
         function exportDriving() { exportToExcel(filteredData.driving, 'Fleet', ['plate_number', 'distance_km', 'overspeed_count', 'harsh_braking', 'max_speed', 'dat_score', 'rating']); }
         function exportFuel() { exportToExcel(filteredData.fuel, 'Fuel', ['plate_number', 'distance_km', 'fuel_liters', 'fuel_cost']); }
         function exportMaintenance() { exportToExcel(filteredData.maintenance, 'Maintenance', ['date', 'region', 'city', 'location', 'vendor', 'description', 'status']); }
         function exportSafety() { exportToExcel(filteredData.overspeed, 'Safety', ['datetime', 'plate_number', 'speed', 'severity', 'address']); }
 
         // CSV exports
-        function exportAccommodationCSV() { NesmaExport.toCSV(filteredData.accommodation.map(r => ({ City: r.city, Project: r.project_name, Rooms: r.rooms, Residents: r.residents, 'Empty Beds': r.empty_beds, 'Occupancy %': r.occupancy_rate, 'End Date': r.end_date, 'Days Left': r.remaining_days, Status: r.status, 'Annual Payment': r.annual_payment })), 'Accommodation'); }
+        function exportAccommodationCSV() { NesmaExport.toCSV(filteredData.accommodation.map(r => ({ City: r.city, Project: r.project_name, Rooms: r.rooms, Occupied: r.rooms - r.empty_rooms, 'Empty Rooms': r.empty_rooms, 'Occupancy %': r.occupancy_rate, 'End Date': r.end_date, 'Days Left': r.remaining_days, Status: r.status, 'Annual Payment': r.annual_payment })), 'Accommodation'); }
         function exportDrivingCSV() { NesmaExport.toCSV(filteredData.driving.map(r => ({ Plate: r.plate_number, 'Distance (km)': r.distance_km, Overspeed: r.overspeed_count, 'Harsh Braking': r.harsh_braking, 'Max Speed': r.max_speed, 'DAT Score': r.dat_score, Rating: r.rating })), 'Fleet'); }
         function exportFuelCSV() { NesmaExport.toCSV(filteredData.fuel.map(r => ({ Plate: r.plate_number, 'Distance (km)': r.distance_km, 'Fuel (L)': r.fuel_liters, 'Cost (SAR)': r.fuel_cost })), 'Fuel'); }
         function exportMaintenanceCSV() { NesmaExport.toCSV(filteredData.maintenance.map(r => ({ Date: r.date, Region: r.region, City: r.city, Location: r.location, Vendor: r.vendor, Description: r.description, Status: r.status })), 'Maintenance'); }

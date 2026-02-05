@@ -6,7 +6,6 @@
       "total_rooms": 459,
       "total_residents": 1074,
       "total_empty_rooms": 61,
-      "total_empty_beds": 159,
       "total_contract_value": 41243157.0,
       "annual_payment": 7297950.0,
       "avg_occupancy": 87.1,
@@ -15,7 +14,8 @@
         "warning": 5,
         "critical": 6,
         "expired": 0
-      }
+      },
+      "total_occupied_rooms": 398
     },
     "records": [
       {
@@ -25,8 +25,7 @@
         "rooms": 18,
         "residents": 65,
         "empty_rooms": 1,
-        "empty_beds": 2,
-        "occupancy_rate": 97.0,
+        "occupancy_rate": 94.4,
         "start_date": "2023-01-01",
         "end_date": "2027-12-31",
         "remaining_days": 716,
@@ -34,7 +33,8 @@
         "total_contract_cost": 1100000.0,
         "annual_payment": 220000.0,
         "projects": "Aramco",
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 17
       },
       {
         "id": 2,
@@ -43,8 +43,7 @@
         "rooms": 12,
         "residents": 15,
         "empty_rooms": 0,
-        "empty_beds": 0,
-        "occupancy_rate": 31.2,
+        "occupancy_rate": 100.0,
         "start_date": "2023-08-10",
         "end_date": "2026-08-09",
         "remaining_days": 207,
@@ -52,7 +51,8 @@
         "total_contract_cost": 1190000.0,
         "annual_payment": 400000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 12
       },
       {
         "id": 3,
@@ -61,8 +61,7 @@
         "rooms": 16,
         "residents": 21,
         "empty_rooms": 0,
-        "empty_beds": 0,
-        "occupancy_rate": 32.8,
+        "occupancy_rate": 100.0,
         "start_date": "2023-10-01",
         "end_date": "2026-09-30",
         "remaining_days": 259,
@@ -70,7 +69,8 @@
         "total_contract_cost": 2100000.0,
         "annual_payment": 700000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 16
       },
       {
         "id": 4,
@@ -79,8 +79,7 @@
         "rooms": 30,
         "residents": 77,
         "empty_rooms": 4,
-        "empty_beds": 7,
-        "occupancy_rate": 91.7,
+        "occupancy_rate": 86.7,
         "start_date": "2023-10-21",
         "end_date": "2033-10-20",
         "remaining_days": 2836,
@@ -88,7 +87,8 @@
         "total_contract_cost": 4750000.0,
         "annual_payment": 430000.0,
         "projects": "KSP,OH,Remah,Diriyah,IGH Project,",
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 26
       },
       {
         "id": 5,
@@ -97,8 +97,7 @@
         "rooms": 16,
         "residents": 31,
         "empty_rooms": 2,
-        "empty_beds": 4,
-        "occupancy_rate": 88.6,
+        "occupancy_rate": 87.5,
         "start_date": "2023-11-01",
         "end_date": "2026-10-31",
         "remaining_days": 290,
@@ -106,7 +105,8 @@
         "total_contract_cost": 123000.0,
         "annual_payment": 41000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 14
       },
       {
         "id": 6,
@@ -115,8 +115,7 @@
         "rooms": 6,
         "residents": 17,
         "empty_rooms": 0,
-        "empty_beds": 2,
-        "occupancy_rate": 89.5,
+        "occupancy_rate": 100.0,
         "start_date": "2023-11-16",
         "end_date": "2026-11-15",
         "remaining_days": 305,
@@ -124,7 +123,8 @@
         "total_contract_cost": 195000.0,
         "annual_payment": 65000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 6
       },
       {
         "id": 7,
@@ -133,8 +133,7 @@
         "rooms": 17,
         "residents": 31,
         "empty_rooms": 0,
-        "empty_beds": 2,
-        "occupancy_rate": 93.9,
+        "occupancy_rate": 100.0,
         "start_date": "2023-11-26",
         "end_date": "2026-11-25",
         "remaining_days": 315,
@@ -142,7 +141,8 @@
         "total_contract_cost": 450000.0,
         "annual_payment": 150000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 17
       },
       {
         "id": 8,
@@ -151,8 +151,7 @@
         "rooms": 6,
         "residents": 27,
         "empty_rooms": 1,
-        "empty_beds": 3,
-        "occupancy_rate": 90.0,
+        "occupancy_rate": 83.3,
         "start_date": "2023-12-17",
         "end_date": "2026-12-16",
         "remaining_days": 336,
@@ -160,7 +159,8 @@
         "total_contract_cost": 108000.0,
         "annual_payment": 36000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 5
       },
       {
         "id": 9,
@@ -169,8 +169,7 @@
         "rooms": 4,
         "residents": 3,
         "empty_rooms": 2,
-        "empty_beds": 4,
-        "occupancy_rate": 42.9,
+        "occupancy_rate": 50.0,
         "start_date": "2024-01-06",
         "end_date": "2027-01-05",
         "remaining_days": 356,
@@ -178,7 +177,8 @@
         "total_contract_cost": 180000.0,
         "annual_payment": 60000.0,
         "projects": "Central",
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 2
       },
       {
         "id": 10,
@@ -187,8 +187,7 @@
         "rooms": 6,
         "residents": 27,
         "empty_rooms": 0,
-        "empty_beds": 0,
-        "occupancy_rate": 112.5,
+        "occupancy_rate": 100.0,
         "start_date": "2024-04-01",
         "end_date": "2027-03-31",
         "remaining_days": 441,
@@ -196,7 +195,8 @@
         "total_contract_cost": 114999.0,
         "annual_payment": 35000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 6
       },
       {
         "id": 11,
@@ -205,8 +205,7 @@
         "rooms": 6,
         "residents": 14,
         "empty_rooms": 1,
-        "empty_beds": 2,
-        "occupancy_rate": 87.5,
+        "occupancy_rate": 83.3,
         "start_date": "2024-03-01",
         "end_date": "2026-02-28",
         "remaining_days": 45,
@@ -214,7 +213,8 @@
         "total_contract_cost": 80000.0,
         "annual_payment": 40000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 5
       },
       {
         "id": 12,
@@ -223,7 +223,6 @@
         "rooms": 0,
         "residents": 0,
         "empty_rooms": 0,
-        "empty_beds": 0,
         "occupancy_rate": 0,
         "start_date": "2024-04-01",
         "end_date": "2027-03-31",
@@ -232,7 +231,8 @@
         "total_contract_cost": 235000.0,
         "annual_payment": 80000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 0
       },
       {
         "id": 13,
@@ -241,8 +241,7 @@
         "rooms": 18,
         "residents": 45,
         "empty_rooms": 0,
-        "empty_beds": 2,
-        "occupancy_rate": 95.7,
+        "occupancy_rate": 100.0,
         "start_date": "2024-04-07",
         "end_date": "2034-04-06",
         "remaining_days": 3004,
@@ -250,7 +249,8 @@
         "total_contract_cost": 1695000.0,
         "annual_payment": 170000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 18
       },
       {
         "id": 14,
@@ -259,8 +259,7 @@
         "rooms": 12,
         "residents": 31,
         "empty_rooms": 0,
-        "empty_beds": 0,
-        "occupancy_rate": 64.6,
+        "occupancy_rate": 100.0,
         "start_date": "2024-06-01",
         "end_date": "2026-05-31",
         "remaining_days": 137,
@@ -268,7 +267,8 @@
         "total_contract_cost": 200000.0,
         "annual_payment": 100000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 12
       },
       {
         "id": 15,
@@ -277,8 +277,7 @@
         "rooms": 20,
         "residents": 27,
         "empty_rooms": 1,
-        "empty_beds": 4,
-        "occupancy_rate": 87.1,
+        "occupancy_rate": 95.0,
         "start_date": "2024-05-01",
         "end_date": "2034-04-30",
         "remaining_days": 3028,
@@ -286,7 +285,8 @@
         "total_contract_cost": 3600000.0,
         "annual_payment": 360000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 19
       },
       {
         "id": 16,
@@ -295,8 +295,7 @@
         "rooms": 41,
         "residents": 127,
         "empty_rooms": 5,
-        "empty_beds": 6,
-        "occupancy_rate": 95.5,
+        "occupancy_rate": 87.8,
         "start_date": "2024-07-08",
         "end_date": "2034-07-07",
         "remaining_days": 3096,
@@ -304,7 +303,8 @@
         "total_contract_cost": 3500000.0,
         "annual_payment": 350000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 36
       },
       {
         "id": 17,
@@ -313,8 +313,7 @@
         "rooms": 7,
         "residents": 15,
         "empty_rooms": 0,
-        "empty_beds": 2,
-        "occupancy_rate": 88.2,
+        "occupancy_rate": 100.0,
         "start_date": "2024-09-01",
         "end_date": "2027-08-31",
         "remaining_days": 594,
@@ -322,7 +321,8 @@
         "total_contract_cost": 120000.0,
         "annual_payment": 40000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 7
       },
       {
         "id": 18,
@@ -331,7 +331,6 @@
         "rooms": 0,
         "residents": 0,
         "empty_rooms": 0,
-        "empty_beds": 0,
         "occupancy_rate": 0,
         "start_date": "2024-11-03",
         "end_date": "2029-11-02",
@@ -340,7 +339,8 @@
         "total_contract_cost": 4000000.0,
         "annual_payment": 800000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 0
       },
       {
         "id": 19,
@@ -349,8 +349,7 @@
         "rooms": 6,
         "residents": 3,
         "empty_rooms": 3,
-        "empty_beds": 6,
-        "occupancy_rate": 33.3,
+        "occupancy_rate": 50.0,
         "start_date": "2024-09-01",
         "end_date": "2029-08-31",
         "remaining_days": 1325,
@@ -358,7 +357,8 @@
         "total_contract_cost": 1500000.0,
         "annual_payment": 300000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 3
       },
       {
         "id": 20,
@@ -367,8 +367,7 @@
         "rooms": 9,
         "residents": 32,
         "empty_rooms": 0,
-        "empty_beds": 0,
-        "occupancy_rate": 88.9,
+        "occupancy_rate": 100.0,
         "start_date": "2024-03-19",
         "end_date": "2027-03-18",
         "remaining_days": 428,
@@ -376,7 +375,8 @@
         "total_contract_cost": 127000.0,
         "annual_payment": 127000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 9
       },
       {
         "id": 21,
@@ -385,8 +385,7 @@
         "rooms": 18,
         "residents": 17,
         "empty_rooms": 7,
-        "empty_beds": 18,
-        "occupancy_rate": 48.6,
+        "occupancy_rate": 61.1,
         "start_date": "2024-12-15",
         "end_date": "2026-12-14",
         "remaining_days": 334,
@@ -394,7 +393,8 @@
         "total_contract_cost": 480000.0,
         "annual_payment": 240000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 11
       },
       {
         "id": 22,
@@ -403,7 +403,6 @@
         "rooms": 0,
         "residents": 0,
         "empty_rooms": 0,
-        "empty_beds": 0,
         "occupancy_rate": 0,
         "start_date": "2025-02-01",
         "end_date": "2026-10-31",
@@ -412,7 +411,8 @@
         "total_contract_cost": 71750.0,
         "annual_payment": 41000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 0
       },
       {
         "id": 23,
@@ -421,8 +421,7 @@
         "rooms": 6,
         "residents": 7,
         "empty_rooms": 3,
-        "empty_beds": 16,
-        "occupancy_rate": 30.4,
+        "occupancy_rate": 50.0,
         "start_date": "2025-01-20",
         "end_date": "2028-01-19",
         "remaining_days": 735,
@@ -430,7 +429,8 @@
         "total_contract_cost": 165000.0,
         "annual_payment": 55000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 3
       },
       {
         "id": 24,
@@ -439,8 +439,7 @@
         "rooms": 14,
         "residents": 27,
         "empty_rooms": 7,
-        "empty_beds": 19,
-        "occupancy_rate": 58.7,
+        "occupancy_rate": 50.0,
         "start_date": "2025-02-01",
         "end_date": "2028-01-31",
         "remaining_days": 747,
@@ -448,7 +447,8 @@
         "total_contract_cost": 240000.0,
         "annual_payment": 80000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 7
       },
       {
         "id": 25,
@@ -457,8 +457,7 @@
         "rooms": 14,
         "residents": 31,
         "empty_rooms": 1,
-        "empty_beds": 4,
-        "occupancy_rate": 88.6,
+        "occupancy_rate": 92.9,
         "start_date": "2025-02-15",
         "end_date": "2026-02-14",
         "remaining_days": 31,
@@ -466,7 +465,8 @@
         "total_contract_cost": 40000.0,
         "annual_payment": 40000.0,
         "projects": "Aramco",
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 13
       },
       {
         "id": 26,
@@ -475,7 +475,6 @@
         "rooms": 0,
         "residents": 0,
         "empty_rooms": 0,
-        "empty_beds": 0,
         "occupancy_rate": 0,
         "start_date": "2025-04-17",
         "end_date": "2026-01-17",
@@ -484,7 +483,8 @@
         "total_contract_cost": 51300.0,
         "annual_payment": 51300.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 0
       },
       {
         "id": 27,
@@ -493,7 +493,6 @@
         "rooms": 0,
         "residents": 0,
         "empty_rooms": 0,
-        "empty_beds": 0,
         "occupancy_rate": 0,
         "start_date": "2025-05-20",
         "end_date": "2026-10-31",
@@ -502,7 +501,8 @@
         "total_contract_cost": 65229.0,
         "annual_payment": 45000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 0
       },
       {
         "id": 28,
@@ -511,7 +511,6 @@
         "rooms": 0,
         "residents": 0,
         "empty_rooms": 0,
-        "empty_beds": 0,
         "occupancy_rate": 0,
         "start_date": "2025-05-20",
         "end_date": "2026-10-31",
@@ -520,7 +519,8 @@
         "total_contract_cost": 65229.0,
         "annual_payment": 45000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 0
       },
       {
         "id": 29,
@@ -529,8 +529,7 @@
         "rooms": 3,
         "residents": 7,
         "empty_rooms": 0,
-        "empty_beds": 0,
-        "occupancy_rate": 58.3,
+        "occupancy_rate": 100.0,
         "start_date": "2025-06-07",
         "end_date": "2026-06-06",
         "remaining_days": 143,
@@ -538,7 +537,8 @@
         "total_contract_cost": 7800.0,
         "annual_payment": 7800.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 3
       },
       {
         "id": 30,
@@ -547,8 +547,7 @@
         "rooms": 3,
         "residents": 8,
         "empty_rooms": 0,
-        "empty_beds": 0,
-        "occupancy_rate": 66.7,
+        "occupancy_rate": 100.0,
         "start_date": "2025-06-21",
         "end_date": "2026-06-20",
         "remaining_days": 157,
@@ -556,7 +555,8 @@
         "total_contract_cost": 12000.0,
         "annual_payment": 12000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 3
       },
       {
         "id": 31,
@@ -565,8 +565,7 @@
         "rooms": 6,
         "residents": 12,
         "empty_rooms": 0,
-        "empty_beds": 2,
-        "occupancy_rate": 85.7,
+        "occupancy_rate": 100.0,
         "start_date": "2025-07-07",
         "end_date": "2026-07-06",
         "remaining_days": 173,
@@ -574,7 +573,8 @@
         "total_contract_cost": 23000.0,
         "annual_payment": 23000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 6
       },
       {
         "id": 32,
@@ -583,8 +583,7 @@
         "rooms": 11,
         "residents": 26,
         "empty_rooms": 4,
-        "empty_beds": 11,
-        "occupancy_rate": 70.3,
+        "occupancy_rate": 63.6,
         "start_date": "2025-07-01",
         "end_date": "2027-06-30",
         "remaining_days": 532,
@@ -592,7 +591,8 @@
         "total_contract_cost": 180000.0,
         "annual_payment": 90000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 7
       },
       {
         "id": 33,
@@ -601,8 +601,7 @@
         "rooms": 42,
         "residents": 127,
         "empty_rooms": 1,
-        "empty_beds": 0,
-        "occupancy_rate": 75.6,
+        "occupancy_rate": 97.6,
         "start_date": "2025-09-18",
         "end_date": "2035-09-17",
         "remaining_days": 3533,
@@ -610,7 +609,8 @@
         "total_contract_cost": 5500000.0,
         "annual_payment": 500000.0,
         "projects": "Central",
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 41
       },
       {
         "id": 34,
@@ -619,8 +619,7 @@
         "rooms": 30,
         "residents": 52,
         "empty_rooms": 11,
-        "empty_beds": 20,
-        "occupancy_rate": 72.2,
+        "occupancy_rate": 63.3,
         "start_date": "2025-05-24",
         "end_date": "2035-05-23",
         "remaining_days": 3416,
@@ -628,7 +627,8 @@
         "total_contract_cost": 5225000.0,
         "annual_payment": 415000.0,
         "projects": "Central",
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 19
       },
       {
         "id": 35,
@@ -637,8 +637,7 @@
         "rooms": 8,
         "residents": 23,
         "empty_rooms": 1,
-        "empty_beds": 2,
-        "occupancy_rate": 92.0,
+        "occupancy_rate": 87.5,
         "start_date": "2025-10-10",
         "end_date": "2026-04-09",
         "remaining_days": 85,
@@ -646,7 +645,8 @@
         "total_contract_cost": 50000.0,
         "annual_payment": 50000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 7
       },
       {
         "id": 36,
@@ -655,8 +655,7 @@
         "rooms": 7,
         "residents": 15,
         "empty_rooms": 0,
-        "empty_beds": 2,
-        "occupancy_rate": 88.2,
+        "occupancy_rate": 100.0,
         "start_date": "2025-11-01",
         "end_date": "2026-10-31",
         "remaining_days": 290,
@@ -664,7 +663,8 @@
         "total_contract_cost": 153750.0,
         "annual_payment": 153750.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 7
       },
       {
         "id": 37,
@@ -673,8 +673,7 @@
         "rooms": 6,
         "residents": 2,
         "empty_rooms": 5,
-        "empty_beds": 16,
-        "occupancy_rate": 11.1,
+        "occupancy_rate": 16.7,
         "start_date": "2025-11-30",
         "end_date": "2026-11-29",
         "remaining_days": 319,
@@ -682,7 +681,8 @@
         "total_contract_cost": 50000.0,
         "annual_payment": 50000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 1
       },
       {
         "id": 38,
@@ -691,8 +691,7 @@
         "rooms": 6,
         "residents": 13,
         "empty_rooms": 0,
-        "empty_beds": 0,
-        "occupancy_rate": 54.2,
+        "occupancy_rate": 100.0,
         "start_date": "2025-12-01",
         "end_date": "2026-02-28",
         "remaining_days": 45,
@@ -700,7 +699,8 @@
         "total_contract_cost": 20000.0,
         "annual_payment": 20000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 6
       },
       {
         "id": 39,
@@ -709,8 +709,7 @@
         "rooms": 14,
         "residents": 38,
         "empty_rooms": 0,
-        "empty_beds": 0,
-        "occupancy_rate": 67.9,
+        "occupancy_rate": 100.0,
         "start_date": "2025-12-22",
         "end_date": "2026-02-21",
         "remaining_days": 38,
@@ -718,7 +717,8 @@
         "total_contract_cost": 58000.0,
         "annual_payment": 58000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 14
       },
       {
         "id": 40,
@@ -727,7 +727,6 @@
         "rooms": 0,
         "residents": 0,
         "empty_rooms": 0,
-        "empty_beds": 0,
         "occupancy_rate": 0,
         "start_date": "2026-03-01",
         "end_date": "2031-01-31",
@@ -736,7 +735,8 @@
         "total_contract_cost": 3000000.0,
         "annual_payment": 600000.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 0
       },
       {
         "id": 41,
@@ -745,7 +745,6 @@
         "rooms": 0,
         "residents": 0,
         "empty_rooms": 0,
-        "empty_beds": 0,
         "occupancy_rate": 0,
         "start_date": "2026-01-18",
         "end_date": "2026-04-17",
@@ -754,7 +753,8 @@
         "total_contract_cost": 17100.0,
         "annual_payment": 17100.0,
         "projects": null,
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 0
       },
       {
         "id": 42,
@@ -763,8 +763,7 @@
         "rooms": 21,
         "residents": 61,
         "empty_rooms": 1,
-        "empty_beds": 3,
-        "occupancy_rate": 95.3,
+        "occupancy_rate": 95.2,
         "start_date": "2024-12-10",
         "end_date": "2026-12-09",
         "remaining_days": 329,
@@ -772,7 +771,8 @@
         "total_contract_cost": 400000.0,
         "annual_payment": 200000.0,
         "projects": "Taiba West,Haram-3SS,Medno,",
-        "remarks": null
+        "remarks": null,
+        "occupied_rooms": 20
       }
     ],
     "filters": {
