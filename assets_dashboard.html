@@ -166,19 +166,104 @@
             </div>
 
             <div id="tab-generators" class="tab-content p-4 lg:p-6">
-                <div class="filter-section no-print">
-                    <div class="flex flex-wrap items-end gap-4">
-                        <div class="flex-1 min-w-[200px]"><label class="block text-xs font-medium text-gray-500 mb-1">Search</label><div class="search-box"><input type="text" id="generatorSearch" placeholder="Search generators..." onkeyup="filterGenerators()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div></div>
-                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Location</label><select id="filterGenLocation" class="filter-select" onchange="filterGenerators()"><option value="">All Locations</option></select></div>
-                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Status</label><select id="filterGenStatus" class="filter-select" onchange="filterGenerators()"><option value="">All Statuses</option></select></div>
-                        <button onclick="exportToExcel('generators')" class="btn-export btn-excel">Excel</button>
-                        <button onclick="NesmaExport.toCSV(filteredData.generators,'Generators')" class="btn-export btn-csv">CSV</button>
-                        <button onclick="NesmaExport.toPDF('tab-generators','Assets_Generators')" class="btn-export btn-pdf">PDF</button>
+                <!-- NIT vs Rental Comparison Cards -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- NIT Card -->
+                    <div class="relative rounded-2xl p-6 text-white overflow-hidden" style="background: linear-gradient(135deg, #059669 0%, #047857 100%);">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold">NIT Owned</h3>
+                                <p class="text-sm opacity-80">Company Assets</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-4xl font-black" id="nitTotal">0</div>
+                                <div class="text-xs opacity-80">Generators</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
+                                <div class="text-2xl font-bold" id="nitActive">0</div>
+                                <div class="text-xs opacity-90">Active</div>
+                            </div>
+                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
+                                <div class="text-2xl font-bold" id="nitOverhaul">0</div>
+                                <div class="text-xs opacity-90">Overhaul</div>
+                            </div>
+                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
+                                <div class="text-2xl font-bold" id="nitGood">0</div>
+                                <div class="text-xs opacity-90">Good</div>
+                            </div>
+                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
+                                <div class="text-2xl font-bold" id="nitMaintenance">0</div>
+                                <div class="text-xs opacity-90">Needs Attention</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-sm border-t border-white/20 pt-3">
+                            <span>Capacity: <strong id="nitKW">0</strong> kW</span>
+                            <span>Value: <strong id="nitCost">0</strong> SAR</span>
+                        </div>
+                    </div>
+                    <!-- Rental Card -->
+                    <div class="relative rounded-2xl p-6 text-white overflow-hidden" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold">Rental</h3>
+                                <p class="text-sm opacity-80">Leased Equipment</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-4xl font-black" id="rentalTotal">0</div>
+                                <div class="text-xs opacity-80">Generators</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
+                                <div class="text-2xl font-bold" id="rentalActive">0</div>
+                                <div class="text-xs opacity-90">Active</div>
+                            </div>
+                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
+                                <div class="text-2xl font-bold" id="rentalDemobilized">0</div>
+                                <div class="text-xs opacity-90">Demobilized</div>
+                            </div>
+                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
+                                <div class="text-2xl font-bold" id="rentalGood">0</div>
+                                <div class="text-xs opacity-90">Good</div>
+                            </div>
+                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
+                                <div class="text-2xl font-bold" id="rentalMaintenance">0</div>
+                                <div class="text-xs opacity-90">Needs Attention</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-sm border-t border-white/20 pt-3">
+                            <span>Capacity: <strong id="rentalKW">0</strong> kW</span>
+                            <span>Rental: <strong id="rentalCost">0</strong> SAR</span>
+                        </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="generatorKPIs"></div>
-                <div class="card p-4 mb-6"><h3 class="font-semibold text-gray-800 mb-4">Generators by Location (Capacity kW)</h3><div class="chart-container"><canvas id="generatorsByLocationChart"></canvas></div></div>
-                <div class="card"><div class="p-4 border-b border-gray-200 flex justify-between items-center"><h3 class="font-semibold text-gray-800">Generator List</h3><span class="text-sm text-gray-500" id="generatorCount">0 generators</span></div><div class="scroll-container"><table class="data-table"><thead><tr><th>#</th><th>Name</th><th>Type</th><th>Capacity</th><th>Max kW</th><th>Location</th><th>Condition</th><th>Responsible</th><th>Status</th></tr></thead><tbody id="generatorTableBody"></tbody></table></div></div>
+
+                <!-- Filter Section -->
+                <div class="filter-section no-print mb-6">
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div class="flex-1 min-w-[200px]"><label class="block text-xs font-medium text-gray-500 mb-1">Search</label><div class="search-box"><input type="text" id="generatorSearch" placeholder="Search generators..." onkeyup="filterGenerators()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div></div>
+                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Type</label><select id="filterGenType" class="filter-select" onchange="filterGenerators()"><option value="">All Types</option><option value="NIT">NIT</option><option value="Rental">Rental</option></select></div>
+                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Location</label><select id="filterGenLocation" class="filter-select" onchange="filterGenerators()"><option value="">All Locations</option></select></div>
+                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Condition</label><select id="filterGenCondition" class="filter-select" onchange="filterGenerators()"><option value="">All Conditions</option><option value="Good">Good</option><option value="Needs Maintenance">Needs Maintenance</option><option value="Not Working">Not Working</option><option value="Bad">Bad</option></select></div>
+                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Status</label><select id="filterGenStatus" class="filter-select" onchange="filterGenerators()"><option value="">All Statuses</option></select></div>
+                        <button onclick="resetGenFilters()" class="btn-export" style="background:#6B7280;color:white;">Reset</button>
+                        <button onclick="exportToExcel('generators')" class="btn-export btn-excel">Excel</button>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card p-4"><h3 class="font-semibold text-gray-800 mb-4">NIT vs Rental Comparison</h3><div class="chart-container"><canvas id="genComparisonChart"></canvas></div></div>
+                    <div class="card p-4"><h3 class="font-semibold text-gray-800 mb-4">Condition Analysis</h3><div class="chart-container"><canvas id="genConditionChart"></canvas></div></div>
+                </div>
+                <div class="card p-4 mb-6"><h3 class="font-semibold text-gray-800 mb-4">Top Locations by Capacity (kW)</h3><div class="chart-container"><canvas id="generatorsByLocationChart"></canvas></div></div>
+
+                <!-- Generators Table -->
+                <div class="card"><div class="p-4 border-b border-gray-200 flex justify-between items-center"><h3 class="font-semibold text-gray-800">Generator List</h3><span class="text-sm text-gray-500" id="generatorCount">0 generators</span></div><div class="scroll-container"><table class="data-table"><thead><tr><th>#</th><th>Type</th><th>Name/Brand</th><th>Capacity</th><th>Max kW</th><th>Location</th><th>Condition</th><th>Responsible</th><th>Status</th><th>Cost</th></tr></thead><tbody id="generatorTableBody"></tbody></table></div></div>
             </div>
 
             <div id="tab-acs" class="tab-content p-4 lg:p-6">
@@ -556,98 +641,113 @@
 
         function filterGenerators() {
             const search = document.getElementById('generatorSearch').value.toLowerCase();
+            const type = document.getElementById('filterGenType').value;
             const location = document.getElementById('filterGenLocation').value;
+            const condition = document.getElementById('filterGenCondition').value;
             const status = document.getElementById('filterGenStatus').value;
             filteredData.generators = assetsData.records.generators.filter(r => {
-                const matchSearch = !search || r.name.toLowerCase().includes(search) || r.location.toLowerCase().includes(search);
+                const matchSearch = !search || (r.name || '').toLowerCase().includes(search) || (r.location || '').toLowerCase().includes(search);
+                const matchType = !type || r.type === type;
                 const matchLocation = !location || r.location === location;
+                const matchCondition = !condition || r.condition === condition;
                 const matchStatus = !status || r.status === status;
-                return matchSearch && matchLocation && matchStatus;
+                return matchSearch && matchType && matchLocation && matchCondition && matchStatus;
             });
+            renderGeneratorsTab();
+        }
+
+        function resetGenFilters() {
+            document.getElementById('generatorSearch').value = '';
+            document.getElementById('filterGenType').value = '';
+            document.getElementById('filterGenLocation').value = '';
+            document.getElementById('filterGenCondition').value = '';
+            document.getElementById('filterGenStatus').value = '';
+            filteredData.generators = [...assetsData.records.generators];
             renderGeneratorsTab();
         }
 
         function renderGeneratorsTab() {
             const data = filteredData.generators;
-            const total = data.length;
-            const totalKW = data.reduce((s, r) => s + r.max_kw, 0);
-            const active = data.filter(r => r.status === 'Active').length;
-            const locations = new Set(data.map(r => r.location).filter(l => l)).size;
+            const allData = assetsData.records.generators;
+            const s = assetsData.summary.generators;
 
-            const genCols = [{key:'name',label:'Name'},{key:'type',label:'Type'},{key:'capacity',label:'Capacity'},{key:'max_kw',label:'Max kW',align:'right'},{key:'location',label:'Location'},{key:'condition',label:'Condition'},{key:'responsible',label:'Responsible'},{key:'status',label:'Status'}];
-            const kpisContainer = document.getElementById('generatorKPIs');
-            kpisContainer.textContent = '';
-            [
-                { value: total, label: 'Total Generators', click: function(){ NesmaModal.show('All Generators', data, genCols); } },
-                { value: totalKW.toLocaleString(), label: 'Total kW', color: '#F59E0B', click: function(){ NesmaModal.show('Generators by Capacity', data.slice().sort(function(a,b){return b.max_kw-a.max_kw;}), genCols, totalKW.toLocaleString() + ' kW total'); } },
-                { value: active, label: 'Active', color: '#059669', click: function(){ NesmaModal.show('Active Generators', data.filter(function(r){return r.status==='Active';}), genCols); } },
-                { value: locations, label: 'Locations', click: function(){ var ls={}; data.forEach(function(r){if(r.location){if(!ls[r.location])ls[r.location]={location:r.location,count:0,total_kw:0}; ls[r.location].count++; ls[r.location].total_kw+=r.max_kw;}}); NesmaModal.show('Generators by Location', Object.values(ls), [{key:'location',label:'Location'},{key:'count',label:'Count',align:'right'},{key:'total_kw',label:'Total kW',align:'right'}]); } }
-            ].forEach(k => {
-                const div = document.createElement('div');
-                div.className = 'kpi-mini';
-                div.style.cursor = 'pointer';
-                if (k.click) div.onclick = k.click;
-                const val = document.createElement('div');
-                val.className = 'value';
-                val.textContent = k.value;
-                if (k.color) val.style.color = k.color;
-                const lbl = document.createElement('div');
-                lbl.className = 'label';
-                lbl.textContent = k.label;
-                div.appendChild(val);
-                div.appendChild(lbl);
-                kpisContainer.appendChild(div);
+            // Update NIT Card
+            const nitData = allData.filter(r => r.type === 'NIT');
+            const nitMaint = nitData.filter(r => ['Needs Maintenance', 'Not Working', 'Bad'].includes(r.condition)).length;
+            document.getElementById('nitTotal').textContent = s.nit.total;
+            document.getElementById('nitActive').textContent = s.nit.active;
+            document.getElementById('nitOverhaul').textContent = s.nit.overhaul;
+            document.getElementById('nitGood').textContent = s.nit.good;
+            document.getElementById('nitMaintenance').textContent = nitMaint;
+            document.getElementById('nitKW').textContent = s.nit.total_kw.toLocaleString();
+            document.getElementById('nitCost').textContent = s.nit.total_cost.toLocaleString();
+
+            // Update Rental Card
+            const rentalData = allData.filter(r => r.type === 'Rental');
+            const rentalMaint = rentalData.filter(r => ['Needs Maintenance', 'Not Working', 'Bad'].includes(r.condition)).length;
+            document.getElementById('rentalTotal').textContent = s.rental.total;
+            document.getElementById('rentalActive').textContent = s.rental.active;
+            document.getElementById('rentalDemobilized').textContent = s.rental.demobilized;
+            document.getElementById('rentalGood').textContent = s.rental.good;
+            document.getElementById('rentalMaintenance').textContent = rentalMaint;
+            document.getElementById('rentalKW').textContent = s.rental.total_kw.toLocaleString();
+            document.getElementById('rentalCost').textContent = s.rental.total_cost.toLocaleString();
+
+            // Comparison Chart
+            if (charts.genComparison) charts.genComparison.destroy();
+            charts.genComparison = new Chart(document.getElementById('genComparisonChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Total', 'Active', 'Good Condition', 'Capacity (kW/100)'],
+                    datasets: [
+                        { label: 'NIT', data: [s.nit.total, s.nit.active, s.nit.good, Math.round(s.nit.total_kw/100)], backgroundColor: '#059669' },
+                        { label: 'Rental', data: [s.rental.total, s.rental.active, s.rental.good, Math.round(s.rental.total_kw/100)], backgroundColor: '#F59E0B' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
             });
 
+            // Condition Chart
+            const condData = { Good: 0, 'Needs Maintenance': 0, 'Not Working': 0, Bad: 0, Unknown: 0 };
+            allData.forEach(r => { const c = r.condition || 'Unknown'; if (condData.hasOwnProperty(c)) condData[c]++; else condData['Unknown']++; });
+            if (charts.genCondition) charts.genCondition.destroy();
+            charts.genCondition = new Chart(document.getElementById('genConditionChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(condData).filter(k => condData[k] > 0),
+                    datasets: [{ data: Object.values(condData).filter(v => v > 0), backgroundColor: ['#10B981', '#F59E0B', '#EF4444', '#DC2626', '#9CA3AF'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+            });
+
+            // Location Chart
             const locData = {};
-            data.forEach(r => {
-                if (r.location) {
-                    if (!locData[r.location]) locData[r.location] = { count: 0, kw: 0 };
-                    locData[r.location].count++;
-                    locData[r.location].kw += r.max_kw;
-                }
-            });
+            data.forEach(r => { if (r.location) { if (!locData[r.location]) locData[r.location] = { count: 0, kw: 0 }; locData[r.location].count++; locData[r.location].kw += r.max_kw; } });
             const locSorted = Object.entries(locData).sort((a, b) => b[1].kw - a[1].kw).slice(0, 10);
-
             if (charts.generatorsByLocation) charts.generatorsByLocation.destroy();
             charts.generatorsByLocation = new Chart(document.getElementById('generatorsByLocationChart').getContext('2d'), {
                 type: 'bar',
-                data: { labels: locSorted.map(d => d[0]), datasets: [{ label: 'Capacity (kW)', data: locSorted.map(d => d[1].kw), backgroundColor: 'rgba(245,158,11,0.8)', borderRadius: 6 }, { label: 'Count', data: locSorted.map(d => d[1].count), backgroundColor: 'rgba(46,49,146,0.8)', borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+                data: { labels: locSorted.map(d => d[0].length > 18 ? d[0].substring(0,18) + '...' : d[0]), datasets: [{ label: 'Capacity (kW)', data: locSorted.map(d => d[1].kw), backgroundColor: 'rgba(59,130,246,0.8)', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
             });
 
+            const genCols = [{key:'type',label:'Type'},{key:'name',label:'Name'},{key:'capacity',label:'Capacity'},{key:'max_kw',label:'Max kW',align:'right'},{key:'location',label:'Location'},{key:'condition',label:'Condition'},{key:'responsible',label:'Responsible'},{key:'status',label:'Status'},{key:'cost',label:'Cost',align:'right'}];
             NesmaChartDrill.attach(charts.generatorsByLocation, function(label) {
-                var recs = data.filter(function(r){ return r.location === label; });
-                return { title: 'Generators at ' + label, data: recs, columns: genCols, subtitle: recs.length + ' generators' };
+                var fullLabel = Object.keys(locData).find(k => k.startsWith(label.replace('...', '')));
+                var recs = data.filter(function(r){ return r.location === fullLabel; });
+                return { title: 'Generators at ' + fullLabel, data: recs, columns: genCols, subtitle: recs.length + ' generators' };
             });
 
+            // Table
             document.getElementById('generatorCount').textContent = data.length + ' generators';
             const tbody = document.getElementById('generatorTableBody');
             tbody.textContent = '';
             data.forEach((r, i) => {
                 const tr = document.createElement('tr');
-                const cells = [i + 1, r.name, r.type, r.capacity, r.max_kw, r.location, r.condition, r.responsible, r.status];
-                cells.forEach((c, idx) => {
-                    const td = document.createElement('td');
-                    if (idx === 4) {
-                        td.className = 'font-semibold';
-                        td.style.color = '#D97706';
-                        td.textContent = c;
-                    } else if (idx === 6) {
-                        const badge = document.createElement('span');
-                        badge.className = 'badge ' + (c === 'Good' ? 'badge-success' : 'badge-warning');
-                        badge.textContent = escapeHtml(c);
-                        td.appendChild(badge);
-                    } else if (idx === 8) {
-                        const badge = document.createElement('span');
-                        badge.className = 'badge ' + (c === 'Active' ? 'badge-success' : 'badge-info');
-                        badge.textContent = escapeHtml(c);
-                        td.appendChild(badge);
-                    } else {
-                        td.textContent = escapeHtml(c);
-                    }
-                    tr.appendChild(td);
-                });
+                const typeBadge = r.type === 'NIT' ? '<span class="badge badge-success">NIT</span>' : '<span class="badge" style="background:#FEF3C7;color:#D97706;">Rental</span>';
+                const condBadge = r.condition === 'Good' ? '<span class="badge badge-success">Good</span>' : r.condition === 'Needs Maintenance' ? '<span class="badge badge-warning">Needs Maint.</span>' : r.condition === 'Not Working' || r.condition === 'Bad' ? '<span class="badge badge-danger">' + escapeHtml(r.condition) + '</span>' : '<span class="badge" style="background:#F3F4F6;color:#6B7280;">' + escapeHtml(r.condition || 'Unknown') + '</span>';
+                const statusBadge = r.status === 'Active' ? '<span class="badge badge-success">Active</span>' : r.status === 'Overhaul' ? '<span class="badge badge-purple">Overhaul</span>' : r.status === 'Demobilized' ? '<span class="badge" style="background:#F3F4F6;color:#6B7280;">Demobilized</span>' : '<span class="badge badge-info">' + escapeHtml(r.status || 'Unknown') + '</span>';
+                tr.innerHTML = '<td>' + (i+1) + '</td><td>' + typeBadge + '</td><td><strong>' + escapeHtml(r.name || '-') + '</strong></td><td>' + escapeHtml(r.capacity || '-') + '</td><td class="font-semibold" style="color:#D97706;">' + (r.max_kw || 0) + '</td><td>' + escapeHtml(r.location || '-') + '</td><td>' + condBadge + '</td><td>' + escapeHtml(r.responsible || '-') + '</td><td>' + statusBadge + '</td><td class="text-right">' + (r.cost ? r.cost.toLocaleString() : '-') + '</td>';
                 tbody.appendChild(tr);
             });
         }

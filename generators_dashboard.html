@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIT | Generators Management Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E3192;
+            --secondary: #0E2841;
+            --accent: #80D1E9;
+            --nit-color: #059669;
+            --rental-color: #F59E0B;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+        }
+        * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+        body { background: #F3F4F6; min-height: 100vh; }
+        
+        .header { background: linear-gradient(135deg, #0E2841 0%, #2E3192 50%, #5B2D8E 100%); }
+        .header::after { content: ''; display: block; height: 4px; background: linear-gradient(90deg, #80D1E9, #DEC18C); }
+        
+        .card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        
+        /* Comparison Cards */
+        .comparison-section { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        @media (max-width: 1024px) { .comparison-section { grid-template-columns: 1fr; } }
+        
+        .type-card { border-radius: 20px; padding: 24px; position: relative; overflow: hidden; }
+        .type-card::before { content: ''; position: absolute; top: 0; right: 0; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; transform: translate(50%, -50%); }
+        .type-card.nit { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; }
+        .type-card.rental { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; }
+        
+        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 20px; }
+        .stat-item { background: rgba(255,255,255,0.15); border-radius: 12px; padding: 16px; text-align: center; backdrop-filter: blur(10px); }
+        .stat-item .value { font-size: 1.75rem; font-weight: 800; }
+        .stat-item .label { font-size: 0.75rem; opacity: 0.9; margin-top: 4px; }
+        
+        /* KPI Cards */
+        .kpi-card { background: white; border-radius: 16px; padding: 20px; border-left: 4px solid var(--primary); transition: all 0.3s; }
+        .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
+        .kpi-card .icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .kpi-card .value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .kpi-card .label { font-size: 0.8rem; color: #6B7280; }
+        
+        /* Progress Bars */
+        .progress-bar { height: 8px; background: rgba(255,255,255,0.3); border-radius: 4px; overflow: hidden; }
+        .progress-bar .fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+        .progress-bar .fill.green { background: #10B981; }
+        .progress-bar .fill.yellow { background: #FBBF24; }
+        .progress-bar .fill.red { background: #EF4444; }
+        
+        /* Status Badges */
+        .badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+        .badge-success { background: #D1FAE5; color: #059669; }
+        .badge-warning { background: #FEF3C7; color: #D97706; }
+        .badge-danger { background: #FEE2E2; color: #DC2626; }
+        .badge-info { background: #DBEAFE; color: #2563EB; }
+        .badge-purple { background: #EDE9FE; color: #7C3AED; }
+        .badge-gray { background: #F3F4F6; color: #6B7280; }
+        
+        /* Tables */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { background: var(--secondary); color: white; padding: 14px 16px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; text-align: left; }
+        .data-table td { padding: 12px 16px; border-bottom: 1px solid #E5E7EB; font-size: 0.8rem; }
+        .data-table tr:hover td { background: #F9FAFB; }
+        .data-table th:first-child { border-radius: 8px 0 0 0; }
+        .data-table th:last-child { border-radius: 0 8px 0 0; }
+        
+        /* Tabs */
+        .tab-btn { padding: 12px 24px; font-weight: 600; color: #9CA3AF; border-bottom: 3px solid transparent; transition: all 0.2s; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: rgba(46,49,146,0.05); }
+        .tab-btn:hover:not(.active) { color: var(--secondary); background: #F9FAFB; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Filter Section */
+        .filter-section { background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%); border-radius: 12px; padding: 20px; border: 1px solid #E5E7EB; }
+        .filter-select { border: 1px solid #E5E7EB; border-radius: 8px; padding: 10px 14px; font-size: 0.85rem; background: white; min-width: 160px; }
+        .filter-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(46,49,146,0.1); }
+        
+        /* Charts */
+        .chart-container { position: relative; height: 300px; }
+        
+        /* Scroll Container */
+        .scroll-container { max-height: 500px; overflow-y: auto; }
+        .scroll-container::-webkit-scrollbar { width: 6px; }
+        .scroll-container::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+        
+        /* Alert Cards */
+        .alert-card { border-radius: 12px; padding: 16px 20px; }
+        .alert-danger { background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%); border-left: 4px solid #DC2626; }
+        .alert-warning { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-left: 4px solid #F59E0B; }
+        
+        /* Export Buttons */
+        .btn { padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #1e2080; transform: translateY(-2px); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #059669; }
+        
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header text-white no-print">
+        <div class="container mx-auto px-4 lg:px-6">
+            <div class="flex items-center justify-between py-4">
+                <div class="flex items-center gap-4">
+                    <a href="assets_dashboard.html" class="flex items-center gap-2 text-white/80 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        <span class="text-sm">Back to Assets</span>
+                    </a>
+                    <div class="h-6 w-px bg-white/20"></div>
+                    <img src="assets/logo-white.svg" alt="NIT" class="h-8 lg:h-10">
+                </div>
+                <div class="text-center flex-1 px-4">
+                    <h1 class="text-xl lg:text-2xl font-bold">Generators Management</h1>
+                    <p class="text-sm text-white/70">NIT vs Rental Comparison Dashboard</p>
+                </div>
+                <div class="text-right text-sm text-white/70">
+                    <div>Updated: <span id="lastUpdated">-</span></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 lg:px-6 py-6">
+        <!-- Summary Overview -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+            <div class="kpi-card" style="border-left-color: #2E3192;">
+                <div class="flex items-center gap-3">
+                    <div class="icon bg-indigo-100 text-indigo-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <div>
+                        <div class="value" id="totalGenerators">0</div>
+                        <div class="label">Total Generators</div>
+                    </div>
+                </div>
+            </div>
+            <div class="kpi-card" style="border-left-color: #059669;">
+                <div class="flex items-center gap-3">
+                    <div class="icon bg-green-100 text-green-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <div class="value" id="activeCount">0</div>
+                        <div class="label">Active</div>
+                    </div>
+                </div>
+            </div>
+            <div class="kpi-card" style="border-left-color: #F59E0B;">
+                <div class="flex items-center gap-3">
+                    <div class="icon bg-amber-100 text-amber-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <div class="value" id="needsAttention">0</div>
+                        <div class="label">Needs Attention</div>
+                    </div>
+                </div>
+            </div>
+            <div class="kpi-card" style="border-left-color: #3B82F6;">
+                <div class="flex items-center gap-3">
+                    <div class="icon bg-blue-100 text-blue-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <div>
+                        <div class="value" id="totalKW">0</div>
+                        <div class="label">Total Capacity (kW)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="kpi-card col-span-2" style="border-left-color: #8B5CF6;">
+                <div class="flex items-center gap-3">
+                    <div class="icon bg-purple-100 text-purple-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <div class="value" id="totalCost">0</div>
+                        <div class="label">Total Cost / Rental (SAR)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NIT vs Rental Comparison -->
+        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            NIT vs Rental Comparison
+        </h2>
+        
+        <div class="comparison-section mb-8">
+            <!-- NIT Card -->
+            <div class="type-card nit">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-2xl font-bold">NIT Owned</h3>
+                        <p class="text-sm opacity-80">Company Assets</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-4xl font-black" id="nitTotal">0</div>
+                        <div class="text-sm opacity-80">Generators</div>
+                    </div>
+                </div>
+                
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="value" id="nitActive">0</div>
+                        <div class="label">Active</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="nitOverhaul">0</div>
+                        <div class="label">Overhaul</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="nitGood">0</div>
+                        <div class="label">Good Condition</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="nitMaintenance">0</div>
+                        <div class="label">Needs Maintenance</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-white/20">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span>Total Capacity</span>
+                        <span class="font-bold" id="nitKW">0 kW</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Total Value</span>
+                        <span class="font-bold" id="nitCost">0 SAR</span>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="text-xs mb-1 flex justify-between">
+                        <span>Condition Health</span>
+                        <span id="nitHealthPct">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="fill green" id="nitHealthBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rental Card -->
+            <div class="type-card rental">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-2xl font-bold">Rental</h3>
+                        <p class="text-sm opacity-80">Leased Equipment</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-4xl font-black" id="rentalTotal">0</div>
+                        <div class="text-sm opacity-80">Generators</div>
+                    </div>
+                </div>
+                
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="value" id="rentalActive">0</div>
+                        <div class="label">Active</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="rentalDemobilized">0</div>
+                        <div class="label">Demobilized</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="rentalGood">0</div>
+                        <div class="label">Good Condition</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="rentalMaintenance">0</div>
+                        <div class="label">Needs Maintenance</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-white/20">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span>Total Capacity</span>
+                        <span class="font-bold" id="rentalKW">0 kW</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Rental Fees</span>
+                        <span class="font-bold" id="rentalCost">0 SAR</span>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="text-xs mb-1 flex justify-between">
+                        <span>Condition Health</span>
+                        <span id="rentalHealthPct">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="fill green" id="rentalHealthBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="card p-6">
+                <h3 class="font-bold text-gray-800 mb-4">Status Distribution</h3>
+                <div class="chart-container" style="height: 280px;">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+            <div class="card p-6">
+                <h3 class="font-bold text-gray-800 mb-4">Condition Analysis</h3>
+                <div class="chart-container" style="height: 280px;">
+                    <canvas id="conditionChart"></canvas>
+                </div>
+            </div>
+            <div class="card p-6">
+                <h3 class="font-bold text-gray-800 mb-4">NIT vs Rental Comparison</h3>
+                <div class="chart-container" style="height: 280px;">
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+            </div>
+            <div class="card p-6">
+                <h3 class="font-bold text-gray-800 mb-4">Top Locations by Capacity (kW)</h3>
+                <div class="chart-container" style="height: 280px;">
+                    <canvas id="locationChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts Section -->
+        <div id="alertsSection" class="mb-8"></div>
+
+        <!-- Tabs for Tables -->
+        <div class="card">
+            <div class="border-b border-gray-200 no-print">
+                <div class="flex overflow-x-auto">
+                    <button class="tab-btn active" onclick="switchTab('all')">All Generators</button>
+                    <button class="tab-btn" onclick="switchTab('nit')">NIT Only</button>
+                    <button class="tab-btn" onclick="switchTab('rental')">Rental Only</button>
+                    <button class="tab-btn" onclick="switchTab('attention')">Needs Attention</button>
+                </div>
+            </div>
+            
+            <!-- Filter Section -->
+            <div class="filter-section m-4 no-print">
+                <div class="flex flex-wrap items-end gap-4">
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Search</label>
+                        <input type="text" id="searchInput" placeholder="Search generators..." class="filter-select w-full" onkeyup="filterTable()">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Type</label>
+                        <select id="filterType" class="filter-select" onchange="filterTable()">
+                            <option value="">All Types</option>
+                            <option value="NIT">NIT</option>
+                            <option value="Rental">Rental</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Status</label>
+                        <select id="filterStatus" class="filter-select" onchange="filterTable()">
+                            <option value="">All Statuses</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Condition</label>
+                        <select id="filterCondition" class="filter-select" onchange="filterTable()">
+                            <option value="">All Conditions</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Location</label>
+                        <select id="filterLocation" class="filter-select" onchange="filterTable()">
+                            <option value="">All Locations</option>
+                        </select>
+                    </div>
+                    <button onclick="resetFilters()" class="btn btn-primary">Reset</button>
+                    <button onclick="exportToExcel()" class="btn btn-success">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Export Excel
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Table -->
+            <div class="scroll-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Type</th>
+                            <th>Name/Brand</th>
+                            <th>Capacity</th>
+                            <th>Max kW</th>
+                            <th>Location</th>
+                            <th>Responsible</th>
+                            <th>Condition</th>
+                            <th>Status</th>
+                            <th>Cost (SAR)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+            <div class="p-4 border-t border-gray-200 flex justify-between items-center">
+                <span class="text-sm text-gray-500" id="recordCount">0 records</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let generatorsData = null;
+        let filteredRecords = [];
+        let currentTab = 'all';
+        let charts = {};
+
+        // Load data
+        async function loadData() {
+            try {
+                const response = await fetch('data/generators_data.json');
+                generatorsData = await response.json();
+                filteredRecords = [...generatorsData.records];
+                renderDashboard();
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        function renderDashboard() {
+            const s = generatorsData.summary;
+            
+            // Update header
+            document.getElementById('lastUpdated').textContent = generatorsData.last_updated;
+            
+            // Summary KPIs
+            document.getElementById('totalGenerators').textContent = s.total;
+            document.getElementById('activeCount').textContent = s.by_status['Active'] || 0;
+            document.getElementById('needsAttention').textContent = s.needs_attention_count;
+            document.getElementById('totalKW').textContent = s.total_kw.toLocaleString();
+            document.getElementById('totalCost').textContent = s.total_cost.toLocaleString();
+            
+            // NIT Stats
+            document.getElementById('nitTotal').textContent = s.nit.total;
+            document.getElementById('nitActive').textContent = s.nit.active;
+            document.getElementById('nitOverhaul').textContent = s.nit.overhaul;
+            document.getElementById('nitGood').textContent = s.nit.good;
+            document.getElementById('nitMaintenance').textContent = s.nit.needs_maintenance + s.nit.not_working + s.nit.bad;
+            document.getElementById('nitKW').textContent = s.nit.total_kw.toLocaleString() + ' kW';
+            document.getElementById('nitCost').textContent = s.nit.total_cost.toLocaleString() + ' SAR';
+            
+            const nitHealth = s.nit.total > 0 ? Math.round((s.nit.good / s.nit.total) * 100) : 0;
+            document.getElementById('nitHealthPct').textContent = nitHealth + '%';
+            document.getElementById('nitHealthBar').style.width = nitHealth + '%';
+            document.getElementById('nitHealthBar').className = 'fill ' + (nitHealth >= 70 ? 'green' : nitHealth >= 50 ? 'yellow' : 'red');
+            
+            // Rental Stats
+            document.getElementById('rentalTotal').textContent = s.rental.total;
+            document.getElementById('rentalActive').textContent = s.rental.active;
+            document.getElementById('rentalDemobilized').textContent = s.rental.demobilized;
+            document.getElementById('rentalGood').textContent = s.rental.good;
+            document.getElementById('rentalMaintenance').textContent = s.rental.needs_maintenance;
+            document.getElementById('rentalKW').textContent = s.rental.total_kw.toLocaleString() + ' kW';
+            document.getElementById('rentalCost').textContent = s.rental.total_cost.toLocaleString() + ' SAR';
+            
+            const rentalHealth = s.rental.total > 0 ? Math.round((s.rental.good / s.rental.total) * 100) : 0;
+            document.getElementById('rentalHealthPct').textContent = rentalHealth + '%';
+            document.getElementById('rentalHealthBar').style.width = rentalHealth + '%';
+            document.getElementById('rentalHealthBar').className = 'fill ' + (rentalHealth >= 70 ? 'green' : rentalHealth >= 50 ? 'yellow' : 'red');
+            
+            // Populate filters
+            populateFilters();
+            
+            // Render charts
+            renderCharts();
+            
+            // Render alerts
+            renderAlerts();
+            
+            // Render table
+            renderTable();
+        }
+
+        function populateFilters() {
+            const s = generatorsData.summary;
+            
+            // Status filter
+            const statusSelect = document.getElementById('filterStatus');
+            Object.keys(s.by_status).forEach(status => {
+                const opt = document.createElement('option');
+                opt.value = status;
+                opt.textContent = status + ' (' + s.by_status[status] + ')';
+                statusSelect.appendChild(opt);
+            });
+            
+            // Condition filter
+            const conditionSelect = document.getElementById('filterCondition');
+            Object.keys(s.by_condition).forEach(cond => {
+                const opt = document.createElement('option');
+                opt.value = cond;
+                opt.textContent = cond + ' (' + s.by_condition[cond] + ')';
+                conditionSelect.appendChild(opt);
+            });
+            
+            // Location filter
+            const locationSelect = document.getElementById('filterLocation');
+            Object.keys(s.by_location).forEach(loc => {
+                const opt = document.createElement('option');
+                opt.value = loc;
+                opt.textContent = loc + ' (' + s.by_location[loc] + ')';
+                locationSelect.appendChild(opt);
+            });
+        }
+
+        function renderCharts() {
+            const s = generatorsData.summary;
+            
+            // Status Chart
+            if (charts.status) charts.status.destroy();
+            charts.status = new Chart(document.getElementById('statusChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(s.by_status),
+                    datasets: [{
+                        data: Object.values(s.by_status),
+                        backgroundColor: ['#10B981', '#8B5CF6', '#6B7280', '#3B82F6', '#F59E0B'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right' } }
+                }
+            });
+            
+            // Condition Chart
+            if (charts.condition) charts.condition.destroy();
+            const condColors = { 'Good': '#10B981', 'Needs Maintenance': '#F59E0B', 'Not Working': '#EF4444', 'Bad': '#DC2626', 'Unknown': '#9CA3AF' };
+            charts.condition = new Chart(document.getElementById('conditionChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(s.by_condition),
+                    datasets: [{
+                        data: Object.values(s.by_condition),
+                        backgroundColor: Object.keys(s.by_condition).map(k => condColors[k] || '#9CA3AF'),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right' } }
+                }
+            });
+            
+            // Comparison Chart
+            if (charts.comparison) charts.comparison.destroy();
+            charts.comparison = new Chart(document.getElementById('comparisonChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Total', 'Active', 'Good Condition', 'Capacity (kW/100)'],
+                    datasets: [
+                        {
+                            label: 'NIT',
+                            data: [s.nit.total, s.nit.active, s.nit.good, Math.round(s.nit.total_kw/100)],
+                            backgroundColor: '#059669'
+                        },
+                        {
+                            label: 'Rental',
+                            data: [s.rental.total, s.rental.active, s.rental.good, Math.round(s.rental.total_kw/100)],
+                            backgroundColor: '#F59E0B'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top' } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+            
+            // Location Chart
+            if (charts.location) charts.location.destroy();
+            const topLocs = Object.entries(s.by_location_kw).slice(0, 8);
+            charts.location = new Chart(document.getElementById('locationChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: topLocs.map(l => l[0].length > 15 ? l[0].substring(0,15) + '...' : l[0]),
+                    datasets: [{
+                        label: 'Capacity (kW)',
+                        data: topLocs.map(l => l[1]),
+                        backgroundColor: '#3B82F6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function renderAlerts() {
+            const alerts = generatorsData.needs_attention;
+            const alertsSection = document.getElementById('alertsSection');
+            
+            if (alerts.length === 0) {
+                alertsSection.innerHTML = '';
+                return;
+            }
+            
+            const notWorking = alerts.filter(a => a.condition === 'Not Working' || a.condition === 'Bad');
+            const needsMaint = alerts.filter(a => a.condition === 'Needs Maintenance');
+            
+            let html = '<h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"><svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>Attention Required</h2>';
+            
+            if (notWorking.length > 0) {
+                html += '<div class="alert-card alert-danger mb-4"><div class="flex items-center gap-3"><svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><div><h4 class="font-bold text-red-800">' + notWorking.length + ' Generators Not Working / Bad Condition</h4><p class="text-sm text-red-700">' + notWorking.map(g => g.location + ' (' + g.capacity + ')').join(', ') + '</p></div></div></div>';
+            }
+            
+            if (needsMaint.length > 0) {
+                html += '<div class="alert-card alert-warning mb-4"><div class="flex items-center gap-3"><svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><div><h4 class="font-bold text-amber-800">' + needsMaint.length + ' Generators Need Maintenance</h4><p class="text-sm text-amber-700">Mostly in Jeddah Warehouse (' + needsMaint.filter(g => g.location.includes('Jeddah')).length + ') and Riyadh Warehouse</p></div></div></div>';
+            }
+            
+            alertsSection.innerHTML = html;
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            filterTable();
+        }
+
+        function filterTable() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const type = document.getElementById('filterType').value;
+            const status = document.getElementById('filterStatus').value;
+            const condition = document.getElementById('filterCondition').value;
+            const location = document.getElementById('filterLocation').value;
+            
+            filteredRecords = generatorsData.records.filter(r => {
+                // Tab filter
+                if (currentTab === 'nit' && r.type !== 'NIT') return false;
+                if (currentTab === 'rental' && r.type !== 'Rental') return false;
+                if (currentTab === 'attention' && !['Needs Maintenance', 'Not Working', 'Bad'].includes(r.condition)) return false;
+                
+                // Search
+                if (search && !JSON.stringify(r).toLowerCase().includes(search)) return false;
+                
+                // Filters
+                if (type && r.type !== type) return false;
+                if (status && r.status !== status) return false;
+                if (condition && r.condition !== condition) return false;
+                if (location && r.location !== location) return false;
+                
+                return true;
+            });
+            
+            renderTable();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterCondition').value = '';
+            document.getElementById('filterLocation').value = '';
+            currentTab = 'all';
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => btn.classList.toggle('active', i === 0));
+            filteredRecords = [...generatorsData.records];
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            
+            const html = filteredRecords.map((r, i) => {
+                const typeBadge = r.type === 'NIT' ? '<span class="badge badge-success">NIT</span>' : '<span class="badge badge-warning">Rental</span>';
+                const condBadge = getConditionBadge(r.condition);
+                const statusBadge = getStatusBadge(r.status);
+                
+                return `<tr>
+                    <td>${i + 1}</td>
+                    <td>${typeBadge}</td>
+                    <td><strong>${r.name || '-'}</strong></td>
+                    <td>${r.capacity || '-'}</td>
+                    <td class="text-right font-medium">${r.max_kw || 0}</td>
+                    <td>${r.location || '-'}</td>
+                    <td>${r.responsible || '-'}</td>
+                    <td>${condBadge}</td>
+                    <td>${statusBadge}</td>
+                    <td class="text-right">${r.cost ? r.cost.toLocaleString() : '-'}</td>
+                </tr>`;
+            }).join('');
+            
+            tbody.innerHTML = html;
+            document.getElementById('recordCount').textContent = filteredRecords.length + ' records';
+        }
+
+        function getConditionBadge(cond) {
+            const badges = {
+                'Good': '<span class="badge badge-success">Good</span>',
+                'Needs Maintenance': '<span class="badge badge-warning">Needs Maintenance</span>',
+                'Not Working': '<span class="badge badge-danger">Not Working</span>',
+                'Bad': '<span class="badge badge-danger">Bad</span>'
+            };
+            return badges[cond] || '<span class="badge badge-gray">' + (cond || 'Unknown') + '</span>';
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'Active': '<span class="badge badge-success">Active</span>',
+                'Overhaul': '<span class="badge badge-purple">Overhaul</span>',
+                'Demobilized': '<span class="badge badge-gray">Demobilized</span>',
+                'Idle': '<span class="badge badge-info">Idle</span>'
+            };
+            return badges[status] || '<span class="badge badge-gray">' + (status || 'Unknown') + '</span>';
+        }
+
+        function exportToExcel() {
+            const ws = XLSX.utils.json_to_sheet(filteredRecords.map(r => ({
+                'ID': r.id,
+                'Type': r.type,
+                'Name/Brand': r.name,
+                'Model': r.model,
+                'Serial': r.serial,
+                'Capacity': r.capacity,
+                'Max kW': r.max_kw,
+                'Location': r.location,
+                'Responsible': r.responsible,
+                'Condition': r.condition,
+                'Status': r.status,
+                'Cost (SAR)': r.cost,
+                'Start Date': r.start_date,
+                'Return Date': r.return_date
+            })));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Generators');
+            XLSX.writeFile(wb, 'Generators_Export_' + new Date().toISOString().split('T')[0] + '.xlsx');
+        }
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>
