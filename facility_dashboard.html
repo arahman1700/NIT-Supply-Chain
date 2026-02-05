@@ -848,7 +848,7 @@
             const kpi = document.getElementById('accKPIs');
             kpi.textContent = '';
             kpi.appendChild(createKPI('bg-primary-gradient', 'home', 'Accommodations', s.total, s.rooms + ' rooms', () => NesmaModal.show('All Accommodations', data, accCols, s.total + ' records')));
-            kpi.appendChild(createKPI('bg-cyan-gradient', 'users', 'Residents', s.residents.toLocaleString(), avgOcc + '% occupancy', () => NesmaModal.show('Residents by Location', data.filter(r => r.residents > 0), accCols)));
+            kpi.appendChild(createKPI('bg-cyan-gradient', 'home', 'Rooms', '459', 'Total rooms', () => NesmaModal.show('Rooms by Location', data.filter(r => r.rooms > 0), accCols)));
             kpi.appendChild(createKPI('bg-warning-gradient', 'bed', 'Empty Beds', s.empty.toLocaleString(), 'Available', () => NesmaModal.show('Empty Beds', data.filter(r => r.empty_beds > 0), accCols)));
             kpi.appendChild(createKPI('bg-success-gradient', 'check', 'Active', s.active, 'No action needed', () => NesmaModal.show('Active Contracts', data.filter(r => r.status === 'Active'), accCols)));
             kpi.appendChild(createKPI('bg-danger-gradient', 'alert', 'At Risk', s.warning + s.critical, 'Needs attention', () => NesmaModal.show('At Risk Contracts', data.filter(r => r.status === 'Warning' || r.status === 'Critical'), accCols)));
