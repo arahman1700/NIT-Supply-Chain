@@ -361,7 +361,7 @@
             const cards = [
                 { cls: 'bg-equipment', label: 'Equipment', value: s.equipment.total, sub: 'SAR ' + (s.equipment.total_cost/1e6).toFixed(1) + 'M', dataKey: 'equipment', cols: [{key:'description',label:'Description'},{key:'brand',label:'Brand'},{key:'city',label:'City'},{key:'project',label:'Project'},{key:'status',label:'Status'},{key:'cost',label:'Cost',align:'right'}] },
                 { cls: 'bg-fleet', label: 'Fleet Vehicles', value: s.fleet.total, sub: 'SAR ' + (s.fleet.total_cost/1e6).toFixed(1) + 'M', dataKey: 'fleet', cols: [{key:'plate_no_eng',label:'Plate'},{key:'make',label:'Make'},{key:'model',label:'Model'},{key:'vehicle_type',label:'Type'},{key:'region',label:'Region'},{key:'availability',label:'Status'}] },
-                { cls: 'bg-generators', label: 'Generators', value: s.generators.total, sub: 'NIT: ' + s.generators.nit.total + ' | Rental: ' + s.generators.rental.total, dataKey: 'generators', cols: [{key:'name',label:'Name'},{key:'type',label:'Type'},{key:'max_kw',label:'Max kW',align:'right'},{key:'location',label:'Location'},{key:'status',label:'Status'}] },
+                { cls: 'bg-generators', label: 'Generators', value: s.generators.total, sub: 'NIT: ' + s.generators.nit.total + ' | Rental: ' + s.generators.rental.total, dataKey: 'generators', cols: [{key:'type',label:'Type'},{key:'name',label:'Name/Brand'},{key:'capacity',label:'Capacity'},{key:'location',label:'Location'},{key:'responsible',label:'Responsible'},{key:'condition',label:'Condition'},{key:'status',label:'Status'}] },
                 { cls: 'bg-acs', label: 'Stand ACs', value: s.stand_acs.total, sub: s.stand_acs.total_available + ' available', dataKey: 'acs', cols: [{key:'description',label:'Description'},{key:'project_code',label:'Project'},{key:'capacity',label:'Capacity'},{key:'qty_available',label:'Available',align:'right'},{key:'cost',label:'Cost',align:'right'}] },
                 { cls: 'bg-testing', label: 'Testing Equip', value: s.testing_equipment.total, sub: 'SAR ' + (s.testing_equipment.total_value/1e6).toFixed(1) + 'M', dataKey: 'testing', cols: [{key:'description',label:'Description'},{key:'supplier',label:'Supplier'},{key:'location',label:'Location'},{key:'tuv',label:'TUV'},{key:'qty',label:'Qty',align:'right'},{key:'total_price',label:'Value',align:'right'}] },
                 { cls: 'bg-tools', label: 'Tools', value: s.tools.total, sub: s.tools.total_qty.toLocaleString() + ' qty', dataKey: 'tools', cols: [{key:'description',label:'Description'},{key:'type',label:'Type'},{key:'supplier',label:'Supplier'},{key:'location',label:'Location'},{key:'quantity',label:'Qty',align:'right'},{key:'tuv_status',label:'TUV'}] }
@@ -370,12 +370,7 @@
                 const div = document.createElement('div');
                 div.className = 'overview-card ' + c.cls;
                 div.onclick = function() {
-                    if (c.dataKey === 'generators') {
-                        // For generators, switch to tab to use full filtering
-                        switchTab('generators');
-                    } else {
-                        NesmaModal.show('All ' + c.label, filteredData[c.dataKey], c.cols, filteredData[c.dataKey].length + ' records');
-                    }
+                    NesmaModal.show('All ' + c.label, filteredData[c.dataKey], c.cols, filteredData[c.dataKey].length + ' records');
                 };
                 const valueEl = document.createElement('div');
                 valueEl.className = 'value';
