@@ -361,7 +361,7 @@
             const cards = [
                 { cls: 'bg-equipment', label: 'Equipment', value: s.equipment.total, sub: 'SAR ' + (s.equipment.total_cost/1e6).toFixed(1) + 'M', dataKey: 'equipment', cols: [{key:'description',label:'Description'},{key:'brand',label:'Brand'},{key:'city',label:'City'},{key:'project',label:'Project'},{key:'status',label:'Status'},{key:'cost',label:'Cost',align:'right'}] },
                 { cls: 'bg-fleet', label: 'Fleet Vehicles', value: s.fleet.total, sub: 'SAR ' + (s.fleet.total_cost/1e6).toFixed(1) + 'M', dataKey: 'fleet', cols: [{key:'plate_no_eng',label:'Plate'},{key:'make',label:'Make'},{key:'model',label:'Model'},{key:'vehicle_type',label:'Type'},{key:'region',label:'Region'},{key:'availability',label:'Status'}] },
-                { cls: 'bg-generators', label: 'Generators', value: s.generators.total, sub: s.generators.total_capacity_kw.toLocaleString() + ' kW', dataKey: 'generators', cols: [{key:'name',label:'Name'},{key:'type',label:'Type'},{key:'max_kw',label:'Max kW',align:'right'},{key:'location',label:'Location'},{key:'status',label:'Status'}] },
+                { cls: 'bg-generators', label: 'Generators', value: s.generators.total, sub: 'NIT: ' + s.generators.nit.total + ' | Rental: ' + s.generators.rental.total, dataKey: 'generators', cols: [{key:'name',label:'Name'},{key:'type',label:'Type'},{key:'max_kw',label:'Max kW',align:'right'},{key:'location',label:'Location'},{key:'status',label:'Status'}] },
                 { cls: 'bg-acs', label: 'Stand ACs', value: s.stand_acs.total, sub: s.stand_acs.total_available + ' available', dataKey: 'acs', cols: [{key:'description',label:'Description'},{key:'project_code',label:'Project'},{key:'capacity',label:'Capacity'},{key:'qty_available',label:'Available',align:'right'},{key:'cost',label:'Cost',align:'right'}] },
                 { cls: 'bg-testing', label: 'Testing Equip', value: s.testing_equipment.total, sub: 'SAR ' + (s.testing_equipment.total_value/1e6).toFixed(1) + 'M', dataKey: 'testing', cols: [{key:'description',label:'Description'},{key:'supplier',label:'Supplier'},{key:'location',label:'Location'},{key:'tuv',label:'TUV'},{key:'qty',label:'Qty',align:'right'},{key:'total_price',label:'Value',align:'right'}] },
                 { cls: 'bg-tools', label: 'Tools', value: s.tools.total, sub: s.tools.total_qty.toLocaleString() + ' qty', dataKey: 'tools', cols: [{key:'description',label:'Description'},{key:'type',label:'Type'},{key:'supplier',label:'Supplier'},{key:'location',label:'Location'},{key:'quantity',label:'Qty',align:'right'},{key:'tuv_status',label:'TUV'}] }
@@ -744,10 +744,10 @@
             charts.genComparison = new Chart(document.getElementById('genComparisonChart').getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: ['Total', 'Active', 'Good Condition', 'Capacity (kW/100)'],
+                    labels: ['Total', 'Active', 'Good Condition', 'Needs Attention'],
                     datasets: [
-                        { label: 'NIT', data: [nitData.length, nitActive, nitGood, Math.round(nitKW/100)], backgroundColor: nesmaBlue, borderRadius: 6 },
-                        { label: 'Rental', data: [rentalData.length, rentalActive, rentalGood, Math.round(rentalKW/100)], backgroundColor: nesmaGold, borderRadius: 6 }
+                        { label: 'NIT', data: [nitData.length, nitActive, nitGood, nitMaint], backgroundColor: nesmaBlue, borderRadius: 6 },
+                        { label: 'Rental', data: [rentalData.length, rentalActive, rentalGood, rentalMaint], backgroundColor: nesmaGold, borderRadius: 6 }
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
