@@ -463,7 +463,7 @@
                     </div>
                     <div class="scroll-container">
                         <table class="data-table">
-                            <thead><tr><th>City</th><th>Project</th><th>Rooms</th><th>Residents</th><th>Empty</th><th>Occupancy</th><th>End Date</th><th>Days Left</th><th>Status</th><th>Annual (SAR)</th></tr></thead>
+                            <thead><tr><th>City</th><th>Project</th><th>Rooms</th><th>Residents</th><th>Empty Beds</th><th>Occupancy</th><th>End Date</th><th>Days Left</th><th>Status</th><th>Annual (SAR)</th></tr></thead>
                             <tbody id="accTableBody"></tbody>
                         </table>
                     </div>
@@ -827,7 +827,7 @@
             const data = filteredData.accommodation;
             const s = { total: data.length, rooms: 0, residents: 0, empty: 0, cost: 0, active: 0, warning: 0, critical: 0, expired: 0 };
             data.forEach(r => { s.rooms += r.rooms; s.residents += r.residents; s.empty += r.empty_beds; s.cost += r.annual_payment; if (r.status === 'Active') s.active++; else if (r.status === 'Warning') s.warning++; else if (r.status === 'Critical') s.critical++; else s.expired++; });
-            const avgOcc = s.rooms > 0 ? Math.round(s.residents / (s.rooms * 4) * 100) : 0;
+            const avgOcc = (s.residents + s.empty) > 0 ? Math.round(s.residents / (s.residents + s.empty) * 100) : 0;
 
             // SLA Cards
             const accCols = [
