@@ -649,12 +649,12 @@
 
             <!-- TAB: SAFETY -->
             <div id="tab-safety" class="tab-content">
-                <div class="alert-card alert-danger mb-6" id="safetyAlert">
+                <div class="alert-card alert-info mb-6" id="safetyAlert" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-left: 4px solid #3b82f6;">
                     <div class="flex items-center gap-3">
-                        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <div>
-                            <h3 class="font-bold text-red-800" id="safetyAlertTitle">Loading...</h3>
-                            <p class="text-sm text-red-700" id="safetyAlertText">Loading safety data...</p>
+                            <h3 class="font-bold text-blue-800" id="safetyAlertTitle">Please Note</h3>
+                            <p class="text-sm text-blue-700" id="safetyAlertText">Parameters to the GPS must be adjusted to read a more accurate data. Update is being done on all vehicles.</p>
                         </div>
                     </div>
                 </div>
@@ -1176,8 +1176,9 @@
             data.forEach(r => { if (r.speed > s.max) s.max = r.speed; s.sum += r.speed; if (r.severity === 'Extreme') s.extreme++; if (r.severity === 'High') s.high++; });
             const avgSpeed = s.total > 0 ? Math.round(s.sum / s.total) : 0;
 
-            document.getElementById('safetyAlertTitle').textContent = s.extreme > 0 ? 'CRITICAL: ' + s.extreme + ' Extreme Violations' : s.total > 0 ? 'Safety Violations Recorded' : 'No Violations';
-            document.getElementById('safetyAlertText').textContent = s.total + ' total violations. ' + s.extreme + ' extreme (≥140), ' + s.high + ' high (120-139). Max: ' + s.max.toFixed(0) + ' km/h.';
+            // Static notice message - GPS calibration notice
+            document.getElementById('safetyAlertTitle').textContent = 'Please Note';
+            document.getElementById('safetyAlertText').textContent = 'Parameters to the GPS must be adjusted to read a more accurate data. Update is being done on all vehicles.';
 
             const safetyCols = [
                 { key: 'datetime', label: 'Date/Time' }, { key: 'plate_number', label: 'Plate' },
