@@ -166,78 +166,86 @@
             </div>
 
             <div id="tab-generators" class="tab-content p-4 lg:p-6">
-                <!-- NIT vs Rental Comparison Cards -->
+                <!-- NIT vs Rental Comparison Cards - NESMA Colors -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                    <!-- NIT Card -->
-                    <div class="relative rounded-2xl p-6 text-white overflow-hidden" style="background: linear-gradient(135deg, #059669 0%, #047857 100%);">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                        <div class="flex justify-between items-start mb-4">
+                    <!-- NIT Card - NESMA Primary Blue -->
+                    <div class="relative rounded-2xl p-6 text-white overflow-hidden" style="background: linear-gradient(135deg, #2E3192 0%, #0E2841 100%);">
+                        <div class="absolute top-0 right-0 w-40 h-40 rounded-full -translate-y-1/2 translate-x-1/2" style="background: rgba(128,209,233,0.15);"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 rounded-full translate-y-1/2 -translate-x-1/2" style="background: rgba(222,193,140,0.1);"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
                             <div>
-                                <h3 class="text-xl font-bold">NIT Owned</h3>
+                                <h3 class="text-xl font-bold flex items-center gap-2">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                    NIT Owned
+                                </h3>
                                 <p class="text-sm opacity-80">Company Assets</p>
                             </div>
                             <div class="text-right">
-                                <div class="text-4xl font-black" id="nitTotal">0</div>
+                                <div class="text-4xl font-black" id="nitTotal" style="color: #80D1E9;">0</div>
                                 <div class="text-xs opacity-80">Generators</div>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-3 mb-4">
-                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
-                                <div class="text-2xl font-bold" id="nitActive">0</div>
+                        <div class="grid grid-cols-2 gap-3 mb-4 relative z-10">
+                            <div class="rounded-xl p-3 text-center" style="background: rgba(128,209,233,0.2);">
+                                <div class="text-2xl font-bold" id="nitActive" style="color: #80D1E9;">0</div>
                                 <div class="text-xs opacity-90">Active</div>
                             </div>
-                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
-                                <div class="text-2xl font-bold" id="nitOverhaul">0</div>
+                            <div class="rounded-xl p-3 text-center" style="background: rgba(222,193,140,0.2);">
+                                <div class="text-2xl font-bold" id="nitOverhaul" style="color: #DEC18C;">0</div>
                                 <div class="text-xs opacity-90">Overhaul</div>
                             </div>
-                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
-                                <div class="text-2xl font-bold" id="nitGood">0</div>
+                            <div class="rounded-xl p-3 text-center" style="background: rgba(128,209,233,0.2);">
+                                <div class="text-2xl font-bold" id="nitGood" style="color: #80D1E9;">0</div>
                                 <div class="text-xs opacity-90">Good</div>
                             </div>
-                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
-                                <div class="text-2xl font-bold" id="nitMaintenance">0</div>
+                            <div class="rounded-xl p-3 text-center" style="background: rgba(173,128,130,0.3);">
+                                <div class="text-2xl font-bold" id="nitMaintenance" style="color: #FFB4B4;">0</div>
                                 <div class="text-xs opacity-90">Needs Attention</div>
                             </div>
                         </div>
-                        <div class="flex justify-between text-sm border-t border-white/20 pt-3">
-                            <span>Capacity: <strong id="nitKW">0</strong> kW</span>
-                            <span>Value: <strong id="nitCost">0</strong> SAR</span>
+                        <div class="flex justify-between text-sm border-t border-white/20 pt-3 relative z-10">
+                            <span>Capacity: <strong id="nitKW" style="color: #80D1E9;">0</strong> kW</span>
+                            <span>Value: <strong id="nitCost" style="color: #DEC18C;">0</strong> SAR</span>
                         </div>
                     </div>
-                    <!-- Rental Card -->
-                    <div class="relative rounded-2xl p-6 text-white overflow-hidden" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                        <div class="flex justify-between items-start mb-4">
+                    <!-- Rental Card - NESMA Gold -->
+                    <div class="relative rounded-2xl p-6 text-white overflow-hidden" style="background: linear-gradient(135deg, #92A185 0%, #6B7B5F 100%);">
+                        <div class="absolute top-0 right-0 w-40 h-40 rounded-full -translate-y-1/2 translate-x-1/2" style="background: rgba(222,193,140,0.2);"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 rounded-full translate-y-1/2 -translate-x-1/2" style="background: rgba(128,209,233,0.1);"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
                             <div>
-                                <h3 class="text-xl font-bold">Rental</h3>
+                                <h3 class="text-xl font-bold flex items-center gap-2">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                                    Rental
+                                </h3>
                                 <p class="text-sm opacity-80">Leased Equipment</p>
                             </div>
                             <div class="text-right">
-                                <div class="text-4xl font-black" id="rentalTotal">0</div>
+                                <div class="text-4xl font-black" id="rentalTotal" style="color: #DEC18C;">0</div>
                                 <div class="text-xs opacity-80">Generators</div>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-3 mb-4">
-                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
-                                <div class="text-2xl font-bold" id="rentalActive">0</div>
+                        <div class="grid grid-cols-2 gap-3 mb-4 relative z-10">
+                            <div class="rounded-xl p-3 text-center" style="background: rgba(222,193,140,0.25);">
+                                <div class="text-2xl font-bold" id="rentalActive" style="color: #DEC18C;">0</div>
                                 <div class="text-xs opacity-90">Active</div>
                             </div>
-                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
-                                <div class="text-2xl font-bold" id="rentalDemobilized">0</div>
+                            <div class="rounded-xl p-3 text-center" style="background: rgba(128,209,233,0.2);">
+                                <div class="text-2xl font-bold" id="rentalDemobilized" style="color: #80D1E9;">0</div>
                                 <div class="text-xs opacity-90">Demobilized</div>
                             </div>
-                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
-                                <div class="text-2xl font-bold" id="rentalGood">0</div>
+                            <div class="rounded-xl p-3 text-center" style="background: rgba(222,193,140,0.25);">
+                                <div class="text-2xl font-bold" id="rentalGood" style="color: #DEC18C;">0</div>
                                 <div class="text-xs opacity-90">Good</div>
                             </div>
-                            <div class="bg-white/15 rounded-xl p-3 text-center backdrop-blur">
-                                <div class="text-2xl font-bold" id="rentalMaintenance">0</div>
+                            <div class="rounded-xl p-3 text-center" style="background: rgba(173,128,130,0.3);">
+                                <div class="text-2xl font-bold" id="rentalMaintenance" style="color: #FFB4B4;">0</div>
                                 <div class="text-xs opacity-90">Needs Attention</div>
                             </div>
                         </div>
-                        <div class="flex justify-between text-sm border-t border-white/20 pt-3">
-                            <span>Capacity: <strong id="rentalKW">0</strong> kW</span>
-                            <span>Rental: <strong id="rentalCost">0</strong> SAR</span>
+                        <div class="flex justify-between text-sm border-t border-white/20 pt-3 relative z-10">
+                            <span>Capacity: <strong id="rentalKW" style="color: #DEC18C;">0</strong> kW</span>
+                            <span>Rental: <strong id="rentalCost" style="color: #80D1E9;">0</strong> SAR</span>
                         </div>
                     </div>
                 </div>
@@ -668,66 +676,86 @@
 
         function renderGeneratorsTab() {
             const data = filteredData.generators;
-            const allData = assetsData.records.generators;
-            const s = assetsData.summary.generators;
+            
+            // Calculate stats from FILTERED data
+            const nitData = data.filter(r => r.type === 'NIT');
+            const rentalData = data.filter(r => r.type === 'Rental');
+            
+            // NIT Stats from filtered data
+            const nitActive = nitData.filter(r => r.status === 'Active').length;
+            const nitOverhaul = nitData.filter(r => r.status === 'Overhaul').length;
+            const nitGood = nitData.filter(r => r.condition === 'Good').length;
+            const nitMaint = nitData.filter(r => ['Needs Maintenance', 'Not Working', 'Bad'].includes(r.condition)).length;
+            const nitKW = nitData.reduce((s, r) => s + (r.max_kw || 0), 0);
+            const nitCost = nitData.reduce((s, r) => s + (r.cost || 0), 0);
+            
+            // Rental Stats from filtered data
+            const rentalActive = rentalData.filter(r => r.status === 'Active').length;
+            const rentalDemob = rentalData.filter(r => r.status === 'Demobilized').length;
+            const rentalGood = rentalData.filter(r => r.condition === 'Good').length;
+            const rentalMaint = rentalData.filter(r => ['Needs Maintenance', 'Not Working', 'Bad'].includes(r.condition)).length;
+            const rentalKW = rentalData.reduce((s, r) => s + (r.max_kw || 0), 0);
+            const rentalCost = rentalData.reduce((s, r) => s + (r.cost || 0), 0);
 
             // Update NIT Card
-            const nitData = allData.filter(r => r.type === 'NIT');
-            const nitMaint = nitData.filter(r => ['Needs Maintenance', 'Not Working', 'Bad'].includes(r.condition)).length;
-            document.getElementById('nitTotal').textContent = s.nit.total;
-            document.getElementById('nitActive').textContent = s.nit.active;
-            document.getElementById('nitOverhaul').textContent = s.nit.overhaul;
-            document.getElementById('nitGood').textContent = s.nit.good;
+            document.getElementById('nitTotal').textContent = nitData.length;
+            document.getElementById('nitActive').textContent = nitActive;
+            document.getElementById('nitOverhaul').textContent = nitOverhaul;
+            document.getElementById('nitGood').textContent = nitGood;
             document.getElementById('nitMaintenance').textContent = nitMaint;
-            document.getElementById('nitKW').textContent = s.nit.total_kw.toLocaleString();
-            document.getElementById('nitCost').textContent = s.nit.total_cost.toLocaleString();
+            document.getElementById('nitKW').textContent = nitKW.toLocaleString();
+            document.getElementById('nitCost').textContent = nitCost.toLocaleString();
 
             // Update Rental Card
-            const rentalData = allData.filter(r => r.type === 'Rental');
-            const rentalMaint = rentalData.filter(r => ['Needs Maintenance', 'Not Working', 'Bad'].includes(r.condition)).length;
-            document.getElementById('rentalTotal').textContent = s.rental.total;
-            document.getElementById('rentalActive').textContent = s.rental.active;
-            document.getElementById('rentalDemobilized').textContent = s.rental.demobilized;
-            document.getElementById('rentalGood').textContent = s.rental.good;
+            document.getElementById('rentalTotal').textContent = rentalData.length;
+            document.getElementById('rentalActive').textContent = rentalActive;
+            document.getElementById('rentalDemobilized').textContent = rentalDemob;
+            document.getElementById('rentalGood').textContent = rentalGood;
             document.getElementById('rentalMaintenance').textContent = rentalMaint;
-            document.getElementById('rentalKW').textContent = s.rental.total_kw.toLocaleString();
-            document.getElementById('rentalCost').textContent = s.rental.total_cost.toLocaleString();
+            document.getElementById('rentalKW').textContent = rentalKW.toLocaleString();
+            document.getElementById('rentalCost').textContent = rentalCost.toLocaleString();
 
-            // Comparison Chart
+            // NESMA Colors
+            const nesmaBlue = '#2E3192';
+            const nesmaCyan = '#80D1E9';
+            const nesmaNavy = '#0E2841';
+            const nesmaGold = '#DEC18C';
+
+            // Comparison Chart with NESMA colors
             if (charts.genComparison) charts.genComparison.destroy();
             charts.genComparison = new Chart(document.getElementById('genComparisonChart').getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: ['Total', 'Active', 'Good Condition', 'Capacity (kW/100)'],
                     datasets: [
-                        { label: 'NIT', data: [s.nit.total, s.nit.active, s.nit.good, Math.round(s.nit.total_kw/100)], backgroundColor: '#059669' },
-                        { label: 'Rental', data: [s.rental.total, s.rental.active, s.rental.good, Math.round(s.rental.total_kw/100)], backgroundColor: '#F59E0B' }
+                        { label: 'NIT', data: [nitData.length, nitActive, nitGood, Math.round(nitKW/100)], backgroundColor: nesmaBlue, borderRadius: 6 },
+                        { label: 'Rental', data: [rentalData.length, rentalActive, rentalGood, Math.round(rentalKW/100)], backgroundColor: nesmaGold, borderRadius: 6 }
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
             });
 
-            // Condition Chart
+            // Condition Chart with NESMA colors
             const condData = { Good: 0, 'Needs Maintenance': 0, 'Not Working': 0, Bad: 0, Unknown: 0 };
-            allData.forEach(r => { const c = r.condition || 'Unknown'; if (condData.hasOwnProperty(c)) condData[c]++; else condData['Unknown']++; });
+            data.forEach(r => { const c = r.condition || 'Unknown'; if (condData.hasOwnProperty(c)) condData[c]++; else condData['Unknown']++; });
             if (charts.genCondition) charts.genCondition.destroy();
             charts.genCondition = new Chart(document.getElementById('genConditionChart').getContext('2d'), {
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(condData).filter(k => condData[k] > 0),
-                    datasets: [{ data: Object.values(condData).filter(v => v > 0), backgroundColor: ['#10B981', '#F59E0B', '#EF4444', '#DC2626', '#9CA3AF'], borderWidth: 0 }]
+                    datasets: [{ data: Object.values(condData).filter(v => v > 0), backgroundColor: [nesmaBlue, nesmaGold, '#AD8082', '#92A185', nesmaCyan], borderWidth: 0 }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
             });
 
-            // Location Chart
+            // Location Chart with NESMA colors
             const locData = {};
-            data.forEach(r => { if (r.location) { if (!locData[r.location]) locData[r.location] = { count: 0, kw: 0 }; locData[r.location].count++; locData[r.location].kw += r.max_kw; } });
+            data.forEach(r => { if (r.location) { if (!locData[r.location]) locData[r.location] = { count: 0, kw: 0 }; locData[r.location].count++; locData[r.location].kw += r.max_kw || 0; } });
             const locSorted = Object.entries(locData).sort((a, b) => b[1].kw - a[1].kw).slice(0, 10);
             if (charts.generatorsByLocation) charts.generatorsByLocation.destroy();
             charts.generatorsByLocation = new Chart(document.getElementById('generatorsByLocationChart').getContext('2d'), {
                 type: 'bar',
-                data: { labels: locSorted.map(d => d[0].length > 18 ? d[0].substring(0,18) + '...' : d[0]), datasets: [{ label: 'Capacity (kW)', data: locSorted.map(d => d[1].kw), backgroundColor: 'rgba(59,130,246,0.8)', borderRadius: 6 }] },
+                data: { labels: locSorted.map(d => d[0].length > 18 ? d[0].substring(0,18) + '...' : d[0]), datasets: [{ label: 'Capacity (kW)', data: locSorted.map(d => d[1].kw), backgroundColor: nesmaCyan, borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
             });
 
@@ -744,10 +772,10 @@
             tbody.textContent = '';
             data.forEach((r, i) => {
                 const tr = document.createElement('tr');
-                const typeBadge = r.type === 'NIT' ? '<span class="badge badge-success">NIT</span>' : '<span class="badge" style="background:#FEF3C7;color:#D97706;">Rental</span>';
-                const condBadge = r.condition === 'Good' ? '<span class="badge badge-success">Good</span>' : r.condition === 'Needs Maintenance' ? '<span class="badge badge-warning">Needs Maint.</span>' : r.condition === 'Not Working' || r.condition === 'Bad' ? '<span class="badge badge-danger">' + escapeHtml(r.condition) + '</span>' : '<span class="badge" style="background:#F3F4F6;color:#6B7280;">' + escapeHtml(r.condition || 'Unknown') + '</span>';
-                const statusBadge = r.status === 'Active' ? '<span class="badge badge-success">Active</span>' : r.status === 'Overhaul' ? '<span class="badge badge-purple">Overhaul</span>' : r.status === 'Demobilized' ? '<span class="badge" style="background:#F3F4F6;color:#6B7280;">Demobilized</span>' : '<span class="badge badge-info">' + escapeHtml(r.status || 'Unknown') + '</span>';
-                tr.innerHTML = '<td>' + (i+1) + '</td><td>' + typeBadge + '</td><td><strong>' + escapeHtml(r.name || '-') + '</strong></td><td>' + escapeHtml(r.capacity || '-') + '</td><td class="font-semibold" style="color:#D97706;">' + (r.max_kw || 0) + '</td><td>' + escapeHtml(r.location || '-') + '</td><td>' + condBadge + '</td><td>' + escapeHtml(r.responsible || '-') + '</td><td>' + statusBadge + '</td><td class="text-right">' + (r.cost ? r.cost.toLocaleString() : '-') + '</td>';
+                const typeBadge = r.type === 'NIT' ? '<span class="badge" style="background:#E8EAF6;color:#2E3192;">NIT</span>' : '<span class="badge" style="background:#FDF6E3;color:#B8860B;">Rental</span>';
+                const condBadge = r.condition === 'Good' ? '<span class="badge" style="background:#E8EAF6;color:#2E3192;">Good</span>' : r.condition === 'Needs Maintenance' ? '<span class="badge" style="background:#FDF6E3;color:#B8860B;">Needs Maint.</span>' : r.condition === 'Not Working' || r.condition === 'Bad' ? '<span class="badge badge-danger">' + escapeHtml(r.condition) + '</span>' : '<span class="badge" style="background:#F3F4F6;color:#6B7280;">' + escapeHtml(r.condition || 'Unknown') + '</span>';
+                const statusBadge = r.status === 'Active' ? '<span class="badge" style="background:#E0F7FA;color:#0E2841;">Active</span>' : r.status === 'Overhaul' ? '<span class="badge badge-purple">Overhaul</span>' : r.status === 'Demobilized' ? '<span class="badge" style="background:#F3F4F6;color:#6B7280;">Demobilized</span>' : '<span class="badge" style="background:#E8EAF6;color:#2E3192;">' + escapeHtml(r.status || 'Unknown') + '</span>';
+                tr.innerHTML = '<td>' + (i+1) + '</td><td>' + typeBadge + '</td><td><strong>' + escapeHtml(r.name || '-') + '</strong></td><td>' + escapeHtml(r.capacity || '-') + '</td><td class="font-semibold" style="color:#2E3192;">' + (r.max_kw || 0) + '</td><td>' + escapeHtml(r.location || '-') + '</td><td>' + condBadge + '</td><td>' + escapeHtml(r.responsible || '-') + '</td><td>' + statusBadge + '</td><td class="text-right">' + (r.cost ? r.cost.toLocaleString() : '-') + '</td>';
                 tbody.appendChild(tr);
             });
         }
