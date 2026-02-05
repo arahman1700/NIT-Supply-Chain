@@ -37,7 +37,7 @@
         .overview-card .sub { font-size: 0.75rem; opacity: 0.7; margin-top: 4px; }
         .bg-equipment { background: linear-gradient(135deg, #2E3192 0%, #5B2D8E 100%); }
         .bg-fleet { background: linear-gradient(135deg, #10B981 0%, #047857 100%); }
-        .bg-generators { background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%); }
+        .bg-generators { background: linear-gradient(135deg, #2E3192 0%, #5B2D8E 100%); }
         .bg-acs { background: linear-gradient(135deg, #06B6D4 0%, #0E7490 100%); }
         .bg-testing { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); }
         .bg-tools { background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); }
@@ -204,13 +204,13 @@
                             </div>
                         </div>
                         <div class="flex justify-between text-sm border-t border-white/20 pt-3 relative z-10">
-                            <span>Capacity: <strong id="nitKW" style="color: #80D1E9;">0</strong> kW</span>
-                            <span>Value: <strong id="nitCost" style="color: #DEC18C;">0</strong> SAR</span>
+                            <span>Total kW: <strong id="nitKW" style="color: #80D1E9;">0</strong></span>
+                            <span>Total Value: <strong id="nitCost" style="color: #DEC18C;">0</strong> SAR</span>
                         </div>
                     </div>
-                    <!-- Rental Card - NESMA Gold -->
-                    <div class="relative rounded-2xl p-6 text-white overflow-hidden" style="background: linear-gradient(135deg, #92A185 0%, #6B7B5F 100%);">
-                        <div class="absolute top-0 right-0 w-40 h-40 rounded-full -translate-y-1/2 translate-x-1/2" style="background: rgba(222,193,140,0.2);"></div>
+                    <!-- Rental Card - NESMA Complementary -->
+                    <div class="relative rounded-2xl p-6 text-white overflow-hidden" style="background: linear-gradient(135deg, #5B2D8E 0%, #3D1F5F 100%);">
+                        <div class="absolute top-0 right-0 w-40 h-40 rounded-full -translate-y-1/2 translate-x-1/2" style="background: rgba(222,193,140,0.15);"></div>
                         <div class="absolute bottom-0 left-0 w-24 h-24 rounded-full translate-y-1/2 -translate-x-1/2" style="background: rgba(128,209,233,0.1);"></div>
                         <div class="flex justify-between items-start mb-4 relative z-10">
                             <div>
@@ -226,7 +226,7 @@
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-3 mb-4 relative z-10">
-                            <div class="rounded-xl p-3 text-center" style="background: rgba(222,193,140,0.25);">
+                            <div class="rounded-xl p-3 text-center" style="background: rgba(222,193,140,0.2);">
                                 <div class="text-2xl font-bold" id="rentalActive" style="color: #DEC18C;">0</div>
                                 <div class="text-xs opacity-90">Active</div>
                             </div>
@@ -234,18 +234,18 @@
                                 <div class="text-2xl font-bold" id="rentalDemobilized" style="color: #80D1E9;">0</div>
                                 <div class="text-xs opacity-90">Demobilized</div>
                             </div>
-                            <div class="rounded-xl p-3 text-center" style="background: rgba(222,193,140,0.25);">
+                            <div class="rounded-xl p-3 text-center" style="background: rgba(222,193,140,0.2);">
                                 <div class="text-2xl font-bold" id="rentalGood" style="color: #DEC18C;">0</div>
                                 <div class="text-xs opacity-90">Good</div>
                             </div>
-                            <div class="rounded-xl p-3 text-center" style="background: rgba(173,128,130,0.3);">
+                            <div class="rounded-xl p-3 text-center" style="background: rgba(173,128,130,0.25);">
                                 <div class="text-2xl font-bold" id="rentalMaintenance" style="color: #FFB4B4;">0</div>
                                 <div class="text-xs opacity-90">Needs Attention</div>
                             </div>
                         </div>
                         <div class="flex justify-between text-sm border-t border-white/20 pt-3 relative z-10">
-                            <span>Capacity: <strong id="rentalKW" style="color: #DEC18C;">0</strong> kW</span>
-                            <span>Rental: <strong id="rentalCost" style="color: #80D1E9;">0</strong> SAR</span>
+                            <span>Total kW: <strong id="rentalKW" style="color: #80D1E9;">0</strong></span>
+                            <span>Rental Cost: <strong id="rentalCost" style="color: #DEC18C;">0</strong> SAR</span>
                         </div>
                     </div>
                 </div>
@@ -253,8 +253,9 @@
                 <!-- Filter Section -->
                 <div class="filter-section no-print mb-6">
                     <div class="flex flex-wrap items-end gap-4">
-                        <div class="flex-1 min-w-[200px]"><label class="block text-xs font-medium text-gray-500 mb-1">Search</label><div class="search-box"><input type="text" id="generatorSearch" placeholder="Search generators..." onkeyup="filterGenerators()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div></div>
-                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Type</label><select id="filterGenType" class="filter-select" onchange="filterGenerators()"><option value="">All Types</option><option value="NIT">NIT</option><option value="Rental">Rental</option></select></div>
+                        <div class="flex-1 min-w-[180px]"><label class="block text-xs font-medium text-gray-500 mb-1">Search</label><div class="search-box"><input type="text" id="generatorSearch" placeholder="Search generators..." onkeyup="filterGenerators()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div></div>
+                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Type</label><select id="filterGenType" class="filter-select" onchange="filterGenerators()"><option value="">All Types</option><option value="NIT">NIT</option><option value="Rental">Rental</option><option value="Unknown">Unknown</option></select></div>
+                        <div><label class="block text-xs font-medium text-gray-500 mb-1">Capacity (KVA)</label><select id="filterGenCapacity" class="filter-select" onchange="filterGenerators()"><option value="">All Capacities</option></select></div>
                         <div><label class="block text-xs font-medium text-gray-500 mb-1">Location</label><select id="filterGenLocation" class="filter-select" onchange="filterGenerators()"><option value="">All Locations</option></select></div>
                         <div><label class="block text-xs font-medium text-gray-500 mb-1">Condition</label><select id="filterGenCondition" class="filter-select" onchange="filterGenerators()"><option value="">All Conditions</option><option value="Good">Good</option><option value="Needs Maintenance">Needs Maintenance</option><option value="Not Working">Not Working</option><option value="Bad">Bad</option></select></div>
                         <div><label class="block text-xs font-medium text-gray-500 mb-1">Status</label><select id="filterGenStatus" class="filter-select" onchange="filterGenerators()"><option value="">All Statuses</option></select></div>
@@ -369,7 +370,12 @@
                 const div = document.createElement('div');
                 div.className = 'overview-card ' + c.cls;
                 div.onclick = function() {
-                    NesmaModal.show('All ' + c.label, filteredData[c.dataKey], c.cols, filteredData[c.dataKey].length + ' records');
+                    if (c.dataKey === 'generators') {
+                        // For generators, switch to tab to use full filtering
+                        switchTab('generators');
+                    } else {
+                        NesmaModal.show('All ' + c.label, filteredData[c.dataKey], c.cols, filteredData[c.dataKey].length + ' records');
+                    }
                 };
                 const valueEl = document.createElement('div');
                 valueEl.className = 'value';
@@ -396,6 +402,9 @@
             populateSelect('filterFleetMake', f.fleet_makes);
             populateSelect('filterGenLocation', f.generator_locations);
             populateSelect('filterGenStatus', f.generator_statuses);
+            // Capacity filter - get from summary or calculate
+            var genCapacities = [...new Set(assetsData.records.generators.map(r => r.capacity).filter(Boolean))].sort((a,b) => parseInt(a) - parseInt(b));
+            populateSelect('filterGenCapacity', genCapacities);
             populateSelect('filterToolType', f.tool_types);
             // New filters
             var acsProjects = [...new Set(assetsData.records.stand_acs.map(r => r.project_code).filter(Boolean))].sort();
@@ -650,16 +659,18 @@
         function filterGenerators() {
             const search = document.getElementById('generatorSearch').value.toLowerCase();
             const type = document.getElementById('filterGenType').value;
+            const capacity = document.getElementById('filterGenCapacity').value;
             const location = document.getElementById('filterGenLocation').value;
             const condition = document.getElementById('filterGenCondition').value;
             const status = document.getElementById('filterGenStatus').value;
             filteredData.generators = assetsData.records.generators.filter(r => {
                 const matchSearch = !search || (r.name || '').toLowerCase().includes(search) || (r.location || '').toLowerCase().includes(search);
                 const matchType = !type || r.type === type;
+                const matchCapacity = !capacity || r.capacity === capacity;
                 const matchLocation = !location || r.location === location;
                 const matchCondition = !condition || r.condition === condition;
                 const matchStatus = !status || r.status === status;
-                return matchSearch && matchType && matchLocation && matchCondition && matchStatus;
+                return matchSearch && matchType && matchCapacity && matchLocation && matchCondition && matchStatus;
             });
             renderGeneratorsTab();
         }
@@ -667,11 +678,18 @@
         function resetGenFilters() {
             document.getElementById('generatorSearch').value = '';
             document.getElementById('filterGenType').value = '';
+            document.getElementById('filterGenCapacity').value = '';
             document.getElementById('filterGenLocation').value = '';
             document.getElementById('filterGenCondition').value = '';
             document.getElementById('filterGenStatus').value = '';
             filteredData.generators = [...assetsData.records.generators];
             renderGeneratorsTab();
+        }
+        
+        function filterGeneratorsByType(type) {
+            switchTab('generators');
+            document.getElementById('filterGenType').value = type;
+            filterGenerators();
         }
 
         function renderGeneratorsTab() {
